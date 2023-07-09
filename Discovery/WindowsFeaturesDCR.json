@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dataCollectionRules_AzMA_DiscoverWindowsApps_name": {
+            "defaultValue": "AzMPacks-DiscoverWindowsApps",
+            "type": "String"
+        },
+        "dataCollectionEndpoints_endpoint1_externalid": {
+            "defaultValue": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterPacks/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1",
+            "type": "String"
+        },
+        "workspaces_MSEye_externalid": {
+            "defaultValue": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/LogAnalytics/providers/Microsoft.OperationalInsights/workspaces/MSEye",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Insights/dataCollectionRules",
+            "apiVersion": "2021-09-01-preview",
+            "name": "[parameters('dataCollectionRules_AzMA_DiscoverWindowsApps_name')]",
+            "location": "eastus",
+            "kind": "Windows",
+            "properties": {
+                "dataCollectionEndpointId": "[parameters('dataCollectionEndpoints_endpoint1_externalid')]",
+                "streamDeclarations": {
+                    "Custom-AzMAWindowsFeatures_CL_CL": {
+                        "columns": [
+                            {
+                                "name": "TimeGenerated",
+                                "type": "datetime"
+                            },
+                            {
+                                "name": "RawData",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "dataSources": {
+                    "logFiles": [
+                        {
+                            "streams": [
+                                "Custom-AzMAWindowsFeatures_CL_CL"
+                            ],
+                            "filePatterns": [
+                                "c:\\WindowsAzure\\Discovery\\installedFeatures.csv"
+                            ],
+                            "format": "text",
+                            "settings": {
+                                "text": {
+                                    "recordStartTimestampFormat": "ISO 8601"
+                                }
+                            },
+                            "name": "AzMAWindowsFeatures_CL_CL"
+                        }
+                    ]
+                },
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "workspaceResourceId": "[parameters('workspaces_MSEye_externalid')]",
+                            "name": "la-1788865833"
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Custom-AzMAWindowsFeatures_CL_CL"
+                        ],
+                        "destinations": [
+                            "la-1788865833"
+                        ],
+                        "transformKql": "source",
+                        "outputStream": "Custom-AzMAWindowsFeatures_CL_CL"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,94 @@
+[
+    {
+      "PackName": "AzMon-Packs-Windows-VM-Monitoring",
+      "RuleName": "AzMonPacks-Basic_VM_Monitoring_WindowsServer",
+      "ModuleType": "IaaS",
+      "Status": "Disabled",
+      "RequiredTag" : "OS",
+      "osTarget" : "Windows",
+      "DiscoveryType": "OS",
+      "RoleName" : "N/A",
+      "RequireParameters" : true,
+      "TemplateLocation" : "./Packs/IaaS/VMBasic/WinVMMonitoring.bicep",
+      "moduleParameters": [
+        {
+          "Name": "insightsRuleName",
+          "Value": ""
+        },
+        {
+          "Name": "enableInsightsAlerts",
+          "Value": null
+        },
+        {
+          "Name": "insightsRuleRg",
+          "Value": ""
+        }
+      ]      
+    },
+    {
+      "PackName": "AzMon-Packs-Linux-VM-Monitoring",
+      "RuleName": "AzMonPacks-Basic_VM_Monitoring_Linux",
+      "ModuleType": "IaaS",
+      "Status": "Disabled",
+      "RequiredTag" : "OS",
+      "osTarget" : "Linux",
+      "DiscoveryType": "OS",
+      "RoleName" : "N/A",
+      "RequireParameters" : true,
+      "TemplateLocation" : "./Packs/IaaS/VMBasic/Linux/LinuxVM.bicep",
+      "moduleParameters": [
+        {
+          "Name": "insightsRuleName",
+          "Value": ""
+        },
+        {
+          "Name": "enableInsightsAlerts",
+          "Value": null
+        },
+        {
+          "Name": "insightsRuleRg",
+          "Value": ""
+        }
+      ]    
+    },
+    {
+      "PackName": "AzMon-Packs-Windows-nginx-Monitoring",
+      "RuleName": "AzMonPacks-nginxMonitoring",
+      "ModuleType": "IaaS",
+      "Status": "Disabled",
+      "RequiredTag" : "nginx",
+      "osTarget" : "Linux",
+      "PackageName": "nginx",
+      "DiscoveryType": "PackageName",
+      "TemplateLocation" : "./Packs/IaaS/nginx/nginxmonitoring.bicep",
+      "moduleParameters": [
+      ]      
+    },
+    {
+        "PackName": "AzMon-Packs-Windows-IIS-Monitoring",
+        "RuleName": "AzMonPacks-IISBasicIISMonitoring",
+        "ModuleType": "IaaS",
+        "Status": "Enabled",
+        "RequiredTag" : "IIS",
+        "osTarget" : "Windows",
+        "DiscoveryType": "RoleName",
+        "RoleName" : "Web-Server",
+        "TemplateLocation" : "./Packs/IaaS/IIS/WinIISMonitoring.bicep",
+        "moduleParameters": [
+        ]      
+    },
+    {
+        "PackName": "AzMon-Packs-Windows-SQL-Monitoring",
+        "RuleName": "AzMonPacks-SQLBasicMonitoring",
+        "ModuleType": "IaaS",
+        "Status": "Disabled",
+        "RequiredTag" : "SQL",
+        "osTarget" : "Windows",
+        "DiscoveryType": "Application",
+        "RoleName" : "",
+        "ApplicationNames" : ["SQL Server 2019 Database Engine Services"],
+        "TemplateLocation" : "./Packs/IaaS/SQL/WinSQLMonitoring.bicep",
+        "moduleParameters": [
+        ]      
+    }
+]

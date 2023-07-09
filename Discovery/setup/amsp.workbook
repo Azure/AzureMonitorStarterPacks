@@ -1,0 +1,482 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Azure Monitor Starter Packs - Admin Centre\n\nDiscovery Configuration - Machines on the left have the Monitoring tag set, with at least one Starter Pack."
+      },
+      "customWidth": "50",
+      "name": "text - 5"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "value::all"
+        ],
+        "parameters": [
+          {
+            "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscriptions",
+            "type": 6,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "includeAll": false,
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": [
+              "value::all"
+            ]
+          },
+          {
+            "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
+            "version": "KqlParameterItem/1.0",
+            "name": "logicAppResource",
+            "label": "Logic App",
+            "type": 5,
+            "isRequired": true,
+            "query": "resources\n| where type == \"microsoft.logic/workflows\"\n| project Id=id, Name=name",
+            "crossComponentResources": [
+              "value::all"
+            ],
+            "typeSettings": {
+              "resourceTypeFilter": {
+                "microsoft.logic/workflows": true
+              },
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.Logic/workflows/DiscoverySetup"
+          },
+          {
+            "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workspace",
+            "label": "WorkSpace",
+            "type": 5,
+            "isRequired": true,
+            "isGlobal": true,
+            "query": "resources\n| where type == \"microsoft.operationalinsights/workspaces\"\n| project id",
+            "crossComponentResources": [
+              "value::all"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2"
+          }
+        ],
+        "style": "above",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "customWidth": "50",
+      "name": "parameters - 6"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources | where type =~ 'microsoft.compute/virtualmachines' or type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Server=id,['Resource Group']=resourceGroup, Packs=tags.MonitorStarterPacks",
+              "size": 0,
+              "title": "Monitored Machines",
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "taggedVMs",
+                  "parameterType": 5,
+                  "quote": ""
+                }
+              ],
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "$gen_link_Packs_2",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "$gen_link_Packs_2",
+                  "sortOrder": 1
+                }
+              ]
+            },
+            "name": "Monitored Machines",
+            "styleSettings": {
+              "margin": "400",
+              "padding": "400",
+              "showBorder": true
+            }
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "parameters": [
+                {
+                  "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "PackTagDisable",
+                  "label": "Select Pack To Disable or to Add",
+                  "type": 2,
+                  "isGlobal": true,
+                  "query": "externaldata(PackName: string, RequiredTag:string, Status:string)\n[ \n   h@'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/packs.json'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\"}]')\n| where Status == 'Enabled'\n| project Tag=RequiredTag,Name=PackName\n",
+                  "crossComponentResources": [
+                    "{Workspace}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "value": "LOS"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "50",
+            "name": "parameters - 5 - Copy"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "bullets",
+              "links": [
+                {
+                  "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
+                  "cellValue": "",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Remove Monitoring for {PackTagDisable} Pack ",
+                  "preText": "",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [
+                      {
+                        "key": "action",
+                        "value": "removeTag"
+                      }
+                    ],
+                    "body": "{ \"Action\":\"RemoveTag\", \n\"Servers\":  [{taggedVMs}],\n\"Pack\": \"{PackTagDisable}\"\n}",
+                    "httpMethod": "POST",
+                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                  }
+                },
+                {
+                  "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Add Monitoring for {PackTagDisable} Pack",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \"Action\":\"AddTag\", \n\"Servers\":  [{taggedVMs}],\n\"Pack\": \"{PackTagDisable}\"\n}",
+                    "httpMethod": "POST",
+                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                  }
+                },
+                {
+                  "id": "3b1af630-47ab-43e9-a5b2-d2f2e21880d0",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Remove All Monitoring for VM",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \"Action\":\"RemoveTag\", \n\"Servers\":  [{taggedVMs}],\n\"Pack\": \"All\"\n}",
+                    "httpMethod": "POST",
+                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                  }
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "links - 1"
+          }
+        ],
+        "exportParameters": true
+      },
+      "customWidth": "50",
+      "name": "TaggedGroup"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources | where type =~ 'microsoft.compute/virtualmachines' or type =~ 'microsoft.hybridcompute/machines' \n| where isempty(tolower(tags.MonitorStarterPacks)) //and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Server=id,['Resource Group']=resourceGroup",
+              "size": 0,
+              "title": "Non-monitored Machines",
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "parameterName": "vmstotag",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table"
+            },
+            "name": "Non Discoverable Machines",
+            "styleSettings": {
+              "margin": "400",
+              "padding": "400",
+              "showBorder": true
+            }
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2"
+              ],
+              "parameters": [
+                {
+                  "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "PackTags",
+                  "label": "Select Pack to Enable",
+                  "type": 2,
+                  "isGlobal": true,
+                  "query": "externaldata(PackName: string, RequiredTag:string, Status:string)\n[ \n   h@'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/packs.json'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\"}]')\n| where Status == 'Enabled'\n| project Tag=RequiredTag,Name=PackName\n",
+                  "crossComponentResources": [
+                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "value": "WOS"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "50",
+            "name": "parameters - 5"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "bullets",
+              "links": [
+                {
+                  "id": "91fb0fed-0e4f-41ce-9024-98a3cc4432a7",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Enable Monitoring for {PackTags} Pack",
+                  "preText": "",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [
+                      {
+                        "key": "action",
+                        "value": "addTag"
+                      }
+                    ],
+                    "body": "{ \"Action\":\"AddTag\", \n\"Servers\": [{vmstotag}],\n\"Pack\": \"{PackTags}\"\n}",
+                    "httpMethod": "POST",
+                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                  }
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "links - 1 - Copy"
+          }
+        ],
+        "exportParameters": true
+      },
+      "customWidth": "50",
+      "name": "NonTaggedGroup"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "Alert Management",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "parameters": [
+                {
+                  "id": "e99b4870-f7a6-4b8e-95b7-6aaeece1f438",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AlertPack",
+                  "type": 2,
+                  "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": []
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": "IIS"
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "name": "parameters - 7"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MP=tags.MonitorStarterPacks, name, Enabled=properties.enabled, Description=properties.description\n| where MP=='{AlertPack}'",
+              "size": 0,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "alertsselected",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table"
+            },
+            "customWidth": "50",
+            "name": "query - 6"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "bullets",
+              "links": [
+                {
+                  "id": "f5cb3ede-91d1-4414-bfa1-a1689f45d0c8",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Enable Alerts",
+                  "style": "primary",
+                  "linkIsContextBlade": true
+                },
+                {
+                  "id": "d9469141-a104-4696-b9cd-f0fc7e3f963e",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Disable Alerts",
+                  "style": "primary",
+                  "linkIsContextBlade": true
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "links - 8"
+          }
+        ]
+      },
+      "name": "AlertMGMT"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "externaldata(PackName: string, RequiredTag:string, Status:string)\n[ \n   h@'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/packs.json'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\"}]')\n| where Status == 'Enabled'\n",
+        "size": 1,
+        "title": "Available Packs (Enabled) from Json file in SA",
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workspace}"
+        ]
+      },
+      "name": "availPacks"
+    }
+  ],
+  "fallbackResourceIds": [
+    "azure monitor"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

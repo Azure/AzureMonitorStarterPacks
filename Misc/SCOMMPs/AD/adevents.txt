@@ -1,0 +1,122 @@
+
+      // 'System!*[System[Provider[@Name=\'Microsoft-Windows-DISK\'] and (EventID=31)]]'
+      // 'System!*[System[Provider[@Name=\'Microsoft-Windows-DISK\' or @Name=\'Microsoft-Windows-Ntfs\'] and (EventID=11 or EventID=50)]]'
+      // 'System!*[System[Provider[@Name=\'Microsoft-Windows-Time-Service\'] and (Level=2) and (EventID=34]]'
+      // 'System!*[System[Provider[@Name=\'VSS\'] and (EventID=8194)]]'
+      // 'System!*[System[Provider[@Name=\'volmgr\'] and (Level=1  or Level=2) and (EventID=46)]]'
+      // 'System!*[System[(Level=4 or Level=0) and (EventID=7036)]]'
+'Directory Service!*[Directory Service[(Level=1)]]
+'Directory Service!*[Directory Service[(Level=2)]]
+'DNS Server!*[DNS Server[(Level=1)]]
+'DNS Server!*[DNS Server[(Level=2)]]
+'Active Directory Web Services!*[Active Directory Web Services[(Level=1)]]
+'Active Directory Web Services!*[Active Directory Web Services[(Level=2)]]
+'DFS Replication!*[DFS Replication[(Level=1)]]
+'DFS Replication!*[DFS Replication[(Level=2)]]
+'Application!*[Application[Provider[@Name=\'UserEnv\'](EventID=1001)]]
+'System!*[System[Provider[@Name=\'Microsoft-Windows-GroupPolicy\'](EventID=1089 or EventID=1090 or EventID=1091 or EventID=1092 or EventID=1093 or EventID=1095)]]
+'Application!*[Application[Provider[@Name=\'Microsoft-Windows-GroupPolicy\']
+'System!*[System[(EventID=16641) and Provider[@Name=\'Microsoft-Windows-Directory-Services-SAM\']]]'
+
+Application
+<And>
+      <Expression>
+            <SimpleExpression>
+                  <ValueExpression>
+                        <XPathQuery>EventDisplayNumber</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                        <Value>1001</Value>
+                  </ValueExpression>
+            </SimpleExpression>
+      </Expression>
+      <Expression>
+            <SimpleExpression>
+                  <ValueExpression>
+                        <XPathQuery>PublisherName</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                        <Value>UserEnv</Value>
+                  </ValueExpression>
+            </SimpleExpression>
+      </Expression>
+      <Expression>
+            <SimpleExpression>
+                  <ValueExpression>
+                        <XPathQuery>UserName</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                        <Value>System</Value>
+                  </ValueExpression>
+            </SimpleExpression>
+      </Expression>
+</And>
+System
+<And><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005BooleanRegularExpression</Operator><Pattern>^(1089|1090|1091|1092|1093|1095)$</Pattern></RegExExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+(EventDisplayNumber = 1109) AND (PublisherName = Microsoft-Windows-GroupPolicy)
+(EventDisplayNumber = 16406) AND (PublisherName = Microsoft-Windows-Directory-Services-SAM)
+System
+(EventDisplayNumber = 16407) AND (PublisherName = Microsoft-Windows-Directory-Services-SAM)
+(EventDisplayNumber = 16643) AND (PublisherName = Microsoft-Windows-Directory-Services-SAM)
+(EventDisplayNumber = 12303) AND (PublisherName = Microsoft-Windows-Directory-Services-SAM)
+EventDisplayNumber matches ^10801$
+(PublisherName = Microsoft-Windows-Directory-Services-SAM) AND (EventDisplayNumber matches ^(16392|16394)$)
+(EventDisplayNumber = 5800) AND (PublisherName = NetLogon)
+(EventDisplayNumber = 12299) AND (PublisherName = Microsoft-Windows-Directory-Services-SAM)
+(EventDisplayNumber = 34) AND (PublisherName = Microsoft-Windows-Time-Service)
+(EventDisplayNumber = 12302) AND (PublisherName = Microsoft-Windows-Directory-Services-SAM)
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>1002</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>21</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Time-Service</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>18</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Kerberos-Key-Distribution-Center</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>5</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Kerberos-Key-Distribution-Center</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>16397</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Directory-Services-SAM</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>16641</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Directory-Services-SAM</Value></ValueExpression></SimpleExpression></Expression></And>
+'System!*[System[(EventID=16641) and Provider[@Name=\'Microsoft-Windows-Directory-Services-SAM\']]]'
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>5801</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>NetLogon</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>16642</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Directory-Services-SAM</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>16651</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Directory-Services-SAM</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>12300</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Directory-Services-SAM</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>1097</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>1088</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>1096</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>36</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Time-Service</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>16405</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Directory-Services-SAM</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>6</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Kerberos-Key-Distribution-Center</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>7</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-Kerberos-Key-Distribution-Center</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>1052</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005RegularExpression</Operator><Pattern>^(1053|1055)$</Pattern></RegExExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>1054</Value></ValueExpression></SimpleExpression></Expression><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Microsoft-Windows-GroupPolicy</Value></ValueExpression></SimpleExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>DNSAPI</Value></ValueExpression></SimpleExpression></Expression><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005BooleanRegularExpression</Operator><Pattern>^(11150|11162)$</Pattern></RegExExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>DNSAPI</Value></ValueExpression></SimpleExpression></Expression><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005BooleanRegularExpression</Operator><Pattern>^(11151|11155|11163|11167)$</Pattern></RegExExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Netlogon</Value></ValueExpression></SimpleExpression></Expression><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005BooleanRegularExpression</Operator><Pattern>^(5773)$</Pattern></RegExExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Dnsapi</Value></ValueExpression></SimpleExpression></Expression><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005BooleanRegularExpression</Operator><Pattern>^(11152|11153|11164|11165)$</Pattern></RegExExpression></Expression></And>
+System
+<And><Expression><SimpleExpression><ValueExpression><XPathQuery>PublisherName</XPathQuery></ValueExpression><Operator>Equal</Operator><ValueExpression><Value>Dnsapi</Value></ValueExpression></SimpleExpression></Expression><Expression><RegExExpression><ValueExpression><XPathQuery>EventDisplayNumber</XPathQuery></ValueExpression><Operator>MatchesMOM2005BooleanRegularExpression</Operator><Pattern>^(11154|11166)$</Pattern></RegExExpression></Expression></And>

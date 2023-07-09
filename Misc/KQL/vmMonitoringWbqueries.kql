@@ -1,0 +1,11 @@
+// List of Computers - set as a parameter
+Perf
+| summarize by Computer
+
+// Specific counter for a computer
+Perf 
+| where CounterPath == "\\\\{Computers}\\Memory\\Pages/sec"
+
+// All counters for a computer
+Perf
+| where Computer == "{Computers}"
