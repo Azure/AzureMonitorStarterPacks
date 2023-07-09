@@ -27,18 +27,24 @@ Create a framework for collaboration that will make it easy to add new monitored
     
 ### Examples
 
-    Basic VM Monitoring
-    .\setup.ps1 -workspaceResourceId '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rg-xxxxxxx/providers/Microsoft.OperationalInsights/workspaces/xxxxxxx' -resourceGroup 'rg-xxxxxxx' -tagName 'AppList' -location 'eastus'
+    Minimal parameters:
+    .\setup.ps1 -resourceGroup 'rg-xxxxxxx' -location 'eastus'
 
-    This example will deploy the basic VM monitoring pack to all machines that have the tag 'AppList' in the resource group 'rg-xxxxxxx'. The data will be sent to the workspace 'xxxxxxx' in the resource group 'rg-xxxxxxx'. The deployment location is 'eastus'.
+    This example will deploy the enabled packs in the packs.json file to the resource group rg-xxxxxxx in the eastus location. It will deploy the basic solution and any enabled packs.
+    The basic solution is composed of the following components:
+    - Log Analytics Workspace (if not using existing)
+    - Action Group (if not using existing)
+    - Logic App (for management)
+    - Function (for management)
+    - Workbook (for management)
+  - Packs
+  - DCR(s), Alerts, policies and assignments (with remediation tasks)
     
 ## Starter Packs
 
-### Basic Windows VM Monitoring
+### Basic Windows VM Monitoring (TBD)
 
-### Basic Linux VM Monitoring
-
-### IIS VM Monitoring
+### IIS VM Monitoring (Beta)
 
 ## Authoring Guide
 
