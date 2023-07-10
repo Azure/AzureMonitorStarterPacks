@@ -16,7 +16,8 @@ var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 var subscriptionId = subscription().subscriptionId
 var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
-
+var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+var ArcContributorRoleDefinitionId='48b40c6e-82e0-4eb3-90d5-19e40f49b624'
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -269,6 +270,9 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                 type: 'Function'
                 inputs: {
                     body: '@triggerBody()'
+                    Headers : {
+                        'x-functions-key': '${azfunctionsite.list().default}'
+                    }
                     function: {
                         id: '${azfunctionsite.id}/functions/tagmgmt'
                     }
@@ -289,6 +293,25 @@ resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ContributorRoleDefinitionId)
   }
 }
+resource functionVMContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('vmcontributor')
+  properties: {
+    description: 'VM Contributor for Function App'
+    principalId: azfunctionsite.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', VMContributorRoleDefinitionId)
+  }
+}
+resource functionArcContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('arccontributor')
+  properties: {
+    description: 'Hybrid Contributor for Function App'
+    principalId: azfunctionsite.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
+  }
+}
+
 var wbConfig = loadTextContent('amsp.workbook')
 // var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
 // //var wbConfig3='''
