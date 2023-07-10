@@ -182,7 +182,7 @@ if (!($skipMainSolutionSetup)) {
     }
     Write-Host "Deploying the discovery function, logic app and workbook."
     New-AzResourceGroupDeployment -name "functiondeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
-    -TemplateFile './Discovery/setup/discovery.bicep' -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
+    -TemplateFile './Discovery/setup/discovery.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
 }
 #endregion
 

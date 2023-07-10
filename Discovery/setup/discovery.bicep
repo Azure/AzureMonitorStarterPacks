@@ -71,7 +71,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-upload-blob-${utcValue}'
   dependsOn: [
-    azfunctionsite
+    azfunctionsiteconfig
   ]
   tags: {
     '${solutionTag}': 'deploymentScript'
@@ -271,7 +271,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                 inputs: {
                     body: '@triggerBody()'
                     Headers : {
-                        'x-functions-key': '${azfunctionsite.list().default}'
+                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
                     }
                     function: {
                         id: '${azfunctionsite.id}/functions/tagmgmt'
@@ -285,27 +285,36 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
   }
 }
 resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('tagcontributor')
+  name: guid(resourceGroup().name,functionname,'tagcontributor')
+  dependsOn: [
+    azfunctionsite
+  ]
   properties: {
-    description: 'Tag Contributor for WebApp'
+    description: '${solutionTag}-Tag Contributor for WebApp'
     principalId: azfunctionsite.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ContributorRoleDefinitionId)
   }
 }
 resource functionVMContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('vmcontributor')
+  name: guid(resourceGroup().name,functionname,'vmcontributor')
+  dependsOn: [
+    azfunctionsite
+  ]
   properties: {
-    description: 'VM Contributor for Function App'
+    description: '${solutionTag}-VM Contributor for Function App'
     principalId: azfunctionsite.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', VMContributorRoleDefinitionId)
   }
 }
 resource functionArcContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('arccontributor')
+  name: guid(resourceGroup().name,functionname,'arccontributor')
+  dependsOn: [
+    azfunctionsite
+  ]
   properties: {
-    description: 'Hybrid Contributor for Function App'
+    description: '${solutionTag}-Hybrid Contributor for Function App'
     principalId: azfunctionsite.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
