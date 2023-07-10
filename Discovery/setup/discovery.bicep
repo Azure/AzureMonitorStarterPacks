@@ -278,6 +278,16 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
     parameters: {}
   }
 }
+resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: 'string'
+  scope: tenant()
+  properties: {
+    description: 'Tag Contributor for WebApp'
+    principalId: azfunctionsite.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: '4a9ae827-6dc8-4573-8ac7-8239d42aa03f'
+  }
+}
 var wbConfig = loadTextContent('amsp.workbook')
 // var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
 // //var wbConfig3='''
