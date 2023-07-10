@@ -1,14 +1,15 @@
-# Project
+# Azure FTA - Monitoring Starter Packs (MonStar Packs)
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+Objectives
 
-As the maintainer of this project, please make a few updates:
+Minimize the initial ramp up required for customers, in multiple aspects of the Azure technologies to deploy basic monitoring 
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+Minimize the need for the Customer tto determine the minimal monitoring items for a certain type of workload 
+
+Provide best practices out of the box on items that need monitoring for different workloads 
+
+Create a framework for collaboration that will make it easy to add new monitored technologies. 
+
 
 ## Contributing
 

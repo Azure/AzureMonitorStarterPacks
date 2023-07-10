@@ -143,7 +143,7 @@
               "showBorder": true
             }
           },
-          {
+                    {
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
@@ -158,7 +158,7 @@
                   "label": "Select Pack To Disable or to Add",
                   "type": 2,
                   "isGlobal": true,
-                  "query": "externaldata(PackName: string, RequiredTag:string, Status:string)\n[ \n   h@'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/packs.json'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\"}]')\n| where Status == 'Enabled'\n| project Tag=RequiredTag,Name=PackName\n",
+                  "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
                   "crossComponentResources": [
                     "{Workspace}"
                   ],
@@ -169,14 +169,14 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "LOS"
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
             },
             "customWidth": "50",
             "name": "parameters - 5 - Copy"
@@ -289,9 +289,6 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
-              "crossComponentResources": [
-                "${lawresourceid}"
-              ],
               "parameters": [
                 {
                   "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
@@ -300,10 +297,7 @@
                   "label": "Select Pack to Enable",
                   "type": 2,
                   "isGlobal": true,
-                  "query": "externaldata(PackName: string, RequiredTag:string, Status:string)\n[ \n   h@'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/packs.json'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\"}]')\n| where Status == 'Enabled'\n| project Tag=RequiredTag,Name=PackName\n",
-                  "crossComponentResources": [
-                    "${lawresourceid}"
-                  ],
+                  "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
@@ -311,14 +305,14 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "WOS"
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
             },
             "customWidth": "50",
             "name": "parameters - 5"
