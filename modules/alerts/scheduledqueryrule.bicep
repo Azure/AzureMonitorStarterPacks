@@ -12,11 +12,12 @@ param autoMitigate bool = false
 param query string
 //param starterPackName string
 param packtag string
+param solutionTag string
 resource rule 'Microsoft.Insights/scheduledQueryRules@2022-08-01-preview' = {
   location: location
   name: alertRuleName
   tags: {
-    MonitorStarterPacks: packtag
+    '${solutionTag}': packtag
   }
   properties: {
     description: alertRuleDescription

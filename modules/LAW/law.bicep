@@ -1,10 +1,12 @@
 param logAnalyticsWorkspaceName string
 param location string
+param solutionTag string
+
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName
   location: location
   tags: {
-    MonitorStarterPacks: 'true'
+    '${solutionTag}': 'Log Analytics workspace'
   }
   properties: {
     sku: {

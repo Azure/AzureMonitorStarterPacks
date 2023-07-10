@@ -5,6 +5,7 @@ param emailreceivers array = []
 param emailreiceversemails array = []
 param useExistingAG bool 
 param existingAGRG string = ''
+param solutionTag string
 var deploymentName = 'ag-${uniqueString(resourceGroup().id)}'
 
 module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
@@ -15,6 +16,7 @@ module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
     emailreiceversemails: emailreiceversemails
     groupshortname: actionGroupName
     location: 'global'
+    solutionTag: solutionTag
     //location: location defailt is global
   }
 }

@@ -10,11 +10,13 @@ param appInsightsLocation string
 param utcValue string = utcNow()
 param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
-param tagname string
+param solutionTag string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 var subscriptionId = subscription().subscriptionId
+var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
+
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -29,7 +31,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   name: storageAccountName
   location: location
   tags: {
-    tagname: 'storageaccount'
+    '${solutionTag}': 'storageaccount'
   }
   sku: {
     name: 'Standard_LRS'
@@ -71,7 +73,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     azfunctionsite
   ]
   tags: {
-    tagname: 'deploymentScript'
+    '${solutionTag}': 'deploymentScript'
   }
   location: location
   kind: 'AzureCLI'
@@ -101,7 +103,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: '${functionname}-farm'
   location: location
   tags: {
-    tagname: 'serverfarm'
+    '${solutionTag}': 'serverfarm'
   }
   sku: {
     name: 'Y1'
@@ -129,7 +131,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
   location: location
   kind: 'functionapp'
   tags: {
-    tagname: 'site'
+    '${solutionTag}': 'site'
   }
   identity: {
       type: 'SystemAssigned'
@@ -221,7 +223,7 @@ resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
 resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   name: functionname
   tags: {
-    tagname: 'InsightsComponent'
+    '${solutionTag}': 'InsightsComponent'
   }
   location: appInsightsLocation
   kind: 'web'
@@ -239,7 +241,7 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
 resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: 'Discovery'
   tags: {
-    tagname: 'logicapp'
+    '${solutionTag}': 'logicapp'
   }
   dependsOn: [
     deployfunctions
@@ -279,13 +281,12 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
   }
 }
 resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: 'string'
-  scope: tenant()
+  name: guid('tagcontributor')
   properties: {
     description: 'Tag Contributor for WebApp'
     principalId: azfunctionsite.identity.principalId
     principalType: 'ServicePrincipal'
-    roleDefinitionId: '4a9ae827-6dc8-4573-8ac7-8239d42aa03f'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ContributorRoleDefinitionId)
   }
 }
 var wbConfig = loadTextContent('amsp.workbook')
@@ -298,7 +299,7 @@ var wbConfig = loadTextContent('amsp.workbook')
 resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
   location: location
   tags: {
-    tagname: 'mainworkbook'
+    '${solutionTag}': 'mainworkbook'
   }
   kind: 'shared'
   name: guid('monstar')

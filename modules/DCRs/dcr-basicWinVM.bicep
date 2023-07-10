@@ -7,6 +7,7 @@ param xPathQueries array = []
 param counterSpecifiers array = []
 param samplingFrequencyInSeconds int = 300
 param packtag string
+param solutionTag string
 /*
               "System!*[System[(Level = 1 or Level = 2 or Level = 3)]]",
               "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
@@ -14,7 +15,7 @@ param packtag string
 resource dcr 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   location: location
   tags: {
-    MonitorStarterPacks: packtag
+    '${solutionTag}': packtag
   }
   name: rulename
   kind: kind

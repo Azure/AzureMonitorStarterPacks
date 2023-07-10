@@ -170,7 +170,7 @@ else {
 # Setup Workbook, function, logic app  for Tag Discovery
 if (!($skipMainSolutionSetup)) {
     $randomstoragechars = -join ((97..122) | Get-Random -Count 4 | ForEach-Object { [char]$_ })
-    compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip
+    compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
     $storageaccountName = "azmonstarpacks$randomstoragechars"
     $parameters=@{
         functionname='MonitorStarterPacksDiscovery'
@@ -178,6 +178,7 @@ if (!($skipMainSolutionSetup)) {
         storageAccountName=$storageAccountName
         lawresourceid=$ws.ResourceId
         appInsightsLocation=$location
+        solutionTag=$EnableTagName
     }
     Write-Host "Deploying the discovery function, logic app and workbook."
     New-AzResourceGroupDeployment -name "functiondeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `

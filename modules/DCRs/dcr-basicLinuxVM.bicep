@@ -7,11 +7,12 @@ param packtag string
 param counterSpecifiers array = [
 ]
 param samplingFrequencyInSeconds int = 300
+param solutionTag string
 
 resource dcr 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   location: location
   tags: {
-    MonitorStarterPacks: packtag
+    '${solutionTag}': packtag
   }
   name: rulename
   kind: kind

@@ -13,7 +13,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     displayName: policyDisplayName
     metadata: {
       category: 'Monitoring'
-      solutionTag: packtag
+      '${solutionTag}': packtag
     }
     policyType: 'Custom'
     mode: 'Indexed'

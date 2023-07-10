@@ -6,6 +6,7 @@ param metricNamespace string = 'Microsoft.Compute/virtualMachines'
 param threshold int
 param timeAggregation string = 'Average'
 param packtag string
+param solutionTag string
 
 @allowed([
   'GreaterThan'
@@ -34,7 +35,7 @@ resource metricalert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: alertrulename
   location: location
   tags: {
-    MonitorStarterPacks: packtag
+    '${solutionTag}': packtag
   }
   properties: {
     scopes: [

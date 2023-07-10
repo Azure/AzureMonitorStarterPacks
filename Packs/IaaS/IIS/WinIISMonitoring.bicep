@@ -82,6 +82,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    solutionTag: solutionTag
     //location: location defailt is global
   }
 }
@@ -93,6 +94,7 @@ module Alerts './WinIISAlerts.bicep' = {
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
+    solutionTag: solutionTag
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
@@ -107,6 +109,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     xPathQueries: xPathQueries
     counterSpecifiers: performanceCounters
     packtag: packtag
+    solutionTag: solutionTag
   }
 }
 // // DCR Association - the module below associates the DCR with the VMs
