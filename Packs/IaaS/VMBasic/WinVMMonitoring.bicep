@@ -12,12 +12,11 @@ param existingAGRG string = ''
 param enableBasicVMPlatformAlerts bool = false
 param location string = resourceGroup().location
 param workspaceId string
-param workspaceFriendlyName string
-param osTarget string
 param enableInsightsAlerts bool = false
 param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
 param insightsRuleRg string = ''
 param packtag string
+param solutionTag string
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: actionGroupName
@@ -118,15 +117,15 @@ resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-previe
 //     vmId: vmID
 //   }
 // }]
-module policy '../../../modules/policies/subscription/associacionpolicy.bicep' = {
-  name: 'associationpolicy'
-  scope: subscription()
+
+module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+  name: 'policysetup'
   params: {
+    dcrId: vmInsightsDCR.id
     packtag: packtag
-    policyDescription: 'Policy to associate the ${insightsRuleName} DCR with the VMs tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the ${insightsRuleName} DCR with the VMs tagged with ${packtag} tag.'
-    policyName: 'associate-${insightsRuleName}-${packtag}'
-    DCRId: vmInsightsDCR.id
+    solutionTag: solutionTag
+    rulename: rulename
+    location: location
   }
 }
 // module vmInsightsAssociation '../../../modules/DCRs/dcrassociation.bicep'  =   [for (vmID, i) in vmIDs: {

@@ -12,18 +12,15 @@ param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param tagname string
 
-
-var se= '2023-07-25T00:00:00Z'
-
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
-
+var subscriptionId = subscription().subscriptionId
 
 var sasConfig = {
   signedResourceTypes: 'sco'
   signedPermission: 'r'
   signedServices: 'b'
-  signedExpiry: se
+  signedExpiry: sasExpiry
   signedProtocol: 'https'
   keyToSign: 'key2'
 }
@@ -93,7 +90,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       }
       {
         name: 'CONTENT'
-        value: loadFileAsBase64('../../../../../../tmp/discovery.zip')
+        value: loadFileAsBase64('./discovery.zip')
       }
     ]
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename}'

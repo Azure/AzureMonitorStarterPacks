@@ -124,49 +124,60 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
 //     vmId: vmID
 //   }
 // }]
-module policyVM '../../../modules/policies/subscription/associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM'
-  scope: subscription()
+
+module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+  name: 'policysetup'
   params: {
+    dcrId: dcrbasicvmMonitoring.outputs.dcrId
     packtag: packtag
-    policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyName: 'associate-${rulename}-${packtag}-vms'
-    DCRId: dcrbasicvmMonitoring.outputs.dcrId
     solutionTag: solutionTag
-  }
-}
-module policyARC '../../../modules/policies/subscription/associacionpolicyARC.bicep' = {
-  name: 'associationpolicyARC'
-  scope: subscription()
-  params: {
-    packtag: packtag
-    policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the ${rulename} DCR with the ARC Servers tagged with ${packtag} tag.'
-    policyName: 'associate-${rulename}-${packtag}-arc'
-    DCRId: dcrbasicvmMonitoring.outputs.dcrId
-    solutionTag: solutionTag
-  }
-}
-//module policyAssignment {}
-// param policyAssignmentName string = 'audit-vm-manageddisks'
-// param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment '../../../modules/policies/subscription/assignment.bicep' = {
-  name: 'arcassignment'
-  scope: subscription()
-  params: {
-    policyDefinitionId: policyARC.outputs.policyId
-    location: location
-    assignmentName: 'associate-${rulename}-${packtag}-arc'
-  }
-}
-module vmassignment '../../../modules/policies/subscription/assignment.bicep' = {
-  name: 'vmassignment'
-  scope: subscription()
-  params: {
-    policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'associate-${rulename}-${packtag}-vm'
+    rulename: rulename
     location: location
   }
 }
+// module policyVM '../../../modules/policies/subscription/associacionpolicyVM.bicep' = {
+//   name: 'associationpolicyVM'
+//   scope: subscription()
+//   params: {
+//     packtag: packtag
+//     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
+//     policyDisplayName: 'Associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
+//     policyName: 'associate-${rulename}-${packtag}-vms'
+//     DCRId: dcrbasicvmMonitoring.outputs.dcrId
+//     solutionTag: solutionTag
+//   }
+// }
+// module policyARC '../../../modules/policies/subscription/associacionpolicyARC.bicep' = {
+//   name: 'associationpolicyARC'
+//   scope: subscription()
+//   params: {
+//     packtag: packtag
+//     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
+//     policyDisplayName: 'Associate the ${rulename} DCR with the ARC Servers tagged with ${packtag} tag.'
+//     policyName: 'associate-${rulename}-${packtag}-arc'
+//     DCRId: dcrbasicvmMonitoring.outputs.dcrId
+//     solutionTag: solutionTag
+//   }
+// }
+// //module policyAssignment {}
+// // param policyAssignmentName string = 'audit-vm-manageddisks'
+// // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+// module arcassignment '../../../modules/policies/subscription/assignment.bicep' = {
+//   name: 'arcassignment'
+//   scope: subscription()
+//   params: {
+//     policyDefinitionId: policyARC.outputs.policyId
+//     location: location
+//     assignmentName: 'associate-${rulename}-${packtag}-arc'
+//   }
+// }
+// module vmassignment '../../../modules/policies/subscription/assignment.bicep' = {
+//   name: 'vmassignment'
+//   scope: subscription()
+//   params: {
+//     policyDefinitionId: policyVM.outputs.policyId
+//     assignmentName: 'associate-${rulename}-${packtag}-vm'
+//     location: location
+//   }
+// }
 // output assignmentId string = assignment.id

@@ -63,7 +63,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.Logic/workflows/DiscoverySetup"
+            "value": "${logicapp.id}"
           },
           {
             "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -83,7 +83,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2"
+            "value": "${lawresourceid}"
           }
         ],
         "style": "above",
@@ -290,7 +290,7 @@
             "content": {
               "version": "KqlParameterItem/1.0",
               "crossComponentResources": [
-                "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2"
+                "${lawresourceid}"
               ],
               "parameters": [
                 {
@@ -302,7 +302,7 @@
                   "isGlobal": true,
                   "query": "externaldata(PackName: string, RequiredTag:string, Status:string)\n[ \n   h@'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/packs.json'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\"}]')\n| where Status == 'Enabled'\n| project Tag=RequiredTag,Name=PackName\n",
                   "crossComponentResources": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2"
+                    "${lawresourceid}"
                   ],
                   "typeSettings": {
                     "additionalResourceOptions": [],

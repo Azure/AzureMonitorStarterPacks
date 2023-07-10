@@ -170,6 +170,7 @@ else {
 # Setup Workbook, function, logic app  for Tag Discovery
 if (!($skipMainSolutionSetup)) {
     $randomstoragechars = -join ((97..122) | Get-Random -Count 4 | ForEach-Object { [char]$_ })
+    compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip
     $storageaccountName = "azmonstarpacks$randomstoragechars"
     $parameters=@{
         functionname='MonitorStarterPacksDiscovery'
