@@ -1,7 +1,10 @@
 param location string
 param workspaceId string
 param AGId string
+param packtag string
+param solutionTag string
 var moduleprefix = 'AMSP-Lx-DCR-Alerts'
+
 
 var alertlist =  [ 
   {
@@ -28,5 +31,7 @@ module vmalerts '../../../../modules/alerts/scheduledqueryrule.bicep' = [for ale
     alertRuleSeverity: alert.alertRuleSeverity
     scope: workspaceId
     query: alert.query
+    packtag: packtag
+    solutionTag: solutionTag
   }
 }]

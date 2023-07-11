@@ -14,9 +14,9 @@ param location string = resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
 param osTarget string
+param packtag string
+param solutionTag string
 
-//var vmNames = [for (vmID, i) in vmIDs: split(vmID, '/')[8]]
-//var arcVMNames = [for (vmID, i) in arcVMIDs: split(vmID, '/')[8]]
 
 // Action Group
 module ag '../../../../modules/actiongroups/ag.bicep' = {
@@ -27,6 +27,7 @@ module ag '../../../../modules/actiongroups/ag.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    solutionTag: solutionTag
     //location: location defailt is global
   }
 }
@@ -42,6 +43,8 @@ module eventAlerts './eventAlerts.bicep' = {
     AGId: ag.outputs.actionGroupResourceId
     location: location
     workspaceId: workspaceId
+    packtag: packtag
+    solutionTag: solutionTag
   }
 } 
 
@@ -51,15 +54,20 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     location: location
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
+    packtag: packtag
+    solutionTag: solutionTag
   }
 }
 
 // Azure recommended Alerts for VMs
 // These are the (very) basic recommeded alerts for VM, based on platform metrics
-module vmrecommended 'AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
+module vmrecommended '../AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
   name: 'vmrecommended'
   params: {
     vmIDs: vmIDs
+    packtag: packtag
+    solutionTag: solutionTag
+
   }
 }
 // DCR
@@ -73,6 +81,8 @@ module dcrbasicvmMonitoring '../../../../modules/DCRs/dcr-basicLinuxVM.bicep' = 
     workspaceId: workspaceId
     wsfriendlyname: workspaceFriendlyName
     kind: 'Linux'
+    packtag: packtag
+    solutionTag: solutionTag
     counterSpecifiers: [
       'Processor(*)\\% Processor Time'
       'Processor(*)\\% Idle Time'

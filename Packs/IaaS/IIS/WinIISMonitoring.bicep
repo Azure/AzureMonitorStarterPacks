@@ -9,7 +9,7 @@ param existingAGRG string = ''
 param location string = resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
-param osTarget string = 'Windows'
+//param osTarget string = 'Windows'
 param packtag string
 param solutionTag string
 

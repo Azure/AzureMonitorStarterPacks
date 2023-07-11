@@ -3,6 +3,7 @@ param workspaceId string
 param AGId string
 var moduleprefix = 'AMSP-Win-VMI'
 param packtag string
+param solutionTag string
 // Alert list
 var alertlist = [
   {
@@ -72,5 +73,6 @@ module InsightsAlerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for 
     scope: workspaceId
     query: alert.query
     packtag: packtag
+    solutionTag: solutionTag
   }
 }]

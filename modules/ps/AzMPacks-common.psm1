@@ -451,7 +451,7 @@ function deploy-pack {
             workspaceId=$workspaceResourceId
             workspaceFriendlyName=$workspaceResourceId.split('/')[8]
             useExistingAG=$useExistingAG
-            osTarget=$packinfo.osTarget
+            #osTarget=$packinfo.osTarget
             packtag=$packinfo.RequiredTag
             solutionTag=$solutionTag
         }
@@ -473,7 +473,13 @@ function deploy-pack {
         if ($null -ne $packinfo.moduleParameters) {
             $packinfo.moduleParameters | ForEach-Object {
                 #$parameters | Add-Member -MemberType NoteProperty -Name $_.Name -Value $_.Value
-                $parameters+=@{"$($_.Name)"=($_.Value)}
+                if (!([string]::IsNullOrEmpty($_.Value))) {
+                    $parameters+=@{"$($_.Name)"=$null}
+                }
+                else {
+                    $newValue=Read-Host "Enter value for $($_.Name)"
+                    $parameters+=@{"$($_.Name)"=$newValue}
+                }
             }
         }
         Write-Output "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."

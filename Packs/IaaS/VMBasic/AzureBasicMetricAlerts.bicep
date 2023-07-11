@@ -1,6 +1,7 @@
 param vmIDs array
 var vmNames = [for (vmID, i) in vmIDs: split(vmID, '/')[8]]
 param packtag string
+param solutionTag string
 
 // This is a metric based alert. No need for DCR
 // These are the metrics recommended for all VMs in the portal
@@ -17,6 +18,7 @@ module vmmetricalertcpu '../../../modules/alerts/vmmetricalert.bicep' = [for (vm
     metricNamespace: 'Microsoft.Compute/virtualMachines' //default
     location: 'global'
     packtag: packtag
+    solutionTag: solutionTag
   }
 }]
 
@@ -33,6 +35,7 @@ module vmmetricalertOSDiskIOPS '../../../modules/alerts/vmmetricalert.bicep' = [
     metricNamespace: 'Microsoft.Compute/virtualMachines' //default
     location: 'global'
     packtag: packtag
+    solutionTag: solutionTag
   }
 }]
 module NetworkOutTotal '../../../modules/alerts/vmmetricalert.bicep' = [for (vmID, i) in vmIDs:if (contains(vmID, 'Microsoft.Compute/virtualMachines')) {
@@ -49,6 +52,7 @@ module NetworkOutTotal '../../../modules/alerts/vmmetricalert.bicep' = [for (vmI
     timeAggregation: 'Total'
     location: 'global'
     packtag: packtag
+    solutionTag: solutionTag
   }
 }]
 module NetworkInTotal '../../../modules/alerts/vmmetricalert.bicep' = [for (vmID, i) in vmIDs: if (contains(vmID, 'Microsoft.Compute/virtualMachines')){
@@ -65,6 +69,7 @@ module NetworkInTotal '../../../modules/alerts/vmmetricalert.bicep' = [for (vmID
     timeAggregation: 'Total' //default is Average
     location: 'global'
     packtag: packtag
+    solutionTag: solutionTag
   }
 }]
 module AvailableMemoryBytes '../../../modules/alerts/vmmetricalert.bicep' = [for (vmID, i) in vmIDs: if (contains(vmID, 'Microsoft.Compute/virtualMachines')){
@@ -81,6 +86,7 @@ module AvailableMemoryBytes '../../../modules/alerts/vmmetricalert.bicep' = [for
     timeAggregation: 'Average' //default is Average
     location: 'global'
     packtag: packtag
+    solutionTag: solutionTag
   }
 }]
 module VMAvailability '../../../modules/alerts/vmmetricalert.bicep' = [for (vmID, i) in vmIDs:if (contains(vmID, 'Microsoft.Compute/virtualMachines')) {
@@ -97,5 +103,6 @@ module VMAvailability '../../../modules/alerts/vmmetricalert.bicep' = [for (vmID
     timeAggregation: 'Average' //default is Average
     location: 'global'
     packtag: packtag
+    solutionTag: solutionTag  
   }
 }]

@@ -52,6 +52,9 @@ param (
     $skipMainSolutionSetup,
     [Parameter()]
     [switch]
+    $skipPacksSetup,
+    [Parameter()]
+    [switch]
     $useExistingDCR=$false,
     [Parameter()]
     [string]
@@ -99,7 +102,7 @@ if ($null -eq (get-module AzMPacks-Common)) {
 # tests if subscriptionId is provided. If not, it will ask for one.
 if (!([string]::IsNullOrEmpty($subscriptionId))) {
     Write-host "Using subscription $subscriptionId to deploy the packs, log analytics workspace and DCRs."
-    Select-AzSubscription -SubscriptionId $subscriptionId
+    Select-AzSubscription -SubscriptionId $subscriptionId -ErrorAction Stop | out-null
     $sub=Get-AzSubscription -SubscriptionId $subscriptionId
 }
 else {
@@ -137,30 +140,15 @@ else {
 $wsfriendlyname=$ws.ResourceId.split('/')[8]
 #endregion
 #region AMA policy setup
-# This part should:
-#   - check if the policy is assigned to the subscription (s)
-#   - ask where to assign the policy (management group, subscription, resource group)
 if (!$skipAMAPolicySetup) {
-    "Disabled for now."
-    # Check if the policy is assigned to the subscription
-    # needs adjust to use AMA policies and to not depend on the defender policy.
-    # $policyassignments=get-defenderAMApolicyAssignments -subscriptionId $sub.Id
-    # if ($policyassignments.count -eq 0) {
-    #     Write-Host "No Defender policy assignment found for subscription $($sub.Id). Please select a scope to enable the policies."
-    #     Write-Host "Setup will install a custom policy to enable automatic AMA deployment"
-    #     assign-amapolicy -ws $ws -location $location
-    # }
-    # else {
-    #     Write-Host "Found $($policyassignments.count) policy assignments."
-    #     $policyassignments.properties | select-object -Property DisplayName, Scope, PolicyDefinitionId, Description
-    #     $option=read-host -Prompt "Assign the policy to a new scope? [Y]es or [N]o"
-    #     if ($option -eq 'Y') {
-    #         assign-amapolicy -ws $ws -location $location
-    #     } 
-    #     else {
-    #         Write-Host "Skipping policy assignment."
-    #     }
-    # }
+    "Enabling custom policy initiative to enable automatic AMA deployment. The policy only applies to the subscription where the packs are deployed."
+
+    $parameters=@{
+        solutionTag=$EnableTagName
+    }
+    Write-Host "Deploying the discovery function, logic app and workbook."
+    New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
+    -TemplateFile './amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
 }
 else {
     "Skipping AMA policy check and configuration, as requested."
@@ -199,75 +187,76 @@ $packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
 if ($discoveryType -eq 'auto') {
     # Discovery Loop - Adds discovered servers to the packs object
     Write-Host "Starting automatic discovery using $wsfriendlyname workspace." -ForegroundColor Green
-    foreach ($pack in $packs)
-    {
-        switch ($pack.DiscoveryType) {
-            'RoleName' {
-                Write-Host "Looking for servers with $($pack.RoleName) role."
-                $ARGQuery="AzMonStarPacks_CL | parse RawData with Time ' ' Name ',' DisplayName ',' RoleType ',' Depth | extend Computer=tostring(split(_ResourceId,'/')[8]) | where RoleType == 'Role' and Name == '$($pack.RoleName)' | summarize by Computer, Id=_ResourceId"
-                #$ServerList=Search-azgraph -Query $ARGQuery -UseTenantScope
-                $ServerList=(Invoke-AzOperationalInsightsQuery -query $ARGQuery -Workspace $ws).Results.Id
-                #$ServerList.Results
-                if ($ServerList.Count -eq 0) {
-                    Write-Error "No servers found with the $($pack.RoleName) role."
-                }
-                else {
-                    $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
-                    $foundServers=$true
-                    Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
-                    $ServerList | ForEach-Object {Write-Output $_.split('/')[8]}
-                }
-            }
-            'Application' {
-                Write-Host "Looking for servers with $($pack.ApplicationNames) application names."
-                $applist=''
-                $pack.ApplicationNames|ForEach-Object {
-                        $applist+=$("'$_',")
-                    $applist=$applist.TrimEnd(',')
-                }
-                $Query=@"
-    let applicationNames = dynamic( [$applist]);
-    AzMonStarPacksInventory_CL 
-    | parse RawData with Time ' ' Name ',' Publisher ',' DisplayName | extend Computer=tostring(split(_ResourceId,'/')[8]) 
-    | where DisplayName in (applicationNames)
-    | summarize by Computer, Id=_ResourceId
-"@
-                #$ServerList=Search-azgraph -Query $ARGQuery -UseTenantScope
-                $ServerList=(Invoke-AzOperationalInsightsQuery -query $Query -Workspace $ws).Results.Id
-                #$ServerList.Results
-                if ($ServerList.Count -eq 0) {
-                    Write-Error "No servers found with the $($pack.ApplicationNames) application."
-                }
-                else {
-                    $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
-                    $foundServers=$true
-                    Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
-                    $ServerList | ForEach-Object {Write-Output $_.split('/')[8]}
-                }
-            }
-            'OS' {
-                Write-Host "Looking for servers with $($pack.osTarget) OS."
-                $Query=@"
-            resources
-            | where subscriptionId == '$subscriptionId'
-| where type =~ 'microsoft.compute/virtualmachines' | where tolower(properties.storageProfile.osDisk.osType) =~ '$($pack.osTarget)' | project id, name
-| union (resources |  where type=~'Microsoft.HybridCompute/machines' and tolower(properties.osType) == tolower('$($pack.osTarget)') | project id,name)
-"@
-                $ServerList=Search-azgraph -Query $Query
-                if ($ServerList.Count -eq 0) {
-                    Write-Error "No servers found with the $($pack.osTarget) OS."
-                }
-                else {
-                    $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value ($ServerList).id
-                    $foundServers=$true
-                    Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
-                    $ServerList | ForEach-Object {Write-Output $_.name}
-                }
+    "Currently disabled."
+#     foreach ($pack in $packs)
+#     {
+#         switch ($pack.DiscoveryType) {
+#             'RoleName' {
+#                 Write-Host "Looking for servers with $($pack.RoleName) role."
+#                 $ARGQuery="AzMonStarPacks_CL | parse RawData with Time ' ' Name ',' DisplayName ',' RoleType ',' Depth | extend Computer=tostring(split(_ResourceId,'/')[8]) | where RoleType == 'Role' and Name == '$($pack.RoleName)' | summarize by Computer, Id=_ResourceId"
+#                 #$ServerList=Search-azgraph -Query $ARGQuery -UseTenantScope
+#                 $ServerList=(Invoke-AzOperationalInsightsQuery -query $ARGQuery -Workspace $ws).Results.Id
+#                 #$ServerList.Results
+#                 if ($ServerList.Count -eq 0) {
+#                     Write-Error "No servers found with the $($pack.RoleName) role."
+#                 }
+#                 else {
+#                     $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
+#                     $foundServers=$true
+#                     Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
+#                     $ServerList | ForEach-Object {Write-Output $_.split('/')[8]}
+#                 }
+#             }
+#             'Application' {
+#                 Write-Host "Looking for servers with $($pack.ApplicationNames) application names."
+#                 $applist=''
+#                 $pack.ApplicationNames|ForEach-Object {
+#                         $applist+=$("'$_',")
+#                     $applist=$applist.TrimEnd(',')
+#                 }
+#                 $Query=@"
+#     let applicationNames = dynamic( [$applist]);
+#     AzMonStarPacksInventory_CL 
+#     | parse RawData with Time ' ' Name ',' Publisher ',' DisplayName | extend Computer=tostring(split(_ResourceId,'/')[8]) 
+#     | where DisplayName in (applicationNames)
+#     | summarize by Computer, Id=_ResourceId
+# "@
+#                 #$ServerList=Search-azgraph -Query $ARGQuery -UseTenantScope
+#                 $ServerList=(Invoke-AzOperationalInsightsQuery -query $Query -Workspace $ws).Results.Id
+#                 #$ServerList.Results
+#                 if ($ServerList.Count -eq 0) {
+#                     Write-Error "No servers found with the $($pack.ApplicationNames) application."
+#                 }
+#                 else {
+#                     $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
+#                     $foundServers=$true
+#                     Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
+#                     $ServerList | ForEach-Object {Write-Output $_.split('/')[8]}
+#                 }
+#             }
+#             'OS' {
+#                 Write-Host "Looking for servers with $($pack.osTarget) OS."
+#                 $Query=@"
+#             resources
+#             | where subscriptionId == '$subscriptionId'
+# | where type =~ 'microsoft.compute/virtualmachines' | where tolower(properties.storageProfile.osDisk.osType) =~ '$($pack.osTarget)' | project id, name
+# | union (resources |  where type=~'Microsoft.HybridCompute/machines' and tolower(properties.osType) == tolower('$($pack.osTarget)') | project id,name)
+# "@
+#                 $ServerList=Search-azgraph -Query $Query
+#                 if ($ServerList.Count -eq 0) {
+#                     Write-Error "No servers found with the $($pack.osTarget) OS."
+#                 }
+#                 else {
+#                     $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value ($ServerList).id
+#                     $foundServers=$true
+#                     Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
+#                     $ServerList | ForEach-Object {Write-Output $_.name}
+#                 }
 
-            }
-            'Default' { "Unknown discovery type."}
-        }
-    }
+#             }
+#             'Default' { "Unknown discovery type."}
+#         }
+#     }
 }
 #end region
 #region tags based discovery
@@ -322,39 +311,44 @@ elseif ($discoveryType -eq 'tags') {
 
 # If the usesameAGforAllPacks switch is used, we will ask for the AG information only once.
 #if ($packs.count -gt 0 -and $foundServers -eq $true) {
-if ($packs.count -gt 0) {
-    if ($useSameAGforAllPacks) {
-        Write-host "'useSameAGforAllPacks' flag detected. Please provide AG information to be used to all Packs, either new or existing (depending on useExistingAG switch)"
-        if ([string]::IsNullOrEmpty($existingAGName)) {
-            $AGinfo=get-AGInfo -useExistingAG $useExistingAG.IsPresent
-        }
-        else {
-            $AG=get-azactionGroup | Where-Object {$_.Name -eq $existingAGName}
-            if ($AG.Count -eq 1) {
-                $AGInfo=@{
-                    name=$AG.name
-                    emailReceivers=$AG.emailReceivers
-                    emailReceiversEmails=$AG.emailReceiversEmails
-                    resourceGroup=$AG.ResourceGroupName
-                }
-            }
-            else {
-                "Action Group $existingAGName not found or more than one found. Please select AG:"
+if (!($skipPacksSetup)) {
+    if ($packs.count -gt 0) {
+        if ($useSameAGforAllPacks) {
+            Write-host "'useSameAGforAllPacks' flag detected. Please provide AG information to be used to all Packs, either new or existing (depending on useExistingAG switch)"
+            if ([string]::IsNullOrEmpty($existingAGName)) {
                 $AGinfo=get-AGInfo -useExistingAG $useExistingAG.IsPresent
             }
+            else {
+                $AG=get-azactionGroup | Where-Object {$_.Name -eq $existingAGName}
+                if ($AG.Count -eq 1) {
+                    $AGInfo=@{
+                        name=$AG.name
+                        emailReceivers=$AG.emailReceivers
+                        emailReceiversEmails=$AG.emailReceiversEmails
+                        resourceGroup=$AG.ResourceGroupName
+                    }
+                }
+                else {
+                    "Action Group $existingAGName not found or more than one found. Please select AG:"
+                    $AGinfo=get-AGInfo -useExistingAG $useExistingAG.IsPresent
+                }
+            }
         }
+        install-packs -packinfo $packs `
+            -resourceGroup $resourceGroup `
+            -AGInfo $AGinfo `
+            -useExistingAG:$useExistingAG.IsPresent `
+            -existingAGName $actionGroupName `
+            -useSameAGforAllPacks:$useSameAGforAllPacks.IsPresent `
+            -workspaceResourceId $ws.ResourceId `
+            -discoveryType $discoveryType `
+            -solutionTag $EnableTagName
     }
-    install-packs -packinfo $packs `
-        -resourceGroup $resourceGroup `
-        -AGInfo $AGinfo `
-        -useExistingAG:$useExistingAG.IsPresent `
-        -existingAGName $actionGroupName `
-        -useSameAGforAllPacks:$useSameAGforAllPacks.IsPresent `
-        -workspaceResourceId $ws.ResourceId `
-        -discoveryType $discoveryType `
-        -solutionTag $EnableTagName
+    else {
+        Write-Error "No packs found in $packsFilePath or no servers identified. Please correct the error and try again."
+        return
+    }
 }
 else {
-    Write-Error "No packs found in $packsFilePath or no servers identified. Please correct the error and try again."
-    return
+    Write-Host "Skipping Packs setup."
 }
