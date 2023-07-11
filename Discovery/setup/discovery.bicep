@@ -14,10 +14,11 @@ param solutionTag string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
-var subscriptionId = subscription().subscriptionId
+//var subscriptionId = subscription().subscriptionId
 var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
 var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
 var ArcContributorRoleDefinitionId='48b40c6e-82e0-4eb3-90d5-19e40f49b624'
+var ReaderRoleDefinitionId='acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader Role Definition Id for Reader
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -282,6 +283,19 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
         outputs: {}
     }
     parameters: {}
+  }
+}
+resource functionReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().name,functionname,'reader')
+  scope: tenant()
+  dependsOn: [
+    azfunctionsite
+  ]
+  properties: {
+    description: '${solutionTag}-Reader WebApp'
+    principalId: azfunctionsite.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ReaderRoleDefinitionId)
   }
 }
 resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {

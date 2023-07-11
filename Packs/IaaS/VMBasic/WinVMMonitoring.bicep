@@ -12,11 +12,12 @@ param existingAGRG string = ''
 param enableBasicVMPlatformAlerts bool = false
 param location string = resourceGroup().location
 param workspaceId string
-param enableInsightsAlerts bool = false
+param enableInsightsAlerts string = 'false'
 param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
 param insightsRuleRg string = ''
 param packtag string
 param solutionTag string
+param workspaceFriendlyName string
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: actionGroupName
@@ -26,6 +27,7 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    solutionTag: solutionTag
     //location: location defailt is global
   }
 }
@@ -38,6 +40,7 @@ module eventAlerts 'eventAlerts.bicep' = {
     location: location
     workspaceId: workspaceId
     packtag: packtag
+    solutionTag: solutionTag
   }
 } 
 
@@ -48,6 +51,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
+    solutionTag: solutionTag
   }
 }
 
@@ -58,6 +62,7 @@ module vmrecommended 'AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformA
   params: {
     vmIDs: vmIDs
     packtag: packtag
+    solutionTag: solutionTag
   }
 }
 // DCR
@@ -102,7 +107,7 @@ module vmrecommended 'AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformA
 //   ]
 //   }
 // }
-resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts) {
+resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
   name: insightsRuleName
   scope: resourceGroup(insightsRuleRg)
 }

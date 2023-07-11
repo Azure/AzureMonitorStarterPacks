@@ -5,7 +5,11 @@ param policyDisplayName string
 param policyDescription string
 param packtag string
 param solutionTag string
-
+param roledefinitionIds array =[
+  '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
+  '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+  // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
+]
 resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   name: policyName
   properties: {
@@ -80,11 +84,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
           name: 'AMSP-RulesAssociation' 
-          roleDefinitionIds: [
-            '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
-            '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
-            // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
-          ]
+          roleDefinitionIds: roledefinitionIds
           deployment: {
             properties: {
               mode: 'incremental'
@@ -116,7 +116,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                     westus: 'WUS'
                     westus2: 'WUS2'
                   }
-                  DCRName: '[split(parameters(\'DCRId2\'),\'/\')[9]]' //'AzMonPacks-IISBasicIISMonitoring'
+                  DCRName: '[split(parameters(\'DCRId2\'),\'/\')[8]]' //'AzMonPacks-IISBasicIISMonitoring'
                   //dcrId: '[concat(\'/subscriptions/\', variables(\'subscriptionId\'), \'/resourceGroups\', variables('defaultRGName'), '/providers/Microsoft.Insights/dataCollectionRules/', variables('dcrName'))]'
                   //DcrId: '[resourceId(\'Microsoft.Insights/dataCollectionRules\', variables (\'DCRName\'))]'
                   subscriptionId: '[subscription().subscriptionId]'
