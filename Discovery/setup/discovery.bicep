@@ -286,6 +286,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
 }
 resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().name,functionname,'tagcontributor')
+  scope: tenant()
   dependsOn: [
     azfunctionsite
   ]
@@ -298,6 +299,7 @@ resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04
 }
 resource functionVMContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().name,functionname,'vmcontributor')
+  scope: tenant()
   dependsOn: [
     azfunctionsite
   ]
@@ -310,6 +312,7 @@ resource functionVMContributor 'Microsoft.Authorization/roleAssignments@2022-04-
 }
 resource functionArcContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().name,functionname,'arccontributor')
+  scope: tenant()
   dependsOn: [
     azfunctionsite
   ]
