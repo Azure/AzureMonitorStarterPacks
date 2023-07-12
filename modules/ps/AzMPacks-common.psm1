@@ -194,7 +194,8 @@ function get-newAGInformation {
 function select-workspace {
     param (
         [string] $resourceGroup,
-        [string] $location
+        [string] $location,
+        [string] $solutionTag
     )
     #$wslist=Get-AzOperationalInsightsWorkspace
 
@@ -208,6 +209,7 @@ function select-workspace {
             $parameters=@{
                 logAnalyticsWorkspaceName=$wsName
                 location=$location
+                solutionTag=$solutionTag
             }
             New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
                 -TemplateFile "./modules/LAW/law.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose

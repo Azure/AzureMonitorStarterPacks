@@ -107,9 +107,21 @@ module vmrecommended 'AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformA
 //   ]
 //   }
 // }
-resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
-  name: insightsRuleName
-  scope: resourceGroup(insightsRuleRg)
+
+// This option uses an existing VMI rule but this can be a tad problematic.
+// resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
+//   name: insightsRuleName
+//   scope: resourceGroup(insightsRuleRg)
+// }
+// So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
+module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
+  name: 'vmInsightsDCR'
+  params: {
+    location: location
+    workspaceResourceId: workspaceId
+    packtag: packtag
+    solutionTag: solutionTag
+  }
 }
 // This associates the rule above to the VMs
 // module dcrassociation '../../../modules/DCRs/dcrassociation.bicep'  =   [for (vmID, i) in vmIDs: if(enableInsightsAlerts) {
@@ -123,10 +135,10 @@ resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-previe
 //   }
 // }]
 
-module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+module policysetup '../../../modules/policies/subscription/policies.bicep' = if(enableInsightsAlerts == 'true') {
   name: 'policysetup'
   params: {
-    dcrId: vmInsightsDCR.id
+    dcrId: vmInsightsDCR.outputs.VMIRuleId
     packtag: packtag
     solutionTag: solutionTag
     rulename: rulename

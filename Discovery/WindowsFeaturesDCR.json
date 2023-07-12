@@ -82,3 +82,81 @@
         }
     ]
 }
+
+
+
+{
+    "properties": {
+        "immutableId": "dcr-6bcb8502281f4153a64a1773f4e13dc2",
+        "dataCollectionEndpointId": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterPacks/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1",
+        "streamDeclarations": {
+            "Custom-AzMonStarPacksInventory_CL": {
+                "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "RawData",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "dataSources": {
+            "logFiles": [
+                {
+                    "streams": [
+                        "Custom-AzMonStarPacksInventory_CL"
+                    ],
+                    "filePatterns": [
+                        "C:\\WindowsAzure\\Discovery\\installedAppsWMI.csv"
+                    ],
+                    "format": "text",
+                    "settings": {
+                        "text": {
+                            "recordStartTimestampFormat": "ISO 8601"
+                        }
+                    },
+                    "name": "AzMonStarPacksInventory_CL"
+                }
+            ]
+        },
+        "destinations": {
+            "logAnalytics": [
+                {
+                    "workspaceResourceId": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.OperationalInsights/workspaces/amonstar2",
+                    "workspaceId": "20a50e02-8aef-4770-ba10-4f6020de1e30",
+                    "name": "la-873126073"
+                }
+            ]
+        },
+        "dataFlows": [
+            {
+                "streams": [
+                    "Custom-AzMonStarPacksInventory_CL"
+                ],
+                "destinations": [
+                    "la-873126073"
+                ],
+                "transformKql": "source",
+                "outputStream": "Custom-AzMonStarPacksInventory_CL"
+            }
+        ],
+        "provisioningState": "Succeeded"
+    },
+    "location": "eastus",
+    "kind": "Windows",
+    "id": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterpacks2/providers/Microsoft.Insights/dataCollectionRules/AzMA-DiscoverWindowsApplications",
+    "name": "AzMA-DiscoverWindowsApplications",
+    "type": "Microsoft.Insights/dataCollectionRules",
+    "etag": "\"0208991a-0000-0100-0000-64aee1b50000\"",
+    "systemData": {
+        "createdBy": "jose@fehse.ca",
+        "createdByType": "User",
+        "createdAt": "2023-06-16T14:28:57.2928329Z",
+        "lastModifiedBy": "jose@fehse.ca",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2023-06-16T16:30:11.9990039Z"
+    }
+}
