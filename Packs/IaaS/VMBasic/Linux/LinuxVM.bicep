@@ -17,7 +17,6 @@ param osTarget string
 param packtag string
 param solutionTag string
 
-
 // Action Group
 module ag '../../../../modules/actiongroups/ag.bicep' = {
   name: actionGroupName

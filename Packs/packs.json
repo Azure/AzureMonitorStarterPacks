@@ -6,24 +6,10 @@
       "Status": "Enabled",
       "RequiredTag" : "WOS",
       "osTarget" : "Windows",
-      "DiscoveryType": "OS",
+      "DiscoveryType": "WOS",
       "RoleName" : "N/A",
       "RequireParameters" : true,
-      "TemplateLocation" : "./Packs/IaaS/VMBasic/WinVMMonitoring.bicep",
-      "moduleParameters": [
-        {
-          "Name": "insightsRuleName",
-          "Value": ""
-        },
-        {
-          "Name": "enableInsightsAlerts",
-          "Value": null
-        },
-        {
-          "Name": "insightsRuleRg",
-          "Value": ""
-        }
-      ]      
+      "TemplateLocation" : "./Packs/IaaS/VMBasic/WinVMMonitoring.bicep"
     },
     {
       "PackName": "AzMon-Packs-Linux-VM-Monitoring",
@@ -37,18 +23,6 @@
       "RequireParameters" : true,
       "TemplateLocation" : "./Packs/IaaS/VMBasic/Linux/LinuxVM.bicep",
       "moduleParameters": [
-        {
-          "Name": "insightsRuleName",
-          "Value": ""
-        },
-        {
-          "Name": "enableInsightsAlerts",
-          "Value": null
-        },
-        {
-          "Name": "insightsRuleRg",
-          "Value": ""
-        }
       ]    
     },
     {

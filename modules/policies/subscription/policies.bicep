@@ -15,7 +15,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     packtag: packtag
     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
     policyDisplayName: 'Associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyName: 'associate-${rulename}-${packtag}-vms'
+    policyName: 'Associate-${rulename}-${packtag}-vms'
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
@@ -28,7 +28,7 @@ module policyARC './associacionpolicyARC.bicep' = {
     packtag: packtag
     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
     policyDisplayName: 'Associate the ${rulename} DCR with the ARC Servers tagged with ${packtag} tag.'
-    policyName: 'associate-${rulename}-${packtag}-arc'
+    policyName: 'Associate-${rulename}-${packtag}-arc'
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
@@ -46,7 +46,7 @@ module arcassignment './assignment.bicep' = {
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: 'associate-${rulename}-${packtag}-arc'
+    assignmentName: 'Assignment-${rulename}-${packtag}-arc'
     roledefinitionIds: roledefinitionIds
   }
 }
@@ -58,7 +58,7 @@ module vmassignment './assignment.bicep' = {
   scope: subscription()
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'associate-${rulename}-${packtag}-vm'
+    assignmentName: 'Assignment-${rulename}-${packtag}-vm'
     location: location
     roledefinitionIds: roledefinitionIds
   }

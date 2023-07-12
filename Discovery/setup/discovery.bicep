@@ -11,6 +11,8 @@ param utcValue string = utcNow()
 param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
+@secure()
+param apiManagementKey string= base64(newGuid())
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
@@ -239,6 +241,16 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     WorkspaceResourceId: lawresourceid
   }
 }
+  
+var keyName = 'monitoringKey'  
+  
+resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = {  
+  name: '${functionname}/default/${keyName}'  
+  properties: {  
+    name: keyName  
+    value: apiManagementKey
+  }  
+} 
 
 resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: 'Discovery'
@@ -272,7 +284,8 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                 inputs: {
                     body: '@triggerBody()'
                     Headers : {
-                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
+                        //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
+                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
                     }
                     function: {
                         id: '${azfunctionsite.id}/functions/tagmgmt'

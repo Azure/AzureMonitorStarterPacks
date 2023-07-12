@@ -128,7 +128,7 @@ if (!(Get-AzResourceGroup -name $resourceGroup -ErrorAction SilentlyContinue)) {
     }
 }
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
-    $ws=select-workspace -location $location -resourceGroup $resourceGroup
+    $ws=select-workspace -location $location -resourceGroup $resourceGroup -solutionTag $EnableTagName
 }
 else { 
     $ws=Get-AzOperationalInsightsWorkspace -Name $workspaceResourceId.split('/')[8] -ResourceGroupName $workspaceResourceId.split('/')[4] -ErrorAction SilentlyContinue
@@ -146,7 +146,7 @@ if (!$skipAMAPolicySetup) {
     $parameters=@{
         solutionTag=$EnableTagName
     }
-    Write-Host "Deploying the discovery function, logic app and workbook."
+    Write-Host "Deploying the AMA policy initiative to the current subscription."
     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
     -TemplateFile './amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
 }
@@ -159,7 +159,15 @@ else {
 if (!($skipMainSolutionSetup)) {
     $randomstoragechars = -join ((97..122) | Get-Random -Count 4 | ForEach-Object { [char]$_ })
     compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
-    $storageaccountName = "azmonstarpacks$randomstoragechars"
+    $existingSAs=Get-AzStorageAccount -ResourceGroupName $resourceGroup -ErrorAction SilentlyContinue
+    if ($existingSAs) {
+        $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
+
+    }
+    else {
+        $storageaccountName = "azmonstarpacks$randomstoragechars"
+        "Using storage account name: $storageaccountName"
+    }
     $parameters=@{
         functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
         location=$location
@@ -175,19 +183,15 @@ if (!($skipMainSolutionSetup)) {
 #endregion
 
 # Reads the packs.json file
-# $ws=Get-AzOperationalInsightsworkspace | Where-Object {$_.Name -eq $logAnalyticsWorkspaceName}
-Write-Host "Found the following ENABLED packs:"
-$packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
-$packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
 #region discovery - depending on the discovery type, it will find the servers to deploy the packs to.
 # tags - uses AppList tag to find servers then further on with tag values to find workloads. 
 # auto - uses the discovery function and looks for discovery info into log analytics tables (applications and roles)
 #$foundServers=$false
 #region PLACEHOLDER - Use LAW discovery to find potential targets for the packs.
-if ($discoveryType -eq 'auto') {
-    # Discovery Loop - Adds discovered servers to the packs object
-    Write-Host "Starting automatic discovery using $wsfriendlyname workspace." -ForegroundColor Green
-    "Currently disabled."
+# if ($discoveryType -eq 'auto') {
+#     # Discovery Loop - Adds discovered servers to the packs object
+#     Write-Host "Starting automatic discovery using $wsfriendlyname workspace." -ForegroundColor Green
+#     "Currently disabled."
 #     foreach ($pack in $packs)
 #     {
 #         switch ($pack.DiscoveryType) {
@@ -257,41 +261,41 @@ if ($discoveryType -eq 'auto') {
 #             'Default' { "Unknown discovery type."}
 #         }
 #     }
-}
+#p}
 #end region
 #region tags based discovery
-elseif ($discoveryType -eq 'tags') {
-    Write-Host "Use provided workbook to assign Servers to specific Packs." -ForegroundColor Cyan
-    # # # gets all tagged servers
-    # $allTaggedServersList=get-taggedServers -tagName $EnableTagName
-    # "Found $($allTaggedServersList.Count) servers tagged with $Monstar."
-    # if ($allTaggedServersList.Count -eq 0) {
-    #     Write-Error "No servers found with the $EnableTagName tag. Please tag the servers you want to monitor with the $EnableTagName tag."
-    #     return
-    # }
-    # else {
-        # Write-Host "Starting tag discovery."
-        # foreach ($pack in $packs)
-        # {
-        #     $ServerList=@()
-        #     Write-Output "Looking for $($pack.RequiredTag) tag."
-        #     $allTaggedServersList | ForEach-Object {
-        #         if ($pack.RequiredTag -in ($_.$EnableTagName.split(',')) -or $pack.DiscoveryType -eq 'OS')
-        #         {
-        #             $ServerList+=$_.ResourceId
-        #         }
-        #     }
-        #     if ($ServerList.Count -eq 0) {
-        #         Write-Error "No servers found with the $($pack.RoleName) role."
-        #     }
-        #     else {
-        #         $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
-        #         $foundServers=$true
-        #         Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack: $($pack.ServerList)"
-        #     }
-        # }
-    #}
-}
+# elseif ($discoveryType -eq 'tags') {
+#     Write-Host "Use provided workbook to assign Servers to specific Packs." -ForegroundColor Cyan
+#     # # # gets all tagged servers
+#     # $allTaggedServersList=get-taggedServers -tagName $EnableTagName
+#     # "Found $($allTaggedServersList.Count) servers tagged with $Monstar."
+#     # if ($allTaggedServersList.Count -eq 0) {
+#     #     Write-Error "No servers found with the $EnableTagName tag. Please tag the servers you want to monitor with the $EnableTagName tag."
+#     #     return
+#     # }
+#     # else {
+#         # Write-Host "Starting tag discovery."
+#         # foreach ($pack in $packs)
+#         # {
+#         #     $ServerList=@()
+#         #     Write-Output "Looking for $($pack.RequiredTag) tag."
+#         #     $allTaggedServersList | ForEach-Object {
+#         #         if ($pack.RequiredTag -in ($_.$EnableTagName.split(',')) -or $pack.DiscoveryType -eq 'OS')
+#         #         {
+#         #             $ServerList+=$_.ResourceId
+#         #         }
+#         #     }
+#         #     if ($ServerList.Count -eq 0) {
+#         #         Write-Error "No servers found with the $($pack.RoleName) role."
+#         #     }
+#         #     else {
+#         #         $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
+#         #         $foundServers=$true
+#         #         Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack: $($pack.ServerList)"
+#         #     }
+#         # }
+#     #}
+# }
 #read packs file looking for discovery options (roles, applications, OS, etc.)
 # if discovery options are present, use LAW to find potential targets
 # if no discovery options are present, use the tag to find potential targets
@@ -312,6 +316,9 @@ elseif ($discoveryType -eq 'tags') {
 # If the usesameAGforAllPacks switch is used, we will ask for the AG information only once.
 #if ($packs.count -gt 0 -and $foundServers -eq $true) {
 if (!($skipPacksSetup)) {
+    Write-Host "Found the following ENABLED packs:"
+    $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
+    $packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
     if ($packs.count -gt 0) {
         if ($useSameAGforAllPacks) {
             Write-host "'useSameAGforAllPacks' flag detected. Please provide AG information to be used to all Packs, either new or existing (depending on useExistingAG switch)"
