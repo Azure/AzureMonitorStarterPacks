@@ -161,7 +161,7 @@ if (!($skipMainSolutionSetup)) {
     compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
     $storageaccountName = "azmonstarpacks$randomstoragechars"
     $parameters=@{
-        functionname='MonitorStarterPacksDiscovery'
+        functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
         location=$location
         storageAccountName=$storageAccountName
         lawresourceid=$ws.ResourceId
