@@ -18,7 +18,7 @@ resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
 }
 
 resource roleassignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for (roledefinitionId, i) in roledefinitionIds:  {
-  name: '${assignmentName}-${i}'
+  name: guid('${assignmentName}-${i}')
   properties: {
     roleDefinitionId: roledefinitionId
     principalId: assignment.identity.principalId

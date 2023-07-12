@@ -54,9 +54,6 @@ param (
     [switch]
     $skipPacksSetup,
     [Parameter()]
-    [switch]
-    $useExistingDCR=$false,
-    [Parameter()]
     [string]
     $subscriptionId,
     [Parameter()]
@@ -68,6 +65,9 @@ param (
     [Parameter()]
     [string]
     $discoveryType="tags"
+    # ,[Parameter()]
+    # [switch]
+    # $useExistingDCR=$false
 )
 # Import the AzMPacks-Common module
 # This module contains functions that are used by the script.

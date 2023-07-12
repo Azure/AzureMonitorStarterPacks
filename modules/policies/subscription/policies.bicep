@@ -38,6 +38,9 @@ module policyARC './associacionpolicyARC.bicep' = {
 // param policyAssignmentName string = 'audit-vm-manageddisks'
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
 module arcassignment './assignment.bicep' = {
+  dependsOn: [
+    policyARC
+  ]
   name: 'arcassignment'
   scope: subscription()
   params: {
@@ -49,6 +52,9 @@ module arcassignment './assignment.bicep' = {
 }
 module vmassignment './assignment.bicep' = {
   name: 'vmassignment'
+  dependsOn: [
+    policyVM
+  ]
   scope: subscription()
   params: {
     policyDefinitionId: policyVM.outputs.policyId

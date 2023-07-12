@@ -116,6 +116,14 @@
             "style": "link"
           },
           {
+            "id": "3a19e3a9-d64d-41d8-a313-3a60db36bcc4",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Policy Status",
+            "subTarget": "policystatus",
+            "style": "link"
+          },
+          {
             "id": "c2a67d72-dd46-44ea-adba-b9d70915c607",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
@@ -622,10 +630,29 @@
         "value": "Config"
       },
       "name": "availPacks"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyName=name) on policyName\n| project policyName, complianceState",
+        "size": 0,
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "policystatus"
+      },
+      "name": "query - 8"
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+     "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

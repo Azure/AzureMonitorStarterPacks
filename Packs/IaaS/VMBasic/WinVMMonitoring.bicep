@@ -123,7 +123,7 @@ resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-previe
 //   }
 // }]
 
-module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+module policysetup '../../../modules/policies/subscription/policies.bicep' = if(enableInsightsAlerts == 'true') {
   name: 'policysetup'
   params: {
     dcrId: vmInsightsDCR.id
