@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Azure Monitor Starter Packs - Admin Centre\n\nDiscovery Configuration - Machines on the left have the Monitoring tag set, with at least one Starter Pack."
+        "json": "# Azure Monitor Starter Packs - Admin Centre\n\nDiscovery Configuration - Machines on the left have the Monitoring tag set, with at least one Starter Pack.\n\nAlert Management - Enable Disable Alerts\n\nConfig - configuration details"
       },
       "customWidth": "50",
       "name": "text - 5"
@@ -63,7 +63,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "${logicapp.id}"
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterPacks3/providers/Microsoft.Logic/workflows/Discovery"
           },
           {
             "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -83,7 +83,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "${lawresourceid}"
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/Amonstarterpacks3/providers/Microsoft.OperationalInsights/workspaces/amonstar3"
           }
         ],
         "style": "above",
@@ -92,6 +92,48 @@
       },
       "customWidth": "50",
       "name": "parameters - 6"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "15f0fa97-4286-48d6-9dea-26a956197d26",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Discovery/Setup",
+            "subTarget": "discovery",
+            "style": "link"
+          },
+          {
+            "id": "7499a88f-a536-41d7-9b58-9ebae1b5290e",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Alert Management",
+            "subTarget": "alertmanagement",
+            "style": "link"
+          },
+          {
+            "id": "c2a67d72-dd46-44ea-adba-b9d70915c607",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Rule Management",
+            "subTarget": "rulemanagement",
+            "style": "link"
+          },
+          {
+            "id": "d8f7936d-170f-430d-af7d-ac22115a9e38",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Config",
+            "subTarget": "config",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "links - 8"
     },
     {
       "type": 12,
@@ -143,7 +185,7 @@
               "showBorder": true
             }
           },
-                    {
+          {
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
@@ -171,7 +213,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": "WOS"
                 }
               ],
               "style": "pills",
@@ -246,6 +288,11 @@
           }
         ],
         "exportParameters": true
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "discovery"
       },
       "customWidth": "50",
       "name": "TaggedGroup"
@@ -339,7 +386,7 @@
                         "value": "addTag"
                       }
                     ],
-                    "body": "{ \"Action\":\"AddTag\", \n\"Servers\": [{vmstotag}],\n\"Pack\": \"{PackTags}\"\n}",
+                    "body": "{ \n  \"Function\": \"tagmgmt\",\n  \"Action\":\"AddTag\",\n  \"Servers\": [{vmstotag}],\n  \"Pack\": \"{PackTags}\"\n}",
                     "httpMethod": "POST",
                     "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
                   }
@@ -351,6 +398,11 @@
           }
         ],
         "exportParameters": true
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "discovery"
       },
       "customWidth": "50",
       "name": "NonTaggedGroup"
@@ -387,7 +439,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": "WOS"
                 }
               ],
               "style": "pills",
@@ -400,7 +452,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MP=tags.MonitorStarterPacks, name, Enabled=properties.enabled, Description=properties.description\n| where MP=='{AlertPack}'",
+              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project name,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description\n| where MP=='{AlertPack}'",
               "size": 0,
               "exportMultipleValues": true,
               "exportedParameters": [
@@ -416,7 +468,15 @@
               "crossComponentResources": [
                 "{Subscriptions}"
               ],
-              "visualization": "table"
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "name",
+                    "formatter": 7
+                  }
+                ]
+              }
             },
             "customWidth": "50",
             "name": "query - 6"
@@ -432,14 +492,29 @@
                   "linkTarget": "ArmAction",
                   "linkLabel": "Enable Alerts",
                   "style": "primary",
-                  "linkIsContextBlade": true
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \"Action\":\"Enable\", \n\"alerts\":  [{alertsselected}]\n}",
+                    "httpMethod": "POST",
+                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                  }
                 },
                 {
                   "id": "d9469141-a104-4696-b9cd-f0fc7e3f963e",
                   "linkTarget": "ArmAction",
                   "linkLabel": "Disable Alerts",
                   "style": "primary",
-                  "linkIsContextBlade": true
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \"Action\":\"Disable\", \n\"alerts\":  [{alertsselected}]\n}",
+                    "httpMethod": "POST",
+                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                  }
                 }
               ]
             },
@@ -448,7 +523,82 @@
           }
         ]
       },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "alertmanagement"
+      },
       "name": "AlertMGMT"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "parameters": [
+                {
+                  "id": "ef1561b3-5e9d-4134-bb2a-7da8e77ddedc",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "CollectionRule",
+                  "label": "Collection Rule",
+                  "type": 2,
+                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by name\n",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": []
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": "AzMonPacks-IISBasicIISMonitoring"
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "name": "parameters - 7"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project resourceName=split(resourceId,\"/\")[8],resourceId, rulename=split(properties.dataCollectionRuleId,\"/\")[8]//ruleId=properties.dataCollectionRuleId\n| where rulename=='{CollectionRule}'",
+              "size": 0,
+              "title": "Rule Association",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Group",
+                    "formatter": 1
+                  }
+                ]
+              }
+            },
+            "name": "query - 6"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "rulemanagement"
+      },
+      "name": "rulemanagement"
     },
     {
       "type": 3,
@@ -466,11 +616,16 @@
           "{Workspace}"
         ]
       },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "Config"
+      },
       "name": "availPacks"
     }
   ],
   "fallbackResourceIds": [
-    "azure monitor"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

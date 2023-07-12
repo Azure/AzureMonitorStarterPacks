@@ -16,6 +16,7 @@ resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
       enforcementMode: 'Default'
   }
 }
+
 resource roleassignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for (roledefinitionId, i) in roledefinitionIds:  {
   name: '${assignmentName}-${i}'
   properties: {

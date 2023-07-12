@@ -285,58 +285,107 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
     parameters: {}
   }
 }
-resource functionReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().name,functionname,'reader')
-  scope: tenant()
+
+module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionReaderRole'
+  scope: subscription()
   dependsOn: [
     azfunctionsite
   ]
-  properties: {
-    description: '${solutionTag}-Reader WebApp'
+  params: {
+    resourcename: functionname
     principalId: azfunctionsite.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ReaderRoleDefinitionId)
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: ReaderRoleDefinitionId
+    roleShortName: 'Reader'
   }
 }
-resource functionTagContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().name,functionname,'tagcontributor')
-  scope: tenant()
+
+module functionTagContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionTagContributorRole'
+  scope: subscription()
   dependsOn: [
     azfunctionsite
   ]
-  properties: {
-    description: '${solutionTag}-Tag Contributor for WebApp'
+  params: {
+    resourcename: functionname
     principalId: azfunctionsite.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ContributorRoleDefinitionId)
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: ContributorRoleDefinitionId
+    roleShortName: 'TagContributor'
   }
 }
-resource functionVMContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().name,functionname,'vmcontributor')
-  scope: tenant()
+module functionVMContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionvmContributorRole'
+  scope: subscription()
   dependsOn: [
     azfunctionsite
   ]
-  properties: {
-    description: '${solutionTag}-VM Contributor for Function App'
+  params: {
+    resourcename: functionname
     principalId: azfunctionsite.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', VMContributorRoleDefinitionId)
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: VMContributorRoleDefinitionId
+    roleShortName: 'vmcontributor'
   }
 }
-resource functionArcContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().name,functionname,'arccontributor')
-  scope: tenant()
+module functionArcContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionArcContributorRole'
+  scope: subscription()
   dependsOn: [
     azfunctionsite
   ]
-  properties: {
-    description: '${solutionTag}-Hybrid Contributor for Function App'
+  params: {
+    resourcename: functionname
     principalId: azfunctionsite.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: ArcContributorRoleDefinitionId
+    roleShortName: 'arccontributor'
   }
 }
+// resource functionTagContributoro 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid(resourceGroup().name,functionname,'tagcontributor')
+//   scope: tenant()
+//   dependsOn: [
+//     azfunctionsite
+//   ]
+//   properties: {
+//     description: '${solutionTag}-Tag Contributor for WebApp'
+//     principalId: azfunctionsite.identity.principalId
+//     principalType: 'ServicePrincipal'
+//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ContributorRoleDefinitionId)
+//   }
+// }
+// resource functionVMContributoro 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid(resourceGroup().name,functionname,'vmcontributor')
+//   scope: tenant()
+//   dependsOn: [
+//     azfunctionsite
+//   ]
+//   properties: {
+//     description: '${solutionTag}-VM Contributor for Function App'
+//     principalId: azfunctionsite.identity.principalId
+//     principalType: 'ServicePrincipal'
+//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', VMContributorRoleDefinitionId)
+//   }
+// }
+// resource functionArcContributoro 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid(resourceGroup().name,functionname,'arccontributor')
+//   scope: tenant()
+//   dependsOn: [
+//     azfunctionsite
+//   ]
+//   properties: {
+//     description: '${solutionTag}-Hybrid Contributor for Function App'
+//     principalId: azfunctionsite.identity.principalId
+//     principalType: 'ServicePrincipal'
+//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
+//   }
+// }
 
 var wbConfig = loadTextContent('amsp.workbook')
 // var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
