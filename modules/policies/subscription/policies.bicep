@@ -9,7 +9,7 @@ var roledefinitionIds=[
   // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
 ]
 module policyVM './associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM'
+  name: 'associationpolicyVM-${packtag}'
   scope: subscription()
   params: {
     packtag: packtag
@@ -22,7 +22,7 @@ module policyVM './associacionpolicyVM.bicep' = {
   }
 }
 module policyARC './associacionpolicyARC.bicep' = {
-  name: 'associationpolicyARC'
+  name: 'associationpolicyARC-${packtag}'
   scope: subscription()
   params: {
     packtag: packtag
@@ -41,7 +41,7 @@ module arcassignment './assignment.bicep' = {
   dependsOn: [
     policyARC
   ]
-  name: 'arcassignment'
+  name: 'arcassignment-${packtag}'
   scope: subscription()
   params: {
     policyDefinitionId: policyARC.outputs.policyId
@@ -51,10 +51,11 @@ module arcassignment './assignment.bicep' = {
   }
 }
 module vmassignment './assignment.bicep' = {
-  name: 'vmassignment'
   dependsOn: [
     policyVM
   ]
+  name: 'vmassignment-${packtag}'
+
   scope: subscription()
   params: {
     policyDefinitionId: policyVM.outputs.policyId

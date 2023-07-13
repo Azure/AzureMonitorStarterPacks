@@ -66,7 +66,7 @@ module amaPolicy './modules/policies/policySet.bicep' = {
   }
 }
 module assignment './modules/policies/subscription/assignment.bicep' = {
-  name: 'assignment'
+  name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicy
   ]

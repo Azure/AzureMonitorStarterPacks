@@ -88,7 +88,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
 }
 // // Alerts - the module below creates the alerts and associates them with the action group
 module Alerts './WinIISAlerts.bicep' = {
-  name: 'IISAlerts'
+  name: 'Alerts-${packtag}'
   params: {
     location: location
     workspaceId: workspaceId
@@ -99,7 +99,7 @@ module Alerts './WinIISAlerts.bicep' = {
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
-  name: 'dcrPerformance'
+  name: 'dcrPerformance-${packtag}'
   params: {
     location: location
     rulename: rulename
@@ -129,7 +129,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
 // }]
 
 module policysetup '../../../modules/policies/subscription/policies.bicep' = {
-  name: 'policysetup'
+  name: 'policysetup-${packtag}'
   params: {
     dcrId: dcrbasicvmMonitoring.outputs.dcrId
     packtag: packtag
