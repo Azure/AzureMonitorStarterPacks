@@ -1,9 +1,10 @@
 param location string
 param workspaceId string
 param AGId string
-var moduleprefix = 'AMSP-Win-VMI'
 param packtag string
 param solutionTag string
+var moduleprefix = 'AMSP-Win-VMI'
+
 // Alert list
 var alertlist = [
   {

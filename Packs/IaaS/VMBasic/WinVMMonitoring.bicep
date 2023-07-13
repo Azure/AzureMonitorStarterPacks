@@ -12,7 +12,7 @@ param existingAGRG string = ''
 param enableBasicVMPlatformAlerts bool = false
 param location string = resourceGroup().location
 param workspaceId string
-param enableInsightsAlerts string = 'false'
+param enableInsightsAlerts string = 'true'
 param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
 param insightsRuleRg string = ''
 param packtag string
@@ -34,7 +34,7 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
 
 // Alerts - Event viewer based alerts. Depend on the event viewer logs being enabled on the VMs events are being sent to the workspace via DCRs.
 module eventAlerts 'eventAlerts.bicep' = {
-  name: 'eventAlerts'
+  name: 'eventAlerts-${packtag}'
   params: {
     AGId: ag.outputs.actionGroupResourceId
     location: location
@@ -45,7 +45,7 @@ module eventAlerts 'eventAlerts.bicep' = {
 } 
 
 module InsightsAlerts './VMInsightsAlerts.bicep' = {
-  name: 'InsightsAlerts'
+  name: 'Alerts-${packtag}'
   params: {
     location: location
     workspaceId: workspaceId
@@ -115,7 +115,7 @@ module vmrecommended 'AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformA
 // }
 // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
 module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
-  name: 'vmInsightsDCR'
+  name: 'vmInsightsDCR-${packtag}'
   params: {
     location: location
     workspaceResourceId: workspaceId
@@ -136,7 +136,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
 // }]
 
 module policysetup '../../../modules/policies/subscription/policies.bicep' = if(enableInsightsAlerts == 'true') {
-  name: 'policysetup'
+  name: 'policysetup-${packtag}'
   params: {
     dcrId: vmInsightsDCR.outputs.VMIRuleId
     packtag: packtag
