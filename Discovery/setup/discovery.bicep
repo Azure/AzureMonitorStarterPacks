@@ -241,10 +241,14 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     WorkspaceResourceId: lawresourceid
   }
 }
+
+var keyName = 'monitoringKey'
+
   
-var keyName = 'monitoringKey'  
-  
-resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = {  
+resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
+  dependsOn: [ 
+    azfunctionsiteconfig 
+  ] 
   name: '${functionname}/default/${keyName}'  
   properties: {  
     name: keyName  
