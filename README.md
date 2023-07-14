@@ -10,7 +10,24 @@
 
 - Create a framework for collaboration that will make it easy to add new monitored technologies. 
 
-## Setup 
+## Pre-requisites and recommendations
+
+- Azure Subscription - an azure subscription to deploy the components
+- Azure CLI access - to deploy the components, Azure CLI is recommended since most of the required are pre-installed. If a local deployment is preferred, use:
+    - PowerShell 7.1 or later
+    - Azure Power Shell Az Module 10 or later
+    - Bicep CLI (our Azure CLI, which will include  Bicep)
+
+
+## Setup
+
+Setup can be separated in 3 steps:
+
+- AMA Policy Initiative Setup
+- 
+- Main Solution Setup
+- Monitoring Packs Setup
+
     Setup has the following parameters:
     $resourceGroup (Mandatory) - Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created.
     $skipAMAPolicySetup - skips AMA policy setup. Default is false.
