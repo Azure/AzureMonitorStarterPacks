@@ -63,7 +63,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterPacks3/providers/Microsoft.Logic/workflows/Discovery"
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Logic/workflows/Discovery"
           },
           {
             "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -83,7 +83,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/Amonstarterpacks3/providers/Microsoft.OperationalInsights/workspaces/amonstar3"
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.OperationalInsights/workspaces/ws-amonstar"
           }
         ],
         "style": "above",
@@ -205,7 +205,7 @@
                   "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
                   "version": "KqlParameterItem/1.0",
                   "name": "PackTagDisable",
-                  "label": "Select Pack To Disable or to Add",
+                  "label": "Add/Remove",
                   "type": 2,
                   "isGlobal": true,
                   "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
@@ -221,7 +221,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "WOS"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -331,7 +331,21 @@
               "crossComponentResources": [
                 "{Subscriptions}"
               ],
-              "visualization": "table"
+              "visualization": "table",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "$gen_link_Server_0",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "$gen_link_Server_0",
+                  "sortOrder": 1
+                }
+              ]
             },
             "name": "Non Discoverable Machines",
             "styleSettings": {
@@ -362,7 +376,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": "WOS"
                 }
               ],
               "style": "pills",
@@ -447,7 +461,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "WOS"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -570,7 +584,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "AzMonPacks-IISBasicIISMonitoring"
+                  "value": "MSVMI-ws-amonstar"
                 }
               ],
               "style": "pills",
@@ -636,7 +650,8 @@
       "content": {
         "version": "KqlItem/1.0",
         "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyName=name) on policyName\n| project policyName, complianceState",
-        "size": 0,
+        "size": 1,
+        "title": "Assignment Status (Compliance)",
         "queryType": 1,
         "resourceType": "microsoft.resourcegraph/resources",
         "crossComponentResources": [
@@ -649,10 +664,30 @@
         "value": "policystatus"
       },
       "name": "query - 8"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Initiative'\n| union (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Policy')",
+        "size": 1,
+        "title": "Installed Policies and Initiatives",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "policystatus"
+      },
+      "name": "query - 8 - Copy"
     }
   ],
   "fallbackResourceIds": [
-     "Azure Monitor"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
