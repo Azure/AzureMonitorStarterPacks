@@ -16,6 +16,7 @@ ARG Query:
 # remove policy assignments and policies
 $pols=Get-AzPolicyDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
 foreach ($pol in $pols) {
+    "Removing policy $($pol.PolicyDefinitionId)"
     $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
     if ($assignments.count -ne 0)
     {
@@ -27,6 +28,7 @@ foreach ($pol in $pols) {
 # Remove policy sets
 $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
 foreach ($init in $inits) {
+    "Removing policy set $($init.PolicySetDefinitionId)"
     $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
     if ($assignments.count -ne 0)
     {
@@ -35,3 +37,13 @@ foreach ($init in $inits) {
     }
     Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
 }
+# remove DCR associations
+# remove DCRs
+# remove alert rules
+# Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName AMonStarterPacks3 | Remove-AzResource -Force
+# remove function app
+# remove logic app
+# remove workbook
+# remove log analytics - optional
+# remove resource group - optional
+# remove action group(s)?
