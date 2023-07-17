@@ -78,7 +78,7 @@ var alertlist = [
   }
 ]
 
-module InsightsAlerts '../../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
+module InsightsAlerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
   name: '${moduleprefix}-${alert.alertRuleName}'
   params: {
     location: location

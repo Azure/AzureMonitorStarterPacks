@@ -18,12 +18,21 @@ $pols=Get-AzPolicyDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne
 foreach ($pol in $pols) {
     "Removing policy $($pol.PolicyDefinitionId)"
     $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
+    
     if ($assignments.count -ne 0)
     {
         "Removing assignments for $($pol.PolicyDefinitionId)"
-        $assignments | Remove-AzPolicyAssignment 
+        foreach ($assignment in $assignments) {
+            $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
+            Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
+            #$ras=Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
+            # -and $_. -eq $assignments.Identity.PrincipalId} | Remove-AzRoleAssignment
+            "Removing assignment for $($assignment.Identity.PrincipalId)"
+            Remove-AzPolicyAssignment -Id $assignment.PolicyAssignmentId
+        }
+        "Removing policy definition for $($pol.PolicyDefinitionId)"
+        Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force
     }
-    Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId
 }
 # Remove policy sets
 $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
