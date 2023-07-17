@@ -262,7 +262,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
     '${solutionTag}': 'logicapp'
   }
   dependsOn: [
-    deployfunctions
+    monitoringkey
   ]
   location: location
   identity: {

@@ -13,8 +13,8 @@ param enableBasicVMPlatformAlerts bool = false
 param location string = resourceGroup().location
 param workspaceId string
 param enableInsightsAlerts string = 'true'
-param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
-param insightsRuleRg string = ''
+//param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
+//param insightsRuleRg string = ''
 param packtag string
 param solutionTag string
 param workspaceFriendlyName string
@@ -121,6 +121,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
     workspaceResourceId: workspaceId
     packtag: packtag
     solutionTag: solutionTag
+    rulename: rulename
   }
 }
 // This associates the rule above to the VMs

@@ -8,20 +8,20 @@
       "osTarget" : "Windows",
       "DiscoveryType": "OS",
       "RoleName" : "N/A",
-      "RequireParameters" : true,
-      "TemplateLocation" : "./Packs/IaaS/VMBasic/WinVMMonitoring.bicep"
+      "RequireParameters" : false,
+      "TemplateLocation" : "./Packs/IaaS/WinOS/WinVMMonitoring.bicep"
     },
     {
       "PackName": "AzMon-Packs-Linux-VM-Monitoring",
       "RuleName": "AzMonPacks-Basic_VM_Monitoring_Linux",
       "ModuleType": "IaaS",
-      "Status": "Disabled",
+      "Status": "Enabled",
       "RequiredTag" : "LxOS",
       "osTarget" : "Linux",
       "DiscoveryType": "OS",
       "RoleName" : "N/A",
-      "RequireParameters" : true,
-      "TemplateLocation" : "./Packs/IaaS/VMBasic/Linux/LinuxVM.bicep",
+      "RequireParameters" : false,
+      "TemplateLocation" : "./Packs/IaaS/LxOS/LinuxVM.bicep",
       "moduleParameters": [
       ]    
     },

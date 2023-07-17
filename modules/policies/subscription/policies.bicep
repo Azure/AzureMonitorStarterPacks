@@ -46,7 +46,7 @@ module arcassignment './assignment.bicep' = {
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: 'Assignment-${rulename}-${packtag}-arc'
+    assignmentName: 'Assignment-${packtag}-arc'
     roledefinitionIds: roledefinitionIds
   }
 }
@@ -59,7 +59,7 @@ module vmassignment './assignment.bicep' = {
   scope: subscription()
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'Assignment-${rulename}-${packtag}-vm'
+    assignmentName: 'Assignment-${packtag}-vm'
     location: location
     roledefinitionIds: roledefinitionIds
   }
