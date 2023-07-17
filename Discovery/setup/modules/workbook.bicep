@@ -1,3 +1,9 @@
+param solutionTag string
+param location string
+param lawresourceid string
+
+//var wbConfig = loadTextContent('../amsp.workbook')
+var wbConfig='''
 {
   "version": "Notebook/1.0",
   "items": [
@@ -242,7 +248,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "WinOS"
                 }
               ],
               "style": "pills",
@@ -398,7 +404,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -432,7 +438,8 @@
                     ],
                     "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Servers\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                    "title": "Enable Monitoring Packs",
+                    "description": "# This will enabled the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} to the server."
                   }
                 }
               ]
@@ -483,7 +490,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -532,7 +539,7 @@
             "type": 11,
             "content": {
               "version": "LinkItem/1.0",
-              "style": "bullets",
+              "style": "paragraph",
               "links": [
                 {
                   "id": "f5cb3ede-91d1-4414-bfa1-a1689f45d0c8",
@@ -610,7 +617,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "AzMonPacks-Basic_VM_Monitoring_Linux-VMI"
                 }
               ],
               "style": "pills",
@@ -1519,4 +1526,25 @@
     "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
+'''
+// var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
+// //var wbConfig3='''
+// //'''
+// // var wbConfig='${wbConfig1}${wbConfig2}${wbConfig3}'
+// var wbConfig='${wb}${wbConfig2}'
+
+resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
+  location: location
+  tags: {
+    '${solutionTag}': 'mainworkbook'
+  }
+  kind: 'shared'
+  name: guid('monstar')
+  properties:{
+    displayName: 'Azure Monitor Starter Packs'
+    serializedData: wbConfig
+    category: 'workbook'
+    sourceId: lawresourceid
+  }
 }

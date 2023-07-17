@@ -2,13 +2,15 @@ param location string
 param workspaceResourceId string
 param solutionTag string
 param packtag string
+param ruleName string
 
 var wsfriendlyname=split(workspaceResourceId, '/')[8]
-var ruleName = 'MSVMI-${wsfriendlyname}'
+// previously used this, but it's complicated when using VMInsights for Linux and Windows
+//var ruleName = 'MSVMI-${wsfriendlyname}'
 
 resource VMIRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   location: location
-  name: ruleName
+  name: '${ruleName}-VMI'
   tags: {
     '${solutionTag}': packtag
   }

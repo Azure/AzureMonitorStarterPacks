@@ -1,6 +1,6 @@
 //param vmnames array
 param vmIDs array = []
-param vmOSs array = []
+//param vmOSs array = []
 //param arcVMIDs array = []
 param rulename string
 param actionGroupName string
@@ -13,12 +13,12 @@ param enableBasicVMPlatformAlerts bool = false
 param location string = resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
-param osTarget string
+//param osTarget string
 param packtag string
 param solutionTag string
 
 // Action Group
-module ag '../../../../modules/actiongroups/ag.bicep' = {
+module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: actionGroupName
   params: {
     actionGroupName: actionGroupName
@@ -30,7 +30,6 @@ module ag '../../../../modules/actiongroups/ag.bicep' = {
     //location: location defailt is global
   }
 }
-
 // resource age 'Microsoft.Insights/actionGroups@2018-09-01-preview' existing = if (useExistingAG) {
 //   name: actionGroupName
 //   scope: subscription()
@@ -47,32 +46,38 @@ module eventAlerts './eventAlerts.bicep' = {
   }
 } 
 
-module InsightsAlerts './VMInsightsAlerts.bicep' = {
-  name: 'InsightsAlerts'
+// This option uses an existing VMI rule but this can be a tad problematic.
+// resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
+//   name: insightsRuleName
+//   scope: resourceGroup(insightsRuleRg)
+// }
+// So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
+module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
+  name: 'vmInsightsDCR-${packtag}'
   params: {
     location: location
-    workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
+    workspaceResourceId: workspaceId
     packtag: packtag
     solutionTag: solutionTag
+    ruleName: rulename
   }
 }
 
 // Azure recommended Alerts for VMs
 // These are the (very) basic recommeded alerts for VM, based on platform metrics
-module vmrecommended '../AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
-  name: 'vmrecommended'
-  params: {
-    vmIDs: vmIDs
-    packtag: packtag
-    solutionTag: solutionTag
+// module vmrecommended '../WinOS/AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
+//   name: 'vmrecommended'
+//   params: {
+//     vmIDs: vmIDs
+//     packtag: packtag
+//     solutionTag: solutionTag
 
-  }
-}
+//   }
+// }
 // DCR
 // Example of a DCR for a Linux VM collecting eventviewer and performance counters
 // This rule would be useful to add any counters that are not covered by VM Insights, as well as Event Viewer logs
-module dcrbasicvmMonitoring '../../../../modules/DCRs/dcr-basicLinuxVM.bicep' = {
+module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicLinuxVM.bicep' = {
   name: 'dcrPerformance'
   params: {
     location: location
@@ -124,17 +129,15 @@ module dcrbasicvmMonitoring '../../../../modules/DCRs/dcr-basicLinuxVM.bicep' = 
   ]
   }
 }
-
-// This associates the rule above to the VMs
-module dcrassociation '../../../../modules/DCRs/dcrassociation.bicep'  =   [for (vmID, i) in vmIDs: {
-  name: 'dcrassociation-${i}'
+module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+  name: 'policysetup-${packtag}'
   params: {
-    osTarget: osTarget
-    vmOS: vmOSs[i]
-    associationName: 'dcrassociation-${i}-${split(vmID, '/')[8]}'
-    dataCollectionRuleId: dcrbasicvmMonitoring.outputs.dcrId
-    vmId: vmID
+    dcrId: vmInsightsDCR.outputs.VMIRuleId
+    packtag: packtag
+    solutionTag: solutionTag
+    rulename: rulename
+    location: location
   }
-}]
+}
 
 

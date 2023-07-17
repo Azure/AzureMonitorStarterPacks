@@ -20,7 +20,7 @@ var alertlist =  [
 ]
 // This is a event log based alert
 // Alerts
-module vmalerts '../../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
+module vmalerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
   name: '${moduleprefix}-${alert.alertRuleName}'
   params: {
     location: location

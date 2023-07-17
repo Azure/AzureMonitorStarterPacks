@@ -244,7 +244,6 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
 
 var keyName = 'monitoringKey'
 
-  
 resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
   dependsOn: [ 
     azfunctionsiteconfig 
@@ -262,7 +261,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
     '${solutionTag}': 'logicapp'
   }
   dependsOn: [
-    deployfunctions
+    monitoringkey
   ]
   location: location
   identity: {
@@ -282,20 +281,76 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
             }
         }
         actions: {
-            tagmgmt: {
-                runAfter: {}
-                type: 'Function'
-                inputs: {
-                    body: '@triggerBody()'
-                    Headers : {
-                        //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
-                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
-                    }
-                    function: {
-                        id: '${azfunctionsite.id}/functions/tagmgmt'
+          Parse_JSON: {
+            runAfter: {}
+            type: 'ParseJson'
+            inputs: {
+              content: '@triggerBody()'
+              schema: {
+                properties: {
+                  function: {
+                    type: 'string'
+                  }
+                  functionBody: {
+                    properties: {}
+                    type: 'object'
+                  }
+                }
+                type: 'object'
+              }
+            }
+          }
+          Switch: {
+            runAfter: {
+              Parse_JSON: [
+                'Succeeded'
+              ]
+            }
+            cases: {
+              Case: {
+                case: 'tagmgmt'
+                actions: {
+                  tagmgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                        body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                        Headers : {
+                            //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
+                            'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                        }
+                        function: {
+                            id: '${azfunctionsite.id}/functions/tagmgmt'
+                        }
                     }
                 }
+                }
+              }
+              Case_2: {
+                case: 'alertmgmt'
+                actions: {
+                  alertConfigMgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                      body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                      function: {
+                        id: '${azfunctionsite.id}/functions/alertConfigMgmt'
+                      }
+                      headers: {
+                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                      }
+                    }
+                  }
+                }
+              }
             }
+            default: {
+              actions: {}
+            }
+            expression: '@body(\'Parse_JSON\')?[\'Function\']'
+            type: 'Switch'
+          }
         }
         outputs: {}
     }
@@ -306,9 +361,6 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
 module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionReaderRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -322,9 +374,6 @@ module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = 
 module functionTagContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionTagContributorRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -337,9 +386,6 @@ module functionTagContributor '../../modules/rbac/subscription/roleassignment.bi
 module functionVMContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionvmContributorRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -352,9 +398,6 @@ module functionVMContributor '../../modules/rbac/subscription/roleassignment.bic
 module functionArcContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionArcContributorRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -403,26 +446,33 @@ module functionArcContributor '../../modules/rbac/subscription/roleassignment.bi
 //     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
 //   }
 // }
-
-var wbConfig = loadTextContent('amsp.workbook')
+module workbook './modules/workbook.bicep' = {
+  name: 'workbookdeployment'
+  params: {
+    lawresourceid: lawresourceid
+    location: location
+    solutionTag: solutionTag
+  }
+}
+//var wbConfig = loadTextContent('amsp.workbook')
 // var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
 // //var wbConfig3='''
 // //'''
 // // var wbConfig='${wbConfig1}${wbConfig2}${wbConfig3}'
 // var wbConfig='${wb}${wbConfig2}'
 
-resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
-  location: location
-  tags: {
-    '${solutionTag}': 'mainworkbook'
-  }
-  kind: 'shared'
-  name: guid('monstar')
-  properties:{
-    displayName: 'Azure Monitor Starter Packs'
-    serializedData: wbConfig
-    category: 'workbook'
-    sourceId: lawresourceid
-  }
-}
+// resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
+//   location: location
+//   tags: {
+//     '${solutionTag}': 'mainworkbook'
+//   }
+//   kind: 'shared'
+//   name: guid('monstar')
+//   properties:{
+//     displayName: 'Azure Monitor Starter Packs'
+//     serializedData: wbConfig
+//     category: 'workbook'
+//     sourceId: lawresourceid
+//   }
+// }
 // output sas string = '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'

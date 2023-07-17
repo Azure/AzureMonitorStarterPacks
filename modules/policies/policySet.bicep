@@ -58,6 +58,11 @@ resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' 
           policyDefinitionReferenceId: ''
         }
         {
+          parameters: {}
+          policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/17b3de92-f710-4cf4-aa55-0e7859f1ed7b'
+          policyDefinitionReferenceId: ''
+        }
+        {
           parameters: { 
               bringYourOwnUserAssignedManagedIdentity: {
                 value: false
