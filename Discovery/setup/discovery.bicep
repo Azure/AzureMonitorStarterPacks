@@ -244,7 +244,6 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
 
 var keyName = 'monitoringKey'
 
-  
 resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
   dependsOn: [ 
     azfunctionsiteconfig 
@@ -447,26 +446,33 @@ module functionArcContributor '../../modules/rbac/subscription/roleassignment.bi
 //     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
 //   }
 // }
-
-var wbConfig = loadTextContent('amsp.workbook')
+module workbook './modules/workbook.bicep' = {
+  name: 'workbookdeployment'
+  params: {
+    lawresourceid: lawresourceid
+    location: location
+    solutionTag: solutionTag
+  }
+}
+//var wbConfig = loadTextContent('amsp.workbook')
 // var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
 // //var wbConfig3='''
 // //'''
 // // var wbConfig='${wbConfig1}${wbConfig2}${wbConfig3}'
 // var wbConfig='${wb}${wbConfig2}'
 
-resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
-  location: location
-  tags: {
-    '${solutionTag}': 'mainworkbook'
-  }
-  kind: 'shared'
-  name: guid('monstar')
-  properties:{
-    displayName: 'Azure Monitor Starter Packs'
-    serializedData: wbConfig
-    category: 'workbook'
-    sourceId: lawresourceid
-  }
-}
+// resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
+//   location: location
+//   tags: {
+//     '${solutionTag}': 'mainworkbook'
+//   }
+//   kind: 'shared'
+//   name: guid('monstar')
+//   properties:{
+//     displayName: 'Azure Monitor Starter Packs'
+//     serializedData: wbConfig
+//     category: 'workbook'
+//     sourceId: lawresourceid
+//   }
+// }
 // output sas string = '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
