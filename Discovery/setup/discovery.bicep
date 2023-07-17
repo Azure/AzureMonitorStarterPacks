@@ -282,20 +282,76 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
             }
         }
         actions: {
-            tagmgmt: {
-                runAfter: {}
-                type: 'Function'
-                inputs: {
-                    body: '@triggerBody()'
-                    Headers : {
-                        //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
-                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
-                    }
-                    function: {
-                        id: '${azfunctionsite.id}/functions/tagmgmt'
+          Parse_JSON: {
+            runAfter: {}
+            type: 'ParseJson'
+            inputs: {
+              content: '@triggerBody()'
+              schema: {
+                properties: {
+                  function: {
+                    type: 'string'
+                  }
+                  functionBody: {
+                    properties: {}
+                    type: 'object'
+                  }
+                }
+                type: 'object'
+              }
+            }
+          }
+          Switch: {
+            runAfter: {
+              Parse_JSON: [
+                'Succeeded'
+              ]
+            }
+            cases: {
+              Case: {
+                case: 'tagmgmt'
+                actions: {
+                  tagmgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                        body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                        Headers : {
+                            //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
+                            'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                        }
+                        function: {
+                            id: '${azfunctionsite.id}/functions/tagmgmt'
+                        }
                     }
                 }
+                }
+              }
+              Case_2: {
+                case: 'alertmgmt'
+                actions: {
+                  alertConfigMgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                      body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                      function: {
+                        id: '${azfunctionsite.id}/functions/alertConfigMgmt'
+                      }
+                      headers: {
+                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                      }
+                    }
+                  }
+                }
+              }
             }
+            default: {
+              actions: {}
+            }
+            expression: '@body(\'Parse_JSON\')?[\'Function\']'
+            type: 'Switch'
+          }
         }
         outputs: {}
     }
@@ -306,9 +362,6 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
 module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionReaderRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -322,9 +375,6 @@ module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = 
 module functionTagContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionTagContributorRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -337,9 +387,6 @@ module functionTagContributor '../../modules/rbac/subscription/roleassignment.bi
 module functionVMContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionvmContributorRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId
@@ -352,9 +399,6 @@ module functionVMContributor '../../modules/rbac/subscription/roleassignment.bic
 module functionArcContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionArcContributorRole'
   scope: subscription()
-  dependsOn: [
-    azfunctionsite
-  ]
   params: {
     resourcename: functionname
     principalId: azfunctionsite.identity.principalId

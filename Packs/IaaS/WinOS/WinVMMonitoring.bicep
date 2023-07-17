@@ -121,7 +121,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
     workspaceResourceId: workspaceId
     packtag: packtag
     solutionTag: solutionTag
-    rulename: rulename
+    ruleName: rulename
   }
 }
 // This associates the rule above to the VMs

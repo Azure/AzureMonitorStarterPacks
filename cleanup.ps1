@@ -39,6 +39,8 @@ foreach ($init in $inits) {
 }
 # remove DCR associations
 # remove DCRs
+# remove role assignments - if not removed it will fail to install again.
+# Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | where {$_.ObjectType -eq 'unknown'}  | Remove-AzRoleAssignment
 # remove alert rules
 # Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName AMonStarterPacks3 | Remove-AzResource -Force
 # remove function app

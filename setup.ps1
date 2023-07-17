@@ -168,7 +168,13 @@ if (!($skipMainSolutionSetup)) {
     compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
     $existingSAs=Get-AzStorageAccount -ResourceGroupName $resourceGroup -ErrorAction SilentlyContinue
     if ($existingSAs) {
-        $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
+        if ($existingSAs.count -gt 1) {
+            $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
+        }
+        else {
+            $storageaccountName=$existingSAs.StorageAccountName
+            Write-Output "Using existing storage account $storageaccountName."
+        }
     }
     else {
         $storageaccountName = "azmonstarpacks$randomstoragechars"

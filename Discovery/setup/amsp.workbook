@@ -242,7 +242,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -275,7 +275,7 @@
                         "value": "removeTag"
                       }
                     ],
-                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
+                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
                     "httpMethod": "POST",
                     "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
                   }
@@ -290,7 +290,7 @@
                     "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
-                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Servers\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
+                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
                     "httpMethod": "POST",
                     "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
                   }
@@ -305,7 +305,7 @@
                     "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
-                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
+                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"All\"\n  }\n}",
                     "httpMethod": "POST",
                     "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
                   }
@@ -398,7 +398,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -483,7 +483,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -610,7 +610,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "AzMonPacks-Basic_VM_Monitoring_Linux"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -1516,7 +1516,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/amonstarterpacks3/providers/microsoft.operationalinsights/workspaces/ws-amonstar"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

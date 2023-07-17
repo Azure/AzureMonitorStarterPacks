@@ -7,7 +7,7 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 # Interact with query parameters or the body of the request.
-$alerts = $Request.Body.AlertIds
+$alerts = $Request.Body.Alerts
 $action = $Request.Body.Action
 #$TagValue = $Request.Body.Pack
 
