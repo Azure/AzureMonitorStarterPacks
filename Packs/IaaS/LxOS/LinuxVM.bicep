@@ -65,15 +65,15 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
 
 // Azure recommended Alerts for VMs
 // These are the (very) basic recommeded alerts for VM, based on platform metrics
-module vmrecommended '../WinOS/AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
-  name: 'vmrecommended'
-  params: {
-    vmIDs: vmIDs
-    packtag: packtag
-    solutionTag: solutionTag
+// module vmrecommended '../WinOS/AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
+//   name: 'vmrecommended'
+//   params: {
+//     vmIDs: vmIDs
+//     packtag: packtag
+//     solutionTag: solutionTag
 
-  }
-}
+//   }
+// }
 // DCR
 // Example of a DCR for a Linux VM collecting eventviewer and performance counters
 // This rule would be useful to add any counters that are not covered by VM Insights, as well as Event Viewer logs
