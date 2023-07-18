@@ -4,6 +4,8 @@ function get-defenderAMApolicyAssignments {
     )
     #Get assignments for each sub
     if ([string]::IsNullOrEmpty($subscriptionId)) {
+        
+        # TODO:rewrite to use resource graph instead of iterating subscriptions  -mtb
         $subs=Get-AzSubscription
         $assignments=@()
         foreach ($sub in $subs) {
@@ -23,9 +25,12 @@ function assign-amapolicy {
         [string]
         $location
     )
+
+        # creating lists of possible scopes for assigning the AMA deployment Policy
         $rgs=Get-AzResourceGroup | select-object -Property @{Name='DisplayName';Expression={$_.ResourceGroupName}},@{Name='Name';Expression={$_.ResourceGroupName}},@{Name='Id';Expression={$_.ResourceId}}, @{Name='Type';Expression={'ResourceGroup'}}
         if ($rgs.Count -gt 5) {
-            Write-Output "Too many resource groups ($($rgs.Count)). Please select a scope to enable the policies. Do you want to include Resource Groups in the list?"
+            #TODO too many resource groups for what? -mtb
+            Write-Host "Too many resource groups ($($rgs.Count)). Please select a scope to enable the policies. Do you want to include Resource Groups in the list?"
             $rgoption=read-host -Prompt "Include Resource Groups in the list? [Y]es or [N]o"
         }
         else {
@@ -43,7 +48,7 @@ function assign-amapolicy {
         $selection=create-list -objectlist $allobjs -type 'scope' -fieldName1 'DisplayName' -fieldName2 'Type'
         # Select Managed Identity
         # ask if new or existing MI
-        $mioption=read-host -Prompt "Use [N]ew or [E]xisting Managed Identity?"
+        $mioption=read-host -Prompt "Use [N]ew or [E]xisting User Assigned Managed Identity?"
         if ($mioption -eq 'N') {
             "Using System Managed identity"
         }
@@ -85,10 +90,13 @@ function set-defenderAMApolicy {
         [string] $MIId,
         [string] $location
     )
-    $policy=Get-AzPolicySetDefinition -Id /providers/Microsoft.Authorization/policySetDefinitions/500ab3a2-f1bd-4a5a-8e47-3e09d9a294c3
+
+    # get defender AMA built-in policy
+    $policy=Get-AzPolicySetDefinition -Id '/providers/Microsoft.Authorization/policySetDefinitions/500ab3a2-f1bd-4a5a-8e47-3e09d9a294c3'
+
     if ($policy) {
         if ([string]::IsNullOrEmpty($MIId)) {
-            "Using System Assigned Identity"
+            Write-Host "Using System Assigned Identity"
             New-AzPolicyAssignment -Name 'Custom Monstar Packs provisioning Azure Monitor agent' `
                             -DisplayName 'Custom Monstar Packs provisioning Azure Monitor agent' `
                             -Scope $scope `
@@ -98,7 +106,7 @@ function set-defenderAMApolicy {
                             -Location $location
         }
         else {
-            "Using User Assigned Identity - $MIId"
+            Write-Host "Using User Assigned Identity - $MIId"
             New-AzPolicyAssignment -Name 'Custom Monstar Packs provisioning Azure Monitor agent' `
             -DisplayName 'Custom Monstar Packs provisioning Azure Monitor agent' `
             -Scope $scope `
@@ -199,7 +207,7 @@ function select-workspace {
     )
     #$wslist=Get-AzOperationalInsightsWorkspace
 
-    $wslist=Search-AzGraph -Query "resources | where type == ""microsoft.operationalinsights/workspaces""    | project name, resourceGroup, subscriptionId, id"
+    $wslist=Search-AzGraph -Query "resources | where type == 'microsoft.operationalinsights/workspaces' | project name, resourceGroup, subscriptionId, id"
     $wslist.Add(@{name="Create New..."})
     
     $selection=create-list -objectList $wslist -type "Workspace" -fieldName1 "name" -fieldName2 "resourceGroup"
@@ -213,7 +221,9 @@ function select-workspace {
             }
             New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
                 -TemplateFile "./modules/LAW/law.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
-            Write-host "Sleeping 30 seconds to allow workspace to show up in ARG."
+            
+            # TODO: why wait for ARG? wait for deployment instead with -AsJob? -mtb
+                Write-host "Sleeping 30 seconds to allow workspace to show up in ARG."
             Start-Sleep -Seconds 30
             $wslist=Search-AzGraph -Query "resources | where type == 'microsoft.operationalinsights/workspaces' and name=='$wsName' | project name, resourceGroup, subscriptionId, id"
             if ($wslist.count -eq 1) {
@@ -300,24 +310,25 @@ function get-amaEnabledServer {
     resources
     | where (type contains "microsoft.compute/virtualmachines/extensions" or type contains "Microsoft.HybridCompute/machines/extensions") and (name == "AzureMonitorWindowsAgent" or name == "AzureMonitorLinuxAgent")
     | extend ComputerName = split(id, "/")[8],resourceId=split(id,"/extensions")[0]
-    //| parse id with * "/virtualMachines/" ComputerName "/" *
     | extend extensionType = properties.type, 
         status = properties.provisioningState,
         version = properties.typeHandlerVersion
     | where status == 'Succeeded'
     | project ComputerName, resourceId
 '@
+
+    # TODO: write search-azgraph wrapper function to handle paging -mtb
     $amaServers=Search-azgraph -Query $amaServersquery -UseTenantScope
     return $amaServers
 }
 function get-allServers {
     $allServersQuery=@'
-resources
-| where (type == "microsoft.compute/virtualmachines" or type == "microsoft.hybridcompute/machines")
-| project name, id, resourceGroup,type
+        resources
+        | where (type == "microsoft.compute/virtualmachines" or type == "microsoft.hybridcompute/machines")
+        | project name, id, resourceGroup,type
 '@
-$allServersList=Search-azgraph -Query $allServersQuery -UseTenantScope
-    #"Found $($allServersList.Count) Servers in Total."
+
+    $allServersList=Search-azgraph -Query $allServersQuery -UseTenantScope
     return $allServersList
 }
 function get-serverswithoutAMA {
@@ -333,7 +344,7 @@ function get-serverswithoutAMA {
             $noAMAlist+=$_
         }
     }
-    "Found $($noAMAlist.Count) Servers without AMA installed."
+    Write-Host "Found $($noAMAlist.Count) Servers without AMA installed."
     return $noAMAlist
 }
 function get-taggedServers {
@@ -342,17 +353,17 @@ param (
 )
 # Tag based Discovery. VMs or ARC servers containing the tag specified tag will be monitored.
 $allTaggedServersQuery=@"
-resources
-| where type == 'microsoft.compute/virtualmachines' and isnotempty(tags.$tagname)
-| project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.storageProfile.osDisk.osType
-| union (resources
-| where type == 'microsoft.hybridcompute/machines' and isnotempty(tags.$tagname)
-| project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.osType)
-| extend serverType=iff(type=='microsoft.compute/virtualmachines','vm','arc')
-| where isnotnull(Applist)
+    resources
+        | where type == 'microsoft.compute/virtualmachines' and isnotempty(tags.$tagname)
+        | project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.storageProfile.osDisk.osType
+        | union (
+            resources
+            | where type == 'microsoft.hybridcompute/machines' and isnotempty(tags.$tagname)
+            | project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.osType)
+            | extend serverType=iff(type=='microsoft.compute/virtualmachines','vm','arc')
+            | where isnotnull(Applist)
 "@
     $allTaggedServersList=Search-azgraph -Query $allTaggedServersQuery -UseTenantScope
-#"Found $($allTaggedServersList.Count) Servers with Monitoring tag."
     return $allTaggedServersList
 }
 function install-ama {
@@ -360,25 +371,26 @@ function install-ama {
         [System.Object] $server,
         [string] $location
     )
-    "Installing AMA."
+    Write-Host "Installing AMA."
     $parameters=@{
         serverId=$server.id
         serverOS=$server.os
         serverType=$server.serverType
         location=$location
     }
-    select-azsubscription -subscriptionId $($server.id).split('/')[2]
+    select-azsubscription -subscriptionId $($server.id).split('/')[2] | Out-Null
     New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $server.resourceGroup `
         -TemplateFile "./modules/ama/ama.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
-    "AMA installed."
+    
+    Write-Host "AMA installed."
 }
 function get-defaultVMI_DCR {
     param ( 
         [string] $wsfriendlyname)
     $VMInsightsdcrQuery=@"
-resources
-| where type == "microsoft.insights/datacollectionrules"
-| where name =~ 'MSVMI-$wsfriendlyname'
+        resources
+        | where type == "microsoft.insights/datacollectionrules"
+        | where name =~ 'MSVMI-$wsfriendlyname'
 "@
     $defaultVMI_DCR=Search-azgraph -Query $VMInsightsdcrQuery -UseTenantScope
     return $defaultVMI_DCR.id
@@ -400,8 +412,9 @@ function associate-dcr {
             osTarget=$osTarget
             vmOS=$server.os
         }
-        Write-Warning "Associating DCR."
-        select-azsubscription -subscriptionId $($server.id).split('/')[2]
+
+        Write-Host "Associating DCR."
+        select-azsubscription -subscriptionId $($server.id).split('/')[2] | Out-Null
         New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $server.resourceGroup `
             -TemplateFile "./modules/DCRs/dcrassociation.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
     }
@@ -484,7 +497,7 @@ function deploy-pack {
                 }
             }
         }
-        Write-Output "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
+        Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
         New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
         -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
 }
@@ -545,26 +558,24 @@ function install-amaAndDCR {
         [switch] $DontAutoInstallAMA
     )
     $amaServers=get-amaEnabledServer #Gets a list of servers with AMA installed.
-    "Creating/Selecting VMInsights DCR. If UseExistingDCR is specified, a list of DCRs will be presented. If not, the script will look for a default DCR. If not found, a new DCR will be created."
-    "Searching for default VMInsights DCR. (MSVMI-$wsfriendlyname)"
+    Write-Host "Creating/Selecting VMInsights DCR. If UseExistingDCR is specified, a list of DCRs will be presented. If not, the script will look for a default DCR. If not found, a new DCR will be created."
+    Write-Host "Searching for default VMInsights DCR. (MSVMI-$wsfriendlyname)"
     if ($useExistingDCR) {
         $DCRid=select-dcr
     }
     else {
         $DCRId=get-defaultVMI_DCR -wsfriendlyname $wsfriendlyname
         if ($DCRId) {
-            "Found default VMInsights DCR, based on MSVMI-<workspace name> pattern: $DCRId"
+            Write-Host "Found default VMInsights DCR, based on MSVMI-<workspace name> pattern: $DCRId"
         }
         else { #Create a new DCR.
             $DCRId=create-vmiDCR -workspaceResourceId $ws.ResourceId -resourceGroup $resourceGroup -location $location
-            #$DCR=New-AzDataCollectionRule -Name "MSVMI-$wsfriendlyname" -ResourceGroupName $resourceGroup -Location $location -Kind "VMInsights" -WorkspaceId $ws.ResourceId -Verbose
             if (!$DCRId) {
-                "DCR creation failed."
+                Write-Error "DCR creation failed."
                 exit
-                #associate-dcr -server $server -DCRRuleId $ruleId
             }
             else {
-                "DCR created successfully. RuleId: $DCRId"
+                Write-Host "DCR created successfully. RuleId: $DCRId"
             }
         }
     }
@@ -572,20 +583,20 @@ function install-amaAndDCR {
     foreach ($server in $serverList) {  #loop through all servers tagged with AppList      
         if ($server.id -notin $amaServers.resourceId)
         {
-            "Server $($server.name) is missing AMA."
+            Write-Host "Server $($server.name) is missing AMA."
             if ($DontAutoInstallAMA) {
                 $answer=Read-Host "Install? (y/n)"
                 if ($answer -eq 'y') {
                     install-ama -server $server -location $location
                 }
-                else { "Skipping AMA install...don't know why except you are testing this." }
+                else { Write-Host "Skipping AMA install...don't know why except you are testing this." }
             }
             else {
                 install-ama -server $server -location $location
             }          
         }
         #Associate the DCR with the server.
-        "Associating DCR ($DCRId) with the server. $($server.name))"
+        Write-Host "Associating DCR ($DCRId) with the server. $($server.name))"
         associate-dcr -server $server -DCRRuleId $DCRId -osTarget 'All'
     }   
 }
