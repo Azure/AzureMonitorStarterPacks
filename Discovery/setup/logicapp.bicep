@@ -1,101 +1,108 @@
-param workflows_Discovery_name string = 'Discovery'
-param sites_MonitorStarterPacks_6c64f9ed_externalid string = '/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Web/sites/MonitorStarterPacks-6c64f9ed'
+param functioname string
+param solutionTag string
+param location string
 
-resource workflows_Discovery_name_resource 'Microsoft.Logic/workflows@2017-07-01' = {
-  name: workflows_Discovery_name
-  location: 'eastus'
+resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {
+  name: functioname
+}
+resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
+  name: 'Discovery'
   tags: {
-    MonitorStarterPacks: 'logicapp'
+    '${solutionTag}': 'logicapp'
   }
+
+  location: location
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
     state: 'Enabled'
     definition: {
-      '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
-      contentVersion: '1.0.0.0'
-      parameters: {}
-      triggers: {
-        manual: {
-          type: 'Request'
-          kind: 'Http'
-          inputs: {}
+        '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
+        contentVersion: '1.0.0.0'
+        parameters: {}
+        triggers: {
+            manual: {
+              type: 'Request'
+              kind: 'Http'
+              inputs: {}
+            }
         }
-      }
-      actions: {
-        Parse_JSON: {
-          runAfter: {}
-          type: 'ParseJson'
-          inputs: {
-            content: '@triggerBody()'
-            schema: {
-              properties: {
-                function: {
-                  type: 'string'
+        actions: {
+          Parse_JSON: {
+            runAfter: {}
+            type: 'ParseJson'
+            inputs: {
+              content: '@triggerBody()'
+              schema: {
+                properties: {
+                  function: {
+                    type: 'string'
+                  }
+                  functionBody: {
+                    properties: {}
+                    type: 'object'
+                  }
                 }
-                functionBody: {
-                  properties: {}
-                  type: 'object'
-                }
+                type: 'object'
               }
-              type: 'object'
             }
           }
-        }
-        Switch: {
-          runAfter: {
-            Parse_JSON: [
-              'Succeeded'
-            ]
-          }
-          cases: {
-            Case: {
-              case: 'tagmgmt'
-              actions: {
-                tagmgmt_3: {
-                  runAfter: {}
-                  type: 'Function'
-                  inputs: {
-                    body: '@body(\'Parse_JSON\')?[\'functionBody\']'
-                    function: {
-                      id: '${sites_MonitorStarterPacks_6c64f9ed_externalid}/functions/tagmgmt'
+          Switch: {
+            runAfter: {
+              Parse_JSON: [
+                'Succeeded'
+              ]
+            }
+            cases: {
+              Case: {
+                case: 'tagmgmt'
+                actions: {
+                  tagmgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                        body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                        Headers : {
+                            //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
+                            'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                        }
+                        function: {
+                            id: '${azfunctionsite.id}/functions/tagmgmt'
+                        }
                     }
-                    headers: {
-                      'x-functions-key': 'NDZhYTI2N2EtOTM0Ny00Yjc5LWI0OTItMDUwMzE2NjJiMmZm'
+                }
+                }
+              }
+              Case_2: {
+                case: 'alertmgmt'
+                actions: {
+                  alertConfigMgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                      body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                      function: {
+                        id: '${azfunctionsite.id}/functions/alertConfigMgmt'
+                      }
+                      headers: {
+                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                      }
                     }
                   }
                 }
               }
             }
-            Case_2: {
-              case: 'alertmgmt'
-              actions: {
-                alertConfigMgmt: {
-                  runAfter: {}
-                  type: 'Function'
-                  inputs: {
-                    body: '@body(\'Parse_JSON\')?[\'functionBody\']'
-                    function: {
-                      id: '${sites_MonitorStarterPacks_6c64f9ed_externalid}/functions/alertConfigMgmt'
-                    }
-                    headers: {
-                      'x-functions-key': 'NDZhYTI2N2EtOTM0Ny00Yjc5LWI0OTItMDUwMzE2NjJiMmZm'
-                    }
-                  }
-                }
-              }
+            default: {
+              actions: {}
             }
+            expression: '@body(\'Parse_JSON\')?[\'Function\']'
+            type: 'Switch'
           }
-          default: {
-            actions: {}
-          }
-          expression: '@body(\'Parse_JSON\')?[\'Function\']'
-          type: 'Switch'
         }
-      }
-      outputs: {}
+        outputs: {}
     }
     parameters: {}
   }
 }
+

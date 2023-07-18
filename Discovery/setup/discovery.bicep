@@ -197,6 +197,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
       keyVaultReferenceIdentity: 'SystemAssigned'
   }
 }
+
 resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   name: 'appsettings'
   parent: azfunctionsite
@@ -255,109 +256,6 @@ resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = {
   }  
 } 
 
-resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
-  name: 'Discovery'
-  tags: {
-    '${solutionTag}': 'logicapp'
-  }
-  dependsOn: [
-    monitoringkey
-  ]
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    state: 'Enabled'
-    definition: {
-        '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
-        contentVersion: '1.0.0.0'
-        parameters: {}
-        triggers: {
-            manual: {
-              type: 'Request'
-              kind: 'Http'
-              inputs: {}
-            }
-        }
-        actions: {
-          Parse_JSON: {
-            runAfter: {}
-            type: 'ParseJson'
-            inputs: {
-              content: '@triggerBody()'
-              schema: {
-                properties: {
-                  function: {
-                    type: 'string'
-                  }
-                  functionBody: {
-                    properties: {}
-                    type: 'object'
-                  }
-                }
-                type: 'object'
-              }
-            }
-          }
-          Switch: {
-            runAfter: {
-              Parse_JSON: [
-                'Succeeded'
-              ]
-            }
-            cases: {
-              Case: {
-                case: 'tagmgmt'
-                actions: {
-                  tagmgmt: {
-                    runAfter: {}
-                    type: 'Function'
-                    inputs: {
-                        body: '@body(\'Parse_JSON\')?[\'functionBody\']'
-                        Headers : {
-                            //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
-                            'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
-                        }
-                        function: {
-                            id: '${azfunctionsite.id}/functions/tagmgmt'
-                        }
-                    }
-                }
-                }
-              }
-              Case_2: {
-                case: 'alertmgmt'
-                actions: {
-                  alertConfigMgmt: {
-                    runAfter: {}
-                    type: 'Function'
-                    inputs: {
-                      body: '@body(\'Parse_JSON\')?[\'functionBody\']'
-                      function: {
-                        id: '${azfunctionsite.id}/functions/alertConfigMgmt'
-                      }
-                      headers: {
-                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            default: {
-              actions: {}
-            }
-            expression: '@body(\'Parse_JSON\')?[\'Function\']'
-            type: 'Switch'
-          }
-        }
-        outputs: {}
-    }
-    parameters: {}
-  }
-}
-
 module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionReaderRole'
   scope: subscription()
@@ -407,45 +305,17 @@ module functionArcContributor '../../modules/rbac/subscription/roleassignment.bi
     roleShortName: 'arccontributor'
   }
 }
-// resource functionTagContributoro 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(resourceGroup().name,functionname,'tagcontributor')
-//   scope: tenant()
-//   dependsOn: [
-//     azfunctionsite
-//   ]
-//   properties: {
-//     description: '${solutionTag}-Tag Contributor for WebApp'
-//     principalId: azfunctionsite.identity.principalId
-//     principalType: 'ServicePrincipal'
-//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ContributorRoleDefinitionId)
-//   }
-// }
-// resource functionVMContributoro 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(resourceGroup().name,functionname,'vmcontributor')
-//   scope: tenant()
-//   dependsOn: [
-//     azfunctionsite
-//   ]
-//   properties: {
-//     description: '${solutionTag}-VM Contributor for Function App'
-//     principalId: azfunctionsite.identity.principalId
-//     principalType: 'ServicePrincipal'
-//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', VMContributorRoleDefinitionId)
-//   }
-// }
-// resource functionArcContributoro 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(resourceGroup().name,functionname,'arccontributor')
-//   scope: tenant()
-//   dependsOn: [
-//     azfunctionsite
-//   ]
-//   properties: {
-//     description: '${solutionTag}-Hybrid Contributor for Function App'
-//     principalId: azfunctionsite.identity.principalId
-//     principalType: 'ServicePrincipal'
-//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ArcContributorRoleDefinitionId)
-//   }
-// }
+module logicapp 'logicapp.bicep' = {
+  name: 'DiscoveryLogicApp'
+  dependsOn: [
+    monitoringkey
+  ]
+  params: {
+    functioname: functionname
+    location: location
+    solutionTag: solutionTag
+  }
+}
 module workbook './modules/workbook.bicep' = {
   name: 'workbookdeployment'
   params: {
@@ -454,25 +324,4 @@ module workbook './modules/workbook.bicep' = {
     solutionTag: solutionTag
   }
 }
-//var wbConfig = loadTextContent('amsp.workbook')
-// var wbConfig2='"/subscriptions/${subscriptionId}/resourceGroups/${rg}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}"]}'
-// //var wbConfig3='''
-// //'''
-// // var wbConfig='${wbConfig1}${wbConfig2}${wbConfig3}'
-// var wbConfig='${wb}${wbConfig2}'
-
-// resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
-//   location: location
-//   tags: {
-//     '${solutionTag}': 'mainworkbook'
-//   }
-//   kind: 'shared'
-//   name: guid('monstar')
-//   properties:{
-//     displayName: 'Azure Monitor Starter Packs'
-//     serializedData: wbConfig
-//     category: 'workbook'
-//     sourceId: lawresourceid
-//   }
-// }
-// output sas string = '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
+//output functionkey string = listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
