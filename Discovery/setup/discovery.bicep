@@ -305,7 +305,7 @@ module functionArcContributor '../../modules/rbac/subscription/roleassignment.bi
     roleShortName: 'arccontributor'
   }
 }
-module logicapp 'logicapp.bicep' = {
+module logicapp './modules/logicapp.bicep' = {
   name: 'DiscoveryLogicApp'
   dependsOn: [
     monitoringkey
