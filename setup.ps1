@@ -17,68 +17,68 @@
     #>
     
 param (
+    # the log analytics workspace where monitoring data will be sent
     [Parameter(Mandatory=$false)]
     [string]
     $workspaceResourceId,
+    # the resource group where the azure monitor starter packs solution will be deployed
     [Parameter(Mandatory=$true)]
     [string]
-    $resourceGroup, # Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created.
+    $solutionResourceGroup,
+    # tag name used to identify the resources created by the solution and specify configuration
     [Parameter()]
     [string]
-    $EnableTagName='MonitorStarterPacks', #Tag that will be used to enable/disable monitoring. Values should be one of the workload tags.
+    $solutionTag='MonitorStarterPacks',
+    # azure region where solution components will be deployed. Not all workloads must be deployed in the same region, but cross-region charges may apply.
     [Parameter(Mandatory=$true)]
     [string]
     $location,
+    # specify to use an existing Action Group
     [Parameter()]
     [switch]
     $useExistingAG,
+    # specify the name of the new or existing Action Group
     [Parameter()]
     [string]
-    $actionGroupName, #if exising AG is used, this is the name of the AG
+    $actionGroupName,
+    # names of recipients configured in the Action Group
     [Parameter()]
     [string[]]
     $emailreceivers=@(), 
+    # email addresses of recipients configured in the Action Group
     [Parameter()]
     [string[]]
     $emailreceiversEmails=@(),
-    # [Parameter()]
-    # [switch]
-    # $DontautoInstallAMA,
+    # specify to skip deployment of Policies used to deploy the Azure Monitor Agent on target VMs
     [Parameter()]
     [switch]
     $skipAMAPolicySetup,
+    # specify to skip the deployment of the main solution? (workbooks, alerts, etc)
     [Parameter()]
     [switch]
     $skipMainSolutionSetup,
+    # specify to skip the deployment of Pack-specific resources
     [Parameter()]
     [switch]
     $skipPacksSetup,
+    # specify the subscription ID where the solution will be deployed
     [Parameter()]
     [string]
     $subscriptionId,
+    # specify to use the same Action Group for all packs, otherwise a new Action Group will be created for each pack
     [Parameter()]
     [switch]
     $useSameAGforAllPacks,
+    # specify the location of the packs.json file
     [Parameter()]
     [string]
     $packsFilePath="./Packs/packs.json",
+    # specify the discovery method used to identify VMs to monitor
     [Parameter()]
     [string]
     $discoveryType="tags"
-    # ,[Parameter()]
-    # [switch]
-    # $useExistingDCR=$false
 )
-# Import the AzMPacks-Common module
-# This module contains functions that are used by the script.
 
-# How am I looking for the applist - fixed
-# reverse the installama switch behaviour - fixed
-# usesameag flag logic is buggy - fixed
-# remove inventory from workbook
-
-# test for az.resourcegraph module - fixed
-#   - install/import if not present
 #region basic initialization
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
@@ -118,17 +118,17 @@ else {
     }
 }
 #Creates the resource group if it does not exist.
-if (!(Get-AzResourceGroup -name $resourceGroup -ErrorAction SilentlyContinue)) {
+if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue)) {
     try {
-        New-AzResourceGroup -Name $resourceGroup -Location $location
+        New-AzResourceGroup -Name $solutionResourceGroup -Location $location
     }
     catch {
-        Write-Error "Unable to create resource group $resourceGroup. Please make sure you have the proper permissions to create a resource group in the $location location."
+        Write-Error "Unable to create resource group $solutionResourceGroup. Please make sure you have the proper permissions to create a resource group in the $location location."
         return
     }
 }
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
-    $ws=select-workspace -location $location -resourceGroup $resourceGroup -solutionTag $EnableTagName
+    $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $EnableTagName
 }
 else { 
     $ws=Get-AzOperationalInsightsWorkspace -Name $workspaceResourceId.split('/')[8] -ResourceGroupName $workspaceResourceId.split('/')[4] -ErrorAction SilentlyContinue
@@ -137,36 +137,40 @@ else {
         return
     }
 }
-$wsfriendlyname=$ws.ResourceId.split('/')[8]
+$wsfriendlyname=$ws.Name
 #endregion
 #region AMA policy setup
 if (!$skipAMAPolicySetup) {
-    "Enabling custom policy initiative to enable automatic AMA deployment. The policy only applies to the subscription where the packs are deployed."
+    Write-Host "Enabling custom policy initiative to enable automatic AMA deployment. The policy only applies to the subscription where the packs are deployed."
 
     $parameters=@{
         solutionTag=$EnableTagName
     }
     Write-Host "Deploying the AMA policy initiative to the current subscription."
-    New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
-    -TemplateFile './amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
+    New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+    -TemplateFile './amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
 }
 else {
-    "Skipping AMA policy check and configuration, as requested."
+    Write-Host "Skipping AMA policy check and configuration, as requested."
 }
 #endregion
 #region Main solution setup - Discovery
 # Setup Workbook, function, logic app  for Tag Discovery
 if (!($skipMainSolutionSetup)) {
+
+    # generate random storage account name
     $randomstoragechars = -join ((97..122) | Get-Random -Count 4 | ForEach-Object { [char]$_ })
+
+    # zip the Function App's code
     compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
-    $existingSAs=Get-AzStorageAccount -ResourceGroupName $resourceGroup -ErrorAction SilentlyContinue
+    $existingSAs=Get-AzStorageAccount -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
     if ($existingSAs) {
         $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
 
     }
     else {
         $storageaccountName = "azmonstarpacks$randomstoragechars"
-        "Using storage account name: $storageaccountName"
+        Write-Host "Using storage account name: $storageaccountName"
     }
     $parameters=@{
         functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
@@ -176,8 +180,9 @@ if (!($skipMainSolutionSetup)) {
         appInsightsLocation=$location
         solutionTag=$EnableTagName
     }
+
     Write-Host "Deploying the discovery function, logic app and workbook."
-    New-AzResourceGroupDeployment -name "functiondeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
+    New-AzResourceGroupDeployment -name "functiondeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
     -TemplateFile './Discovery/setup/discovery.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
 }
 #endregion
@@ -308,7 +313,7 @@ if (!($skipMainSolutionSetup)) {
 #     -wsfriendlyname $wsfriendlyname `
 #     -ws $ws `
 #     -location $location `
-#     -resourceGroup $resourceGroup `
+#     -resourceGroup $solutionResourceGroup `
 #     -useExistingDCR:$useExistingDCR.IsPresent `
 #     -DontAutoInstallAMA:$DontautoInstallAMA.IsPresent
 
@@ -316,9 +321,11 @@ if (!($skipMainSolutionSetup)) {
 # If the usesameAGforAllPacks switch is used, we will ask for the AG information only once.
 #if ($packs.count -gt 0 -and $foundServers -eq $true) {
 if (!($skipPacksSetup)) {
-    Write-Host "Found the following ENABLED packs:"
+    Write-Host "Found the following ENABLED packs in packs.json config file:"
     $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
     $packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
+
+    # deploy packs if any are enabled
     if ($packs.count -gt 0) {
         if ($useSameAGforAllPacks) {
             Write-host "'useSameAGforAllPacks' flag detected. Please provide AG information to be used to all Packs, either new or existing (depending on useExistingAG switch)"
@@ -336,13 +343,13 @@ if (!($skipPacksSetup)) {
                     }
                 }
                 else {
-                    "Action Group $existingAGName not found or more than one found. Please select AG:"
+                    Write-Host "Action Group $existingAGName not found or more than one found. Please select AG:"
                     $AGinfo=get-AGInfo -useExistingAG $useExistingAG.IsPresent
                 }
             }
         }
         install-packs -packinfo $packs `
-            -resourceGroup $resourceGroup `
+            -resourceGroup $solutionResourceGroup `
             -AGInfo $AGinfo `
             -useExistingAG:$useExistingAG.IsPresent `
             -existingAGName $actionGroupName `
