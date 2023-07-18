@@ -116,6 +116,14 @@ else {
         }
         Select-AzSubscription -SubscriptionId $sub.Id
     }
+    else {
+        $sub=Get-AzSubscription
+        "Using $($sub.Name) subscription since there is no other one."
+    }
+}
+if ($sub -eq $null) {
+    Write-Error "No subscription selected. Exiting."
+    return
 }
 #Creates the resource group if it does not exist.
 if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue)) {
@@ -165,8 +173,13 @@ if (!($skipMainSolutionSetup)) {
     compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
     $existingSAs=Get-AzStorageAccount -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
     if ($existingSAs) {
-        $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
-
+        if ($existingSAs.count -gt 1) {
+            $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
+        }
+        else {
+            $storageaccountName=$existingSAs.StorageAccountName
+            Write-Output "Using existing storage account $storageaccountName."
+        }
     }
     else {
         $storageaccountName = "azmonstarpacks$randomstoragechars"
