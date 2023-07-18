@@ -83,7 +83,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         effect: '[parameters(\'effect\')]'
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
-          name: 'AMSP-RulesAssociation' 
+          name: 'MonStar-RulesAssociation' 
           roleDefinitionIds: roledefinitionIds
           deployment: {
             properties: {
@@ -120,7 +120,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   //dcrId: '[concat(\'/subscriptions/\', variables(\'subscriptionId\'), \'/resourceGroups\', variables('defaultRGName'), '/providers/Microsoft.Insights/dataCollectionRules/', variables('dcrName'))]'
                   //DcrId: '[resourceId(\'Microsoft.Insights/dataCollectionRules\', variables (\'DCRName\'))]'
                   subscriptionId: '[subscription().subscriptionId]'
-                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/\',variables(\'DCRName\'))]'
+                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/MonStar-RulesAssociation\')]'
                 }
                 resources: [
                   {

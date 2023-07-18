@@ -231,7 +231,7 @@ var wbConfig='''
                 {
                   "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
                   "version": "KqlParameterItem/1.0",
-                  "name": "PackTagDisable",
+                  "name": "PackTagsLeft",
                   "label": "Add/Remove",
                   "type": 2,
                   "isGlobal": true,
@@ -248,7 +248,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "WinOS"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -268,7 +268,7 @@ var wbConfig='''
                   "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                   "cellValue": "",
                   "linkTarget": "ArmAction",
-                  "linkLabel": "Remove Monitoring for {PackTagDisable} Pack ",
+                  "linkLabel": "Remove Monitoring for {PackTagsLeft} Pack ",
                   "preText": "",
                   "style": "primary",
                   "linkIsContextBlade": true,
@@ -281,24 +281,29 @@ var wbConfig='''
                         "value": "removeTag"
                       }
                     ],
-                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
+                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\"\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                    "title": "Remove Monitoring",
+                    "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack ",
+                    "runLabel": "Confirm"
                   }
                 },
                 {
                   "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
                   "linkTarget": "ArmAction",
-                  "linkLabel": "Add Monitoring for {PackTagDisable} Pack",
+                  "linkLabel": "Add Monitoring for {PackTagsLeft} Pack",
                   "style": "primary",
                   "linkIsContextBlade": true,
                   "armActionContext": {
                     "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
-                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
+                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\"\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                    "title": "Add Monitoring",
+                    "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeft} Pack ",
+                    "actionName": "AddMonitoringPack",
+                    "runLabel": "Confirm"
                   }
                 },
                 {
@@ -313,7 +318,10 @@ var wbConfig='''
                     "params": [],
                     "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"All\"\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                    "title": "Remove All Monitoring",
+                    "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeft} Pack ",
+                    "actionName": "RemoveAllMonitoring",
+                    "runLabel": "Confirm"
                   }
                 }
               ]
@@ -439,7 +447,9 @@ var wbConfig='''
                     "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Servers\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
                     "httpMethod": "POST",
                     "title": "Enable Monitoring Packs",
-                    "description": "# This will enabled the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} to the server."
+                    "description": "# This will enable the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} to the server.",
+                    "actionName": "EnableMonitoring",
+                    "runLabel": "Confirm"
                   }
                 }
               ]
@@ -490,7 +500,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -503,7 +513,7 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project name,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8]\n| where MP=='{AlertPack}'",
+              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8]\n| where MP=='{AlertPack}'",
               "size": 0,
               "exportMultipleValues": true,
               "exportedParameters": [
@@ -553,7 +563,9 @@ var wbConfig='''
                     "params": [],
                     "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Enable\", \n    \"alerts\":  [{alertsselected}]\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                    "title": "Enable Alerts",
+                    "description": "# This action will Enable the selected Alerts\n\n{alertsselected}",
+                    "runLabel": "Confirm"
                   }
                 },
                 {
@@ -563,11 +575,14 @@ var wbConfig='''
                   "style": "primary",
                   "linkIsContextBlade": true,
                   "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
                     "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Disable\", \n    \"alerts\":  [{alertsselected}]\n  }\n}\n",
                     "httpMethod": "POST",
-                    "description": "# Actions can potentially modify resources.\n## Please use caution and include a confirmation message in this description when authoring this command."
+                    "title": "Disable Alerts",
+                    "description": "# This action will disable the selected Alerts\n\n{alertsselected}",
+                    "runLabel": "Confirm"
                   }
                 }
               ]
@@ -617,7 +632,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "AzMonPacks-Basic_VM_Monitoring_Linux-VMI"
+                  "value": "AzMonPacks-IISBasicIISMonitoring"
                 }
               ],
               "style": "pills",
@@ -1253,9 +1268,15 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyName=name) on policyName\n| project policyName, complianceState",
+              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyId=id, policyName=name) on policyName\n| project policyId, policyName, complianceState, type='Policy'\n| union( policyresources | where type == \"microsoft.policyinsights/policystates\"| extend policySetName=tostring(properties.policySetDefinitionName),complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policySetId=id, policySetName=name) on policySetName\n| project policyId=policySetId, policyName=policySetName, complianceState, type='Set')",
               "size": 1,
               "title": "Assignment Status (Compliance)",
+              "exportedParameters": [
+                {
+                  "parameterName": "policiesToRemediate",
+                  "parameterType": 5
+                }
+              ],
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources",
               "crossComponentResources": [
@@ -1265,17 +1286,89 @@ var wbConfig='''
                 "formatters": [
                   {
                     "columnMatch": "complianceState",
-                    "formatter": 1
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Compliant",
+                          "representation": "success",
+                          "text": "Compliant"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Non-Compliant",
+                          "representation": "2",
+                          "text": "Non-Compliant"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
             },
+            "customWidth": "50",
             "conditionalVisibility": {
               "parameterName": "tabSelection",
               "comparison": "isEqualTo",
               "value": "policystatus"
             },
-            "name": "query - 8"
+            "name": "query - 8",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "list",
+              "links": [
+                {
+                  "id": "b3bb5a4d-0f95-4e9a-8634-9cb027f860aa",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Remediate (all policies)",
+                  "preText": "",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\"\n  }\n}",
+                    "httpMethod": "POST",
+                    "description": "# Please confirm the change.",
+                    "runLabel": "Confirm"
+                  }
+                },
+                {
+                  "id": "8dfc5afa-108a-4713-8a0c-651c3a32c5f1",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Check Compliance",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Scan\"\n  }\n}",
+                    "httpMethod": "POST",
+                    "title": "Check Policy Compliance",
+                    "description": "# Please confirm the scan.",
+                    "runLabel": "Confirm"
+                  }
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "links - 3"
           },
           {
             "type": 3,

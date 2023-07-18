@@ -3,6 +3,7 @@ param policyDefinitionId string
 param assignmentName string
 param location string
 param roledefinitionIds array
+param solutionTag string
 
 resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: assignmentName
@@ -14,6 +15,9 @@ resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
       policyDefinitionId: policyDefinitionId
       displayName: assignmentName
       enforcementMode: 'Default'
+      metadata: {
+        createdBy: solutionTag
+      }
   }
 }
 
