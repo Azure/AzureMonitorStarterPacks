@@ -29,12 +29,12 @@
       "PackName": "AzMon-Packs-Windows-nginx-Monitoring",
       "RuleName": "AzMonPacks-nginxMonitoring",
       "ModuleType": "IaaS",
-      "Status": "Disabled",
+      "Status": "Enabled",
       "RequiredTag" : "nginx",
       "osTarget" : "Linux",
       "PackageName": "nginx",
       "DiscoveryType": "PackageName",
-      "TemplateLocation" : "./Packs/IaaS/nginx/nginxmonitoring.bicep",
+      "TemplateLocation" : "./Packs/IaaS/nginx/nginx.bicep",
       "moduleParameters": [
       ]      
     },

@@ -83,7 +83,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         effect: '[parameters(\'effect\')]'
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
-          name: 'MonStar-RulesAssociation' 
+          name: 'MonStar-RulesAssociation-${packtag}' 
           roleDefinitionIds: roledefinitionIds
           deployment: {
             properties: {
@@ -101,7 +101,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   DCRId2: {
                     type: 'string'
                   }
-
+                  packTag: {
+                    type: 'string'
+                  }
                 }
                 variables: {
                   locationLongNameToShortMap: {
@@ -120,7 +122,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   //dcrId: '[concat(\'/subscriptions/\', variables(\'subscriptionId\'), \'/resourceGroups\', variables('defaultRGName'), '/providers/Microsoft.Insights/dataCollectionRules/', variables('dcrName'))]'
                   //DcrId: '[resourceId(\'Microsoft.Insights/dataCollectionRules\', variables (\'DCRName\'))]'
                   subscriptionId: '[subscription().subscriptionId]'
-                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/MonStar-RulesAssociation\')]'
+                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/MonStar-RulesAssociation-\',parameters(\'packTag\')]'
                 }
                 resources: [
                   {
@@ -143,6 +145,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                 }
                 DCRId2: {
                   value: '[parameters(\'DCRId\')]'
+                }
+                packTag: {
+                  value: '[parameters(\'tagValue\')]'
                 }
               }
             }

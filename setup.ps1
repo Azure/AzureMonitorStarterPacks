@@ -152,7 +152,7 @@ if (!$skipAMAPolicySetup) {
     Write-Host "Enabling custom policy initiative to enable automatic AMA deployment. The policy only applies to the subscription where the packs are deployed."
 
     $parameters=@{
-        solutionTag=$EnableTagName
+        solutionTag=$solutionTag
     }
     Write-Host "Deploying the AMA policy initiative to the current subscription."
     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
@@ -191,7 +191,7 @@ if (!($skipMainSolutionSetup)) {
         storageAccountName=$storageAccountName
         lawresourceid=$ws.ResourceId
         appInsightsLocation=$location
-        solutionTag=$EnableTagName
+        solutionTag=$solutionTag
     }
 
     Write-Host "Deploying the discovery function, logic app and workbook."
@@ -369,7 +369,7 @@ if (!($skipPacksSetup)) {
             -useSameAGforAllPacks:$useSameAGforAllPacks.IsPresent `
             -workspaceResourceId $ws.ResourceId `
             -discoveryType $discoveryType `
-            -solutionTag $EnableTagName
+            -solutionTag $solutionTag
     }
     else {
         Write-Error "No packs found in $packsFilePath or no servers identified. Please correct the error and try again."

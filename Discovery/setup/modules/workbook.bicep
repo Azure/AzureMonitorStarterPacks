@@ -164,6 +164,14 @@ var wbConfig='''
             "linkLabel": "ALZ Baseline Info",
             "subTarget": "alzinfo",
             "style": "link"
+          },
+          {
+            "id": "e1f636a4-1593-49ef-bf35-abf708e2be48",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Backend Status",
+            "subTarget": "backend",
+            "style": "link"
           }
         ]
       },
@@ -235,7 +243,7 @@ var wbConfig='''
                   "label": "Add/Remove",
                   "type": 2,
                   "isGlobal": true,
-                  "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
                   "crossComponentResources": [
                     "{Workspace}"
                   ],
@@ -402,7 +410,7 @@ var wbConfig='''
                   "label": "Select Pack to Enable",
                   "type": 2,
                   "isGlobal": true,
-                  "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
@@ -412,7 +420,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -619,7 +627,7 @@ var wbConfig='''
                   "name": "CollectionRule",
                   "label": "Collection Rule",
                   "type": 2,
-                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by name\n",
+                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by name\n",
                   "crossComponentResources": [
                     "{Subscriptions}"
                   ],
@@ -632,7 +640,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "AzMonPacks-IISBasicIISMonitoring"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -1613,6 +1621,32 @@ var wbConfig='''
         "value": "alzinfo"
       },
       "name": "alzgroup"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    cloud_RoleName\n| where timestamp > ago(30d)\n| where cloud_RoleName =~ 'MonitorStarterPacks-6c64f9ed' //and operation_Name =~ 'tagmgmt'\n| order by timestamp desc\n| take 20",
+        "size": 0,
+        "title": "Function Runs",
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Insights/components/MonitorStarterPacks-6c64f9ed"
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "backend"
+      },
+      "name": "query - 15",
+      "styleSettings": {
+        "showBorder": true
+      }
     }
   ],
   "fallbackResourceIds": [

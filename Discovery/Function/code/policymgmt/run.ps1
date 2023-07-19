@@ -24,7 +24,9 @@ switch ($action) {
             else {
                 "Policy $($pol.PolicyDefinitionId) is compliant"
             }
-            # $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
+
+        }
+                    # $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
             # foreach ($init in $inits) {
             #     "Retrieving policy set $($init.PolicySetDefinitionId) compliance:"
             #     $compliance=(get-AzPolicystate -PolicySetDefinitionName $init.Name).ComplianceState
@@ -36,7 +38,6 @@ switch ($action) {
             #     }
             #     Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
             # }
-        }
     }
     'Scan' {
         Start-AzPolicyComplianceScan -AsJob
