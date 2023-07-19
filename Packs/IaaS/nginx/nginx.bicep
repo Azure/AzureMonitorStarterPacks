@@ -1,7 +1,3 @@
-//param vmnames array
-param vmIDs array = []
-//param vmOSs array = []
-//param arcVMIDs array = []
 param rulename string
 param actionGroupName string
 //param location string= resourceGroup().location
@@ -30,48 +26,43 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
     //location: location defailt is global
   }
 }
-// resource age 'Microsoft.Insights/actionGroups@2018-09-01-preview' existing = if (useExistingAG) {
-//   name: actionGroupName
-//   scope: subscription()
-// }
-// Alerts - Event viewer based alerts. Depend on the event viewer logs being enabled on the VMs events are being sent to the workspace via DCRs.
-// module eventAlerts './eventAlerts.bicep' = {
-//   name: 'eventAlerts'
-//   params: {
-//     AGId: ag.outputs.actionGroupResourceId
-//     location: location
-//     workspaceId: workspaceId
-//     packtag: packtag
-//     solutionTag: solutionTag
-//   }
-// } 
 
-// This option uses an existing VMI rule but this can be a tad problematic.
-// resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
-//   name: insightsRuleName
-//   scope: resourceGroup(insightsRuleRg)
-// }
-// So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
-module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
-  name: 'vmInsightsDCR-${packtag}'
+module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
+ name: 'dataCollectionEndpoint-${solutionTag}'
+ params: {
+   location: location
+   packtag: packtag
+   solutionTag: solutionTag
+   dceName: 'dataCollectionEndpoint-${solutionTag}'
+ }
+}
+
+module fileCollectionRule '../../../modules/DCRs/filecollectionLinux.bicep' = {
+  name: 'filecollectionrule-${packtag}'
   params: {
     location: location
-    workspaceResourceId: workspaceId
+    endpointResourceId: dataCollectionEndpoint.outputs.dceId
     packtag: packtag
     solutionTag: solutionTag
     ruleName: rulename
+    filepatterns: [
+      '/var/log/nginx/access.log'
+      '/var/log/nginx/error.log'
+    ]
+    lawResourceId:workspaceId
+    tableName: 'NginxLogs'
   }
 }
-module InsightsAlerts './VMInsightsAlerts.bicep' = {
-  name: 'Alerts-${packtag}'
-  params: {
-    location: location
-    workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
-    packtag: packtag
-    solutionTag: solutionTag
-  }
-}
+// module InsightsAlerts './VMInsightsAlerts.bicep' = {
+//   name: 'Alerts-${packtag}'
+//   params: {
+//     location: location
+//     workspaceId: workspaceId
+//     AGId: ag.outputs.actionGroupResourceId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//   }
+// }
 // Azure recommended Alerts for VMs
 // These are the (very) basic recommeded alerts for VM, based on platform metrics
 // module vmrecommended '../WinOS/AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {
@@ -141,23 +132,10 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
 module policysetup '../../../modules/policies/subscription/policies.bicep' = {
   name: 'policysetup-${packtag}'
   params: {
-    dcrId: vmInsightsDCR.outputs.VMIRuleId
+    dcrId: fileCollectionRule.outputs.ruleId
     packtag: packtag
     solutionTag: solutionTag
     rulename: rulename
     location: location
   }
 }
-
-// module policysetup2 '../../../modules/policies/subscription/policies.bicep' = {
-//   name: 'policysetup-${packtag}'
-//   params: {
-//     dcrId: dcrbasicvmMonitoring.outputs.dcrId
-//     packtag: packtag
-//     solutionTag: solutionTag
-//     rulename: rulename
-//     location: location
-//   }
-// }
-
-

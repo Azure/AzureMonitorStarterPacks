@@ -1,5 +1,5 @@
 param parentname string
-param tableNamePrefix string
+param tableName string
 param retentionDays int = 31
 
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing =  {
@@ -7,13 +7,13 @@ resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing =  {
 }
 
 resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = {
-  name: '${tableNamePrefix}_CL'
+  name: tableName
   parent: law
   properties: {
     totalRetentionInDays: retentionDays
     plan: 'Analytics'
     schema: {
-        name: '${tableNamePrefix}_CL'
+        name: tableName
         columns: [
             {
                 name: 'TimeGenerated'

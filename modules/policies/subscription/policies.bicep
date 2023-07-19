@@ -48,6 +48,7 @@ module arcassignment './assignment.bicep' = {
     location: location
     assignmentName: 'Assignment-${packtag}-arc'
     roledefinitionIds: roledefinitionIds
+    solutionTag: solutionTag
   }
 }
 module vmassignment './assignment.bicep' = {
@@ -62,5 +63,6 @@ module vmassignment './assignment.bicep' = {
     assignmentName: 'Assignment-${packtag}-vm'
     location: location
     roledefinitionIds: roledefinitionIds
+    solutionTag: solutionTag
   }
 }
