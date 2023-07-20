@@ -12,6 +12,19 @@ param workspaceFriendlyName string
 //param osTarget string
 param packtag string
 param solutionTag string
+var facilityNames = [
+  'daemon'
+]
+var logLevels =[
+  'Debug'
+  'Info'
+  'Notice'
+  'Warning'
+  'Error'
+  'Critical'
+  'Alert'
+  'Emergency'
+]
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
@@ -37,7 +50,7 @@ module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bice
  }
 }
 
-module fileCollectionRule '../../../modules/DCRs/filecollectionLinux.bicep' = {
+module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = {
   name: 'filecollectionrule-${packtag}'
   params: {
     location: location
@@ -51,6 +64,9 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionLinux.bicep' = {
     ]
     lawResourceId:workspaceId
     tableName: 'NginxLogs'
+    facilityNames: facilityNames
+    logLevels: logLevels
+    syslogDataSourceName: 'NginxLogs-1238219'
   }
 }
 // module InsightsAlerts './VMInsightsAlerts.bicep' = {

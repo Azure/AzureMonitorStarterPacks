@@ -56,7 +56,6 @@ module vmassignment './assignment.bicep' = {
     policyVM
   ]
   name: 'vmassignment-${packtag}'
-
   scope: subscription()
   params: {
     policyDefinitionId: policyVM.outputs.policyId

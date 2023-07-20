@@ -10,7 +10,7 @@ $Action=$Request.Body.Action
 # Interact with query parameters or the body of the request.
 switch ($action) {
     'Remediate' {
-        $pols=Get-AzPolicyDefinition | ? {$_.properties.Metadata.$SolutionTag -ne $null} 
+        $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.$SolutionTag -ne $null} 
         foreach ($pol in $pols) {
             $compliance=(get-AzPolicystate -PolicyDefinitionName $pol.Name).ComplianceState
             if ($compliance -eq "NonCompliant") {
