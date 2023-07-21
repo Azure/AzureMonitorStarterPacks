@@ -16,7 +16,9 @@ param lawResourceId string
 
 param solutionTag string
 param packtag string
-
+param facilityNames array
+param logLevels array
+param syslogDataSourceName string = 'sysLogsDataSource-1688419672'
 
 var tableNameToUse = 'CustomAzMA${tableName}_CL'
 var streamName= 'Custom-${tableNameToUse}'
@@ -43,6 +45,16 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
   kind: 'Linux'
   properties: {
     dataSources: {
+      syslog: [
+        {
+            streams: [
+                'Microsoft-Syslog'
+            ]
+            facilityNames: facilityNames
+            logLevels: logLevels
+            name: syslogDataSourceName
+        }
+      ]
       logFiles: [
         {
             streams: [
@@ -68,6 +80,16 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
       ]
     }
     dataFlows: [
+      {
+        streams: [
+            'Microsoft-Syslog'
+        ]
+        destinations: [
+            lawFriendlyName
+        ]
+        transformKql: 'source | where SyslogMessage == "Stopping A high performance web server and a reverse proxy server..." or SyslogMessage == "Started A high performance web server and a reverse proxy server."'
+        outputStream: 'Microsoft-Syslog'
+      }
       {
           streams: [
             streamName

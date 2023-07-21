@@ -37,7 +37,15 @@ resource rule 'Microsoft.Insights/scheduledQueryRules@2022-08-01-preview' = {
           {
               query: query
               timeAggregation: 'Count'
-              dimensions: []
+              dimensions: [
+                {
+                  name: 'Computer'
+                  operator: 'Include'
+                  values: [
+                    '*'
+                  ]
+                }
+              ]
               resourceIdColumn: '_ResourceId'
               operator: 'GreaterThan'
               threshold: 0
