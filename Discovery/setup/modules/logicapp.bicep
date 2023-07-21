@@ -92,6 +92,23 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                   }
                 }
               }
+              Case_3: {
+                case: 'policymgmt'
+                actions: {
+                  policymgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                      function: {
+                        id: '${azfunctionsite.id}/functions/policymgmt'
+                      }
+                      headers: {
+                        'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                      }
+                    }
+                  }
+                }
+              }           
             }
             default: {
               actions: {}
