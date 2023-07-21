@@ -13,7 +13,7 @@ $TagValue = $Request.Body.Pack
 
 if ($servers) {
         #$TagName='MonitorStarterPacks'
-    $TagName=$env:TagName
+    $TagName=$env:SolutionTag
     if ([string]::isnullorempty($TagName)) {
         $TagName='MonitorStarterPacks'
         "Missing TagName. Please set the TagName environment variable. Setting to Default"

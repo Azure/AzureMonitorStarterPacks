@@ -10,7 +10,7 @@ var wbConfig='''
     {
       "type": 1,
       "content": {
-        "json": "# Azure Monitor Starter Packs - Admin Centre\n"
+        "json": "# Azure Monitor Starter Packs - Admin Centre\n[Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n"
       },
       "customWidth": "50",
       "name": "text - 5"
@@ -19,6 +19,9 @@ var wbConfig='''
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
         "parameters": [
           {
             "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -53,7 +56,7 @@ var wbConfig='''
             "isRequired": true,
             "query": "resources\n| where type == \"microsoft.logic/workflows\"\n| project Id=id, Name=name",
             "crossComponentResources": [
-              "value::all"
+              "{Subscriptions}"
             ],
             "typeSettings": {
               "resourceTypeFilter": {
@@ -105,8 +108,8 @@ var wbConfig='''
           }
         ],
         "style": "above",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
       },
       "customWidth": "50",
       "name": "parameters - 6"
@@ -256,7 +259,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": "Nginx"
                 }
               ],
               "style": "pills",
@@ -410,7 +413,7 @@ var wbConfig='''
                   "label": "Select Pack to Enable",
                   "type": 2,
                   "isGlobal": true,
-                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
@@ -508,7 +511,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -521,7 +524,7 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8]\n| where MP=='{AlertPack}'",
+              "query": "resources\n| where type == \"microsoft.insights/scheduledqueryrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8], location\n| where MP=='{AlertPack}'",
               "size": 0,
               "exportMultipleValues": true,
               "exportedParameters": [
@@ -540,6 +543,10 @@ var wbConfig='''
               "visualization": "table",
               "gridSettings": {
                 "formatters": [
+                  {
+                    "columnMatch": "location",
+                    "formatter": 5
+                  },
                   {
                     "columnMatch": "name",
                     "formatter": 7
@@ -614,48 +621,14 @@ var wbConfig='''
         "groupType": "editable",
         "items": [
           {
-            "type": 9,
-            "content": {
-              "version": "KqlParameterItem/1.0",
-              "crossComponentResources": [
-                "{Subscriptions}"
-              ],
-              "parameters": [
-                {
-                  "id": "ef1561b3-5e9d-4134-bb2a-7da8e77ddedc",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "CollectionRule",
-                  "label": "Collection Rule",
-                  "type": 2,
-                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by name\n",
-                  "crossComponentResources": [
-                    "{Subscriptions}"
-                  ],
-                  "typeSettings": {
-                    "additionalResourceOptions": [],
-                    "showDefault": false
-                  },
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
-                }
-              ],
-              "style": "pills",
-              "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources"
-            },
-            "name": "parameters - 7"
-          },
-          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=split(properties.dataCollectionRuleId,\"/\")[8],resourceName=split(resourceId,\"/\")[8],resourceId//ruleId=properties.dataCollectionRuleId\n| where '{CollectionRule}'==rulename",
+              "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by name\n",
               "size": 1,
-              "title": "Rule Association",
+              "title": "Select Pack to see associated Machines",
+              "exportFieldName": "name",
+              "exportParameterName": "selectedRule",
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources",
               "gridSettings": {
@@ -667,7 +640,35 @@ var wbConfig='''
                 ]
               }
             },
-            "name": "query - 6"
+            "customWidth": "50",
+            "name": "query - 6 - Copy",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=split(properties.dataCollectionRuleId,\"/\")[8],resourceName=split(resourceId,\"/\")[8],resourceId//ruleId=properties.dataCollectionRuleId\n| where '{selectedRule}'==rulename",
+              "size": 1,
+              "title": "Associated Machines",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Group",
+                    "formatter": 1
+                  }
+                ]
+              }
+            },
+            "customWidth": "50",
+            "name": "query - 6 - Copy - Copy",
+            "styleSettings": {
+              "showBorder": true
+            }
           }
         ]
       },
@@ -676,7 +677,10 @@ var wbConfig='''
         "comparison": "isEqualTo",
         "value": "rulemanagement"
       },
-      "name": "rulemanagement"
+      "name": "rulemanagement",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 9,
@@ -714,7 +718,7 @@ var wbConfig='''
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{subscriptionId}/providers/Microsoft.Insights/dataCollectionRules\",\"urlParams\":[{\"key\":\"$filter\",\"value\":\"tagname eq 'MonitorStarterPacks'\"},{\"key\":\"api-version\",\"value\":\"2021-09-01-preview\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value\",\"columns\":[{\"path\":\"id\",\"columnid\":\"id\"},{\"path\":\"$\",\"columnid\":\"properties\"},{\"path\":\"kind\",\"columnid\":\"kind\"},{\"path\":\"location\",\"columnid\":\"location\"},{\"path\":\"properties.provisioningState\",\"columnid\":\"provisioningState\"},{\"path\":\"name\",\"columnid\":\"name\"},{\"path\":\"properties.dataSources.syslog\",\"columnid\":\"syslog\"},{\"path\":\"properties.dataSources.windowsEventLogs[*]\",\"columnid\":\"windowsEventLogs\"},{\"path\":\"properties.dataSources.windowsEventLogs[*].streams[?(@ ==\\\"Microsoft-SecurityEvent\\\")]\",\"columnid\":\"securityEvents\"},{\"path\":\"properties.dataSources.performanceCounters[*]\",\"columnid\":\"performanceCounters\"},{\"path\":\"properties.dataCollectionEndpointId\",\"columnid\":\"dataCollectionEndpointId\"},{\"path\":\"properties.dataFlows[?(@.transformKql != \\\"source\\\")].transformKql\",\"columnid\":\"transformKql\"},{\"path\":\"properties.destinations\",\"columnid\":\"destinations\"},{\"path\":\"properties.dataFlows[*].transformKql\",\"columnid\":\"queries\"},{\"path\":\"properties.dataSources\",\"columnid\":\"dataSources\"},{\"path\":\"properties.dataFlows\",\"columnid\":\"dataFlows\"},{\"path\":\"description\",\"columnid\":\"description\"},{\"path\":\"properties.destinations.logAnalytics.*.name\",\"columnid\":\"destinationName\"},{\"path\":\"systemData.lastModifiedBy\",\"columnid\":\"lastModifiedBy\"},{\"path\":\"properties.destinations.logAnalytics.*.workspaceResourceId\",\"columnid\":\"workspaceResourceId\"},{\"path\":\"tags.MonitorStarterPacks\",\"columnid\":\"packs\"}]}}]}",
+        "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{subscriptionId}/providers/Microsoft.Insights/dataCollectionRules\",\"urlParams\":[{\"key\":\"$filter\",\"value\":\"tagname eq 'MonitorStarterPacks'\"},{\"key\":\"api-version\",\"value\":\"2021-09-01-preview\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value\",\"columns\":[{\"path\":\"id\",\"columnid\":\"id\"},{\"path\":\"$\",\"columnid\":\"properties\"},{\"path\":\"kind\",\"columnid\":\"kind\"},{\"path\":\"location\",\"columnid\":\"location\"},{\"path\":\"properties.provisioningState\",\"columnid\":\"provisioningState\"},{\"path\":\"name\",\"columnid\":\"name\"},{\"path\":\"properties.dataSources.syslog\",\"columnid\":\"syslog\"},{\"path\":\"properties.dataSources.windowsEventLogs[*]\",\"columnid\":\"windowsEventLogs\"},{\"path\":\"properties.dataSources.windowsEventLogs[*].streams[?(@ ==\\\"Microsoft-SecurityEvent\\\")]\",\"columnid\":\"securityEvents\"},{\"path\":\"properties.dataSources.logFiles[*]\",\"columnid\":\"logsettings\"},{\"path\":\"properties.dataSources.performanceCounters[*]\",\"columnid\":\"performanceCounters\"},{\"path\":\"properties.dataCollectionEndpointId\",\"columnid\":\"dataCollectionEndpointId\"},{\"path\":\"properties.dataFlows[?(@.transformKql != \\\"source\\\")].transformKql\",\"columnid\":\"transformKql\"},{\"path\":\"properties.destinations\",\"columnid\":\"destinations\"},{\"path\":\"properties.dataFlows[*].transformKql\",\"columnid\":\"queries\"},{\"path\":\"properties.dataSources\",\"columnid\":\"dataSources\"},{\"path\":\"properties.dataFlows\",\"columnid\":\"dataFlows\"},{\"path\":\"description\",\"columnid\":\"description\"},{\"path\":\"properties.destinations.logAnalytics.*.name\",\"columnid\":\"destinationName\"},{\"path\":\"systemData.lastModifiedBy\",\"columnid\":\"lastModifiedBy\"},{\"path\":\"properties.destinations.logAnalytics.*.workspaceResourceId\",\"columnid\":\"workspaceResourceId\"},{\"path\":\"tags.MonitorStarterPacks\",\"columnid\":\"packs\"}]}}]}",
         "size": 0,
         "title": "List of Currently Configured Data Collection Rules",
         "showRefreshButton": true,
@@ -952,6 +956,27 @@ var wbConfig='''
               }
             },
             {
+              "columnMatch": "logsettings",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "is Empty",
+                    "representation": "cancelled",
+                    "text": "Not Configured"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "success",
+                    "text": "Configured"
+                  }
+                ],
+                "customColumnWidthSetting": "20ch"
+              }
+            },
+            {
               "columnMatch": "performanceCounters",
               "formatter": 18,
               "formatOptions": {
@@ -1105,7 +1130,7 @@ var wbConfig='''
           "filter": true,
           "sortBy": [
             {
-              "itemKey": "$gen_link_id_0",
+              "itemKey": "packs",
               "sortOrder": 2
             }
           ],
@@ -1163,7 +1188,7 @@ var wbConfig='''
         },
         "sortBy": [
           {
-            "itemKey": "$gen_link_id_0",
+            "itemKey": "packs",
             "sortOrder": 2
           }
         ]
@@ -1306,14 +1331,14 @@ var wbConfig='''
                         },
                         {
                           "operator": "==",
-                          "thresholdValue": "Non-Compliant",
+                          "thresholdValue": "Non-compliant",
                           "representation": "2",
                           "text": "Non-Compliant"
                         },
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "success",
+                          "representation": "warning",
                           "text": "{0}{1}"
                         }
                       ]
@@ -1552,6 +1577,62 @@ var wbConfig='''
       },
       "customWidth": "50",
       "name": "query - agent install status - Copy",
+      "styleSettings": {
+        "showBorder": true
+      }
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Heartbeat | where Category == \"Azure Monitor Agent\"\n| summarize arg_max(TimeGenerated, *) by Computer\n| project  Computer,LastHeartbeat=TimeGenerated, ['SecondsAgo']=datetime_diff('second',now(),TimeGenerated)\n| sort by SecondsAgo asc",
+        "size": 4,
+        "title": "Last Heartbeat (24 hours)",
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "SecondsAgo",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "<=",
+                    "thresholdValue": "600",
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": ">",
+                    "thresholdValue": "600",
+                    "representation": "2",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": null,
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            }
+          ],
+          "filter": true
+        }
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "agentmgmt"
+      },
+      "customWidth": "50",
+      "name": "query - 16",
       "styleSettings": {
         "showBorder": true
       }

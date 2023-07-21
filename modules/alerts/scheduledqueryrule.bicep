@@ -13,7 +13,7 @@ param query string
 //param starterPackName string
 param packtag string
 param solutionTag string
-resource rule 'Microsoft.Insights/scheduledQueryRules@2022-08-01-preview' = {
+resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
   location: location
   name: alertRuleName
   tags: {
