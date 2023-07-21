@@ -10,7 +10,7 @@ Write-Host "PowerShell HTTP trigger function processed a request."
 $alerts = $Request.Body.Alerts
 $action = $Request.Body.Action
 #$TagValue = $Request.Body.Pack
-
+$apiversion="2023-03-15-preview"
 if ($alerts) {
         #$TagName='MonitorStarterPacks'
     $TagName=$env:TagName
@@ -21,19 +21,33 @@ if ($alerts) {
     "Working on $($alerts.count) server(s). Action: $action. "
     switch ($action) {
         'Enable' {
-            foreach ($alert in $alerts) {
-                # Enable alert
+            $bodyAction=@"
+            {
+                "properties": {
+                  "enabled": "true"
+                }
             }
+"@
         }
         'Disable' {
-            foreach ($alert in $alerts) {
-                "Running $action for $($alert.Server) alert."
-                #Disable alert
+            $bodyAction=@"
+            {
+                "properties": {
+                  "enabled": "false"
+                }
             }
+"@
         }
         default {
             Write-Host "Invalid Action"
         }
+    }
+    foreach ($alert in $alerts) {
+        $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group,#8 is alert name
+        
+        "Running $action for $($alertinfo[8]) alert."
+        $patchURL="https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/providers/Microsoft.Insights/scheduledQueryRules/{2}?api-version=$apiversion" -f $alertinfo[2],$alertinfo[4], $alertinfo[8]
+        Invoke-AzRestMethod -Method PATCH -Uri $patchURL -Payload $bodyAction
     }
 }
 else
