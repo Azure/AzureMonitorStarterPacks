@@ -1,6 +1,8 @@
 param functioname string
 param solutionTag string
+param solutionVersion string
 param location string
+
 
 resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functioname
@@ -9,6 +11,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: 'Discovery'
   tags: {
     '${solutionTag}': 'logicapp'
+    '${solutionTag}-Version': solutionVersion
   }
 
   location: location

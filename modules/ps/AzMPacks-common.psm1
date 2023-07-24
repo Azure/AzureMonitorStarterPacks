@@ -444,7 +444,8 @@ function deploy-pack {
         [bool] $enableBasicVMPlatformAlerts=$false,
         [string] $resourceGroup,
         [string] $discoveryType,
-        [string] $solutionTag
+        [string] $solutionTag,
+        [string] $solutionVersion
         #,
         #[string] $osTarget # Windows, Linux or All
     )
@@ -469,6 +470,7 @@ function deploy-pack {
             #osTarget=$packinfo.osTarget
             packtag=$packinfo.RequiredTag
             solutionTag=$solutionTag
+            solutionVersion=$solutionVersion
         }
         if ($useExistingAG) {
             $parameters+=@{
@@ -512,7 +514,8 @@ function install-packs {
         [object]$AGInfo,
         [string]$resourceGroup,
         [string]$discoveryType,
-        [string]$solutionTag
+        [string]$solutionTag,
+        [string]$solutionVersion
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
@@ -525,7 +528,8 @@ function install-packs {
                     -AGInfo $AGinfo `
                     -resourceGroup $resourceGroup `
                     -discoveryType $discoveryType `
-                    -solutionTag $solutionTag
+                    -solutionTag $solutionTag `
+                    -solutionVersion $solutionVersion
     }
 }
 function get-AGInfo {

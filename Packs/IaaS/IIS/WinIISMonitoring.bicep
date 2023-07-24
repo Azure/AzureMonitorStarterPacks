@@ -12,6 +12,7 @@ param workspaceFriendlyName string
 //param osTarget string = 'Windows'
 param packtag string
 param solutionTag string
+param solutionVersion string
 
 var kind= 'Windows'
 
@@ -95,6 +96,7 @@ module Alerts './WinIISAlerts.bicep' = {
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR

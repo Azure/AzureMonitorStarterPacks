@@ -34,7 +34,7 @@
       "osTarget" : "Linux",
       "PackageName": "nginx",
       "DiscoveryType": "PackageName",
-      "TemplateLocation" : "./Packs/IaaS/nginx/nginx.bicep",
+      "TemplateLocation" : "./Packs/IaaS/Nginx/nginx.bicep",
       "moduleParameters": [
       ]      
     },

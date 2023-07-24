@@ -17,6 +17,7 @@ param enableInsightsAlerts string = 'true'
 //param insightsRuleRg string = ''
 param packtag string
 param solutionTag string
+param solutionVersion string
 param workspaceFriendlyName string
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
@@ -41,6 +42,8 @@ module eventAlerts 'eventAlerts.bicep' = {
     workspaceId: workspaceId
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
+
   }
 } 
 
@@ -52,6 +55,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }
 

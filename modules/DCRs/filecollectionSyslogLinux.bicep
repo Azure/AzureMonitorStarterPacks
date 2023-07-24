@@ -87,7 +87,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
         destinations: [
             lawFriendlyName
         ]
-        transformKql: 'source | where SyslogMessage == "Stopping A high performance web server and a reverse proxy server..." or SyslogMessage == "Started A high performance web server and a reverse proxy server."'
+        transformKql: 'source | where SyslogMessage == "Stopped A high performance web server and a reverse proxy server." or SyslogMessage == "Started A high performance web server and a reverse proxy server."'
         outputStream: 'Microsoft-Syslog'
       }
       {

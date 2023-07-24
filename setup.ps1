@@ -78,7 +78,7 @@ param (
     [string]
     $discoveryType="tags"
 )
-
+$solutionVersion="0.1.0"
 #region basic initialization
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
@@ -192,6 +192,7 @@ if (!($skipMainSolutionSetup)) {
         lawresourceid=$ws.ResourceId
         appInsightsLocation=$location
         solutionTag=$solutionTag
+        solutionVersion=$solutionVersion
     }
 
     Write-Host "Deploying the discovery function, logic app and workbook."
@@ -369,7 +370,8 @@ if (!($skipPacksSetup)) {
             -useSameAGforAllPacks:$useSameAGforAllPacks.IsPresent `
             -workspaceResourceId $ws.ResourceId `
             -discoveryType $discoveryType `
-            -solutionTag $solutionTag
+            -solutionTag $solutionTag `
+            -solutionVersion $solutionVersion
     }
     else {
         Write-Error "No packs found in $packsFilePath or no servers identified. Please correct the error and try again."
