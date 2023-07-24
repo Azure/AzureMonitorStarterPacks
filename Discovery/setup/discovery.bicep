@@ -13,6 +13,7 @@ param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
 @secure()
 param apiManagementKey string= base64(newGuid())
+var solutionVersion = '0.1.0'
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
@@ -36,6 +37,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   location: location
   tags: {
     '${solutionTag}': 'storageaccount'
+    '${solutionTag}-Version': solutionVersion
   }
   sku: {
     name: 'Standard_LRS'
@@ -78,6 +80,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   ]
   tags: {
     '${solutionTag}': 'deploymentScript'
+    '${solutionTag}-Version': solutionVersion
   }
   location: location
   kind: 'AzureCLI'
@@ -108,6 +111,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   location: location
   tags: {
     '${solutionTag}': 'serverfarm'
+    '${solutionTag}-Version': solutionVersion
   }
   sku: {
     name: 'Y1'
@@ -136,6 +140,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
   kind: 'functionapp'
   tags: {
     '${solutionTag}': 'site'
+    '${solutionTag}-Version': solutionVersion
   }
   identity: {
       type: 'SystemAssigned'
@@ -230,6 +235,7 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   name: functionname
   tags: {
     '${solutionTag}': 'InsightsComponent'
+    '${solutionTag}-Version': solutionVersion
   }
   location: appInsightsLocation
   kind: 'web'
@@ -315,6 +321,7 @@ module logicapp './modules/logicapp.bicep' = {
     functioname: functionname
     location: location
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }
 module workbook './modules/workbook.bicep' = {
@@ -323,6 +330,7 @@ module workbook './modules/workbook.bicep' = {
     lawresourceid: lawresourceid
     location: location
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }
 //output functionkey string = listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey

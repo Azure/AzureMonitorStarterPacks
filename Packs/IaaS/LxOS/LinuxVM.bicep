@@ -16,6 +16,7 @@ param workspaceFriendlyName string
 //param osTarget string
 param packtag string
 param solutionTag string
+param solutionVersion string
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
@@ -70,6 +71,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }
 // Azure recommended Alerts for VMs

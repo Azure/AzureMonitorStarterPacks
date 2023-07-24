@@ -5,13 +5,15 @@ param emailreceivers array = []
 param emailreiceversemails array  = []
 param useExistingAG bool = false
 param existingAGRG string = ''
-param enableBasicVMPlatformAlerts bool = false
+//param enableBasicVMPlatformAlerts bool = false
 param location string = resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
 //param osTarget string
 param packtag string
 param solutionTag string
+param solutionVersion string
+
 var facilityNames = [
   'daemon'
 ]
@@ -69,16 +71,18 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
     syslogDataSourceName: 'NginxLogs-1238219'
   }
 }
-// module InsightsAlerts './VMInsightsAlerts.bicep' = {
-//   name: 'Alerts-${packtag}'
-//   params: {
-//     location: location
-//     workspaceId: workspaceId
-//     AGId: ag.outputs.actionGroupResourceId
-//     packtag: packtag
-//     solutionTag: solutionTag
-//   }
-// }
+module Alerts './nginxalerts.bicep' = {
+  name: 'Alerts-${packtag}'
+  params: {
+    location: location
+    workspaceId: workspaceId
+    AGId: ag.outputs.actionGroupResourceId
+    packtag: packtag
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    
+  }
+}
 // Azure recommended Alerts for VMs
 // These are the (very) basic recommeded alerts for VM, based on platform metrics
 // module vmrecommended '../WinOS/AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {

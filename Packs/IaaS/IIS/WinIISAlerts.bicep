@@ -3,6 +3,7 @@ param workspaceId string
 param AGId string
 param packtag string
 param solutionTag string
+param solutionVersion string
 var moduleprefix = 'AMSP-Win-IIS'
 // Alert list
 
@@ -297,5 +298,6 @@ module Alerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in
     query: alert.query
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }]

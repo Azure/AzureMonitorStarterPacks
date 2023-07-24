@@ -3,6 +3,7 @@ param workspaceId string
 param AGId string
 param packtag string
 param solutionTag string
+param solutionVersion string
 /*
 List of Insights default metrics:
 LogicalDisk WriteBytesPerSecond 15M 
@@ -94,5 +95,6 @@ module InsightsAlerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for 
     query: alert.query
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }]

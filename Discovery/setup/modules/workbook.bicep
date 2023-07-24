@@ -1,4 +1,5 @@
 param solutionTag string
+param solutionVersion string
 param location string
 param lawresourceid string
 
@@ -1746,6 +1747,7 @@ resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
   location: location
   tags: {
     '${solutionTag}': 'mainworkbook'
+    '${solutionTag}-Version': solutionVersion
   }
   kind: 'shared'
   name: guid('monstar')

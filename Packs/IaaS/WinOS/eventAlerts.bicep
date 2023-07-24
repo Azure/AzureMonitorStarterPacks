@@ -5,6 +5,7 @@ param AGId string
 var moduleprefix = 'AMSP-Win-DCR-Alerts'
 param packtag string
 param solutionTag string
+param solutionVersion string
 
 var alertlist =  [ 
   {
@@ -33,5 +34,6 @@ module vmalerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert 
     query: alert.query
     packtag: packtag
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }]
