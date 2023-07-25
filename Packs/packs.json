@@ -3,7 +3,7 @@
       "PackName": "AzMon-Packs-Windows-VM-Monitoring",
       "RuleName": "AzMonPacks-Basic_VM_Monitoring_WindowsServer",
       "ModuleType": "IaaS",
-      "Status": "Disabled",
+      "Status": "Enabled",
       "RequiredTag" : "WinOS",
       "osTarget" : "Windows",
       "DiscoveryType": "OS",
@@ -15,7 +15,7 @@
       "PackName": "AzMon-Packs-Linux-VM-Monitoring",
       "RuleName": "AzMonPacks-Basic_VM_Monitoring_Linux",
       "ModuleType": "IaaS",
-      "Status": "Disabled",
+      "Status": "Enabled",
       "RequiredTag" : "LxOS",
       "osTarget" : "Linux",
       "DiscoveryType": "OS",
@@ -42,26 +42,12 @@
         "PackName": "AzMon-Packs-Windows-IIS-Monitoring",
         "RuleName": "AzMonPacks-IISBasicIISMonitoring",
         "ModuleType": "IaaS",
-        "Status": "Disabled",
+        "Status": "Enabled",
         "RequiredTag" : "IIS",
         "osTarget" : "Windows",
         "DiscoveryType": "RoleName",
         "RoleName" : "Web-Server",
         "TemplateLocation" : "./Packs/IaaS/IIS/WinIISMonitoring.bicep",
-        "moduleParameters": [
-        ]      
-    },
-    {
-        "PackName": "AzMon-Packs-Windows-SQL-Monitoring",
-        "RuleName": "AzMonPacks-SQLBasicMonitoring",
-        "ModuleType": "IaaS",
-        "Status": "Disabled",
-        "RequiredTag" : "SQL",
-        "osTarget" : "Windows",
-        "DiscoveryType": "Application",
-        "RoleName" : "",
-        "ApplicationNames" : ["SQL Server 2019 Database Engine Services"],
-        "TemplateLocation" : "./Packs/IaaS/SQL/WinSQLMonitoring.bicep",
         "moduleParameters": [
         ]      
     }

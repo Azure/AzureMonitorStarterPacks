@@ -107,7 +107,7 @@ if (!([string]::IsNullOrEmpty($subscriptionId))) {
 }
 else {
 # If more subscriptions are present, select one to deploy the packs.
-    if ((Get-AzSubscription).count -gt 1) {
+    if ((Get-AzSubscription -ErrorAction SilentlyContinue).count -gt 1) {
         Write-host "Select a subscription to deploy the packs, log analytics workspace and DCRs."
         $sub=select-subscription
         if ($null -eq $sub) {
@@ -136,7 +136,7 @@ if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyCont
     }
 }
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
-    $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $EnableTagName
+    $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $solutionTag
 }
 else { 
     $ws=Get-AzOperationalInsightsWorkspace -Name $workspaceResourceId.split('/')[8] -ResourceGroupName $workspaceResourceId.split('/')[4] -ErrorAction SilentlyContinue

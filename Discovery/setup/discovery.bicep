@@ -13,7 +13,7 @@ param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
 @secure()
 param apiManagementKey string= base64(newGuid())
-var solutionVersion = '0.1.0'
+param solutionVersion string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
