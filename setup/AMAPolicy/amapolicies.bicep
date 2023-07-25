@@ -52,7 +52,7 @@ var rulename = '${solutionTag}-amaPolicy'
 //   }
 // ]
 
-module amaPolicy './modules/policies/policySet.bicep' = {
+module amaPolicy '../../modules/policies/policySet.bicep' = {
   name: 'amaPolicy'
   scope: subscription()
   params: {
@@ -65,7 +65,7 @@ module amaPolicy './modules/policies/policySet.bicep' = {
     solutionTag: solutionTag
   }
 }
-module assignment './modules/policies/subscription/assignment.bicep' = {
+module assignment '../../modules/policies/subscription/assignment.bicep' = {
   name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicy

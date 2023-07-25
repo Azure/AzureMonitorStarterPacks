@@ -4,7 +4,9 @@ param assignmentName string
 param location string
 param roledefinitionIds array
 param solutionTag string
-var roleassignmentnamePrefix=guid('${assignmentName}-${subscription().subscriptionId}')
+//var roleassignmentnamePrefix=guid('${assignmentName}-${subscription().subscriptionId}')
+
+
 resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: assignmentName
   identity: {
@@ -22,12 +24,12 @@ resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
 }
 
 resource roleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roledefinitionId, i) in roledefinitionIds:  {
-  name: '${roleassignmentnamePrefix}-${i}'
+  name: guid('${assignmentName}-${subscription().subscriptionId}-${i}')
   properties: {
     roleDefinitionId: roledefinitionId
     principalId: assignment.identity.principalId
     principalType: 'ServicePrincipal'
-    description: 'Role assignment for ${assignmentName} with "${roleassignmentnamePrefix}-${i}" role definition id.'
+    description: 'Role assignment for ${assignmentName} with "${guid('${assignmentName}-${subscription().subscriptionId}-${i}')}" role definition id.'
   }
 }]
 output roleassignmentId0 string = roleassignment[0].name

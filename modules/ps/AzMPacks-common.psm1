@@ -500,8 +500,14 @@ function deploy-pack {
             }
         }
         Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
-        New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
-        -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
+        try {
+            New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
+            -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
+        }
+        catch {
+            Write-Error $_.Exception.Message
+            return
+        }
 }
 
 function install-packs {

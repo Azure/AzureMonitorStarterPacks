@@ -1,19 +1,8 @@
-# remove log analytics - optional
-# remove associations from rules
-# remove resource group or remove each component by Tag.
-# remove policies
-# remove AzureMonitorStarterPacks from all resources
-
-ARG Query:
-# resources
-# | where isnotempty(tags.MonitorStarterPacks)
-# | project ['id'], type
-# | union (policyresources
-# | where isnotempty(properties.metadata.MonitorStarterPacks)|
-# project id,type=tostring(split(id,"/")[4]))
-
-
-# remove policy assignments and policies
+$RG="amonstarterpacks3"
+#Order:
+# Remove role associations from policy assignments
+# Remove policy assignments and policies
+# Remove policy sets and assignments
 $pols=Get-AzPolicyDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
 foreach ($pol in $pols) {
     "Removing policy $($pol.PolicyDefinitionId)"
@@ -48,6 +37,27 @@ foreach ($init in $inits) {
 }
 # remove DCR associations
 # remove DCRs
+# remove Tags from VMs.
+# remove monitor extensions (optional)
+# remove alert rules
+Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Remove-AzResource -Force
+# remove main solution (workbook, logic app, function app)
+# remove function role assignments
+# remove log analytics - optional
+# Remove resource Group
+
+ARG Query to check
+# resources
+# | where isnotempty(tags.MonitorStarterPacks)
+# | project ['id'], type
+# | union (policyresources
+# | where isnotempty(properties.metadata.MonitorStarterPacks)|
+# project id,type=tostring(split(id,"/")[4]))
+
+
+# remove policy assignments and policies
+# remove DCR associations
+# remove DCRs
 $DCRs=Get-AzDataCollectionRule | ?{$_.Tags.MonitorStarterPacks -ne $null}
 foreach ($DCR in $DCRs) {
     
@@ -76,13 +86,6 @@ foreach ($dcra in $allDCRa) {
     #     #Remove-AzDataCollectionRule -Name $dcr.Name -ResourceGroupName $dcr.ResourceGroupName
     # }
 }
-# remove role assignments - if not removed it will fail to install again.
+# remove dead role assignments - if not removed it will fail to install again.
 # Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | where {$_.ObjectType -eq 'unknown'}  | Remove-AzRoleAssignment
-# remove alert rules
-# Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName AMonStarterPacks3 | Remove-AzResource -Force
-# remove function app
-# remove logic app
-# remove workbook
-# remove log analytics - optional
-# remove resource group - optional
 # remove action group(s)?
