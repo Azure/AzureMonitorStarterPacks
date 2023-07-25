@@ -9,7 +9,7 @@
         https://github.com/Azure/AzureMonitorstarterPacks
     .EXAMPLE 
         # Minimal parameters required to deploy the solution:
-        .\setup.ps1 -resourceGroup "myResourceGroup"
+        .\setup.ps1 -resourceGroup "myResourceGroup" -location "eastus"
 
         This example will ask for a workspace and a subscription. It will try to use the default DCR based on the MSVMI-<workspacename> pattern.
         It will also ask for an Action Group to be created. If you want to use an existing Action Group, use the -useExistingAG switch.
@@ -80,9 +80,10 @@ param (
 )
 $solutionVersion="0.1.0"
 #region basic initialization
+Write-Output "Installing/Loading Azure Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
-        install-module az.resourcegraph -AllowPrerelease
+        install-module az.resourcegraph -AllowPrerelease -Force
         import-module az.ResourceGraph #-Force
     }
     catch {
@@ -90,6 +91,7 @@ if ($null -eq (get-module Az.ResourceGraph)) {
         return
     }
 }
+"Import local common module."
 if ($null -eq (get-module AzMPacks-Common)) {
     try {
         import-module ./modules/ps/AzMPacks-common.psm1
@@ -106,8 +108,8 @@ if (!([string]::IsNullOrEmpty($subscriptionId))) {
     $sub=Get-AzSubscription -SubscriptionId $subscriptionId
 }
 else {
-# If more subscriptions are present, select one to deploy the packs.
-    if ((Get-AzSubscription).count -gt 1) {
+    # If more subscriptions are present, select one to deploy the packs.
+    if ((Get-AzSubscription -ErrorAction SilentlyContinue).count -gt 1) {
         Write-host "Select a subscription to deploy the packs, log analytics workspace and DCRs."
         $sub=select-subscription
         if ($null -eq $sub) {
@@ -136,7 +138,7 @@ if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyCont
     }
 }
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
-    $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $EnableTagName
+    $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $solutionTag
 }
 else { 
     $ws=Get-AzOperationalInsightsWorkspace -Name $workspaceResourceId.split('/')[8] -ResourceGroupName $workspaceResourceId.split('/')[4] -ErrorAction SilentlyContinue
@@ -156,21 +158,21 @@ if (!$skipAMAPolicySetup) {
     }
     Write-Host "Deploying the AMA policy initiative to the current subscription."
     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-    -TemplateFile './amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
+    -TemplateFile './setup/AMAPolicy/amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
 }
 else {
     Write-Host "Skipping AMA policy check and configuration, as requested."
 }
 #endregion
-#region Main solution setup - Discovery
-# Setup Workbook, function, logic app  for Tag Discovery
+#region Main solution setup - Backend
+# Setup Workbook, function, logic app  for Tag Configuration
 if (!($skipMainSolutionSetup)) {
 
     # generate random storage account name
     $randomstoragechars = -join ((97..122) | Get-Random -Count 4 | ForEach-Object { [char]$_ })
 
     # zip the Function App's code
-    compress-archive ./Discovery/Function/code/* ./Discovery/setup/discovery.zip -Force
+    compress-archive ./setup/backend/Function/code/* ./setup/backend/backend.zip -Force
     $existingSAs=Get-AzStorageAccount -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
     if ($existingSAs) {
         if ($existingSAs.count -gt 1) {
@@ -194,10 +196,16 @@ if (!($skipMainSolutionSetup)) {
         solutionTag=$solutionTag
         solutionVersion=$solutionVersion
     }
-
-    Write-Host "Deploying the discovery function, logic app and workbook."
-    New-AzResourceGroupDeployment -name "functiondeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-    -TemplateFile './Discovery/setup/discovery.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
+    Write-Host "Deploying the backend components(function, logic app and workbook)."
+    try {
+        New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+        -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
+    }
+    catch {
+        Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
+        Write-Error $_.Exception.Message
+        return
+    }
 }
 #endregion
 
@@ -338,7 +346,6 @@ if (!($skipPacksSetup)) {
     Write-Host "Found the following ENABLED packs in packs.json config file:"
     $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
     $packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
-
     # deploy packs if any are enabled
     if ($packs.count -gt 0) {
         if ($useSameAGforAllPacks) {

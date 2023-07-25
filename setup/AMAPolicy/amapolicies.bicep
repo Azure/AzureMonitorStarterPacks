@@ -52,7 +52,7 @@ var rulename = '${solutionTag}-amaPolicy'
 //   }
 // ]
 
-module amaPolicy './modules/policies/policySet.bicep' = {
+module amaPolicy '../../modules/policies/policySet.bicep' = {
   name: 'amaPolicy'
   scope: subscription()
   params: {
@@ -65,7 +65,7 @@ module amaPolicy './modules/policies/policySet.bicep' = {
     solutionTag: solutionTag
   }
 }
-module assignment './modules/policies/subscription/assignment.bicep' = {
+module assignment '../../modules/policies/subscription/assignment.bicep' = {
   name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicy
@@ -75,6 +75,7 @@ module assignment './modules/policies/subscription/assignment.bicep' = {
     policyDefinitionId: amaPolicy.outputs.policySetDefId
     location: location
     assignmentName: 'assign-${rulename}'
+    solutionTag: solutionTag
     roledefinitionIds: [
       '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
     ]

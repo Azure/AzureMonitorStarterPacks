@@ -13,7 +13,7 @@ param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
 @secure()
 param apiManagementKey string= base64(newGuid())
-var solutionVersion = '0.1.0'
+param solutionVersion string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
@@ -99,7 +99,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       }
       {
         name: 'CONTENT'
-        value: loadFileAsBase64('./discovery.zip')
+        value: loadFileAsBase64('../backend.zip')
       }
     ]
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename}'
@@ -263,7 +263,7 @@ resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = {
   }  
 } 
 
-module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = {
+module functionReadert '../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionReaderRole'
   scope: subscription()
   params: {
@@ -276,7 +276,7 @@ module functionReadert '../../modules/rbac/subscription/roleassignment.bicep' = 
   }
 }
 
-module functionTagContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
+module functionTagContributor '../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionTagContributorRole'
   scope: subscription()
   params: {
@@ -288,7 +288,7 @@ module functionTagContributor '../../modules/rbac/subscription/roleassignment.bi
     roleShortName: 'TagContributor'
   }
 }
-module functionVMContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
+module functionVMContributor '../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionvmContributorRole'
   scope: subscription()
   params: {
@@ -300,7 +300,7 @@ module functionVMContributor '../../modules/rbac/subscription/roleassignment.bic
     roleShortName: 'vmcontributor'
   }
 }
-module functionArcContributor '../../modules/rbac/subscription/roleassignment.bicep' = {
+module functionArcContributor '../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionArcContributorRole'
   scope: subscription()
   params: {
@@ -313,8 +313,9 @@ module functionArcContributor '../../modules/rbac/subscription/roleassignment.bi
   }
 }
 module logicapp './modules/logicapp.bicep' = {
-  name: 'DiscoveryLogicApp'
+  name: 'BackendLogicApp'
   dependsOn: [
+    deployfunctions
     monitoringkey
   ]
   params: {
