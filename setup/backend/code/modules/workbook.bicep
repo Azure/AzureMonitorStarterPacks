@@ -71,7 +71,7 @@ var wbConfig='''
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Logic/workflows/Discovery"
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Logic/workflows/Backend"
           },
           {
             "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -1408,43 +1408,37 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Initiative'\n| union (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Policy')",
+              "query": "policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Policy',['id']) on $left.PolicyId == $right.id\n| project Name,Type, AssignmentDisplayName, scope\n| union (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Initiative',['id']) on $left.PolicyId == $right.id\n| project Name, Type, AssignmentDisplayName, scope)\n",
               "size": 1,
-              "title": "Installed Policies and Initiatives",
+              "title": "Installed Policies and Initiatives with Assignments",
+              "noDataMessage": "No MonStar policies (packs) installed.",
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources",
               "crossComponentResources": [
                 "{Subscriptions}"
-              ]
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Group",
+                    "formatter": 1
+                  }
+                ],
+                "filter": true,
+                "hierarchySettings": {
+                  "treeType": 1,
+                  "groupBy": [
+                    "Name"
+                  ]
+                }
+              }
             },
             "conditionalVisibility": {
               "parameterName": "tabSelection",
               "comparison": "isEqualTo",
               "value": "policystatus"
             },
-            "name": "query - 8 - Copy"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where isnotempty(properties.metadata.MonitorStarterPacks)) on $left.PolicyId == $right.id\n| project AssignmentDisplayName, PolicyId, Scope=scope",
-              "size": 0,
-              "exportMultipleValues": true,
-              "exportedParameters": [
-                {
-                  "parameterName": "assignPolicyId",
-                  "parameterType": 1,
-                  "quote": ""
-                }
-              ],
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ]
-            },
-            "name": "policyassignments",
+            "name": "query - 8 - Copy",
             "styleSettings": {
               "showBorder": true
             }

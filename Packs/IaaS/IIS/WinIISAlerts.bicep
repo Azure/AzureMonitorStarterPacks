@@ -4,7 +4,7 @@ param AGId string
 param packtag string
 param solutionTag string
 param solutionVersion string
-var moduleprefix = 'AMSP-Win-IIS'
+param moduleprefix string = 'AMSP-Win-IIS'
 // Alert list
 
 var alertlist = [
@@ -16,6 +16,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2221) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -26,6 +27,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (5152) and EventLog == \'System\' and Source == \'Microsoft-Windows-WAS\''
     }
   {
@@ -36,6 +38,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (5010,5011,5012,5013) and EventLog == \'System\' and Source == \'Microsoft-Windows-WAS\''
     }
   {
@@ -46,6 +49,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (5009) and EventLog == \'System\' and Source == \'Microsoft-Windows-WAS\''
     }
   {
@@ -56,6 +60,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (500,499,23,22,21,20,19,18,17,16,9,8,7,6,5) and EventLog == \'Application\' and Source == \'Active Server Pages\''
     }
   {
@@ -66,6 +71,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (1037) and EventLog == \'System\' and Source == \'Microsoft-Windows-IIS-W3SVC\''
     }
   {
@@ -76,6 +82,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2208) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -86,6 +93,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2206) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -96,6 +104,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2201) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -106,6 +115,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2203) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -116,6 +126,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2204) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -126,6 +137,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2274,2268,2220,2219,2214) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -136,6 +148,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (5088,5061,5060) and EventLog == \'System\' and Source == \'Microsoft-Windows-WAS\''
     }
   {
@@ -146,6 +159,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2296) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -156,6 +170,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2295) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -166,6 +181,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2293) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -176,6 +192,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (1133) and EventLog == \'System\' and Source == \'Microsoft-Windows-IIS-W3SVC\''
     }
   {
@@ -186,6 +203,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+         alertType: 'rows'
       query: 'Event | where  EventID in (2261) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -196,6 +214,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (5036) and EventLog == \'System\' and Source == \'Microsoft-Windows-WAS\''
     }
   {
@@ -206,6 +225,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2264) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -216,6 +236,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2298) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -226,6 +247,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2218) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -236,6 +258,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2258) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -246,6 +269,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2227) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -256,6 +280,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2233) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -266,6 +291,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2226,2230,2231,2232) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -276,28 +302,23 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
+      alertType: 'rows'
       query: 'Event | where  EventID in (5174,5179,5180) and EventLog == \'System\' and Source == \'Microsoft-Windows-WAS\''
     }
   
 ]
-
-
-module Alerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
-  name: '${moduleprefix}-${alert.alertRuleName}'
+module alertsnew '../../../modules/alerts/alerts.bicep' = {
+  name: '${moduleprefix}-Alerts'
   params: {
+    alertlist: alertlist
+    AGId: AGId
     location: location
-    actionGroupResourceId: AGId
-    alertRuleDescription: alert.alertRuleDescription
-    alertRuleDisplayName: '${moduleprefix}-${alert.alertRuleDisplayName}'
-    alertRuleName: '${moduleprefix}-${alert.alertRuleName}'
-    alertRuleSeverity: alert.alertRuleSeverity
-    autoMitigate: alert.autoMitigate
-    evaluationFrequency: alert.evaluationFrequency
-    windowSize: alert.windowSize
-    scope: workspaceId
-    query: alert.query
+    moduleprefix: moduleprefix
     packtag: packtag
     solutionTag: solutionTag
     solutionVersion: solutionVersion
+    workspaceId: workspaceId
   }
-}]
+}
+
+

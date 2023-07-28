@@ -14,6 +14,7 @@ param query string
 param packtag string
 param solutionTag string
 param solutionVersion string
+
 resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
   location: location
   name: alertRuleName
