@@ -203,7 +203,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-         alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (2261) and EventLog == \'Application\' and Source == \'Microsoft-Windows-IIS-W3SVC-WP\''
     }
   {
@@ -307,6 +307,7 @@ var alertlist = [
     }
   
 ]
+
 module alertsnew '../../../modules/alerts/alerts.bicep' = {
   name: '${moduleprefix}-Alerts'
   params: {

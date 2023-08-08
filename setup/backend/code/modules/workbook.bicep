@@ -260,7 +260,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "Nginx"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -684,43 +684,11 @@ var wbConfig='''
       }
     },
     {
-      "type": 9,
-      "content": {
-        "version": "KqlParameterItem/1.0",
-        "parameters": [
-          {
-            "id": "982e7108-791d-4582-b245-f6c618045e71",
-            "version": "KqlParameterItem/1.0",
-            "name": "subscriptionId",
-            "type": 6,
-            "isGlobal": true,
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-            "typeSettings": {
-              "additionalResourceOptions": [
-                "value::1"
-              ],
-              "includeAll": false
-            },
-            "label": "Subscription for Rule List"
-          }
-        ],
-        "style": "pills",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
-      },
-      "conditionalVisibility": {
-        "parameterName": "tabSelection",
-        "comparison": "isEqualTo",
-        "value": "rulemanagement"
-      },
-      "name": "parameters - 11"
-    },
-    {
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{subscriptionId}/providers/Microsoft.Insights/dataCollectionRules\",\"urlParams\":[{\"key\":\"$filter\",\"value\":\"tagname eq 'MonitorStarterPacks'\"},{\"key\":\"api-version\",\"value\":\"2021-09-01-preview\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value\",\"columns\":[{\"path\":\"id\",\"columnid\":\"id\"},{\"path\":\"$\",\"columnid\":\"properties\"},{\"path\":\"kind\",\"columnid\":\"kind\"},{\"path\":\"location\",\"columnid\":\"location\"},{\"path\":\"properties.provisioningState\",\"columnid\":\"provisioningState\"},{\"path\":\"name\",\"columnid\":\"name\"},{\"path\":\"properties.dataSources.syslog\",\"columnid\":\"syslog\"},{\"path\":\"properties.dataSources.windowsEventLogs[*]\",\"columnid\":\"windowsEventLogs\"},{\"path\":\"properties.dataSources.windowsEventLogs[*].streams[?(@ ==\\\"Microsoft-SecurityEvent\\\")]\",\"columnid\":\"securityEvents\"},{\"path\":\"properties.dataSources.logFiles[*]\",\"columnid\":\"logsettings\"},{\"path\":\"properties.dataSources.performanceCounters[*]\",\"columnid\":\"performanceCounters\"},{\"path\":\"properties.dataCollectionEndpointId\",\"columnid\":\"dataCollectionEndpointId\"},{\"path\":\"properties.dataFlows[?(@.transformKql != \\\"source\\\")].transformKql\",\"columnid\":\"transformKql\"},{\"path\":\"properties.destinations\",\"columnid\":\"destinations\"},{\"path\":\"properties.dataFlows[*].transformKql\",\"columnid\":\"queries\"},{\"path\":\"properties.dataSources\",\"columnid\":\"dataSources\"},{\"path\":\"properties.dataFlows\",\"columnid\":\"dataFlows\"},{\"path\":\"description\",\"columnid\":\"description\"},{\"path\":\"properties.destinations.logAnalytics.*.name\",\"columnid\":\"destinationName\"},{\"path\":\"systemData.lastModifiedBy\",\"columnid\":\"lastModifiedBy\"},{\"path\":\"properties.destinations.logAnalytics.*.workspaceResourceId\",\"columnid\":\"workspaceResourceId\"},{\"path\":\"tags.MonitorStarterPacks\",\"columnid\":\"packs\"}]}}]}",
-        "size": 0,
+        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| extend ds=properties.dataSources\n| project id,Type=kind, location,syslog=ds.syslog[0].streams[0], windowsEventLogs=ds.windowsEventLogs[0].streams[0], logsettings=ds.logFiles, performanceCounters=ds.performanceCounters[0].streams[0],provisioningState=properties.provisioningState, \ndataCollectionEndpointId=properties.dataCollectionEndpointId,transformKql=properties.dataFlows[0].transformKql,workspaceResourceId=properties.destinations.logAnalytics[0].workspaceResourceId\n",
+        "size": 1,
         "title": "List of Currently Configured Data Collection Rules",
         "showRefreshButton": true,
         "exportedParameters": [
@@ -773,7 +741,11 @@ var wbConfig='''
         ],
         "showExportToExcel": true,
         "exportToExcelOptions": "all",
-        "queryType": 12,
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
         "gridSettings": {
           "formatters": [
             {
@@ -787,52 +759,30 @@ var wbConfig='''
               }
             },
             {
-              "columnMatch": "properties",
-              "formatter": 7,
-              "formatOptions": {
-                "linkTarget": "CellDetails",
-                "linkLabel": "📋",
-                "linkIsContextBlade": true,
-                "customColumnWidthSetting": "5ch"
-              }
-            },
-            {
-              "columnMatch": "kind",
+              "columnMatch": "Type",
               "formatter": 18,
               "formatOptions": {
                 "thresholdsOptions": "icons",
                 "thresholdsGrid": [
                   {
-                    "operator": "is Empty",
-                    "representation": "Capture",
-                    "text": "{0}{1} Custom"
-                  },
-                  {
-                    "operator": "contains",
-                    "thresholdValue": "Linux",
-                    "representation": "Console",
-                    "text": "{0}{1}"
-                  },
-                  {
-                    "operator": "contains",
+                    "operator": "==",
                     "thresholdValue": "Windows",
                     "representation": "Initial_Access",
                     "text": "{0}{1}"
                   },
                   {
-                    "operator": "contains",
-                    "thresholdValue": "WorkspaceTransforms",
-                    "representation": "Persistence",
+                    "operator": "==",
+                    "thresholdValue": "Linux",
+                    "representation": "Console",
                     "text": "{0}{1}"
                   },
                   {
                     "operator": "Default",
                     "thresholdValue": null,
-                    "representation": "success",
-                    "text": "{0}{1}"
+                    "representation": "Capture",
+                    "text": "Custom"
                   }
-                ],
-                "customColumnWidthSetting": "17ch"
+                ]
               }
             },
             {
@@ -841,38 +791,6 @@ var wbConfig='''
               "formatOptions": {
                 "customColumnWidthSetting": "94px"
               }
-            },
-            {
-              "columnMatch": "provisioningState",
-              "formatter": 18,
-              "formatOptions": {
-                "thresholdsOptions": "icons",
-                "thresholdsGrid": [
-                  {
-                    "operator": "contains",
-                    "thresholdValue": "succeeded",
-                    "representation": "success",
-                    "text": "{0}{1}"
-                  },
-                  {
-                    "operator": "Default",
-                    "thresholdValue": null,
-                    "representation": "success",
-                    "text": "{0}{1}"
-                  }
-                ],
-                "customColumnWidthSetting": "17ch"
-              },
-              "numberFormat": {
-                "unit": 0,
-                "options": {
-                  "style": "decimal"
-                }
-              }
-            },
-            {
-              "columnMatch": "name",
-              "formatter": 5
             },
             {
               "columnMatch": "syslog",
@@ -892,7 +810,7 @@ var wbConfig='''
                     "operator": "Default",
                     "thresholdValue": null,
                     "representation": "success",
-                    "text": "Enabled"
+                    "text": "Configured"
                   }
                 ],
                 "bladeOpenContext": {
@@ -913,30 +831,6 @@ var wbConfig='''
               "columnMatch": "windowsEventLogs",
               "formatter": 18,
               "formatOptions": {
-                "linkTarget": "CellDetails",
-                "linkIsContextBlade": true,
-                "thresholdsOptions": "icons",
-                "thresholdsGrid": [
-                  {
-                    "operator": "is Empty",
-                    "representation": "cancelled",
-                    "text": "Not Configured"
-                  },
-                  {
-                    "operator": "Default",
-                    "thresholdValue": null,
-                    "representation": "success",
-                    "text": "Configured"
-                  }
-                ],
-                "customColumnWidthSetting": "20ch"
-              }
-            },
-            {
-              "columnMatch": "securityEvents",
-              "formatter": 18,
-              "formatOptions": {
-                "linkColumn": "windowsEventLogs",
                 "linkTarget": "CellDetails",
                 "linkIsContextBlade": true,
                 "thresholdsOptions": "icons",
@@ -989,7 +883,7 @@ var wbConfig='''
                   {
                     "operator": "is Empty",
                     "representation": "cancelled",
-                    "text": "Not Configured"
+                    "text": "Not Configured!"
                   },
                   {
                     "operator": "Default",
@@ -999,6 +893,34 @@ var wbConfig='''
                   }
                 ],
                 "customColumnWidthSetting": "20ch"
+              }
+            },
+            {
+              "columnMatch": "provisioningState",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "contains",
+                    "thresholdValue": "succeeded",
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  }
+                ],
+                "customColumnWidthSetting": "17ch"
+              },
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal"
+                }
               }
             },
             {
@@ -1060,6 +982,92 @@ var wbConfig='''
               }
             },
             {
+              "columnMatch": "workspaceResourceId",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true,
+                "customColumnWidthSetting": "16.8571ch"
+              }
+            },
+            {
+              "columnMatch": "properties",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "CellDetails",
+                "linkLabel": "📋",
+                "linkIsContextBlade": true,
+                "customColumnWidthSetting": "5ch"
+              }
+            },
+            {
+              "columnMatch": "kind",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "is Empty",
+                    "representation": "Capture",
+                    "text": "{0}{1} Custom"
+                  },
+                  {
+                    "operator": "contains",
+                    "thresholdValue": "Linux",
+                    "representation": "Console",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "contains",
+                    "thresholdValue": "Windows",
+                    "representation": "Initial_Access",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "contains",
+                    "thresholdValue": "WorkspaceTransforms",
+                    "representation": "Persistence",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  }
+                ],
+                "customColumnWidthSetting": "17ch"
+              }
+            },
+            {
+              "columnMatch": "name",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "securityEvents",
+              "formatter": 18,
+              "formatOptions": {
+                "linkColumn": "windowsEventLogs",
+                "linkTarget": "CellDetails",
+                "linkIsContextBlade": true,
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "is Empty",
+                    "representation": "cancelled",
+                    "text": "Not Configured"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "success",
+                    "text": "Configured"
+                  }
+                ],
+                "customColumnWidthSetting": "20ch"
+              }
+            },
+            {
               "columnMatch": "destinations",
               "formatter": 5
             },
@@ -1091,15 +1099,6 @@ var wbConfig='''
               "formatter": 5
             },
             {
-              "columnMatch": "workspaceResourceId",
-              "formatter": 13,
-              "formatOptions": {
-                "linkTarget": "Resource",
-                "showIcon": true,
-                "customColumnWidthSetting": "16.8571ch"
-              }
-            },
-            {
               "columnMatch": "customEvents",
               "formatter": 18,
               "formatOptions": {
@@ -1128,168 +1127,19 @@ var wbConfig='''
             }
           ],
           "rowLimit": 1000,
-          "filter": true,
-          "sortBy": [
-            {
-              "itemKey": "packs",
-              "sortOrder": 2
-            }
-          ],
-          "labelSettings": [
-            {
-              "columnId": "id",
-              "label": "Data Collection Rule"
-            },
-            {
-              "columnId": "properties",
-              "label": " "
-            },
-            {
-              "columnId": "kind",
-              "label": "Rule Type"
-            },
-            {
-              "columnId": "location",
-              "label": "Location"
-            },
-            {
-              "columnId": "provisioningState",
-              "label": "Provisioned",
-              "comment": "State of configuration "
-            },
-            {
-              "columnId": "syslog",
-              "label": "Syslog"
-            },
-            {
-              "columnId": "windowsEventLogs",
-              "label": "Windows Events"
-            },
-            {
-              "columnId": "securityEvents",
-              "label": "Security Events"
-            },
-            {
-              "columnId": "dataCollectionEndpointId",
-              "label": "Collection Endpoint"
-            },
-            {
-              "columnId": "transformKql",
-              "label": "Ingestion Transform"
-            },
-            {
-              "columnId": "destinations",
-              "label": "Destinations"
-            },
-            {
-              "columnId": "workspaceResourceId",
-              "label": "Workspace"
-            }
-          ]
+          "filter": true
         },
-        "sortBy": [
-          {
-            "itemKey": "packs",
-            "sortOrder": 2
-          }
-        ]
+        "sortBy": []
       },
       "conditionalVisibility": {
         "parameterName": "tabSelection",
         "comparison": "isEqualTo",
         "value": "rulemanagement"
       },
-      "name": "Select Existing DCR",
+      "name": "Select Existing DCR - Copy",
       "styleSettings": {
         "showBorder": true
       }
-    },
-    {
-      "type": 9,
-      "content": {
-        "version": "KqlParameterItem/1.0",
-        "parameters": [
-          {
-            "id": "44db682e-1ba1-41c5-91d2-7861edb7e9a2",
-            "version": "KqlParameterItem/1.0",
-            "name": "packsURL",
-            "type": 1,
-            "isRequired": true,
-            "isGlobal": true,
-            "criteriaData": [
-              {
-                "criteriaContext": {
-                  "operator": "Default",
-                  "resultValType": "static",
-                  "resultVal": "https://azmonstarpacksngqf.blob.core.windows.net/discovery/packs.json?sp=r&st=2023-07-15T12:55:49Z&se=2024-03-09T21:55:49Z&spr=https&sv=2022-11-02&sr=c&sig=KrVS0O3LePHX%2FDkT9HkWFMFqPg5mea1ehf6%2FKZdDl8E%3D"
-                }
-              }
-            ],
-            "timeContext": {
-              "durationMs": 86400000
-            }
-          }
-        ],
-        "style": "pills",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
-      },
-      "conditionalVisibilities": [
-        {
-          "parameterName": "tabSelection",
-          "comparison": "isEqualTo",
-          "value": "rulemanagement"
-        },
-        {
-          "parameterName": "showHidden",
-          "comparison": "isEqualTo",
-          "value": "yes"
-        }
-      ],
-      "name": "parameters - 13"
-    },
-    {
-      "type": 3,
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "externaldata(PackName: string, RequiredTag:string, Status:string, TemplateLocation:string)\n[ \n   h@'{packsURL}'\n]\nwith(format='multijson', ingestionMapping='[{\"PackName\":\"PackName\",\"RequiredTag\":\"RequiredTag\", \"Status\":\"Status\",\"TemplateLocation\":\"TemplateLocation\"}]')\n| where Status == 'Enabled'\n| extend URLPath=trim_start('.',TemplateLocation)\n",
-        "size": 1,
-        "title": "Available Packs (Enabled) from Json file in SA",
-        "timeContext": {
-          "durationMs": 86400000
-        },
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces",
-        "crossComponentResources": [
-          "{Workspace}"
-        ],
-        "gridSettings": {
-          "formatters": [
-            {
-              "columnMatch": "TemplateLocation",
-              "formatter": 7,
-              "formatOptions": {
-                "linkTarget": "ArmTemplate",
-                "templateRunContext": {
-                  "componentIdSource": "parameter",
-                  "templateUriSource": "static",
-                  "templateUri": "https://azmonstarpacksngqf.blob.core.windows.net/discovery/packs.json?sp=r&st=2023-07-15T12:55:49Z&se=2024-03-09T21:55:49Z&spr=https&sv=2022-11-02&sr=c&sig=KrVS0O3LePHX%2FDkT9HkWFMFqPg5mea1ehf6%2FKZdDl8E%3D'",
-                  "templateParameters": [],
-                  "titleSource": "static",
-                  "descriptionSource": "static",
-                  "runLabelSource": "static"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "conditionalVisibility": {
-        "parameterName": "tabSelection",
-        "comparison": "isEqualTo",
-        "value": "rulemanagement"
-      },
-      "name": "availPacks"
     },
     {
       "type": 12,

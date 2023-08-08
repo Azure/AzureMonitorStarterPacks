@@ -7,7 +7,7 @@ param resourceGroup string
 param roleShortName string //For consistent resource naming and redeployment
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup,resourcename,roleShortName)
+  name: guid('${resourceGroup}-${resourcename}-${roleShortName}')
   scope: subscription()
   properties: {
     description: '${solutionTag}-${roleShortName}-${resourcename}'
@@ -16,3 +16,4 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
   }
 }
+output roleassignmentname string = roleAssignment.name

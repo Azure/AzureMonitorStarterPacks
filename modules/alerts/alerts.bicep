@@ -7,8 +7,8 @@ param solutionTag string
 param solutionVersion string
 param moduleprefix string
 
-module Alerts './alert.bicep' = [for alert in alertlist:  {
-  name: '${moduleprefix}-${alert.alertRuleName}'
+module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
+  name: '${packtag}-Alert-${i}'
   params: {
     location: location
     actionGroupResourceId: AGId

@@ -1,5 +1,3 @@
-//param vmIDs array = []
-//param vmOSs array = []
 param rulename string
 param actionGroupName string = ''
 param emailreceivers array = []
@@ -87,7 +85,51 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     //location: location defailt is global
   }
 }
+
+// // New way. Read from file and call module
+// var alertlist = array(('./IISAlerts_test.txt'))
+
+// module alertsnew '../../../modules/alerts/alerts.bicep' = {
+//   name: 'AMSP-Win-${packtag}-Alerts'
+//   params: {
+//     alertlist: [
+//       alertlist
+//     ]
+//     AGId: ag.outputs.actionGroupResourceId
+//     location: location
+//     moduleprefix: 'AMSP-Win-${packtag}'
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     workspaceId: workspaceId
+//   }
+// }
+// module Alerts '../../..//modules/alerts/alert.bicep' = [for (alert,i) in alertlist:  {
+//   name: '${packtag}-Alert-${i}'
+//   params: {
+//     location: location
+//     actionGroupResourceId: ag.outputs.actionGroupResourceId
+//     alertRuleDescription: alert.alertRuleDescription
+//     alertRuleDisplayName: '${packtag}-${alert.alertRuleDisplayName}'
+//     alertRuleName: '${packtag}-${alert.alertRuleName}'
+//     alertRuleSeverity: alert.alertRuleSeverity
+//     autoMitigate: alert.autoMitigate
+//     evaluationFrequency: alert.evaluationFrequency
+//     windowSize: alert.windowSize
+//     scope: workspaceId
+//     query: alert.query
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     alertType: alert.alertType
+//     metricMeasureColumn: alert.alertType == 'Aggregated' ? alert.metricMeasureColumn : null
+//     operator: alert.alertType == 'Aggregated' ? alert.operator : null
+//     threshold: alert.alertType == 'Aggregated' ? alert.threshold : null
+//   }
+// }]
+
 // // Alerts - the module below creates the alerts and associates them with the action group
+
 module Alerts './WinIISAlerts.bicep' = {
   name: 'Alerts-${packtag}'
   params: {

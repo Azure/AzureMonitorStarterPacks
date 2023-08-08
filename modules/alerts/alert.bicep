@@ -33,7 +33,7 @@ param metricMeasureColumn string = ''
 param operator string = 'GreaterThan'
 
 module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
-  name: 'rowAlert-${packtag}'
+  name: 'rowAlert-${packtag}-${alertRuleName}'
   params: {
     alertRuleName: alertRuleName
     alertRuleDisplayName: alertRuleDisplayName
@@ -54,7 +54,7 @@ module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
 }
 
 module aggregateAlert './scheduledqueryruleAggregate.bicep' = if (alertType == 'Aggregated') {
-  name: 'AggregateAlert-${packtag}'
+  name: 'AggregateAlert-${packtag}-${alertRuleName}'
   params: {
     alertRuleName: alertRuleName
     alertRuleDisplayName: alertRuleDisplayName
