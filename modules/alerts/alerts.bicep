@@ -1,30 +1,14 @@
+param alertlist array
 param location string
 param workspaceId string
 param AGId string
 param packtag string
 param solutionTag string
 param solutionVersion string
+param moduleprefix string
 
-var moduleprefix = 'AMSP-Lx-DCR-Alerts'
-
-
-var alertlist =  [ 
-  {
-    alertRuleDescription: 'Alert for CPU crash volmgr issue'
-    alertRuleDisplayName: 'CPU crash volmgr issue'
-    alertRuleName:'CPUcrashvolmgrissue' 
-    alertRuleSeverity:3
-    autoMitigate: true
-    evaluationFrequency: 'PT15M'
-    windowSize: 'PT15M'
-    alertType: 'rows'
-    query: 'Event\n| where EventID == 46'
-  }
-]
-// This is a event log based alert
-// Alerts
-module vmalerts '../../../modules/alerts/alert.bicep' = [for alert in alertlist:  {
-  name: '${moduleprefix}-${alert.alertRuleName}'
+module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
+  name: '${packtag}-Alert-${i}'
   params: {
     location: location
     actionGroupResourceId: AGId
@@ -32,6 +16,9 @@ module vmalerts '../../../modules/alerts/alert.bicep' = [for alert in alertlist:
     alertRuleDisplayName: '${moduleprefix}-${alert.alertRuleDisplayName}'
     alertRuleName: '${moduleprefix}-${alert.alertRuleName}'
     alertRuleSeverity: alert.alertRuleSeverity
+    autoMitigate: alert.autoMitigate
+    evaluationFrequency: alert.evaluationFrequency
+    windowSize: alert.windowSize
     scope: workspaceId
     query: alert.query
     packtag: packtag

@@ -1,5 +1,3 @@
-//param vmIDs array = []
-//param vmOSs array = []
 param rulename string
 param actionGroupName string = ''
 param emailreceivers array = []
@@ -87,7 +85,51 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     //location: location defailt is global
   }
 }
+
+// // New way. Read from file and call module
+// var alertlist = array(('./IISAlerts_test.txt'))
+
+// module alertsnew '../../../modules/alerts/alerts.bicep' = {
+//   name: 'AMSP-Win-${packtag}-Alerts'
+//   params: {
+//     alertlist: [
+//       alertlist
+//     ]
+//     AGId: ag.outputs.actionGroupResourceId
+//     location: location
+//     moduleprefix: 'AMSP-Win-${packtag}'
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     workspaceId: workspaceId
+//   }
+// }
+// module Alerts '../../..//modules/alerts/alert.bicep' = [for (alert,i) in alertlist:  {
+//   name: '${packtag}-Alert-${i}'
+//   params: {
+//     location: location
+//     actionGroupResourceId: ag.outputs.actionGroupResourceId
+//     alertRuleDescription: alert.alertRuleDescription
+//     alertRuleDisplayName: '${packtag}-${alert.alertRuleDisplayName}'
+//     alertRuleName: '${packtag}-${alert.alertRuleName}'
+//     alertRuleSeverity: alert.alertRuleSeverity
+//     autoMitigate: alert.autoMitigate
+//     evaluationFrequency: alert.evaluationFrequency
+//     windowSize: alert.windowSize
+//     scope: workspaceId
+//     query: alert.query
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     alertType: alert.alertType
+//     metricMeasureColumn: alert.alertType == 'Aggregated' ? alert.metricMeasureColumn : null
+//     operator: alert.alertType == 'Aggregated' ? alert.operator : null
+//     threshold: alert.alertType == 'Aggregated' ? alert.threshold : null
+//   }
+// }]
+
 // // Alerts - the module below creates the alerts and associates them with the action group
+
 module Alerts './WinIISAlerts.bicep' = {
   name: 'Alerts-${packtag}'
   params: {
@@ -114,21 +156,6 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     solutionTag: solutionTag
   }
 }
-// // DCR Association - the module below associates the DCR with the VMs
-// Associtation REMOVE FOR NOW. Done by policy
-// module dcrassociation '../../../modules/DCRs/dcrassociation.bicep'  =   [for (vmID, i) in vmIDs: {
-//   name: 'dcrassociation-${i}-${split(vmID, '/')[8]}-IIS'
-//   dependsOn: [
-//     dcrbasicvmMonitoring
-//   ]
-//   params: {
-//     osTarget: osTarget
-//     vmOS: osTarget //was previously the array of OSes but for each pack, it will only be applied for a specific OS, no generic cross-OS packs in sight for now.
-//     associationName: 'dcrassociation-${i}-${split(vmID, '/')[8]}-IIS'
-//     dataCollectionRuleId: dcrbasicvmMonitoring.outputs.dcrId
-//     vmId: vmID
-//   }
-// }]
 
 module policysetup '../../../modules/policies/subscription/policies.bicep' = {
   name: 'policysetup-${packtag}'
@@ -140,49 +167,3 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     location: location
   }
 }
-// module policyVM '../../../modules/policies/subscription/associacionpolicyVM.bicep' = {
-//   name: 'associationpolicyVM'
-//   scope: subscription()
-//   params: {
-//     packtag: packtag
-//     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-//     policyDisplayName: 'Associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-//     policyName: 'associate-${rulename}-${packtag}-vms'
-//     DCRId: dcrbasicvmMonitoring.outputs.dcrId
-//     solutionTag: solutionTag
-//   }
-// }
-// module policyARC '../../../modules/policies/subscription/associacionpolicyARC.bicep' = {
-//   name: 'associationpolicyARC'
-//   scope: subscription()
-//   params: {
-//     packtag: packtag
-//     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-//     policyDisplayName: 'Associate the ${rulename} DCR with the ARC Servers tagged with ${packtag} tag.'
-//     policyName: 'associate-${rulename}-${packtag}-arc'
-//     DCRId: dcrbasicvmMonitoring.outputs.dcrId
-//     solutionTag: solutionTag
-//   }
-// }
-// //module policyAssignment {}
-// // param policyAssignmentName string = 'audit-vm-manageddisks'
-// // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-// module arcassignment '../../../modules/policies/subscription/assignment.bicep' = {
-//   name: 'arcassignment'
-//   scope: subscription()
-//   params: {
-//     policyDefinitionId: policyARC.outputs.policyId
-//     location: location
-//     assignmentName: 'associate-${rulename}-${packtag}-arc'
-//   }
-// }
-// module vmassignment '../../../modules/policies/subscription/assignment.bicep' = {
-//   name: 'vmassignment'
-//   scope: subscription()
-//   params: {
-//     policyDefinitionId: policyVM.outputs.policyId
-//     assignmentName: 'associate-${rulename}-${packtag}-vm'
-//     location: location
-//   }
-// }
-// output assignmentId string = assignment.id

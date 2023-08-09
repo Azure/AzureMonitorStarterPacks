@@ -9,6 +9,20 @@ var moduleprefix = 'AMSP-Win-VMI'
 // Alert list
 var alertlist = [
   {
+    alertRuleDescription: 'Alert for Memory over 90%'
+    alertRuleDisplayName:'Memory over 90%'
+    alertRuleName:'MemoveryOverPercentWarning'
+    alertRuleSeverity:2 //warning
+    autoMitigate: true
+    evaluationFrequency: 'PT15M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AvgMemUse'
+    operator: 'GreaterThan'
+    threshold: 90
+    query: 'InsightsMetrics | where Namespace == "Memory" and Name == "AvailableMB" | extend memorySizeMB = todouble(parse_json(Tags).["vm.azm.ms/memorySizeMB"]) | extend PercentageBytesinUse = Val/memorySizeMB*100    | summarize AvgMemUse = avg(PercentageBytesinUse) by bin(TimeGenerated, 15m), _ResourceId,Computer'  
+  }
+  {
     alertRuleDescription: 'Alert for disk space under 10%'
     alertRuleDisplayName:'Disk space under 10%'
     alertRuleName:'DiskSpaceUnderPercentWarning'
@@ -16,6 +30,7 @@ var alertlist = [
     autoMitigate: true
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
+    alertType: 'rows'
     query: 'InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
   }
   {
@@ -26,6 +41,7 @@ var alertlist = [
     autoMitigate: true
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
+    alertType: 'rows'
     query: 'InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
   }
   {
@@ -36,6 +52,7 @@ var alertlist = [
     autoMitigate: true
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
+    alertType: 'rows'
     query: 'InsightsMetrics| where Namespace == \'Computer\' and Name == \'Heartbeat\'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
   }
   {
@@ -46,6 +63,7 @@ var alertlist = [
     autoMitigate: true
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
+    alertType: 'rows'
     query: 'InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
   }
   {
@@ -56,26 +74,43 @@ var alertlist = [
     autoMitigate: true
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
+    alertType: 'rows'
     query: 'InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
   }
 ]
-
-module InsightsAlerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
-  name: '${moduleprefix}-${alert.alertRuleName}'
+module alertsnew '../../../modules/alerts/alerts.bicep' = {
+  name: '${moduleprefix}-Alerts'
   params: {
+    alertlist: alertlist
+    AGId: AGId
     location: location
-    actionGroupResourceId: AGId
-    alertRuleDescription: alert.alertRuleDescription
-    alertRuleDisplayName: '${moduleprefix}-${alert.alertRuleDisplayName}'
-    alertRuleName: '${moduleprefix}-${alert.alertRuleName}'
-    alertRuleSeverity: alert.alertRuleSeverity
-    autoMitigate: alert.autoMitigate
-    evaluationFrequency: alert.evaluationFrequency
-    windowSize: alert.windowSize
-    scope: workspaceId
-    query: alert.query
+    moduleprefix: moduleprefix
     packtag: packtag
     solutionTag: solutionTag
     solutionVersion: solutionVersion
+    workspaceId: workspaceId
   }
-}]
+}
+//   module InsightsAlerts '../../../modules/alerts/alert.bicep' = [for alert in alertlist:  {
+//     name: '${moduleprefix}-${alert.alertRuleName}'
+//     params: {
+//       location: location
+//       actionGroupResourceId: AGId
+//       alertRuleDescription: alert.alertRuleDescription
+//       alertRuleDisplayName: '${moduleprefix}-${alert.alertRuleDisplayName}'
+//       alertRuleName: '${moduleprefix}-${alert.alertRuleName}'
+//       alertRuleSeverity: alert.alertRuleSeverity
+//       autoMitigate: alert.autoMitigate
+//       evaluationFrequency: alert.evaluationFrequency
+//       windowSize: alert.windowSize
+//       scope: workspaceId
+//       query: alert.query
+//       packtag: packtag
+//       solutionTag: solutionTag
+//       solutionVersion: solutionVersion
+//       alertType: alert.alertType
+//       metricMeasureColumn: alert.alertType == 'Aggregated' ? alert.metricMeasureColumn : null
+//       operator: alert.alertType == 'Aggregated' ? alert.operator : null
+//       threshold: alert.alertType == 'Aggregated' ? alert.threshold : null
+//     }
+// }]

@@ -38,7 +38,7 @@ var alertlist = [
     }
 ]
 
-module Alerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in alertlist:  {
+module Alerts '../../../modules/alerts/scheduledqueryruleRows.bicep' = [for alert in alertlist:  {
   name: '${moduleprefix}-${alert.alertRuleName}'
   params: {
     location: location
@@ -52,6 +52,6 @@ module Alerts '../../../modules/alerts/scheduledqueryrule.bicep' = [for alert in
     windowSize: alert.windowSize
     scope: workspaceId
     query: alert.query
-    starterPackName: starterPackName
+    //starterPackName: starterPackName
   }
 }]

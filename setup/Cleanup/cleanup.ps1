@@ -23,6 +23,8 @@ foreach ($pol in $pols) {
         Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force
     }
 }
+# If something remains, clear all dead assignments in the current subscription
+Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where {$_.ObjectType -eq 'unknown'}  | where {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
 # Remove policy sets
 $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
 foreach ($init in $inits) {
@@ -36,13 +38,50 @@ foreach ($init in $inits) {
     Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
 }
 # remove DCR associations
+$query=@'
+insightsresources
+| where type == "microsoft.insights/datacollectionruleassociations"
+| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]
+| where isnotnull(properties.dataCollectionRuleId)
+| project rulename=split(properties.dataCollectionRuleId,"/")[8],resourceName=split(resourceId,"/")[8],resourceId, ruleId=properties.dataCollectionRuleId, name
+| where ruleId =~
+'@
+$DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG
+foreach ($DCR in $DCRs)
+{
+    $searchQuery=$query + "'$($DCR.Id)'"
+    $dcras=Search-AzGraph -Query $searchQuery
+    foreach ($dcra in $dcras) {
+        "Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
+        Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.resourceId -AssociationName $dcra.name
+    }
+    Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
+}
 # remove DCRs
+Get-AzDataCollectionRule -ResourceGroupName $RG | Remove-AzDataCollectionRule
 # remove Tags from VMs.
 # remove monitor extensions (optional)
 # remove alert rules
 Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Remove-AzResource -Force
 # remove main solution (workbook, logic app, function app)
-# remove function role assignments
+Get-AzResource -ResourceType 'Microsoft.Insights/workbooks' -ResourceGroupName $RG | Remove-AzResource -Force
+Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
+# remove function app roles and functiona app itself
+$PrincipalId=(Get-AzWebApp -ResourceGroupName $RG).Identity.PrincipalId
+Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $PrincipalId} | Remove-AzRoleAssignment
+Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $RG | Remove-AzResource -Force
+#remove deployment scripts
+Get-azresource -ResourceType 'Microsoft.Resources/deploymentScripts' -ResourceGroupName $RG | Remove-AzResource -Force
+#delete data collection endpoints
+get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
+#remove app insights
+Get-AzApplicationInsights -ResourceGroupName $RG | Remove-AzApplicationInsights -Force
+#remove app insights default alerts
+get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
+# Remove custom remediation role 
+Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
+
+
 # remove log analytics - optional
 # Remove resource Group
 
