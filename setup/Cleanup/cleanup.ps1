@@ -78,7 +78,8 @@ get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -Resou
 Get-AzApplicationInsights -ResourceGroupName $RG | Remove-AzApplicationInsights -Force
 #remove app insights default alerts
 get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
-# remove function role assignments
+# Remove custom remediation role 
+Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
 
 
 # remove log analytics - optional

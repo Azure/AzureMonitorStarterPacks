@@ -105,6 +105,12 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename}'
   }
 }
+module customRemdiationRole '../../../modules/rbac/subscription/remediationContributor.bicep' = {
+  name: 'customRemediationRole'
+  scope: subscription()
+  params: {
+  }
+}
 
 resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: '${functionname}-farm'
@@ -312,6 +318,19 @@ module functionArcContributor '../../../modules/rbac/subscription/roleassignment
     roleShortName: 'arccontributor'
   }
 }
+module functionRemediationRole '../../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionRemediationRole'
+  scope: subscription()
+  params: {
+    resourcename: functionname
+    principalId: azfunctionsite.identity.principalId
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: customRemdiationRole.outputs.roleDefId //remediationRoleDefinitionId
+    roleShortName: 'remediation'
+  }
+}
+
 module logicapp './modules/logicapp.bicep' = {
   name: 'BackendLogicApp'
   dependsOn: [
