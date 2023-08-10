@@ -1,9 +1,23 @@
-$RG="amonstarterpacks3"
-#Order:
-# Remove role associations from policy assignments
+param (
+    [string]$RG
+)
+# AMA policy set removal
+# Remove policy sets
+# $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
+# foreach ($init in $inits) {
+#     "Removing policy set $($init.PolicySetDefinitionId)"
+#     $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
+#     if ($assignments.count -ne 0)
+#     {
+#         "Removing assignments for $($init.PolicySetDefinitionId)"
+#         $assignments | Remove-AzPolicyAssignment 
+#     }
+#     Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
+# }
+
+#Packs
 # Remove policy assignments and policies
-# Remove policy sets and assignments
-$pols=Get-AzPolicyDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
+$pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
 foreach ($pol in $pols) {
     "Removing policy $($pol.PolicyDefinitionId)"
     $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
@@ -25,18 +39,6 @@ foreach ($pol in $pols) {
 }
 # If something remains, clear all dead assignments in the current subscription
 Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where {$_.ObjectType -eq 'unknown'}  | where {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
-# Remove policy sets
-$inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
-foreach ($init in $inits) {
-    "Removing policy set $($init.PolicySetDefinitionId)"
-    $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
-    if ($assignments.count -ne 0)
-    {
-        "Removing assignments for $($init.PolicySetDefinitionId)"
-        $assignments | Remove-AzPolicyAssignment 
-    }
-    Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
-}
 # remove DCR associations
 $query=@'
 insightsresources
@@ -58,12 +60,14 @@ foreach ($DCR in $DCRs)
     Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
 }
 # remove DCRs
-Get-AzDataCollectionRule -ResourceGroupName $RG | Remove-AzDataCollectionRule
+#Get-AzDataCollectionRule -ResourceGroupName $RG | Remove-AzDataCollectionRule
 # remove Tags from VMs.
 # remove monitor extensions (optional)
 # remove alert rules
 Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Remove-AzResource -Force
 # remove main solution (workbook, logic app, function app)
+
+# Main Solution
 Get-AzResource -ResourceType 'Microsoft.Insights/workbooks' -ResourceGroupName $RG | Remove-AzResource -Force
 Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
 # remove function app roles and functiona app itself

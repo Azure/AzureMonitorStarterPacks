@@ -10,6 +10,8 @@
 
 - Create a framework for collaboration that will make it easy to add new monitored technologies. 
 
+For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solution-anatomy.md)
+
 ## Pre-requisites and recommendations
 
 - Azure Subscription - an azure subscription to deploy the components
@@ -18,8 +20,17 @@
     - Azure Power Shell Az Module 10 or later
     - Bicep CLI (our Azure CLI, which will include  Bicep)
 
-
 ## Setup
+
+Clone the repository to a local folder:
+
+`git clone https://github.com/Azure/AzureMonitorStarterPacks.git`
+
+change directory to the repository folder:
+
+`cd AzureMonitorStarterPacks`
+
+run ./setup.ps1 as per below instructions.
 
 Setup can be separated in 3 steps:
 
@@ -49,28 +60,16 @@ Setup can be separated in 3 steps:
     .\setup.ps1 -resourceGroup 'rg-xxxxxxx' -location 'eastus'
 
     This example will deploy the enabled packs in the packs.json file to the resource group rg-xxxxxxx in the eastus location. It will deploy the basic solution and any enabled packs.
-    The basic solution is composed of the following components:
-    - Log Analytics Workspace (if not using existing)
-    - Action Group (if not using existing)
-    - Logic App (for management)
-    - Function (for management)
-    - Workbook (for management)
-  
-  - Packs
-    - DCR(s), Alerts, policies and assignments (with remediation tasks), Grafana Dashboards.
-    
+
+More examples of setup can be found [here](./Docs/setup-examples.md).
+
 ## Starter Packs
 
-### Basic Windows VM Monitoring 
-### Basic Linux VM Monitoring 
-### IIS VM Monitoring
-### Ngix VM Monitoring
-
-
+Review Packs documentation [here](./README.md).
 
 ## Authoring Guide
 
-Click here for guidance on how to create new packs (TBD)
+Click [here](./Docs/authoring.md) for guidance on how to create new packs.
 
 ## Contributing
 
