@@ -27,7 +27,7 @@ module policyARC './associacionpolicyARC.bicep' = {
   params: {
     packtag: packtag
     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the ${rulename} DCR with the ARC Servers tagged with ${packtag} tag.'
+    policyDisplayName: 'Associate the ${rulename} DCR to ARC Servers. Tag: ${packtag}'
     policyName: 'Associate-${rulename}-${packtag}-arc'
     DCRId: dcrId
     solutionTag: solutionTag

@@ -14,7 +14,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   name: policyName
   properties: {
     description: policyDescription
-    displayName: policyDisplayName
+    displayName: '[AMSP]-${policyDisplayName}'
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
