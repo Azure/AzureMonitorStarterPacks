@@ -40,20 +40,20 @@ Setup can be separated in 3 steps:
 
     Setup has the following parameters:
 
-    - $resourceGroup (Mandatory) - Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created.
-    - $skipAMAPolicySetup - skips AMA policy setup. Default is false.
-    - $skipMainSolutionSetup - skips deployment of the main components (in case more packs are added later). Default is false.
-    - $skipPacksSetup - skips packs setup altogether. Default is false.
-    - $workspaceResourceId - Log Analytics workspace to send the data to. If not provided, a workspace will be requested. If required a new workspace can be created in the wizard.
-    - $solutionTag - tag to be user for discovery. Default value: 'MonitorStarterPacks. If any value is found in the tag, machines will be targeted for the basic VM Monitoring. The content of the tag is a comma separated list of applications that are installed on the machine (IIS, ADDS,etc.)
-    - $location - location for deployment. Default is 'eastus'
-    - $useExistingAG - Use existing Action Group for notification. Default is false. If set to true, the following parameters are required:
-    - $emailreceivers=@() - Array of email receiver names (not emails)
-    - $emailreceiversEmails=@() - Array of email receiver emails (respectively to the previous array)
-    - $subscriptionId - Subscription ID. Default is the one in the context.
-    - $useSameAGforAllPacks - Use the same Action Group for all packs. Default is false. 
-    - $packsFilePath="./Packs/packs.json" - path to local packs.json file. Default is the one in the repo.
-    
+- $resourceGroup (Mandatory) - Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created.
+- $skipAMAPolicySetup - skips AMA policy setup. Default is false.
+- $skipMainSolutionSetup - skips deployment of the main components (in case more packs are added later). Default is false.
+- $skipPacksSetup - skips packs setup altogether. Default is false.
+- $workspaceResourceId - Log Analytics workspace to send the data to. If not provided, a workspace will be requested. If required a new workspace can be created in the wizard.
+- $solutionTag - tag to be user for discovery. Default value: 'MonitorStarterPacks. If any value is found in the tag, machines will be targeted for the basic VM Monitoring. The content of the tag is a comma separated list of applications that are installed on the machine (IIS, ADDS,etc.)
+- $location - location for deployment. Default is 'eastus'
+- $useExistingAG - Use existing Action Group for notification. Default is false. If set to true, the following parameters are required:
+- $emailreceivers=@() - Array of email receiver names (not emails)
+- $emailreceiversEmails=@() - Array of email receiver emails (respectively to the previous array)
+- $subscriptionId - Subscription ID. Default is the one in the context.
+- $useSameAGforAllPacks - Use the same Action Group for all packs. Default is false. 
+- $packsFilePath="./Packs/packs.json" - path to local packs.json file. Default is the one in the repo.
+
 ### Examples
 
     Minimal parameters:
@@ -65,7 +65,7 @@ More examples of setup can be found [here](./Docs/setup-examples.md).
 
 ## Starter Packs
 
-Review Packs documentation [here](./README.md).
+Review Packs documentation [here](./Packs/README.md).
 
 ## Authoring Guide
 
