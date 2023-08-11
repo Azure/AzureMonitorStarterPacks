@@ -187,6 +187,12 @@ if (!($skipMainSolutionSetup)) {
         $storageaccountName = "azmonstarpacks$randomstoragechars"
         Write-Host "Using storage account name: $storageaccountName"
     }
+
+    # Check if the function app already exists to acount for role assignments, which is annoying.
+    $existingFunctionApp=Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
+    if ($existingFunctionApp) {
+        
+    }
     $parameters=@{
         functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
         location=$location

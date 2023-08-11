@@ -71,6 +71,7 @@ Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceG
 Get-AzResource -ResourceType 'Microsoft.Insights/workbooks' -ResourceGroupName $RG | Remove-AzResource -Force
 Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
 # remove function app roles and functiona app itself
+$RG='amonstarterpacks3'
 $PrincipalId=(Get-AzWebApp -ResourceGroupName $RG).Identity.PrincipalId
 Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $PrincipalId} | Remove-AzRoleAssignment
 Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $RG | Remove-AzResource -Force

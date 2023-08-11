@@ -70,14 +70,46 @@ if ($servers) {
                                 $tagarray.Remove($TagValue)
                                 if ($tagarray.Count -eq 0) {
                                     "Removing tag since it has no values."
+                                    $tag.Remove($tagName)
                                 }
                                 else {
                                     $tag[$tagName]=$tagarray -join ','
                                 }
                                 # Remove association for the rule with the monitoring pack. PlaceHolder. Function will need to have monitoring contributor role.
                                 # Find the specific rule by the tag with ARG
-                                # Find association with the monitoring pack
+                                # Find association with the monitoring pack and that server
                                 # Remove association
+                                #$resourceGroup='AMonStarterpacks3'
+                                #$tag='WinOs'
+                                # find rule
+                                $DCRQuery=@"
+resources
+| where type == "microsoft.insights/datacollectionrules"
+| extend MPs=tostring(['tags'].MonitorStarterPacks)
+| where MPs=~'$TagValue'
+| summarize by name, id
+"@
+                                $DCR=Search-AzGraph -Query $DCRQuery
+                                "Found rule $($DCR.name)."
+                                "DCR id : $($DCR.id)"
+                                "server: $($server.Server)"
+                                $associationQuery=@"
+insightsresources
+| where type == "microsoft.insights/datacollectionruleassociations"
+| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
+| where isnotnull(properties.dataCollectionRuleId)
+| where resourceId =~ '$($server.Server)' and
+ruleId =~ '$($DCR.id)'
+"@
+$associationQuery
+                                $association=Search-AzGraph -Query $associationQuery
+                                "Found association $($association.name). Removing..."
+                                if ($association.count -gt 0) {
+                                    Remove-AzDataCollectionRuleAssociation -TargetResourceId $server.Server -AssociationName $association.name
+                                }
+                                else {
+                                    "No association Found."
+                                }
                             }
                         }
                         Set-AzResource -ResourceId $server.Server -Tag $tag -Force
