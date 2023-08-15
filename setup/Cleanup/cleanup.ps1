@@ -15,7 +15,7 @@ param (
 
 # AMA policy set removal
 # Remove policy sets
-if ($RemoveAMAPolicySet) {
+if ($RemoveAMAPolicySet -or $RemoveAll) {
     $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
     foreach ($init in $inits) {
         "Removing policy set $($init.PolicySetDefinitionId)"
@@ -34,7 +34,7 @@ else {
 
 #region Packs
 # Remove policy assignments and policies
-if ($RemovePacks) {
+if ($RemovePacks  -or $RemoveAll) {
     $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
     if ($RemoveTag) {
         "Removing packs with tag $RemoveTag."
@@ -117,7 +117,7 @@ else {
 #endregion
 
 #region Main Solution
-if ($RemoveMainSolution) {
+if ($RemoveMainSolution  -or $RemoveAll) {
     Get-AzResource -ResourceType 'Microsoft.Insights/workbooks' -ResourceGroupName $RG | Remove-AzResource -Force
     Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
     # remove function app roles and functiona app itself
