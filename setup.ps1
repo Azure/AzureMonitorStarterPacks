@@ -61,6 +61,9 @@ param (
     [Parameter()]
     [switch]
     $skipPacksSetup,
+    [Parameter()]
+    [switch]
+    $confirmEachPack,
     # specify the subscription ID where the solution will be deployed
     [Parameter()]
     [string]
@@ -189,10 +192,10 @@ if (!($skipMainSolutionSetup)) {
     }
 
     # Check if the function app already exists to acount for role assignments, which is annoying.
-    $existingFunctionApp=Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
-    if ($existingFunctionApp) {
+    # $existingFunctionApp=Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
+    # if ($existingFunctionApp) {
         
-    }
+    # }
     $parameters=@{
         functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
         location=$location
@@ -216,138 +219,7 @@ if (!($skipMainSolutionSetup)) {
 #endregion
 
 # Reads the packs.json file
-#region discovery - depending on the discovery type, it will find the servers to deploy the packs to.
-# tags - uses AppList tag to find servers then further on with tag values to find workloads. 
-# auto - uses the discovery function and looks for discovery info into log analytics tables (applications and roles)
-#$foundServers=$false
-#region PLACEHOLDER - Use LAW discovery to find potential targets for the packs.
-# if ($discoveryType -eq 'auto') {
-#     # Discovery Loop - Adds discovered servers to the packs object
-#     Write-Host "Starting automatic discovery using $wsfriendlyname workspace." -ForegroundColor Green
-#     "Currently disabled."
-#     foreach ($pack in $packs)
-#     {
-#         switch ($pack.DiscoveryType) {
-#             'RoleName' {
-#                 Write-Host "Looking for servers with $($pack.RoleName) role."
-#                 $ARGQuery="AzMonStarPacks_CL | parse RawData with Time ' ' Name ',' DisplayName ',' RoleType ',' Depth | extend Computer=tostring(split(_ResourceId,'/')[8]) | where RoleType == 'Role' and Name == '$($pack.RoleName)' | summarize by Computer, Id=_ResourceId"
-#                 #$ServerList=Search-azgraph -Query $ARGQuery -UseTenantScope
-#                 $ServerList=(Invoke-AzOperationalInsightsQuery -query $ARGQuery -Workspace $ws).Results.Id
-#                 #$ServerList.Results
-#                 if ($ServerList.Count -eq 0) {
-#                     Write-Error "No servers found with the $($pack.RoleName) role."
-#                 }
-#                 else {
-#                     $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
-#                     $foundServers=$true
-#                     Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
-#                     $ServerList | ForEach-Object {Write-Output $_.split('/')[8]}
-#                 }
-#             }
-#             'Application' {
-#                 Write-Host "Looking for servers with $($pack.ApplicationNames) application names."
-#                 $applist=''
-#                 $pack.ApplicationNames|ForEach-Object {
-#                         $applist+=$("'$_',")
-#                     $applist=$applist.TrimEnd(',')
-#                 }
-#                 $Query=@"
-#     let applicationNames = dynamic( [$applist]);
-#     AzMonStarPacksInventory_CL 
-#     | parse RawData with Time ' ' Name ',' Publisher ',' DisplayName | extend Computer=tostring(split(_ResourceId,'/')[8]) 
-#     | where DisplayName in (applicationNames)
-#     | summarize by Computer, Id=_ResourceId
-# "@
-#                 #$ServerList=Search-azgraph -Query $ARGQuery -UseTenantScope
-#                 $ServerList=(Invoke-AzOperationalInsightsQuery -query $Query -Workspace $ws).Results.Id
-#                 #$ServerList.Results
-#                 if ($ServerList.Count -eq 0) {
-#                     Write-Error "No servers found with the $($pack.ApplicationNames) application."
-#                 }
-#                 else {
-#                     $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
-#                     $foundServers=$true
-#                     Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
-#                     $ServerList | ForEach-Object {Write-Output $_.split('/')[8]}
-#                 }
-#             }
-#             'OS' {
-#                 Write-Host "Looking for servers with $($pack.osTarget) OS."
-#                 $Query=@"
-#             resources
-#             | where subscriptionId == '$subscriptionId'
-# | where type =~ 'microsoft.compute/virtualmachines' | where tolower(properties.storageProfile.osDisk.osType) =~ '$($pack.osTarget)' | project id, name
-# | union (resources |  where type=~'Microsoft.HybridCompute/machines' and tolower(properties.osType) == tolower('$($pack.osTarget)') | project id,name)
-# "@
-#                 $ServerList=Search-azgraph -Query $Query
-#                 if ($ServerList.Count -eq 0) {
-#                     Write-Error "No servers found with the $($pack.osTarget) OS."
-#                 }
-#                 else {
-#                     $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value ($ServerList).id
-#                     $foundServers=$true
-#                     Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack:"
-#                     $ServerList | ForEach-Object {Write-Output $_.name}
-#                 }
 
-#             }
-#             'Default' { "Unknown discovery type."}
-#         }
-#     }
-#p}
-#end region
-#region tags based discovery
-# elseif ($discoveryType -eq 'tags') {
-#     Write-Host "Use provided workbook to assign Servers to specific Packs." -ForegroundColor Cyan
-#     # # # gets all tagged servers
-#     # $allTaggedServersList=get-taggedServers -tagName $EnableTagName
-#     # "Found $($allTaggedServersList.Count) servers tagged with $Monstar."
-#     # if ($allTaggedServersList.Count -eq 0) {
-#     #     Write-Error "No servers found with the $EnableTagName tag. Please tag the servers you want to monitor with the $EnableTagName tag."
-#     #     return
-#     # }
-#     # else {
-#         # Write-Host "Starting tag discovery."
-#         # foreach ($pack in $packs)
-#         # {
-#         #     $ServerList=@()
-#         #     Write-Output "Looking for $($pack.RequiredTag) tag."
-#         #     $allTaggedServersList | ForEach-Object {
-#         #         if ($pack.RequiredTag -in ($_.$EnableTagName.split(',')) -or $pack.DiscoveryType -eq 'OS')
-#         #         {
-#         #             $ServerList+=$_.ResourceId
-#         #         }
-#         #     }
-#         #     if ($ServerList.Count -eq 0) {
-#         #         Write-Error "No servers found with the $($pack.RoleName) role."
-#         #     }
-#         #     else {
-#         #         $pack | Add-Member -MemberType NoteProperty -Name ServerList -Value $ServerList
-#         #         $foundServers=$true
-#         #         Write-Output "Found $($ServerList.Count) servers for $($pack.PackName) pack: $($pack.ServerList)"
-#         #     }
-#         # }
-#     #}
-# }
-#read packs file looking for discovery options (roles, applications, OS, etc.)
-# if discovery options are present, use LAW to find potential targets
-# if no discovery options are present, use the tag to find potential targets
-
-#endregion
-
-# # This function will loop through all servers and install AMA if it is not installed, as well as associating the VMInsights DCR.
-# # It will check for the VMInsights DCR and create it if it does not exist.
-# install-amaAndDCR -serverList $allTaggedServersList `
-#     -wsfriendlyname $wsfriendlyname `
-#     -ws $ws `
-#     -location $location `
-#     -resourceGroup $solutionResourceGroup `
-#     -useExistingDCR:$useExistingDCR.IsPresent `
-#     -DontAutoInstallAMA:$DontautoInstallAMA.IsPresent
-
-
-# If the usesameAGforAllPacks switch is used, we will ask for the AG information only once.
-#if ($packs.count -gt 0 -and $foundServers -eq $true) {
 if (!($skipPacksSetup)) {
     Write-Host "Found the following ENABLED packs in packs.json config file:"
     $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
@@ -384,7 +256,8 @@ if (!($skipPacksSetup)) {
             -workspaceResourceId $ws.ResourceId `
             -discoveryType $discoveryType `
             -solutionTag $solutionTag `
-            -solutionVersion $solutionVersion
+            -solutionVersion $solutionVersion `
+            -confirmEachPack:$confirmEachPack.IsPresent 
     }
     else {
         Write-Error "No packs found in $packsFilePath or no servers identified. Please correct the error and try again."
