@@ -9,7 +9,7 @@ param emailreceivers array = []
 param emailreiceversemails array  = []
 param useExistingAG bool = false
 param existingAGRG string = ''
-param location string = resourceGroup().location
+param location string //= resourceGroup().location
 param workspaceId string
 param enableInsightsAlerts string = 'true'
 //param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true

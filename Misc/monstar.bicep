@@ -5,7 +5,7 @@ param workspaceName string = ''
 param workspaceSku string = 'PerGB2018'
 param workspaceRetentionDays int = 30
 
-param location string = resourceGroup().location
+param location // string = resourceGroup().location
 param actionGroupName string
 //var nsgconfig = loadJsonContent('./Packs/packs.json')
 var packs = [

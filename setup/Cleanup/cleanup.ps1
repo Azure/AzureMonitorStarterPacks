@@ -12,6 +12,11 @@ param (
     [Parameter(Mandatory=$false)]
     [switch]$RemoveMainSolution
 )
+# Check login
+# import module(s)
+# Resource graph
+# Add deployment clear
+
 
 # AMA policy set removal
 # Remove policy sets
@@ -121,16 +126,18 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     Get-AzResource -ResourceType 'Microsoft.Insights/workbooks' -ResourceGroupName $RG | Remove-AzResource -Force
     Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
     # remove function app roles and functiona app itself
-    $RG='amonstarterpacks3'
     $PrincipalId=(Get-AzWebApp -ResourceGroupName $RG).Identity.PrincipalId
     Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $PrincipalId} | Remove-AzRoleAssignment
     Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $RG | Remove-AzResource -Force
+
+    # Remove web server (farm)
+    
     #remove deployment scripts
     Get-azresource -ResourceType 'Microsoft.Resources/deploymentScripts' -ResourceGroupName $RG | Remove-AzResource -Force
     #delete data collection endpoints
     get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove app insights
-    Get-AzApplicationInsights -ResourceGroupName $RG | Remove-AzApplicationInsights -Force
+    Get-AzApplicationInsights -ResourceGroupName $RG | Remove-AzApplicationInsights
     #remove app insights default alerts
     get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove custom remediation role 

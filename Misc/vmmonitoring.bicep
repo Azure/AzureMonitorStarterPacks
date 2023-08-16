@@ -16,6 +16,7 @@ module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG)
     emailreiceversemails: emailreiceversemails
     groupshortname: agname
     location: 'Global'
+    solutionTag: 'vmmon'
   }
 }
 resource age 'Microsoft.Insights/actionGroups@2018-09-01-preview' existing = if (useExistingAG) {

@@ -131,6 +131,7 @@ if ($sub -eq $null) {
     return
 }
 #Creates the resource group if it does not exist.
+# Add test to see if RG is in the same region as the new requested region.
 if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue)) {
     try {
         New-AzResourceGroup -Name $solutionResourceGroup -Location $location

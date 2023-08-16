@@ -4,7 +4,7 @@ param emailreceivers array = []
 param emailreiceversemails array = []
 param useExistingAG bool 
 param existingAGRG string = ''
-param location string = resourceGroup().location
+param location string //= resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
 //param osTarget string = 'Windows'

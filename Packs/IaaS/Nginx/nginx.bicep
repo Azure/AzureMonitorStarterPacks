@@ -6,7 +6,7 @@ param emailreiceversemails array  = []
 param useExistingAG bool = false
 param existingAGRG string = ''
 //param enableBasicVMPlatformAlerts bool = false
-param location string = resourceGroup().location
+param location string //= resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
 //param osTarget string
