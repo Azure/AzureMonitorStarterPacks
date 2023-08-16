@@ -17,7 +17,7 @@ $FileUri="https://amonstarterpacks2abbd.blob.core.windows.net/discovery/cse-disc
 $Run="cse-discoverwindows.ps1"
 $ResourceGroupName="AMonStarterpacks"
 $Location="eastus"
-$WindowsVMs=Get-AzVM -Status | ? {$_.PowerState -eq 'VM running' -and $_.OSProfile.WindowsConfiguration -ne $null}
+$WindowsVMs=Get-AzVM -Status | Where-Object {$_.PowerState -eq 'VM running' -and $_.OSProfile.WindowsConfiguration -ne $null}
 Write-Output "Date: $date"
 Write-Output "FileUri: $FileUri"
 Write-Output "Run: $Run"

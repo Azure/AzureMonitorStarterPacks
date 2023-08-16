@@ -18,70 +18,70 @@ function get-defenderAMApolicyAssignments {
     }
     return $assignments
 }
-function assign-amapolicy {
-    param (
-        [object]
-        $ws,
-        [string]
-        $location
-    )
+# function assign-amapolicy {
+#     param (
+#         [object]
+#         $ws,
+#         [string]
+#         $location
+#     )
 
-        # creating lists of possible scopes for assigning the AMA deployment Policy
-        $rgs=Get-AzResourceGroup | select-object -Property @{Name='DisplayName';Expression={$_.ResourceGroupName}},@{Name='Name';Expression={$_.ResourceGroupName}},@{Name='Id';Expression={$_.ResourceId}}, @{Name='Type';Expression={'ResourceGroup'}}
-        if ($rgs.Count -gt 5) {
-            #TODO too many resource groups for what? -mtb
-            Write-Host "Too many resource groups ($($rgs.Count)). Please select a scope to enable the policies. Do you want to include Resource Groups in the list?"
-            $rgoption=read-host -Prompt "Include Resource Groups in the list? [Y]es or [N]o"
-        }
-        else {
-            $rgoption='Y'
-        }
-        #get management groups and subscriptions. Could potentially work with RGs but... not sure it's worth it.
-        $mg=Get-AzManagementGroup -ErrorAction SilentlyContinue | Select-Object -Property DisplayName,@{Name='Id';Expression={($_.Id).Split('/')[4]}}, @{Name='Type';Expression={'ManagementGroup'}}
-        $sub=Get-AzSubscription -ErrorAction SilentlyContinue | select-object @{N='DisplayName';E={$_.Name}}, Id, @{Name='Type';Expression={'Subscription'}}
-        if ($rgoption -eq 'N') {
-            $allobjs=$mg+$sub
-        }
-        else {
-            $allobjs=$mg+$sub+$rgs
-        }
-        $selection=create-list -objectlist $allobjs -type 'scope' -fieldName1 'DisplayName' -fieldName2 'Type'
-        # Select Managed Identity
-        # ask if new or existing MI
-        $mioption=read-host -Prompt "Use [N]ew or [E]xisting User Assigned Managed Identity?"
-        if ($mioption -eq 'N') {
-            "Using System Managed identity"
-        }
-        else {
-            $mi=get-azadservicePrincipal | Where-Object {$_.ServicePrincipalType -eq 'ManagedIdentity'} | Sort-Object DisplayName
-            $miselection=create-list -objectlist $mi -type 'managedIdentity' -fieldName1 'DisplayName' -fieldName2 'ApplicationId'
-        }
-        # $mi=get-azadservicePrincipal | ? {$_.ServicePrincipalType -eq 'ManagedIdentity'}
-        # $miselection=create-list -objectlist $mi -type 'managedIdentity' -fieldName1 'DisplayName' -fieldName2 'ApplicationId'
-        switch ($selection.Type) {
-            'ManagementGroup' {
-                $scope=Get-AzManagementGroup -GroupName $selection.Id
-                #
-                set-defenderAMApolicy -scope "/managementgroups/$($scope.Id)" `
-                                    -workspaceResourceId $ws.ResourceId `
-                                    -MIId $miselection.AppId `
-                                    -Location $location
-            }
-            'Subscription' {
-                $scope=Get-AzSubscription -SubscriptionId $selection.Id
-                set-defenderAMApolicy -scope "/subscriptions/$($scope.Id)" `
-                    -workspaceResourceId $ws.ResourceId `
-                    -location $location
+#         # creating lists of possible scopes for assigning the AMA deployment Policy
+#         $rgs=Get-AzResourceGroup | select-object -Property @{Name='DisplayName';Expression={$_.ResourceGroupName}},@{Name='Name';Expression={$_.ResourceGroupName}},@{Name='Id';Expression={$_.ResourceId}}, @{Name='Type';Expression={'ResourceGroup'}}
+#         if ($rgs.Count -gt 5) {
+#             #TODO too many resource groups for what? -mtb
+#             Write-Host "Too many resource groups ($($rgs.Count)). Please select a scope to enable the policies. Do you want to include Resource Groups in the list?"
+#             $rgoption=read-host -Prompt "Include Resource Groups in the list? [Y]es or [N]o"
+#         }
+#         else {
+#             $rgoption='Y'
+#         }
+#         #get management groups and subscriptions. Could potentially work with RGs but... not sure it's worth it.
+#         $mg=Get-AzManagementGroup -ErrorAction SilentlyContinue | Select-Object -Property DisplayName,@{Name='Id';Expression={($_.Id).Split('/')[4]}}, @{Name='Type';Expression={'ManagementGroup'}}
+#         $sub=Get-AzSubscription -ErrorAction SilentlyContinue | select-object @{N='DisplayName';E={$_.Name}}, Id, @{Name='Type';Expression={'Subscription'}}
+#         if ($rgoption -eq 'N') {
+#             $allobjs=$mg+$sub
+#         }
+#         else {
+#             $allobjs=$mg+$sub+$rgs
+#         }
+#         $selection=new-list -objectlist $allobjs -type 'scope' -fieldName1 'DisplayName' -fieldName2 'Type'
+#         # Select Managed Identity
+#         # ask if new or existing MI
+#         $mioption=read-host -Prompt "Use [N]ew or [E]xisting User Assigned Managed Identity?"
+#         if ($mioption -eq 'N') {
+#             "Using System Managed identity"
+#         }
+#         else {
+#             $mi=get-azadservicePrincipal | Where-Object {$_.ServicePrincipalType -eq 'ManagedIdentity'} | Sort-Object DisplayName
+#             $miselection=new-list -objectlist $mi -type 'managedIdentity' -fieldName1 'DisplayName' -fieldName2 'ApplicationId'
+#         }
+#         # $mi=get-azadservicePrincipal | ? {$_.ServicePrincipalType -eq 'ManagedIdentity'}
+#         # $miselection=new-list -objectlist $mi -type 'managedIdentity' -fieldName1 'DisplayName' -fieldName2 'ApplicationId'
+#         switch ($selection.Type) {
+#             'ManagementGroup' {
+#                 $scope=Get-AzManagementGroup -GroupName $selection.Id
+#                 #
+#                 set-defenderAMApolicy -scope "/managementgroups/$($scope.Id)" `
+#                                     -workspaceResourceId $ws.ResourceId `
+#                                     -MIId $miselection.AppId `
+#                                     -Location $location
+#             }
+#             'Subscription' {
+#                 $scope=Get-AzSubscription -SubscriptionId $selection.Id
+#                 set-defenderAMApolicy -scope "/subscriptions/$($scope.Id)" `
+#                     -workspaceResourceId $ws.ResourceId `
+#                     -location $location
 
-            }
-            'ResourceGroup' {
-                $scope=Get-AzResourceGroup -ResourceGroupName $selection.Name
-                set-defenderAMApolicy -scope $scope.ResourceId `
-                -workspaceResourceId $ws.ResourceId `
-                -location $location
-            }
-        }
-    }
+#             }
+#             'ResourceGroup' {
+#                 $scope=Get-AzResourceGroup -ResourceGroupName $selection.Name
+#                 set-defenderAMApolicy -scope $scope.ResourceId `
+#                 -workspaceResourceId $ws.ResourceId `
+#                 -location $location
+#             }
+#         }
+#     }
     
 function set-defenderAMApolicy {
     param (
@@ -165,7 +165,7 @@ function get-tagstring ($object) {
 }
 function select-subscription {
     $subList=Get-AzSubscription
-    return create-list -objectList $subList -type "Subscription" -fieldName2 "Id"
+    return new-list -objectList $subList -type "Subscription" -fieldName2 "Id"
 }
 function select-ag {
     param (
@@ -175,7 +175,7 @@ function select-ag {
         Write-host "Selecting action group for $moduleName." -ForegroundColor Green
     }
     $AGList=Get-AzActionGroup
-    return create-list -objectList $AGList -type "Action Group"
+    return new-list -objectList $AGList -type "Action Group"
 }
 function get-newAGInformation {
     $emailreceivers=Read-Host "Enter contact name to receive alerts."
@@ -210,7 +210,7 @@ function select-workspace {
     $wslist=Search-AzGraph -Query "resources | where type == 'microsoft.operationalinsights/workspaces' | project name, resourceGroup, subscriptionId, id"
     $wslist.Add(@{name="Create New..."})
     
-    $selection=create-list -objectList $wslist -type "Workspace" -fieldName1 "name" -fieldName2 "resourceGroup"
+    $selection=new-list -objectList $wslist -type "Workspace" -fieldName1 "name" -fieldName2 "resourceGroup"
     if ($null -ne $selection) {
         if ($selection.name -eq "Create New...") {
             $wsName=Read-Host "Enter new Workspace name:"
@@ -267,10 +267,10 @@ function select-workspace {
 }
 function select-dcr {
     $objList=Search-AzGraph -Query "resources | where type == 'microsoft.insights/datacollectionrules'" -UseTenantScope
-    $selectedObj=create-list -objectList $objList -fieldName1 "name" -fieldName2 "resourceGroup" -type "Data Collection Rule"
+    $selectedObj=new-list -objectList $objList -fieldName1 "name" -fieldName2 "resourceGroup" -type "Data Collection Rule"
     return $selectedObj.id
 }
-function create-list {
+function new-list {
     param (
         [object] $objectList,
         [string] $type,
@@ -395,45 +395,45 @@ function get-defaultVMI_DCR {
     $defaultVMI_DCR=Search-azgraph -Query $VMInsightsdcrQuery -UseTenantScope
     return $defaultVMI_DCR.id
 }
-function associate-dcr {
-    param (
-        [System.Object] $server,
-        [string] $DCRRuleId,
-        [string] $osTarget
-    )
-    if ($DCRRuleId -in (Get-AzDataCollectionRuleAssociation -TargetResourceId $server.id).DataCollectionRuleId) {
-        Write-Warning "DCR already associated. Skipping deployment"
-    }
-    else {
-        $parameters=@{
-            vmId=$server.id
-            associationName="$($server.name)-DCR-Association-$(get-date -format "ddmmyyHHmmss")"
-            dataCollectionRuleId=$DCRRuleId
-            osTarget=$osTarget
-            vmOS=$server.os
-        }
+# function associate-dcr {
+#     param (
+#         [System.Object] $server,
+#         [string] $DCRRuleId,
+#         [string] $osTarget
+#     )
+#     if ($DCRRuleId -in (Get-AzDataCollectionRuleAssociation -TargetResourceId $server.id).DataCollectionRuleId) {
+#         Write-Warning "DCR already associated. Skipping deployment"
+#     }
+#     else {
+#         $parameters=@{
+#             vmId=$server.id
+#             associationName="$($server.name)-DCR-Association-$(get-date -format "ddmmyyHHmmss")"
+#             dataCollectionRuleId=$DCRRuleId
+#             osTarget=$osTarget
+#             vmOS=$server.os
+#         }
 
-        Write-Host "Associating DCR."
-        select-azsubscription -subscriptionId $($server.id).split('/')[2] | Out-Null
-        New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $server.resourceGroup `
-            -TemplateFile "./modules/DCRs/dcrassociation.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
-    }
-}
-function create-VMIdcr {
-    param (
-        [string] $workspaceResourceId,
-        [string] $location
-    )
-    $parameters = @{
-        workspaceResourceId = $workspaceResourceId
-        location = $location
-    }
-    $workspaceResourceGroup = $workspaceResourceId.Split('/')[4]
-    select-azsubscription -subscriptionId $($workspaceResourceId).split('/')[2] | Out-Null
-    $output=New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $workspaceResourceGroup `
-    -TemplateFile "./modules/DCRs/DefaultVMI-rule.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
-    return $output.Outputs.vmiRuleId.value
-}
+#         Write-Host "Associating DCR."
+#         select-azsubscription -subscriptionId $($server.id).split('/')[2] | Out-Null
+#         New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $server.resourceGroup `
+#             -TemplateFile "./modules/DCRs/dcrassociation.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
+#     }
+# }
+# function create-VMIdcr {
+#     param (
+#         [string] $workspaceResourceId,
+#         [string] $location
+#     )
+#     $parameters = @{
+#         workspaceResourceId = $workspaceResourceId
+#         location = $location
+#     }
+#     $workspaceResourceGroup = $workspaceResourceId.Split('/')[4]
+#     select-azsubscription -subscriptionId $($workspaceResourceId).split('/')[2] | Out-Null
+#     $output=New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $workspaceResourceGroup `
+#     -TemplateFile "./modules/DCRs/DefaultVMI-rule.bicep" -templateParameterObject $parameters -ErrorAction Stop | Out-Null #-Verbose
+#     return $output.Outputs.vmiRuleId.value
+# }
 function deploy-pack {
     param (
         #[object] $serverList,
@@ -445,7 +445,8 @@ function deploy-pack {
         [string] $resourceGroup,
         [string] $discoveryType,
         [string] $solutionTag,
-        [string] $solutionVersion
+        [string] $solutionVersion,
+        [bool] $azAvailable
         #,
         #[string] $osTarget # Windows, Linux or All
     )
@@ -499,6 +500,10 @@ function deploy-pack {
                 }
             }
         }
+        if ($null -ne $packinfo.GrafanaDashboard) {
+            "Deploying Grafana Dashboard."
+        }
+
         Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
         try {
             New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
@@ -542,20 +547,19 @@ function install-packs {
                     -resourceGroup $resourceGroup `
                     -discoveryType $discoveryType `
                     -solutionTag $solutionTag `
-                    -solutionVersion $solutionVersion
+                    -solutionVersion $solutionVersion 
             }
         }
         else {
             deploy-pack -packinfo $pack `
-                    -workspaceResourceId $workspaceResourceId `
-                    -useExistingAG $useExistingAG `
-                    -AGInfo $AGinfo `
-                    -resourceGroup $resourceGroup `
-                    -discoveryType $discoveryType `
-                    -solutionTag $solutionTag `
-                    -solutionVersion $solutionVersion
+                -workspaceResourceId $workspaceResourceId `
+                -useExistingAG $useExistingAG `
+                -AGInfo $AGinfo `
+                -resourceGroup $resourceGroup `
+                -discoveryType $discoveryType `
+                -solutionTag $solutionTag `
+                -solutionVersion $solutionVersion
         }
-        
     }
 }
 function get-AGInfo {

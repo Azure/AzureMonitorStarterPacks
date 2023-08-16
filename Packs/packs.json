@@ -9,7 +9,8 @@
       "DiscoveryType": "OS",
       "RoleName" : "N/A",
       "RequireParameters" : false,
-      "TemplateLocation" : "./Packs/IaaS/WinOS/WinVMMonitoring.bicep"
+      "TemplateLocation" : "./Packs/IaaS/WinOS/WinVMMonitoring.bicep",
+      "GrafanaDashboard": "Azure Monitor Start Pack - Windows Operating System-1692086853589.json"
     },
     {
       "PackName": "AzMon-Packs-Linux-VM-Monitoring",
@@ -22,6 +23,7 @@
       "RoleName" : "N/A",
       "RequireParameters" : false,
       "TemplateLocation" : "./Packs/IaaS/LxOS/LinuxVM.bicep",
+      "GrafanaDashboard": "Azure Monitor Start Pack _ Linux Operating System-1692092035812.json",
       "moduleParameters": [
       ]    
     },

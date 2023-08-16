@@ -12,7 +12,7 @@ param existingAGRG string = ''
 // param enableBasicVMPlatformAlerts bool = false
 param location string //= resourceGroup().location
 param workspaceId string
-param workspaceFriendlyName string
+//param workspaceFriendlyName string
 //param osTarget string
 param packtag string
 param solutionTag string

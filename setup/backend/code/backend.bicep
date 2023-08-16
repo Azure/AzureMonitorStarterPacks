@@ -1,5 +1,6 @@
 @description('The name for the function app that you wish to create')
 param functionname string
+param currentUserIdObject string
 param location string
 param storageAccountName string
 //param kvname string
@@ -7,7 +8,7 @@ param lawresourceid string
 param appInsightsLocation string
 //param packageUri string = 'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/discovery.zip'
 @description('UTC timestamp used to create distinct deployment scripts for each deployment')
-param utcValue string = utcNow()
+//param utcValue string = utcNow()
 param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
@@ -24,6 +25,7 @@ var ArcContributorRoleDefinitionId='48b40c6e-82e0-4eb3-90d5-19e40f49b624'
 var ReaderRoleDefinitionId='acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader Role Definition Id for Reader
 var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
 var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
+
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -76,7 +78,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-upload-blob-${utcValue}'
+  name: 'deployscript-upload-blob-${functionname}}'
   dependsOn: [
     azfunctionsiteconfig
   ]
@@ -383,4 +385,15 @@ module workbook './modules/workbook.bicep' = {
     solutionVersion: solutionVersion
   }
 }
+module amg 'modules/grafana.bicep' = {
+  name: 'azureManagedGrafana'
+  params: {
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    location: location
+    grafanaName: functionname
+    userObjectId: currentUserIdObject
+  }
+}
+
 //output functionkey string = listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
