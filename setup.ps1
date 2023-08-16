@@ -256,7 +256,7 @@ if (!($skipPacksSetup)) {
                 }
             }
         }
-        "Location: $location"
+
         install-packs -packinfo $packs `
             -resourceGroup $solutionResourceGroup `
             -AGInfo $AGinfo `
@@ -271,18 +271,24 @@ if (!($skipPacksSetup)) {
             -location $location
 
         # Grafana dashboards
-        try {an}
+        $azAvailable=$false
+        try {
+            az
+            $azAvailable=$true
+        }
         catch {
             "didn't find az"
             $azAvailable=$false
         }
         if ($azAvailable) {
             # This should be moved into the install packs routine eventually
-            "az extension add --namge amg"
+            az extension add --name amg
+            az account set --subscription $($sub.Id)
             foreach ($pack in $packs) {
-                if ([string]::IsNullOrEmpty($pack.GrafanaDashboard)) {
+                if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
                     "Installing Grafana dashboard for $($pack.PackName)"
-                    az grafana dashboard import -g $solutionResourceGroup -n "$($pack.GrafanaDashboard)"
+                    $temppath=$pack.GrafanaDashboard
+                    az grafana dashboard import -g $solutionResourceGroup -n "MonstarPacks" --definition $temppath               
                 }
             }
         }

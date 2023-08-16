@@ -10,7 +10,7 @@
       "RoleName" : "N/A",
       "RequireParameters" : false,
       "TemplateLocation" : "./Packs/IaaS/WinOS/WinVMMonitoring.bicep",
-      "GrafanaDashboard": "Azure Monitor Start Pack - Windows Operating System-1692086853589.json"
+      "GrafanaDashboard": "./Packs/IaaS/WinOS/Azure Monitor Start Pack - Windows Operating System-1692086853589.json"
     },
     {
       "PackName": "AzMon-Packs-Linux-VM-Monitoring",
@@ -23,12 +23,12 @@
       "RoleName" : "N/A",
       "RequireParameters" : false,
       "TemplateLocation" : "./Packs/IaaS/LxOS/LinuxVM.bicep",
-      "GrafanaDashboard": "Azure Monitor Start Pack _ Linux Operating System-1692092035812.json",
+      "GrafanaDashboard": "./Packs/IaaS/LxOS/Azure Monitor Start Pack _ Linux Operating System-1692092035812.json",
       "moduleParameters": [
       ]    
     },
     {
-      "PackName": "AzMon-Packs-Linux-nginx-Monitoring",
+      "PackName": "AzMon-Packs-Linux-Nginx-Monitoring",
       "RuleName": "AzMonPacks-nginxMonitoring",
       "ModuleType": "IaaS",
       "Status": "Enabled",

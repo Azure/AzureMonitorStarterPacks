@@ -508,7 +508,6 @@ function deploy-pack {
 
         Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
         try {
-            $parameters
             New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
             -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
         }
@@ -587,94 +586,94 @@ function get-AGInfo {
     }
     return $AG
 }
-function install-amaAndDCR {
-    param (
-        [System.Object] $serverList,
-        [string] $wsfriendlyname,
-        [object] $ws,
-        [string] $location,
-        [string] $resourceGroup,
-        [switch] $useExistingDCR,
-        [switch] $DontAutoInstallAMA
-    )
-    $amaServers=get-amaEnabledServer #Gets a list of servers with AMA installed.
-    Write-Host "Creating/Selecting VMInsights DCR. If UseExistingDCR is specified, a list of DCRs will be presented. If not, the script will look for a default DCR. If not found, a new DCR will be created."
-    Write-Host "Searching for default VMInsights DCR. (MSVMI-$wsfriendlyname)"
-    if ($useExistingDCR) {
-        $DCRid=select-dcr
-    }
-    else {
-        $DCRId=get-defaultVMI_DCR -wsfriendlyname $wsfriendlyname
-        if ($DCRId) {
-            Write-Host "Found default VMInsights DCR, based on MSVMI-<workspace name> pattern: $DCRId"
-        }
-        else { #Create a new DCR.
-            $DCRId=create-vmiDCR -workspaceResourceId $ws.ResourceId -resourceGroup $resourceGroup -location $location
-            if (!$DCRId) {
-                Write-Error "DCR creation failed."
-                exit
-            }
-            else {
-                Write-Host "DCR created successfully. RuleId: $DCRId"
-            }
-        }
-    }
-    # Now that we have the Rule Id to be used (being new or existing) we can associate it with the servers.
-    foreach ($server in $serverList) {  #loop through all servers tagged with AppList      
-        if ($server.id -notin $amaServers.resourceId)
-        {
-            Write-Host "Server $($server.name) is missing AMA."
-            if ($DontAutoInstallAMA) {
-                $answer=Read-Host "Install? (y/n)"
-                if ($answer -eq 'y') {
-                    install-ama -server $server -location $location
-                }
-                else { Write-Host "Skipping AMA install...don't know why except you are testing this." }
-            }
-            else {
-                install-ama -server $server -location $location
-            }          
-        }
-        #Associate the DCR with the server.
-        Write-Host "Associating DCR ($DCRId) with the server. $($server.name))"
-        associate-dcr -server $server -DCRRuleId $DCRId -osTarget 'All'
-    }   
-}
-function copy-toBlob {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]
-        $FilePath,
-        [Parameter(Mandatory = $true)]
-        [string]
-        $storageaccountName,
-        [Parameter(Mandatory = $true)]
-        [string]
-        $resourcegroup,
-        [Parameter(Mandatory = $true)]
-        [string]
-        $containerName,
-        [Parameter(Mandatory = $false)]
-        [switch]
-        $force
-    )
-    try {
-        $saParams = @{
-            ResourceGroupName = $resourcegroup
-            Name              = $storageaccountName
-        }
-        $scParams = @{
-            Container = $containerName
-        }
-        $bcParams = @{
-            File = $FilePath
-            Blob = ($FilePath | Split-Path -Leaf)
-        }
-        if ($force)
-        { Get-AzStorageAccount @saParams | Get-AzStorageContainer @scParams | Set-AzStorageBlobContent @bcParams -Force | Out-Null }
-        else { Get-AzStorageAccount @saParams | Get-AzStorageContainer @scParams | Set-AzStorageBlobContent @bcParams | Out-Null }
-    }
-    catch {
-        Write-Error $_.Exception.Message
-    }
-}
+# function install-amaAndDCR {
+#     param (
+#         [System.Object] $serverList,
+#         [string] $wsfriendlyname,
+#         [object] $ws,
+#         [string] $location,
+#         [string] $resourceGroup,
+#         [switch] $useExistingDCR,
+#         [switch] $DontAutoInstallAMA
+#     )
+#     $amaServers=get-amaEnabledServer #Gets a list of servers with AMA installed.
+#     Write-Host "Creating/Selecting VMInsights DCR. If UseExistingDCR is specified, a list of DCRs will be presented. If not, the script will look for a default DCR. If not found, a new DCR will be created."
+#     Write-Host "Searching for default VMInsights DCR. (MSVMI-$wsfriendlyname)"
+#     if ($useExistingDCR) {
+#         $DCRid=select-dcr
+#     }
+#     else {
+#         $DCRId=get-defaultVMI_DCR -wsfriendlyname $wsfriendlyname
+#         if ($DCRId) {
+#             Write-Host "Found default VMInsights DCR, based on MSVMI-<workspace name> pattern: $DCRId"
+#         }
+#         else { #Create a new DCR.
+#             $DCRId=create-vmiDCR -workspaceResourceId $ws.ResourceId -resourceGroup $resourceGroup -location $location
+#             if (!$DCRId) {
+#                 Write-Error "DCR creation failed."
+#                 exit
+#             }
+#             else {
+#                 Write-Host "DCR created successfully. RuleId: $DCRId"
+#             }
+#         }
+#     }
+#     # Now that we have the Rule Id to be used (being new or existing) we can associate it with the servers.
+#     foreach ($server in $serverList) {  #loop through all servers tagged with AppList      
+#         if ($server.id -notin $amaServers.resourceId)
+#         {
+#             Write-Host "Server $($server.name) is missing AMA."
+#             if ($DontAutoInstallAMA) {
+#                 $answer=Read-Host "Install? (y/n)"
+#                 if ($answer -eq 'y') {
+#                     install-ama -server $server -location $location
+#                 }
+#                 else { Write-Host "Skipping AMA install...don't know why except you are testing this." }
+#             }
+#             else {
+#                 install-ama -server $server -location $location
+#             }          
+#         }
+#         #Associate the DCR with the server.
+#         Write-Host "Associating DCR ($DCRId) with the server. $($server.name))"
+#         associate-dcr -server $server -DCRRuleId $DCRId -osTarget 'All'
+#     }   
+# }
+# function copy-toBlob {
+#     param (
+#         [Parameter(Mandatory = $true)]
+#         [string]
+#         $FilePath,
+#         [Parameter(Mandatory = $true)]
+#         [string]
+#         $storageaccountName,
+#         [Parameter(Mandatory = $true)]
+#         [string]
+#         $resourcegroup,
+#         [Parameter(Mandatory = $true)]
+#         [string]
+#         $containerName,
+#         [Parameter(Mandatory = $false)]
+#         [switch]
+#         $force
+#     )
+#     try {
+#         $saParams = @{
+#             ResourceGroupName = $resourcegroup
+#             Name              = $storageaccountName
+#         }
+#         $scParams = @{
+#             Container = $containerName
+#         }
+#         $bcParams = @{
+#             File = $FilePath
+#             Blob = ($FilePath | Split-Path -Leaf)
+#         }
+#         if ($force)
+#         { Get-AzStorageAccount @saParams | Get-AzStorageContainer @scParams | Set-AzStorageBlobContent @bcParams -Force | Out-Null }
+#         else { Get-AzStorageAccount @saParams | Get-AzStorageContainer @scParams | Set-AzStorageBlobContent @bcParams | Out-Null }
+#     }
+#     catch {
+#         Write-Error $_.Exception.Message
+#     }
+# }
