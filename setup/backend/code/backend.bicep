@@ -22,6 +22,8 @@ var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contri
 var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
 var ArcContributorRoleDefinitionId='48b40c6e-82e0-4eb3-90d5-19e40f49b624'
 var ReaderRoleDefinitionId='acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader Role Definition Id for Reader
+var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
+var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -318,6 +320,7 @@ module functionArcContributor '../../../modules/rbac/subscription/roleassignment
     roleShortName: 'arccontributor'
   }
 }
+// Custom role for remediation of policies. Policy Contributor could be used instead but this is as restrictive as possible.
 module functionRemediationRole '../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'functionRemediationRole'
   scope: subscription()
@@ -330,6 +333,33 @@ module functionRemediationRole '../../../modules/rbac/subscription/roleassignmen
     roleShortName: 'remediation'
   }
 }
+module functionMonitorContributorRole '../../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionMonitorContributorRole'
+  scope: subscription()
+  params: {
+    resourcename: functionname
+    principalId: azfunctionsite.identity.principalId
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: MonitoringContributorRoleDefinitionId
+    roleShortName: 'monitorcontributor'
+  }
+}
+
+module functionLogAnalyticsContributorRole '../../../modules/rbac/subscription/roleassignment.bicep' = {
+  name: 'functionLogAnalyticsContributorRole'
+  scope: subscription()
+  params: {
+    resourcename: functionname
+    principalId: azfunctionsite.identity.principalId
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
+    roleDefinitionId: LogAnalyticsContributorRoleDefinitionId
+    roleShortName: 'loganalyticscontributor'
+  }
+}
+
+
 
 module logicapp './modules/logicapp.bicep' = {
   name: 'BackendLogicApp'

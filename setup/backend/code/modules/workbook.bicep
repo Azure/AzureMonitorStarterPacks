@@ -20,9 +20,6 @@ var wbConfig='''
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{Subscriptions}"
-        ],
         "parameters": [
           {
             "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -96,21 +93,22 @@ var wbConfig='''
           {
             "id": "36bac02a-250b-45a0-a451-46561033b7ed",
             "version": "KqlParameterItem/1.0",
-            "name": "showHidden",
-            "label": "Show Hidden Items",
-            "type": 2,
+            "name": "showHelp",
+            "label": "Show Help Items",
+            "type": 10,
             "isRequired": true,
             "isGlobal": true,
             "typeSettings": {
-              "additionalResourceOptions": []
+              "additionalResourceOptions": [],
+              "showDefault": false
             },
-            "jsonData": "[\n    { \"value\":\"yes\", \"label\":\"Yes\" },\n    { \"value\":\"no\", \"label\":\"No\" }\n]",
-            "value": "no"
+            "jsonData": "[\n    { \"value\":\"yes\", \"label\":\"Yes\",\"default\": \"yes\" },\n    { \"value\":\"no\", \"label\":\"No\" }\n]",
+            "value": "yes"
           }
         ],
         "style": "above",
-        "queryType": 1,
-        "resourceType": "microsoft.resourcegraph/resources"
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "customWidth": "50",
       "name": "parameters - 6"
@@ -121,6 +119,14 @@ var wbConfig='''
         "version": "LinkItem/1.0",
         "style": "tabs",
         "links": [
+          {
+            "id": "a9a63932-4a11-4fe1-938c-02619e609193",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Getting Started",
+            "subTarget": "gettingstarted",
+            "style": "link"
+          },
           {
             "id": "15f0fa97-4286-48d6-9dea-26a956197d26",
             "cellValue": "tabSelection",
@@ -182,6 +188,18 @@ var wbConfig='''
       "name": "links - 8"
     },
     {
+      "type": 1,
+      "content": {
+        "json": "# Getting Started\n\nWelcome to the Azure Monitor Starter Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs. You may also disable all the monitoring for a specific server. This will remove the tags and the rule associations*\n- Enable/Disable Alerts\n- Check policy status and start remediation if required.\n- Check Monitor pack associations\n"
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "gettingstarted"
+      },
+      "name": "text - 14"
+    },
+    {
       "type": 12,
       "content": {
         "version": "NotebookGroup/1.0",
@@ -191,7 +209,7 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.compute/virtualmachines' or type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Server=id,['Resource Group']=resourceGroup, Packs=tags.MonitorStarterPacks",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Server=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Server=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
               "size": 0,
               "title": "Monitored Machines",
               "exportMultipleValues": true,
@@ -210,20 +228,9 @@ var wbConfig='''
               ],
               "visualization": "table",
               "gridSettings": {
-                "filter": true,
-                "sortBy": [
-                  {
-                    "itemKey": "$gen_link_Packs_2",
-                    "sortOrder": 1
-                  }
-                ]
+                "filter": true
               },
-              "sortBy": [
-                {
-                  "itemKey": "$gen_link_Packs_2",
-                  "sortOrder": 1
-                }
-              ]
+              "sortBy": []
             },
             "name": "Monitored Machines",
             "styleSettings": {
@@ -260,7 +267,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -296,7 +303,7 @@ var wbConfig='''
                     "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Servers\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\"\n  }\n}",
                     "httpMethod": "POST",
                     "title": "Remove Monitoring",
-                    "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack ",
+                    "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack \n\nServers:\n\n{taggedVMs}",
                     "runLabel": "Confirm"
                   }
                 },
@@ -362,7 +369,7 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.compute/virtualmachines' or type =~ 'microsoft.hybridcompute/machines' \n| where isempty(tolower(tags.MonitorStarterPacks)) //and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Server=id,['Resource Group']=resourceGroup",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isempty(tolower(tags.MonitorStarterPacks)) //and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Server=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isempty(tolower(tags.MonitorStarterPacks)) //and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Server=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
               "size": 0,
               "title": "Non-monitored Machines",
               "exportMultipleValues": true,
@@ -424,7 +431,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "WinOS"
                 }
               ],
               "style": "pills",
@@ -562,49 +569,72 @@ var wbConfig='''
             }
           },
           {
-            "type": 11,
+            "type": 12,
             "content": {
-              "version": "LinkItem/1.0",
-              "style": "paragraph",
-              "links": [
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
                 {
-                  "id": "f5cb3ede-91d1-4414-bfa1-a1689f45d0c8",
-                  "linkTarget": "ArmAction",
-                  "linkLabel": "Enable Alerts",
-                  "style": "primary",
-                  "linkIsContextBlade": true,
-                  "armActionContext": {
-                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                    "headers": [],
-                    "params": [],
-                    "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Enable\", \n    \"alerts\":  [{alertsselected}]\n  }\n}",
-                    "httpMethod": "POST",
-                    "title": "Enable Alerts",
-                    "description": "# This action will Enable the selected Alerts\n\n{alertsselected}",
-                    "runLabel": "Confirm"
-                  }
+                  "type": 11,
+                  "content": {
+                    "version": "LinkItem/1.0",
+                    "style": "paragraph",
+                    "links": [
+                      {
+                        "id": "f5cb3ede-91d1-4414-bfa1-a1689f45d0c8",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Enable Alerts",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Enable\", \n    \"alerts\":  [{alertsselected}]\n  }\n}",
+                          "httpMethod": "POST",
+                          "title": "Enable Alerts",
+                          "description": "# This action will Enable the selected Alerts\n\n{alertsselected}",
+                          "runLabel": "Confirm"
+                        }
+                      },
+                      {
+                        "id": "d9469141-a104-4696-b9cd-f0fc7e3f963e",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Disable Alerts",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Disable\", \n    \"alerts\":  [{alertsselected}]\n  }\n}\n",
+                          "httpMethod": "POST",
+                          "title": "Disable Alerts",
+                          "description": "# This action will disable the selected Alerts\n\n{alertsselected}",
+                          "runLabel": "Confirm"
+                        }
+                      }
+                    ]
+                  },
+                  "name": "links - 8"
                 },
                 {
-                  "id": "d9469141-a104-4696-b9cd-f0fc7e3f963e",
-                  "linkTarget": "ArmAction",
-                  "linkLabel": "Disable Alerts",
-                  "style": "primary",
-                  "linkIsContextBlade": true,
-                  "armActionContext": {
-                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                    "headers": [],
-                    "params": [],
-                    "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Disable\", \n    \"alerts\":  [{alertsselected}]\n  }\n}\n",
-                    "httpMethod": "POST",
-                    "title": "Disable Alerts",
-                    "description": "# This action will disable the selected Alerts\n\n{alertsselected}",
-                    "runLabel": "Confirm"
-                  }
+                  "type": 1,
+                  "content": {
+                    "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.",
+                    "style": "info"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "showHelp",
+                    "comparison": "isEqualTo",
+                    "value": "yes"
+                  },
+                  "name": "text - 3"
                 }
               ]
             },
             "customWidth": "50",
-            "name": "links - 8"
+            "name": "AlertsSubGroup1"
           }
         ]
       },

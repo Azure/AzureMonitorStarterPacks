@@ -12,7 +12,7 @@
 
 // Assign initiative to subscription (for now, just one subscription)
 param solutionTag string
-param location string = resourceGroup().location
+param location string //= resourceGroup().location
 
 var rulename = '${solutionTag}-amaPolicy'
 // var policyIDs = [

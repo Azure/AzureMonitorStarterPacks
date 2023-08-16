@@ -4,6 +4,7 @@ param assignmentName string
 param location string
 param roledefinitionIds array
 param solutionTag string
+param utcValue string = utcNow()
 //var roleassignmentnamePrefix=guid('${assignmentName}-${subscription().subscriptionId}')
 
 
@@ -24,7 +25,7 @@ resource assignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
 }
 
 resource roleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roledefinitionId, i) in roledefinitionIds:  {
-  name: guid('${assignmentName}-${subscription().subscriptionId}-${i}')
+  name: guid(guid('${assignmentName}-${subscription().subscriptionId}-${i}'))
   properties: {
     roleDefinitionId: roledefinitionId
     principalId: assignment.identity.principalId

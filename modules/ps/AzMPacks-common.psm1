@@ -521,14 +521,21 @@ function install-packs {
         [string]$resourceGroup,
         [string]$discoveryType,
         [string]$solutionTag,
-        [string]$solutionVersion
+        [string]$solutionVersion,
+        [bool]$confirmEachPack
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
     }
     foreach ($pack in $packinfo | Where-Object {$_.Status -eq 'Enabled'})
     {
-        deploy-pack -packinfo $pack `
+        if ($confirmEachPack) {
+            $confirm=Read-Host "Do you want to deploy pack $($pack.PackName)? (Y/N)"
+            if ($confirm -eq 'N') {
+                continue
+            }
+            else {
+                deploy-pack -packinfo $pack `
                     -workspaceResourceId $workspaceResourceId `
                     -useExistingAG $useExistingAG `
                     -AGInfo $AGinfo `
@@ -536,6 +543,19 @@ function install-packs {
                     -discoveryType $discoveryType `
                     -solutionTag $solutionTag `
                     -solutionVersion $solutionVersion
+            }
+        }
+        else {
+            deploy-pack -packinfo $pack `
+                    -workspaceResourceId $workspaceResourceId `
+                    -useExistingAG $useExistingAG `
+                    -AGInfo $AGinfo `
+                    -resourceGroup $resourceGroup `
+                    -discoveryType $discoveryType `
+                    -solutionTag $solutionTag `
+                    -solutionVersion $solutionVersion
+        }
+        
     }
 }
 function get-AGInfo {

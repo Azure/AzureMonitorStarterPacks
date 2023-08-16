@@ -6,7 +6,7 @@ param emailreiceversemails array  = []
 param useExistingAG bool = false
 param existingAGRG string = ''
 //param enableBasicVMPlatformAlerts bool = false
-param location string = resourceGroup().location
+param location string //= resourceGroup().location
 param workspaceId string
 param workspaceFriendlyName string
 //param osTarget string
@@ -65,7 +65,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
     ruleName: rulename
     filepatterns: [
       '/var/log/nginx/access.log'
-      '/var/log/nginx/error.log'
+    //'/var/log/nginx/error.log'
     ]
     lawResourceId:workspaceId
     tableName: 'NginxLogs'
