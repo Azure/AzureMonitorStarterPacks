@@ -446,7 +446,8 @@ function deploy-pack {
         [string] $discoveryType,
         [string] $solutionTag,
         [string] $solutionVersion,
-        [bool] $azAvailable
+        [bool] $azAvailable,
+        [string]$location
         #,
         #[string] $osTarget # Windows, Linux or All
     )
@@ -464,9 +465,10 @@ function deploy-pack {
             #vmIDs=@($serverListLocal)
             #vmOSs=@($serverList.os)
             #arcvmIDs = $arcvmIds
+            location=$location
             rulename=$packinfo.ruleName
             workspaceId=$workspaceResourceId
-            workspaceFriendlyName=$workspaceResourceId.split('/')[8]
+            #workspaceFriendlyName=$workspaceResourceId.split('/')[8]
             useExistingAG=$useExistingAG
             #osTarget=$packinfo.osTarget
             packtag=$packinfo.RequiredTag
@@ -506,6 +508,7 @@ function deploy-pack {
 
         Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
         try {
+            $parameters
             New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
             -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
         }
@@ -527,7 +530,8 @@ function install-packs {
         [string]$discoveryType,
         [string]$solutionTag,
         [string]$solutionVersion,
-        [bool]$confirmEachPack
+        [bool]$confirmEachPack,
+        [string]$location
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
@@ -547,7 +551,8 @@ function install-packs {
                     -resourceGroup $resourceGroup `
                     -discoveryType $discoveryType `
                     -solutionTag $solutionTag `
-                    -solutionVersion $solutionVersion 
+                    -solutionVersion $solutionVersion `
+                    -location $location
             }
         }
         else {
@@ -558,7 +563,8 @@ function install-packs {
                 -resourceGroup $resourceGroup `
                 -discoveryType $discoveryType `
                 -solutionTag $solutionTag `
-                -solutionVersion $solutionVersion
+                -solutionVersion $solutionVersion `
+                -location $location
         }
     }
 }

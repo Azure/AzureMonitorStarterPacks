@@ -139,6 +139,15 @@ if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyCont
         return
     }
 }
+else {
+    if ((Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue).Location -ne $location) {
+        Write-Error "Resource group $solutionResourceGroup already exists in a different location. Please select a different resource group name or delete the existing resource group."
+        return
+    }
+    else {
+        Write-Host "Using existing resource group $solutionResourceGroup."
+    }
+}
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
     $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $solutionTag
 }
@@ -209,15 +218,15 @@ if (!($skipMainSolutionSetup)) {
         currentUserIdObject=$userId
     }
     Write-Host "Deploying the backend components(function, logic app and workbook)."
-    try {
+    #try {
         New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
         -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
-    }
-    catch {
-        Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
-        Write-Error $_.Exception.Message
-        return
-    }
+    #}
+    #catch {
+    #    Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
+    #    Write-Error $_.Exception.Message
+    #    return
+    #}
 }
 # Reads the packs.json file
 if (!($skipPacksSetup)) {
@@ -247,6 +256,7 @@ if (!($skipPacksSetup)) {
                 }
             }
         }
+        "Location: $location"
         install-packs -packinfo $packs `
             -resourceGroup $solutionResourceGroup `
             -AGInfo $AGinfo `
@@ -257,7 +267,8 @@ if (!($skipPacksSetup)) {
             -discoveryType $discoveryType `
             -solutionTag $solutionTag `
             -solutionVersion $solutionVersion `
-            -confirmEachPack:$confirmEachPack.IsPresent 
+            -confirmEachPack:$confirmEachPack.IsPresent `
+            -location $location
 
         # Grafana dashboards
         try {an}

@@ -8,6 +8,7 @@ param counterSpecifiers array = []
 param samplingFrequencyInSeconds int = 300
 param packtag string
 param solutionTag string
+
 /*
               "System!*[System[(Level = 1 or Level = 2 or Level = 3)]]",
               "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"

@@ -6,11 +6,12 @@ param useExistingAG bool
 param existingAGRG string = ''
 param location string //= resourceGroup().location
 param workspaceId string
-param workspaceFriendlyName string
+//param workspaceFriendlyName string
 //param osTarget string = 'Windows'
 param packtag string
 param solutionTag string
 param solutionVersion string
+var workspaceFriendlyName = split(workspaceId, '/')[8]
 
 var kind= 'Windows'
 

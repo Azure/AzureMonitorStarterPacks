@@ -15,8 +15,18 @@ param (
 # Check login
 # import module(s)
 # Resource graph
-# Add deployment clear
-
+Write-Output "Installing/Loading Azure Resource Graph module."
+if ($null -eq (get-module Az.ResourceGraph)) {
+    try {
+        install-module az.resourcegraph -AllowPrerelease -Force
+        import-module az.ResourceGraph #-Force
+    }
+    catch {
+        Write-Error "Unable to install az.resourcegraph module. Please make sure you have the proper permissions to install modules."
+        return
+    }
+}
+# Add deployment cleanup. Deployments may conflict if previous deployment to the same resource group failed or done to another region.
 
 # AMA policy set removal
 # Remove policy sets
@@ -131,7 +141,7 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $RG | Remove-AzResource -Force
 
     # Remove web server (farm)
-    
+    Get-AzResource -ResourceType 'Microsoft.Web/serverfarms' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove deployment scripts
     Get-azresource -ResourceType 'Microsoft.Resources/deploymentScripts' -ResourceGroupName $RG | Remove-AzResource -Force
     #delete data collection endpoints
@@ -142,6 +152,7 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove custom remediation role 
     #Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
+    # remove storage account
 }
 else {
     "Skipping main solution removal. Use -RemoveMainSolution to remove it"

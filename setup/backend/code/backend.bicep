@@ -26,7 +26,6 @@ var ReaderRoleDefinitionId='acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader Role
 var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
 var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
 
-
 var sasConfig = {
   signedResourceTypes: 'sco'
   signedPermission: 'r'
@@ -78,7 +77,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-upload-blob-${functionname}}'
+  name: 'deployscript-MonstarPacks'
   dependsOn: [
     azfunctionsiteconfig
   ]
@@ -252,8 +251,8 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
     //ApplicationId: guid(functionname)
-    Flow_Type: 'Redfield'
-    Request_Source: 'IbizaAIExtension'
+    //Flow_Type: 'Redfield'
+    //Request_Source: 'IbizaAIExtension'
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
     WorkspaceResourceId: lawresourceid
@@ -391,7 +390,7 @@ module amg 'modules/grafana.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     location: location
-    grafanaName: functionname
+    grafanaName: 'MonstarPacks'
     userObjectId: currentUserIdObject
   }
 }
