@@ -2,17 +2,17 @@
 # Save to a .xml file
 [xml]$mp=get-content ./Misc/SCOMMPs/IIS-2012.xml
 # Enabled Rules (not monitors...)
-$enabled_Rules=$mp.ManagementPack.Monitoring.Rules.Rule | ? {$_.Enabled -eq $true}
+$enabled_Rules=$mp.ManagementPack.Monitoring.Rules.Rule | Where-Object {$_.Enabled -eq $true}
 # List performance Rules details:
-$enabled_Rules.Datasources.Datasource | ? {$_.ID -eq 'PerformanceDS'} | ft ObjectName, CounterName, Frequency
+$enabled_Rules.Datasources.Datasource | Where-Object {$_.ID -eq 'PerformanceDS'} | Format-Table ObjectName, CounterName, Frequency
 # Create bicep compatible array
-$enabled_Rules.Datasources.Datasource | ? {$_.ID -eq 'PerformanceDS'} | Select-Object ObjectName, CounterName, Frequency | foreach {"'\\{0}\\{1}'"-f $_.ObjectName, $_.CounterName}
-$frequencies=$enabled_Rules.Datasources.Datasource | ? {$_.ID -eq 'PerformanceDS'} | Select-Object  Frequency -Unique
+$enabled_Rules.Datasources.Datasource | Where-Object {$_.ID -eq 'PerformanceDS'} | Select-Object ObjectName, CounterName, Frequency | ForEach-Object {"'\\{0}\\{1}'"-f $_.ObjectName, $_.CounterName}
+$frequencies=$enabled_Rules.Datasources.Datasource | Where-Object {$_.ID -eq 'PerformanceDS'} | Select-Object  Frequency -Unique
 $counters=@()
 foreach ($frequency in $frequencies)
 {
     #$frequency
-    $counters=@($enabled_Rules.Datasources.Datasource | ? {$_.ID -eq 'PerformanceDS' -and $_.Frequency -eq $frequency.Frequency} | Select-Object ObjectName, CounterName, Frequency | foreach {"'\\{0}\\{1}'"-f $_.ObjectName, $_.CounterName}) | Out-String
+    $counters=@($enabled_Rules.Datasources.Datasource | Where-Object {$_.ID -eq 'PerformanceDS' -and $_.Frequency -eq $frequency.Frequency} | Select-Object ObjectName, CounterName, Frequency | ForEach-Object {"'\\{0}\\{1}'"-f $_.ObjectName, $_.CounterName}) | Out-String
 $rule=@"
     {
         streams: [
@@ -31,7 +31,7 @@ $rule
 
 break
 # read event based rules
-$enabled_Rules.Datasources.Datasource | ? {$_.ID -eq 'EventDS'}
+$enabled_Rules.Datasources.Datasource | Where-Object {$_.ID -eq 'EventDS'}
 
 #
 

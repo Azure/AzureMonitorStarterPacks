@@ -1,5 +1,5 @@
 //param vmnames array
-param vmIDs array = []
+//param vmIDs array = []
 //param vmOSs array = []
 //param arcVMIDs array = []
 param rulename string
@@ -17,7 +17,7 @@ param enableInsightsAlerts string = 'true'
 param packtag string
 param solutionTag string
 param solutionVersion string
-param workspaceFriendlyName string
+//param workspaceFriendlyName string
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {

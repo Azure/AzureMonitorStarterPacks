@@ -15,13 +15,23 @@ param (
 # Check login
 # import module(s)
 # Resource graph
-# Add deployment clear
-
+Write-Output "Installing/Loading Azure Resource Graph module."
+if ($null -eq (get-module Az.ResourceGraph)) {
+    try {
+        install-module az.resourcegraph -AllowPrerelease -Force
+        import-module az.ResourceGraph #-Force
+    }
+    catch {
+        Write-Error "Unable to install az.resourcegraph module. Please make sure you have the proper permissions to install modules."
+        return
+    }
+}
+# Add deployment cleanup. Deployments may conflict if previous deployment to the same resource group failed or done to another region.
 
 # AMA policy set removal
 # Remove policy sets
 if ($RemoveAMAPolicySet -or $RemoveAll) {
-    $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
+    $inits=Get-AzPolicySetDefinition | where-object {$_.properties.Metadata.MonitorStarterPacks -ne $null}
     foreach ($init in $inits) {
         "Removing policy set $($init.PolicySetDefinitionId)"
         $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
@@ -43,7 +53,7 @@ if ($RemovePacks  -or $RemoveAll) {
     $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
     if ($RemoveTag) {
         "Removing packs with tag $RemoveTag."
-        $pols=$pols | ? {$_.properties.Metadata.MonitorStarterPacks -eq $RemoveTag}
+        $pols=$pols | where-object {$_.properties.Metadata.MonitorStarterPacks -eq $RemoveTag}
     }
     foreach ($pol in $pols) {
         $remove=$true
@@ -65,8 +75,8 @@ if ($RemovePacks  -or $RemoveAll) {
                 "Removing assignments for $($pol.PolicyDefinitionId)"
                 foreach ($assignment in $assignments) {
                     $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
-                    Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
-                    #$ras=Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
+                    Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
+                    #$ras=Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
                     # -and $_. -eq $assignments.Identity.PrincipalId} | Remove-AzRoleAssignment
                     "Removing assignment for $($assignment.Identity.PrincipalId)"
                     Remove-AzPolicyAssignment -Id $assignment.PolicyAssignmentId
@@ -80,7 +90,7 @@ if ($RemovePacks  -or $RemoveAll) {
         }
     }
     # If something remains, clear all dead assignments in the current subscription
-    Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where {$_.ObjectType -eq 'unknown'}  | where {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
+    Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where-object {$_.ObjectType -eq 'unknown'}  | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
     # remove DCR associations
 $query=@'
 insightsresources
@@ -92,7 +102,7 @@ insightsresources
 '@
     $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG
     if ($RemoveTag) {
-        $DCRs=$DCRs | ? {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
+        $DCRs=$DCRs | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
     }
     foreach ($DCR in $DCRs)
     {
@@ -111,7 +121,7 @@ insightsresources
     # remove alert rules
     $Alerts=Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG 
     if ($RemoveTag) {
-        $Alerts=$Alerts | ? {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
+        $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
     }
     $Alerts | Remove-AzResource -Force
     # remove main solution (workbook, logic app, function app)
@@ -127,11 +137,11 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
     # remove function app roles and functiona app itself
     $PrincipalId=(Get-AzWebApp -ResourceGroupName $RG).Identity.PrincipalId
-    Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $PrincipalId} | Remove-AzRoleAssignment
+    Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $PrincipalId} | Remove-AzRoleAssignment
     Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $RG | Remove-AzResource -Force
 
     # Remove web server (farm)
-    
+    Get-AzResource -ResourceType 'Microsoft.Web/serverfarms' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove deployment scripts
     Get-azresource -ResourceType 'Microsoft.Resources/deploymentScripts' -ResourceGroupName $RG | Remove-AzResource -Force
     #delete data collection endpoints
@@ -142,6 +152,7 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove custom remediation role 
     #Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
+    # remove storage account
 }
 else {
     "Skipping main solution removal. Use -RemoveMainSolution to remove it"
@@ -192,5 +203,5 @@ else {
 #     # }
 # }
 # # remove dead role assignments - if not removed it will fail to install again.
-# # Get-AzRoleAssignment | ? {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | where {$_.ObjectType -eq 'unknown'}  | Remove-AzRoleAssignment
+# # Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | where-object {$_.ObjectType -eq 'unknown'}  | Remove-AzRoleAssignment
 # # remove action group(s)?

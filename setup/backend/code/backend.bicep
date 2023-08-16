@@ -1,5 +1,6 @@
 @description('The name for the function app that you wish to create')
 param functionname string
+param currentUserIdObject string
 param location string
 param storageAccountName string
 //param kvname string
@@ -7,7 +8,7 @@ param lawresourceid string
 param appInsightsLocation string
 //param packageUri string = 'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/discovery.zip'
 @description('UTC timestamp used to create distinct deployment scripts for each deployment')
-param utcValue string = utcNow()
+//param utcValue string = utcNow()
 param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
@@ -76,7 +77,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-upload-blob-${utcValue}'
+  name: 'deployscript-MonstarPacks'
   dependsOn: [
     azfunctionsiteconfig
   ]
@@ -250,8 +251,8 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
     //ApplicationId: guid(functionname)
-    Flow_Type: 'Redfield'
-    Request_Source: 'IbizaAIExtension'
+    //Flow_Type: 'Redfield'
+    //Request_Source: 'IbizaAIExtension'
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
     WorkspaceResourceId: lawresourceid
@@ -383,4 +384,15 @@ module workbook './modules/workbook.bicep' = {
     solutionVersion: solutionVersion
   }
 }
+module amg 'modules/grafana.bicep' = {
+  name: 'azureManagedGrafana'
+  params: {
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    location: location
+    grafanaName: 'MonstarPacks'
+    userObjectId: currentUserIdObject
+  }
+}
+
 //output functionkey string = listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey

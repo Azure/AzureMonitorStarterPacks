@@ -25,7 +25,7 @@ if ($servers) {
                 "Running $action for $($server.Server) server. TagValue: $TagValue"
                 $tag = (Get-AzResource -ResourceId $server.Server).Tags
                 #"Current tags: $($tag)"
-                if ($tag -eq $null) { # initializes if no tag is there.
+                if ($null -eq $tag) { # initializes if no tag is there.
                     $tag = @{}
                 }
                 if ($tag.Keys -notcontains $TagName) { # doesn´t have the monitoring tag
@@ -47,7 +47,7 @@ if ($servers) {
             foreach ($server in $servers) {
                 "Running $action for $($server.Server) server. TagValue: $TagValue"
                 [System.Object]$tag = (Get-AzResource -ResourceId $server.Server).Tags
-                if ($tag -eq $null) { # initializes if no tag is there.
+                if ($null -eq $tag) { # initializes if no tag is there.
                     $tag = @{}
                 }
                 else {

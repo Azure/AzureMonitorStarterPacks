@@ -6,7 +6,7 @@ param agname string
 param emailreceivers array = []
 param emailreiceversemails array  = []
 param useExistingAG bool 
-var location = resourceGroup().location
+param location string
 
 module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
   name: agname
@@ -19,7 +19,7 @@ module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG)
     solutionTag: 'vmmon'
   }
 }
-resource age 'Microsoft.Insights/actionGroups@2018-09-01-preview' existing = if (useExistingAG) {
+resource age 'Microsoft.Insights/actionGroups@2023-01-01' existing = if (useExistingAG) {
   name: agname
   //scope: subscription()
   

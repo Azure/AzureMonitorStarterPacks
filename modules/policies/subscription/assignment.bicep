@@ -4,7 +4,7 @@ param assignmentName string
 param location string
 param roledefinitionIds array
 param solutionTag string
-param utcValue string = utcNow()
+//param utcValue string = utcNow()
 //var roleassignmentnamePrefix=guid('${assignmentName}-${subscription().subscriptionId}')
 
 

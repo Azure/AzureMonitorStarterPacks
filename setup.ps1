@@ -13,9 +13,7 @@
 
         This example will ask for a workspace and a subscription. It will try to use the default DCR based on the MSVMI-<workspacename> pattern.
         It will also ask for an Action Group to be created. If you want to use an existing Action Group, use the -useExistingAG switch.
-        
     #>
-    
 param (
     # the log analytics workspace where monitoring data will be sent
     [Parameter(Mandatory=$false)]
@@ -126,7 +124,7 @@ else {
         "Using $($sub.Name) subscription since there is no other one."
     }
 }
-if ($sub -eq $null) {
+if ($null -eq $sub) {
     Write-Error "No subscription selected. Exiting."
     return
 }
@@ -141,6 +139,15 @@ if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyCont
         return
     }
 }
+else {
+    if ((Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue).Location -ne $location) {
+        Write-Error "Resource group $solutionResourceGroup already exists in a different location. Please select a different resource group name or delete the existing resource group."
+        return
+    }
+    else {
+        Write-Host "Using existing resource group $solutionResourceGroup."
+    }
+}
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
     $ws=select-workspace -location $location -resourceGroup $solutionResourceGroup -solutionTag $solutionTag
 }
@@ -151,7 +158,10 @@ else {
         return
     }
 }
-$wsfriendlyname=$ws.Name
+#$wsfriendlyname=$ws.Name
+
+$userId=(Get-AzADUser -SignedIn).Id
+
 #endregion
 #region AMA policy setup
 if (!$skipAMAPolicySetup) {
@@ -205,22 +215,20 @@ if (!($skipMainSolutionSetup)) {
         appInsightsLocation=$location
         solutionTag=$solutionTag
         solutionVersion=$solutionVersion
+        currentUserIdObject=$userId
     }
     Write-Host "Deploying the backend components(function, logic app and workbook)."
-    try {
+    #try {
         New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
         -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
-    }
-    catch {
-        Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
-        Write-Error $_.Exception.Message
-        return
-    }
+    #}
+    #catch {
+    #    Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
+    #    Write-Error $_.Exception.Message
+    #    return
+    #}
 }
-#endregion
-
 # Reads the packs.json file
-
 if (!($skipPacksSetup)) {
     Write-Host "Found the following ENABLED packs in packs.json config file:"
     $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
@@ -248,6 +256,7 @@ if (!($skipPacksSetup)) {
                 }
             }
         }
+        "Location: $location"
         install-packs -packinfo $packs `
             -resourceGroup $solutionResourceGroup `
             -AGInfo $AGinfo `
@@ -258,7 +267,26 @@ if (!($skipPacksSetup)) {
             -discoveryType $discoveryType `
             -solutionTag $solutionTag `
             -solutionVersion $solutionVersion `
-            -confirmEachPack:$confirmEachPack.IsPresent 
+            -confirmEachPack:$confirmEachPack.IsPresent `
+            -location $location
+
+        # Grafana dashboards
+        try {an}
+        catch {
+            "didn't find az"
+            $azAvailable=$false
+        }
+        if ($azAvailable) {
+            # This should be moved into the install packs routine eventually
+            "az extension add --namge amg"
+            foreach ($pack in $packs) {
+                if ([string]::IsNullOrEmpty($pack.GrafanaDashboard)) {
+                    "Installing Grafana dashboard for $($pack.PackName)"
+                    az grafana dashboard import -g $solutionResourceGroup -n "$($pack.GrafanaDashboard)"
+                }
+            }
+        }
+#endregion
     }
     else {
         Write-Error "No packs found in $packsFilePath or no servers identified. Please correct the error and try again."
