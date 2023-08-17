@@ -169,6 +169,7 @@ if (!$skipAMAPolicySetup) {
 
     $parameters=@{
         solutionTag=$solutionTag
+        location=$location
     }
     Write-Host "Deploying the AMA policy initiative to the current subscription."
     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
