@@ -48,8 +48,32 @@
       "version": ""
     }
   ],
-  "description": "This dashboard provides an overview of the health and performance of the resources monitored in Azure Monitor enabled by the Windows Operating System Starter Pack",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "This dashboard provides an overview of the health and performance of the resources monitored in Azure Monitor enabled by the Windows Operating System MonStarPack",
   "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
   "id": null,
   "links": [],
   "liveNow": false,
@@ -72,9 +96,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Overview",
+        "content": "# Windows Operating System Overview",
         "mode": "markdown"
       },
+      "pluginVersion": "9.5.6",
       "type": "text"
     },
     {
@@ -99,7 +124,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 0,
         "y": 2
@@ -174,13 +199,14 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 5,
         "y": 2
       },
       "id": 4,
       "options": {
+        "displayLabels": [],
         "legend": {
           "displayMode": "table",
           "placement": "bottom",
@@ -233,6 +259,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "fixedColor": "green",
             "mode": "palette-classic"
           },
           "custom": {
@@ -247,22 +274,23 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 10,
         "y": 2
       },
       "id": 26,
       "options": {
-        "displayLabels": [
-          "name"
-        ],
+        "displayLabels": [],
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
         },
-        "pieType": "pie",
+        "pieType": "donut",
         "reduceOptions": {
           "calcs": [
             "allValues"
@@ -275,6 +303,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureMonitor": {
@@ -295,7 +324,7 @@
           ]
         }
       ],
-      "title": "Alerts",
+      "title": "Alerts by Status",
       "type": "piechart"
     },
     {
@@ -320,7 +349,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 15,
         "y": 2
@@ -329,16 +358,19 @@
       "options": {
         "displayLabels": [],
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
         },
-        "pieType": "pie",
+        "pieType": "donut",
         "reduceOptions": {
           "calcs": [
             "allValues"
           ],
-          "fields": "/^count_$/",
+          "fields": "",
           "values": true
         },
         "tooltip": {
@@ -346,6 +378,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureMonitor": {
@@ -378,7 +411,7 @@
         "h": 2,
         "w": 20,
         "x": 0,
-        "y": 9
+        "y": 11
       },
       "id": 14,
       "options": {
@@ -390,6 +423,7 @@
         "content": "# Health and Availability",
         "mode": "markdown"
       },
+      "pluginVersion": "9.5.6",
       "type": "text"
     },
     {
@@ -459,7 +493,7 @@
         "h": 12,
         "w": 5,
         "x": 0,
-        "y": 11
+        "y": 13
       },
       "id": 12,
       "options": {
@@ -481,6 +515,7 @@
           }
         ]
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -602,7 +637,7 @@
         "h": 12,
         "w": 5,
         "x": 5,
-        "y": 11
+        "y": 13
       },
       "id": 10,
       "options": {
@@ -617,6 +652,7 @@
         },
         "showHeader": true
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -718,7 +754,7 @@
         "h": 12,
         "w": 10,
         "x": 10,
-        "y": 11
+        "y": 13
       },
       "hideTimeOverride": true,
       "id": 16,
@@ -741,6 +777,7 @@
           }
         ]
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -789,8 +826,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -845,7 +881,7 @@
         "h": 12,
         "w": 10,
         "x": 0,
-        "y": 23
+        "y": 25
       },
       "id": 18,
       "options": {
@@ -862,6 +898,7 @@
         "showHeader": true,
         "sortBy": []
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -903,8 +940,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -981,7 +1017,7 @@
         "h": 12,
         "w": 10,
         "x": 10,
-        "y": 23
+        "y": 25
       },
       "id": 20,
       "options": {
@@ -996,6 +1032,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureMonitor": {
@@ -1028,7 +1065,7 @@
         "h": 2,
         "w": 20,
         "x": 0,
-        "y": 35
+        "y": 37
       },
       "id": 22,
       "options": {
@@ -1040,6 +1077,7 @@
         "content": "# Performance",
         "mode": "markdown"
       },
+      "pluginVersion": "9.5.6",
       "type": "text"
     },
     {
@@ -1065,8 +1103,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1122,7 +1159,7 @@
         "h": 12,
         "w": 11,
         "x": 0,
-        "y": 37
+        "y": 39
       },
       "id": 24,
       "options": {
@@ -1137,6 +1174,7 @@
         },
         "showHeader": true
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1186,8 +1224,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1243,7 +1280,7 @@
         "h": 12,
         "w": 9,
         "x": 11,
-        "y": 37
+        "y": 39
       },
       "id": 25,
       "options": {
@@ -1258,6 +1295,7 @@
         },
         "showHeader": true
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1323,6 +1361,7 @@
         "definition": "subscriptions",
         "hide": 0,
         "includeAll": true,
+        "label": "Subscriptions",
         "multi": true,
         "name": "Subscriptions",
         "options": [],
@@ -1403,12 +1442,12 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Azure Monitor Starter Pack / Windows Operating System",
-  "uid": "MonStarPacksWinOS",
-  "version": 26
+  "title": "Azure Monitor Start Pack / Windows Operating System",
+  "uid": "WindowsOSMonStarPackDash",
+  "version": 31
 }

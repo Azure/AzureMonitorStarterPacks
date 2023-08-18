@@ -48,8 +48,31 @@
       "version": ""
     }
   ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "This dashboard provides an overview of the health and performance of the resources monitored in Azure Monitor enabled by the Linux Operating System MonStarPack",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
   "links": [],
@@ -73,7 +96,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Overview",
+        "content": "# Linux Operating System Overview",
         "mode": "markdown"
       },
       "pluginVersion": "9.5.6",
@@ -101,7 +124,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 0,
         "y": 2
@@ -176,7 +199,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 5,
         "y": 2
@@ -249,22 +272,23 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 10,
         "y": 2
       },
       "id": 26,
       "options": {
-        "displayLabels": [
-          "name"
-        ],
+        "displayLabels": [],
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
         },
-        "pieType": "pie",
+        "pieType": "donut",
         "reduceOptions": {
           "calcs": [
             "allValues"
@@ -298,7 +322,7 @@
           ]
         }
       ],
-      "title": "Alerts",
+      "title": "Alerts by Status",
       "type": "piechart"
     },
     {
@@ -323,7 +347,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 5,
         "x": 15,
         "y": 2
@@ -332,11 +356,14 @@
       "options": {
         "displayLabels": [],
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
         },
-        "pieType": "pie",
+        "pieType": "donut",
         "reduceOptions": {
           "calcs": [
             "allValues"
@@ -382,7 +409,7 @@
         "h": 2,
         "w": 20,
         "x": 0,
-        "y": 9
+        "y": 11
       },
       "id": 14,
       "options": {
@@ -416,15 +443,11 @@
           },
           "mappings": [],
           "thresholds": {
-            "mode": "absolute",
+            "mode": "percentage",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -433,7 +456,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Last heartbeat"
+              "options": "Computer"
             },
             "properties": [
               {
@@ -447,7 +470,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Resource"
+              "options": "Time"
             },
             "properties": [
               {
@@ -461,10 +484,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 5,
+        "h": 10,
+        "w": 6,
         "x": 0,
-        "y": 11
+        "y": 13
       },
       "id": 12,
       "options": {
@@ -605,10 +628,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 5,
-        "x": 5,
-        "y": 11
+        "h": 10,
+        "w": 6,
+        "x": 6,
+        "y": 13
       },
       "id": 10,
       "options": {
@@ -722,10 +745,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 10,
-        "x": 10,
-        "y": 11
+        "h": 10,
+        "w": 8,
+        "x": 12,
+        "y": 13
       },
       "hideTimeOverride": true,
       "id": 16,
@@ -783,7 +806,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-RdYlGr"
           },
           "custom": {
             "align": "auto",
@@ -843,7 +866,19 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 91
+                "value": 234
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Computer"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 221
               }
             ]
           }
@@ -874,7 +909,7 @@
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources)\r\n| where TimeGenerated > ago(24h)\r\n| where Namespace == \"LogicalDisk\"\r\n| where Name == \"FreeSpacePercentage\"\r\n| extend Instance = tostring(parse_json(Tags).[\"vm.azm.ms/mountId\"])\r\n| summarize DiskFreeSpace = avg(Val) by _ResourceId, Computer, Instance\r\n| project _ResourceId, Computer, Instance, DiskFreeSpace\r\n| top 10 by DiskFreeSpace asc",
+            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources)\r\n| where TimeGenerated > ago(24h)\r\n| where Namespace == \"LogicalDisk\"\r\n| where Name == \"FreeSpacePercentage\"\r\n| extend Instance = tostring(parse_json(Tags).[\"vm.azm.ms/mountId\"])\r\n| where Instance !contains \"/snap/\"\r\n| summarize DiskFreeSpace = avg(Val) by _ResourceId, Computer, Instance\r\n| project _ResourceId, Computer, Instance, DiskFreeSpace\r\n| top 10 by DiskFreeSpace asc",
             "resources": [
               "$Workspace"
             ],
@@ -1013,7 +1048,7 @@
             "timeGrain": "auto"
           },
           "azureResourceGraph": {
-            "query": "//It will join with resources table and patchassessmentresources\r\n((resources //join of virtual machines, you can play with params as you see fit.\r\n| extend id = tolower(id)\r\n| where type =~ \"microsoft.compute/virtualmachines\" and id in ($Resources)\r\n| extend conf = iff(properties.storageProfile.osDisk.osType =~ \"windows\", properties.osProfile.windowsConfiguration.patchSettings.patchMode, properties.osProfile.linuxConfiguration.patchSettings.patchMode)\r\n| where conf in~ ('AutomaticByOS','AutomaticByPlatform','ImageDefault','Manual')\r\n| extend os = tolower(tostring(properties.storageProfile.osDisk.osType))\r\n| extend status=properties.extended.instanceView.powerState.displayStatus\r\n| project id, name, os, conf, status, resourceProperties=properties)\r\n| union\r\n(resources //union with arc servers, you can play with params as you see fit.\r\n| where type =~ \"microsoft.hybridcompute/machines\" and id in ($Resources)\r\n| extend id=tolower(id)\r\n| extend os=tolower(tostring(properties.osName))\r\n| extend status=properties.status\r\n| project id, name, os, status, resourceProperties=properties))\r\n| join kind=leftouter //finally, making a left outer join to fetch updates details from patchassessment\r\n((patchassessmentresources\r\n| where type in~ (\"microsoft.compute/virtualmachines/patchassessmentresults\", \"microsoft.hybridcompute/machines/patchassessmentresults\")\r\n| where properties.status == \"Succeeded\"\r\n| where properties.rebootPending in~ ('true', 'false')\r\n| parse id with resourceId \"/patchAssessmentResults\" *\r\n| extend resourceId=tolower(resourceId)\r\n| project resourceId, assessProperties=properties))\r\non $left.id == $right.resourceId //join on resources id & patchassessment id that is parsed.\r\n| summarize\r\nTotal = countif(1 == 1),\r\n[\"No Update data\"] = countif(isnull(assessProperties) == true),\r\n[\"Pending Reboot\"] = countif(isnotnull(assessProperties) and assessProperties.rebootPending == \"true\"),\r\n[\"Pending Updates\"] = countif(isnotnull(assessProperties) and assessProperties.osType =~ \"Windows\" and (assessProperties.availablePatchCountByClassification.critical>0 or assessProperties.availablePatchCountByClassification.security>0 or assessProperties.availablePatchCountByClassification.updateRollup>0 or assessProperties.availablePatchCountByClassification.featurePack>0 or assessProperties.availablePatchCountByClassification.servicePack>0 or assessProperties.availablePatchCountByClassification.definition>0 or assessProperties.availablePatchCountByClassification.tools>0 or assessProperties.availablePatchCountByClassification.updates>0))"
+            "query": "resources\r\n| where id in~ ($Resources)\r\n//| where location in ({Location})\r\n| extend joinId = tolower(id)\r\n| project joinId\r\n| join kind=leftouter\r\n(\r\npatchassessmentresources\r\n| where type in~ (\"microsoft.compute/virtualmachines/patchassessmentresults\", \"microsoft.hybridcompute/machines/patchassessmentresults\")\r\n| extend assessment = properties.availablePatchCountByClassification\r\n| where isnotnull(assessment)\r\n| parse id with resourceId \"/patchAssessmentResults\" *\r\n| extend joinId=tolower(resourceId)\r\n) on $left.joinId == $right.joinId\r\n| summarize\r\n[\"Total Machines\"] = dcount(resourceId),\r\n[\"Security Updates\"] = sumif(toint(assessment.security), (isnotnull(properties) and properties.osType =~ \"Linux\" and (assessment.security>0))),\r\n[\"Other Updates\"] = sumif(toint(assessment.other), (isnotnull(properties) and properties.osType =~ \"Linux\" and (assessment.other>0)))"
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
@@ -1026,7 +1061,7 @@
           ]
         }
       ],
-      "title": "Windows Updates Pending",
+      "title": "Linux Updates Pending",
       "type": "gauge"
     },
     {
@@ -1152,7 +1187,7 @@
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Memory\"\r\n| where Name == \"AvailableMB\"\r\n| extend memorySizeMB = todouble(parse_json(Tags).[\"vm.azm.ms/memorySizeMB\"])\r\n| extend PercentageBytesinUse = Val/memorySizeMB*100\r\n| summarize  AvgMemUse = avg(PercentageBytesinUse) by Namespace, _ResourceId, Computer ",
+            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Memory\"\r\n| where Name == \"AvailableMB\"\r\n| extend memorySizeMB = todouble(parse_json(Tags).[\"vm.azm.ms/memorySizeMB\"])\r\n| extend PercentageBytesinUse = Val/memorySizeMB*100\r\n| summarize  AvgMemUse = avg(PercentageBytesinUse) by Namespace, _ResourceId, Computer \r\n| top 10 by AvgMemUse",
             "resources": [
               "$Workspace"
             ],
@@ -1171,7 +1206,7 @@
           "refId": "B"
         }
       ],
-      "title": "Memory Utilisation Overview",
+      "title": "Top 10 Machines by Memory Utilisation",
       "transformations": [],
       "type": "table"
     },
@@ -1274,7 +1309,7 @@
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Processor\"\r\n| where Name == \"UtilizationPercentage\"\r\n| summarize AvgCPUUtilisation = avg(Val) by Namespace, _ResourceId, Computer ",
+            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Processor\"\r\n| where Name == \"UtilizationPercentage\"\r\n| summarize AvgCPUUtilisation = avg(Val) by Namespace, _ResourceId, Computer \r\n| top 10 by AvgCPUUtilisation",
             "resources": [
               "$Workspace"
             ],
@@ -1293,7 +1328,7 @@
           "refId": "B"
         }
       ],
-      "title": "Processor Utilisation Overview",
+      "title": "Top 10 Machines by Processor Utilisation",
       "transformations": [],
       "type": "table"
     }
@@ -1423,6 +1458,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Start Pack / Linux Operating System",
-  "uid": "LinuxOS",
-  "version": 2
+  "uid": "LinuxOSMonStarPackDash",
+  "version": 9
 }
