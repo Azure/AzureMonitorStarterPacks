@@ -447,7 +447,8 @@ function deploy-pack {
         [string] $solutionTag,
         [string] $solutionVersion,
         [bool] $azAvailable,
-        [string]$location
+        [string] $location,
+        [string] $dceId
         #,
         #[string] $osTarget # Windows, Linux or All
     )
@@ -474,6 +475,7 @@ function deploy-pack {
             packtag=$packinfo.RequiredTag
             solutionTag=$solutionTag
             solutionVersion=$solutionVersion
+            dceId=$dceId
         }
         if ($useExistingAG) {
             $parameters+=@{
@@ -510,10 +512,11 @@ function deploy-pack {
         try {
             New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
             -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
+            return $true
         }
         catch {
             Write-Error $_.Exception.Message
-            return
+            return $false
         }
 }
 
@@ -530,7 +533,9 @@ function install-packs {
         [string]$solutionTag,
         [string]$solutionVersion,
         [bool]$confirmEachPack,
-        [string]$location
+        [string]$location,
+        [string]$dceId,
+        [bool]$azAvailable
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
@@ -539,23 +544,18 @@ function install-packs {
     {
         if ($confirmEachPack) {
             $confirm=Read-Host "Do you want to deploy pack $($pack.PackName)? (Y/N)"
-            if ($confirm -eq 'N') {
-                continue
+            if ($confirm -ne 'Y') {
+                $deployPack=$false
             }
             else {
-                deploy-pack -packinfo $pack `
-                    -workspaceResourceId $workspaceResourceId `
-                    -useExistingAG $useExistingAG `
-                    -AGInfo $AGinfo `
-                    -resourceGroup $resourceGroup `
-                    -discoveryType $discoveryType `
-                    -solutionTag $solutionTag `
-                    -solutionVersion $solutionVersion `
-                    -location $location
+                $deployPack=$true
             }
         }
         else {
-            deploy-pack -packinfo $pack `
+            $deployPack=$true
+        }
+        if ($deployPack) {
+            $status=deploy-pack -packinfo $pack `
                 -workspaceResourceId $workspaceResourceId `
                 -useExistingAG $useExistingAG `
                 -AGInfo $AGinfo `
@@ -563,7 +563,24 @@ function install-packs {
                 -discoveryType $discoveryType `
                 -solutionTag $solutionTag `
                 -solutionVersion $solutionVersion `
-                -location $location
+                -location $location `
+                -dceId $dceId
+            if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
+                if ($azAvailable) {
+                    "Installing Grafana dashboard for $($pack.PackName)"
+                    $temppath=$pack.GrafanaDashboard
+                    if (get-item $temppath -ErrorAction SilentlyContinue) {
+                        "Importing $($pack.GrafanaDashboard) dashboard."
+                        az grafana dashboard import -g $resourceGroup -n "MonstarPacks" --definition $temppath --overwrite true
+                    }
+                    else {
+                        "Dashboard $($pack.GrafanaDashboard) not found."
+                    }
+                }
+                else {
+                    "Azure CLI not available. Skipping Grafana dashboard deployment."
+                }
+            }
         }
     }
 }

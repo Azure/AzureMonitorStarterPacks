@@ -18,6 +18,14 @@ param solutionVersion string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
+//Role definition Ids for policy remediation
+// var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
+// var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
+var roledefinitionIds=[
+  '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
+  '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+  // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
+]
 //var subscriptionId = subscription().subscriptionId
 var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
 var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
@@ -361,7 +369,6 @@ module functionLogAnalyticsContributorRole '../../../modules/rbac/subscription/r
 }
 
 
-
 module logicapp './modules/logicapp.bicep' = {
   name: 'BackendLogicApp'
   dependsOn: [
@@ -395,4 +402,33 @@ module amg 'modules/grafana.bicep' = {
   }
 }
 
+// A DCE in the main region to be used by all rules.
+module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
+  name: 'DCE-${solutionTag}-${location}'
+  params: {
+    location: location
+    packtag: 'dceMainRegion'
+    solutionTag: solutionTag
+    dceName: 'DCE-${solutionTag}-${location}'
+  }
+}
+
+resource usermanagedId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'policyremediationidentity'
+  location: location
+  tags: {
+    '${solutionTag}': 'InsightsComponent'
+    '${solutionTag}-Version': solutionVersion
+  }
+}
+
+resource roleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roledefinitionId, i) in roledefinitionIds:  {
+  name: guid('monstarpacksuserid-${subscription().subscriptionId}-${i}')
+  properties: {
+    roleDefinitionId: roledefinitionId
+    principalId: usermanagedId.id
+    principalType: 'ServicePrincipal'
+    description: 'Role assignment for Monstar packs with "${guid('monstarpacksuserid-${subscription().subscriptionId}-${i}')}" role definition id.'
+  }
+}]
 //output functionkey string = listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey

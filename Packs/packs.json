@@ -1,7 +1,7 @@
 [
     {
-      "PackName": "AzMon-Packs-Windows-VM-Monitoring",
-      "RuleName": "AzMonPacks-Basic_VM_Monitoring_WindowsServer",
+      "PackName": "AMSP-Windows-VM-OS",
+      "RuleName": "AMSP-VMI_Server_OS",
       "ModuleType": "IaaS",
       "Status": "Enabled",
       "RequiredTag" : "WinOS",
@@ -13,8 +13,8 @@
       "GrafanaDashboard": "./Packs/IaaS/WinOS/Azure Monitor Start Pack - Windows Operating System-1692086853589.json"
     },
     {
-      "PackName": "AzMon-Packs-Linux-VM-Monitoring",
-      "RuleName": "AzMonPacks-Basic_VM_Monitoring_Linux",
+      "PackName": "AMSP-Linux-VM-OS",
+      "RuleName": "AMSP-VMI_Server_Linux",
       "ModuleType": "IaaS",
       "Status": "Enabled",
       "RequiredTag" : "LxOS",
@@ -28,8 +28,8 @@
       ]    
     },
     {
-      "PackName": "AzMon-Packs-Linux-Nginx-Monitoring",
-      "RuleName": "AzMonPacks-nginxMonitoring",
+      "PackName": "AMSP-Linux-Nginx",
+      "RuleName": "AMSP-nginxMonitoring",
       "ModuleType": "IaaS",
       "Status": "Enabled",
       "RequiredTag" : "Nginx",
@@ -37,12 +37,13 @@
       "PackageName": "nginx",
       "DiscoveryType": "PackageName",
       "TemplateLocation" : "./Packs/IaaS/Nginx/nginx.bicep",
+      "GrafanaDashboard": "./Packs/IaaS/Nginx/Azure Monitor Starter Pack _ NGINX-1692341707202.json",
       "moduleParameters": [
       ]      
     },
     {
-        "PackName": "AzMon-Packs-Windows-IIS-Monitoring",
-        "RuleName": "AzMonPacks-IISBasicIISMonitoring",
+        "PackName": "AMSP-Windows-IIS",
+        "RuleName": "AMSP-IIS-Server",
         "ModuleType": "IaaS",
         "Status": "Enabled",
         "RequiredTag" : "IIS",
@@ -50,6 +51,7 @@
         "DiscoveryType": "RoleName",
         "RoleName" : "Web-Server",
         "TemplateLocation" : "./Packs/IaaS/IIS/WinIISMonitoring.bicep",
+        "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
         "moduleParameters": [
         ]      
     }

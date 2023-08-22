@@ -35,8 +35,11 @@ var alertlist = [
     autoMitigate: true
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
-    alertType: 'rows'
-    query: 'InsightsMetrics | where Namespace == "Memory" and Name == "AvailableMB" | extend memorySizeMB = todouble(parse_json(Tags).["vm.azm.ms/memorySizeMB"])     | extend PercentageBytesinUse = Val/memorySizeMB*100    | summarize AvgMemUse = avg(PercentageBytesinUse) by bin(TimeGenerated, 15m), _ResourceId, Computer'  
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AvgMemUse'
+    operator: 'GreaterThan'
+    threshold: 90
+    query: 'InsightsMetrics | where Namespace == "Memory" and Name == "AvailableMB" | extend memorySizeMB = todouble(parse_json(Tags).["vm.azm.ms/memorySizeMB"]) | extend PercentageBytesinUse = Val/memorySizeMB*100    | summarize AvgMemUse = avg(PercentageBytesinUse) by bin(TimeGenerated, 15m), _ResourceId,Computer'  
   }
   {
     alertRuleDescription: 'Alert for disk space under 10%'

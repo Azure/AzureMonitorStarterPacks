@@ -17,6 +17,7 @@ param enableInsightsAlerts string = 'true'
 param packtag string
 param solutionTag string
 param solutionVersion string
+param dceId string
 //param workspaceFriendlyName string
 
 // Action Group
@@ -62,6 +63,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
     packtag: packtag
     solutionTag: solutionTag
     ruleName: rulename
+    dceId: dceId
   }
 }
 

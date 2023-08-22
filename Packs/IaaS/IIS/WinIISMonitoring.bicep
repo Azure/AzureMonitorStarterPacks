@@ -11,6 +11,7 @@ param workspaceId string
 param packtag string
 param solutionTag string
 param solutionVersion string
+param dceId string
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 
 var kind= 'Windows'
@@ -89,17 +90,17 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
 
 // // Alerts - the module below creates the alerts and associates them with the action group
 
-module Alerts './WinIISAlerts.bicep' = {
-  name: 'Alerts-${packtag}'
-  params: {
-    location: location
-    workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
-    packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-  }
-}
+// module Alerts './WinIISAlerts.bicep' = {
+//   name: 'Alerts-${packtag}'
+//   params: {
+//     location: location
+//     workspaceId: workspaceId
+//     AGId: ag.outputs.actionGroupResourceId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//   }
+// }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   name: 'dcrPerformance-${packtag}'
@@ -115,7 +116,6 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     solutionTag: solutionTag
   }
 }
-
 module policysetup '../../../modules/policies/subscription/policies.bicep' = {
   name: 'policysetup-${packtag}'
   params: {
@@ -126,3 +126,27 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     location: location
   }
 }
+
+module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' = {
+  name: 'dcrIISLogs-${packtag}'
+  params: {
+    location: location
+    ruleName: '${rulename}-IISLogs'
+    lawResourceId: workspaceId
+    packtag: packtag
+    solutionTag: solutionTag
+    endpointResourceId: dceId
+    tableName: 'IISLogs'
+  }
+}
+module policysetupIISLogs '../../../modules/policies/subscription/policies.bicep' = {
+  name: 'policysetup-${packtag}-IISLogs'
+  params: {
+    dcrId: dcrIISLogsMonitoring.outputs.dcrId
+    packtag: packtag
+    solutionTag: solutionTag
+    rulename: '${rulename}-IISLogs'
+    location: location
+  }
+}
+

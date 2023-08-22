@@ -10,7 +10,9 @@ param (
     [Parameter(Mandatory=$false)]
     [switch]$RemoveAMAPolicySet,
     [Parameter(Mandatory=$false)]
-    [switch]$RemoveMainSolution
+    [switch]$RemoveMainSolution,
+    [Parameter(Mandatory=$false)]
+    [switch]$confirmEachPack
 )
 # Check login
 # import module(s)

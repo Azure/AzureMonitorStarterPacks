@@ -159,9 +159,24 @@ else {
     }
 }
 #$wsfriendlyname=$ws.Name
-
 $userId=(Get-AzADUser -SignedIn).Id
 
+# Az available for Grafana setup?
+
+$azAvailable=$false
+try {
+    az
+    $azAvailable=$true
+}
+catch {
+    "didn't find az"
+    $azAvailable=$false
+}
+if ($azAvailable) {
+    # This should be moved into the install packs routine eventually
+    az extension add --name amg
+    az account set --subscription $($sub.Id)
+}
 #endregion
 #region AMA policy setup
 if (!$skipAMAPolicySetup) {
@@ -232,8 +247,19 @@ if (!($skipMainSolutionSetup)) {
 # Reads the packs.json file
 if (!($skipPacksSetup)) {
     Write-Host "Found the following ENABLED packs in packs.json config file:"
+
     $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
     $packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
+    $dceName="DCE-$solutionTag-$location"
+    $dceId="/subscriptions/$($sub.Id)/resourceGroups/$solutionResourceGroup/providers/Microsoft.Insights/dataCollectionEndpoints/$dceName"
+    if (!(Get-AzResource -ResourceId $dceId -ErrorAction SilentlyContinue)) {
+        Write-Host "Endpoint $dceName ($dceId) not found."
+        break
+    }
+    else {
+        Write-Host "Using existing Data Collection Endpoint $dceName"
+    }
+
     # deploy packs if any are enabled
     if ($packs.count -gt 0) {
         if ($useSameAGforAllPacks) {
@@ -269,30 +295,43 @@ if (!($skipPacksSetup)) {
             -solutionTag $solutionTag `
             -solutionVersion $solutionVersion `
             -confirmEachPack:$confirmEachPack.IsPresent `
-            -location $location
+            -location $location `
+            -dceId $dceId `
+            -azAvailable $azAvailable
 
         # Grafana dashboards
-        $azAvailable=$false
-        try {
-            az
-            $azAvailable=$true
-        }
-        catch {
-            "didn't find az"
-            $azAvailable=$false
-        }
-        if ($azAvailable) {
-            # This should be moved into the install packs routine eventually
-            az extension add --name amg
-            az account set --subscription $($sub.Id)
-            foreach ($pack in $packs) {
-                if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
-                    "Installing Grafana dashboard for $($pack.PackName)"
-                    $temppath=$pack.GrafanaDashboard
-                    az grafana dashboard import -g $solutionResourceGroup -n "MonstarPacks" --definition $temppath               
-                }
-            }
-        }
+        # if ($deploymentResult -eq $true) {
+        #     $azAvailable=$false
+        #     try {
+        #         az
+        #         $azAvailable=$true
+        #     }
+        #     catch {
+        #         "didn't find az"
+        #         $azAvailable=$false
+        #     }
+        #     if ($azAvailable) {
+        #         # This should be moved into the install packs routine eventually
+        #         az extension add --name amg
+        #         az account set --subscription $($sub.Id)
+        #         foreach ($pack in $packs) {
+        #             if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
+        #                 "Installing Grafana dashboard for $($pack.PackName)"
+        #                 $temppath=$pack.GrafanaDashboard
+        #                 if (get-item $temppath -ErrorAction SilentlyContinue) {
+        #                     "Importing $($pack.GrafanaDashboard) dashboard."
+        #                     az grafana dashboard import -g $solutionResourceGroup -n "MonstarPacks" --definition $temppath
+        #                 }
+        #                 else {
+        #                     "Dashboard $($pack.GrafanaDashboard) not found."
+        #                 }
+        #             }
+        #         }
+        #     }
+        # }
+        # else {
+        #     "Deployment failed for pack $($pack.PackName). Skipping Grafana dashboard deployment, if exists."
+        # }
 #endregion
     }
     else {

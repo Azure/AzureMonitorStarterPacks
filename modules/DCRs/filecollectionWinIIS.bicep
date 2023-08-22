@@ -11,13 +11,24 @@ param tableName string
 @description('Specifies the location in which to create the data collection rule.')
 param location string
 
-param filepatterns array
 param lawResourceId string
-param lawFriendlyName string
 param solutionTag string
 param packtag string
 
-resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
+var tableNameToUse = 'CustomAzMA${tableName}_CL'
+var streamName= 'Custom-${tableNameToUse}'
+var lawFriendlyName = split(lawResourceId,'/')[8]
+
+module table '../LAW/table.bicep' = {
+  name: tableNameToUse
+  params: {
+    parentname: lawFriendlyName
+    tableName: tableNameToUse
+    retentionDays: 31
+  }
+}
+
+resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: ruleName
   location: location
   tags: {
@@ -25,22 +36,17 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
   }
   kind: 'Windows'
   properties: {
+    dataCollectionEndpointId: endpointResourceId
     dataSources: {
-      logFiles: [
-      {
-          streams: [
-              '${tableName}'
-          ]
-          filePatterns: filepatterns
-          format: 'text'
-          settings: {
-              text: {
-                  recordStartTimestampFormat: 'ISO 8601'
-              }
-          }
-          name: tableName
-      }
-    ]}
+      iisLogs: [
+        {
+            streams: [
+                'Microsoft-W3CIISLog'
+            ]
+            name: 'iisLogsDataSource'
+        }
+      ]
+    }
     destinations:  {
       logAnalytics : [
           {
@@ -52,18 +58,18 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
     dataFlows: [
       {
           streams: [
-              tableName
+            streamName
           ]
           destinations: [
               lawFriendlyName
           ]
           transformKql: 'source'
-          outputStream: tableName
+          outputStream: streamName
       }
     ]
-    dataCollectionEndpointId: endpointResourceId
+    
     streamDeclarations: {
-      '${tableName}': {
+      '${streamName}': {
         columns: [
           {
             name: 'TimeGenerated'
@@ -79,4 +85,4 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
   }
 }
 
-output ruleId string = fileCollectionRule.id
+output dcrId string = fileCollectionRule.id
