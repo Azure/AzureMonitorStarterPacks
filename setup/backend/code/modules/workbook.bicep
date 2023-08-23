@@ -103,7 +103,7 @@ var wbConfig='''
               "showDefault": false
             },
             "jsonData": "[\n    { \"value\":\"yes\", \"label\":\"Yes\",\"default\": \"yes\" },\n    { \"value\":\"no\", \"label\":\"No\" }\n]",
-            "value": "yes"
+            "value": "no"
           }
         ],
         "style": "above",
@@ -1567,6 +1567,15 @@ var wbConfig='''
               "version": "KqlItem/1.0",
               "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/'\n| project  id,Name=name, ['Display Name']=properties.displayName",
               "size": 0,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "selectedALZPolicies",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -1586,10 +1595,75 @@ var wbConfig='''
                 "filter": true
               }
             },
+            "customWidth": "75",
             "name": "query - 0",
             "styleSettings": {
               "showBorder": true
             }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resourcecontainers\n| where type == 'microsoft.management/managementgroups' or type =~ 'microsoft.resources/subscriptions'\n| project name, id, subscriptionId, type=split(type,'/')[1]",
+              "size": 1,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "parameterName": "selectedALZScopes",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "gridSettings": {
+                "filter": true
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "selectedALZPolicies",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "query - 3",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "paragraph",
+              "links": [
+                {
+                  "id": "d2ddbf42-13e1-4aa7-96ad-114509fe1e32",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Assign Policy",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Assign\",\n    \"Scopes\": [{selectedALZScopes}],\n    \"policies\": [{selectedALZPolicies}]\n\n  }\n}",
+                    "httpMethod": "POST",
+                    "title": "Assign Policy",
+                    "description": "# Assign policy below to selected scope:\n\n## Policy\n\n{selectedALZPolicies}\n\n## Scope\n\n{selectedALZScopes}",
+                    "runLabel": "Assign"
+                  }
+                }
+              ]
+            },
+            "customWidth": "25",
+            "conditionalVisibility": {
+              "parameterName": "selectedALZPolicies",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "links - 2"
           },
           {
             "type": 3,
@@ -1618,7 +1692,10 @@ var wbConfig='''
         "comparison": "isEqualTo",
         "value": "alzinfo"
       },
-      "name": "alzgroup"
+      "name": "alzgroup",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 3,

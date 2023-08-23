@@ -235,8 +235,10 @@ if (!($skipMainSolutionSetup)) {
     }
     Write-Host "Deploying the backend components(function, logic app and workbook)."
     #try {
-        New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+        $backend=New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
         -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
+        $packsUserManagedIdentity=$backend.Outputs.packsUserManagedIdentity.value
+        "Returning $packsUserManagedIdentity as packsUserManagedIdentity."
     #}
     #catch {
     #    Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."

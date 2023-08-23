@@ -33,6 +33,7 @@ if ($null -eq (get-module Az.ResourceGraph)) {
 # AMA policy set removal
 # Remove policy sets
 if ($RemoveAMAPolicySet -or $RemoveAll) {
+    "Removing AMA policy set."
     $inits=Get-AzPolicySetDefinition | where-object {$_.properties.Metadata.MonitorStarterPacks -ne $null}
     foreach ($init in $inits) {
         "Removing policy set $($init.PolicySetDefinitionId)"
@@ -52,6 +53,7 @@ else {
 #region Packs
 # Remove policy assignments and policies
 if ($RemovePacks  -or $RemoveAll) {
+    "Removing packs."
     $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
     if ($RemoveTag) {
         "Removing packs with tag $RemoveTag."
@@ -126,7 +128,9 @@ insightsresources
         $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
     }
     $Alerts | Remove-AzResource -Force
-    # remove main solution (workbook, logic app, function app)
+    #delete data collection endpoints
+    get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
+
 }
 else {
     "Skipping packs removal. Use -RemovePacks to remove packs. Use -RemoveTag to remove packs with a specific tag."
@@ -135,23 +139,32 @@ else {
 
 #region Main Solution
 if ($RemoveMainSolution  -or $RemoveAll) {
+    "Removing main solution."
+    "Removing workbook(s)."
     Get-AzResource -ResourceType 'Microsoft.Insights/workbooks' -ResourceGroupName $RG | Remove-AzResource -Force
+    "Removing Logic app."
     Get-AzResource -ResourceType 'Microsoft.Logic/workflows' -ResourceGroupName $RG | Remove-AzResource -Force
     # remove function app roles and functiona app itself
+    "Removing function app."
     $PrincipalId=(Get-AzWebApp -ResourceGroupName $RG).Identity.PrincipalId
     Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $PrincipalId} | Remove-AzRoleAssignment
     Get-AzResource -ResourceType 'Microsoft.Web/sites' -ResourceGroupName $RG | Remove-AzResource -Force
 
     # Remove web server (farm)
+    "Removing web server."
     Get-AzResource -ResourceType 'Microsoft.Web/serverfarms' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove deployment scripts
+    "Removing deployment scripts."
     Get-azresource -ResourceType 'Microsoft.Resources/deploymentScripts' -ResourceGroupName $RG | Remove-AzResource -Force
-    #delete data collection endpoints
-    get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove app insights
+    "Removing app insights."
     Get-AzApplicationInsights -ResourceGroupName $RG | Remove-AzApplicationInsights
     #remove app insights default alerts
+    "Removing app insights default alerts."
     get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
+    # Remove grafana
+    "Removing grafana."
+    Get-AzResource -ResourceType 'Microsoft.Dashboard/grafana' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove custom remediation role 
     #Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
     # remove storage account
@@ -160,50 +173,3 @@ else {
     "Skipping main solution removal. Use -RemoveMainSolution to remove it"
 }
 
-
-# # remove log analytics - optional
-# # Remove resource Group
-
-# ARG Query to check
-# # resources
-# # | where isnotempty(tags.MonitorStarterPacks)
-# # | project ['id'], type
-# # | union (policyresources
-# # | where isnotempty(properties.metadata.MonitorStarterPacks)|
-# # project id,type=tostring(split(id,"/")[4]))
-
-
-# # remove policy assignments and policies
-# # remove DCR associations
-# # remove DCRs
-# $DCRs=Get-AzDataCollectionRule | ?{$_.Tags.MonitorStarterPacks -ne $null}
-# foreach ($DCR in $DCRs) {
-    
-#     $dcras=Get-AzDataCollectionRuleAssociation -RuleName $DCR.Name -ResourceGroupName $DCR.Id.split('/')[4]
-#     foreach ($dcra in $dcras) {
-#         $dcra.ObjectId
-#         Remove-AzDataCollectionRuleAssociation -
-#     }
-#     "Removing DCR $($DCR.Name)"
-#     #Remove-AzDataCollectionRule -Name $DCR.Name -ResourceGroupName $DCR.ResourceGroupName
-# }
-
-# $allDCRa=Search-AzGraph -Query @'
-# insightsresources
-# | where type == "microsoft.insights/datacollectionruleassociations"
-# | extend dcrId=tostring(properties.dataCollectionRuleId)
-# | project dcrId, name,TargetResource=split(id,'/providers/Microsoft.Insights/')[0],resourceGroup
-# | where name has 'MonStar'
-# '@
-# foreach ($dcra in $allDCRa) {
-#     "Removing $($dcra.name) for $($dcra.TargetResource)"
-#     Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.TargetResource -AssociationName $dcra.name
-#     #$dcr=Get-AzDataCollectionRule -Name $dcra.Name -ResourceGroupName $dcra.ResourceGroup
-#     # if ($dcr.Tags.MonitorStarterPacks -ne $null) {
-#     #     "Removing DCR $($dcr.Name)"
-#     #     #Remove-AzDataCollectionRule -Name $dcr.Name -ResourceGroupName $dcr.ResourceGroupName
-#     # }
-# }
-# # remove dead role assignments - if not removed it will fail to install again.
-# # Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | where-object {$_.ObjectType -eq 'unknown'}  | Remove-AzRoleAssignment
-# # remove action group(s)?
