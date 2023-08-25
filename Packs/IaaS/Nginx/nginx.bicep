@@ -14,6 +14,7 @@ param packtag string
 param solutionTag string
 param solutionVersion string
 param dceId string
+param userManagedIdentityResourceId string
 
 var facilityNames = [
   'daemon'
@@ -92,5 +93,6 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }

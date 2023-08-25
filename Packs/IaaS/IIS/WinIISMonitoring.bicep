@@ -12,7 +12,9 @@ param packtag string
 param solutionTag string
 param solutionVersion string
 param dceId string
+param userManagedIdentityResourceId string
 var workspaceFriendlyName = split(workspaceId, '/')[8]
+
 
 var kind= 'Windows'
 
@@ -90,17 +92,17 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
 
 // // Alerts - the module below creates the alerts and associates them with the action group
 
-// module Alerts './WinIISAlerts.bicep' = {
-//   name: 'Alerts-${packtag}'
-//   params: {
-//     location: location
-//     workspaceId: workspaceId
-//     AGId: ag.outputs.actionGroupResourceId
-//     packtag: packtag
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//   }
-// }
+module Alerts './WinIISAlerts.bicep' = {
+  name: 'Alerts-${packtag}'
+  params: {
+    location: location
+    workspaceId: workspaceId
+    AGId: ag.outputs.actionGroupResourceId
+    packtag: packtag
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+  }
+}
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   name: 'dcrPerformance-${packtag}'
@@ -124,6 +126,7 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
 
@@ -147,6 +150,7 @@ module policysetupIISLogs '../../../modules/policies/subscription/policies.bicep
     solutionTag: solutionTag
     rulename: '${rulename}-IISLogs'
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
 

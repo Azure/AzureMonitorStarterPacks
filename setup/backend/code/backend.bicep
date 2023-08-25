@@ -9,15 +9,15 @@ param appInsightsLocation string
 //param packageUri string = 'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/discovery.zip'
 @description('UTC timestamp used to create distinct deployment scripts for each deployment')
 //param utcValue string = utcNow()
-param filename string = 'discovery.zip'
-param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+//param filename string = 'discovery.zip'
+//param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
 @secure()
 
 param solutionVersion string
 
-var discoveryContainerName = 'discovery'
-var tempfilename = '${filename}.tmp'
+// var discoveryContainerName = 'discovery'
+// var tempfilename = '${filename}.tmp'
 //Role definition Ids for policy remediation
 // var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
 // var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
@@ -57,6 +57,9 @@ var backendFunctionRoleDefinitionIds = [
 // Module below implements function, storage account, and app insights
 module backendFunction 'modules/function.bicep' = {
   name: 'backendFunciton'
+  dependsOn: [
+    functionUserManagedIdentity
+  ]
   params: {
     appInsightsLocation: appInsightsLocation
     functionname: functionname
@@ -65,9 +68,87 @@ module backendFunction 'modules/function.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     storageAccountName: storageAccountName
-    userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityId
+    userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
+    userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityPrincipalId
   }
 }
+
+module logicapp './modules/logicapp.bicep' = {
+  name: 'BackendLogicApp'
+  dependsOn: [
+    backendFunction
+  ]
+  params: {
+    functioname: functionname
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+  }
+}
+module workbook './modules/workbook.bicep' = {
+  name: 'workbookdeployment'
+  params: {
+    lawresourceid: lawresourceid
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+  }
+}
+module amg 'modules/grafana.bicep' = {
+  name: 'azureManagedGrafana'
+  params: {
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    location: location
+    grafanaName: 'MonstarPacks'
+    userObjectId: currentUserIdObject
+  }
+}
+
+// A DCE in the main region to be used by all rules.
+module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
+  name: 'DCE-${solutionTag}-${location}'
+  params: {
+    location: location
+    packtag: 'dceMainRegion'
+    solutionTag: solutionTag
+    dceName: 'DCE-${solutionTag}-${location}'
+  }
+}
+
+// This module creates a user managed identity for the packs to use.
+module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
+  name: 'packsUserManagedIdentity'
+  params: {
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    roleDefinitionIds: packPolicyRoleDefinitionIds
+    userIdentityName: 'packsUserManagedIdentity'
+  }
+}
+
+module customRemdiationRole '../../../modules/rbac/subscription/remediationContributor.bicep' = {
+  name: 'customRemediationRole'
+  scope: subscription()
+  params: {
+  }
+}
+
+module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
+  name: 'functionUserManagedIdentity'
+  dependsOn: [
+    customRemdiationRole
+  ]
+  params: {
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    roleDefinitionIds: concat(backendFunctionRoleDefinitionIds,array(customRemdiationRole.outputs.roleDefId))
+    userIdentityName: 'functionUserManagedIdentity'
+  }
+}
+
 //Storage Account
 // resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
 //   name: storageAccountName
@@ -110,12 +191,6 @@ module backendFunction 'modules/function.bicep' = {
 //   }
 // }
 
-// module customRemdiationRole '../../../modules/rbac/subscription/remediationContributor.bicep' = {
-//   name: 'customRemediationRole'
-//   scope: subscription()
-//   params: {
-//   }
-// }
 
 // resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
 //   name: '${functionname}-farm'
@@ -365,71 +440,6 @@ module backendFunction 'modules/function.bicep' = {
 //   }
 // }
 
-module logicapp './modules/logicapp.bicep' = {
-  name: 'BackendLogicApp'
-  dependsOn: [
-    backendFunction
-  ]
-  params: {
-    functioname: functionname
-    location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-  }
-}
-module workbook './modules/workbook.bicep' = {
-  name: 'workbookdeployment'
-  params: {
-    lawresourceid: lawresourceid
-    location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-  }
-}
-module amg 'modules/grafana.bicep' = {
-  name: 'azureManagedGrafana'
-  params: {
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    location: location
-    grafanaName: 'MonstarPacks'
-    userObjectId: currentUserIdObject
-  }
-}
-
-// A DCE in the main region to be used by all rules.
-module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-  name: 'DCE-${solutionTag}-${location}'
-  params: {
-    location: location
-    packtag: 'dceMainRegion'
-    solutionTag: solutionTag
-    dceName: 'DCE-${solutionTag}-${location}'
-  }
-}
-
-// This module creates a user managed identity for the packs to use.
-module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'packsUserManagedIdentity'
-  params: {
-    location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    roleDefinitionIds: packPolicyRoleDefinitionIds
-    userIdentityName: 'packsUserManagedIdentity'
-  }
-}
-
-module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'functionUserManagedIdentity'
-  params: {
-    location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    roleDefinitionIds: backendFunctionRoleDefinitionIds
-    userIdentityName: 'functionUserManagedIdentity'
-  }
-}
 // resource packsUserManagedIdentity2 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
 //   name: 'policyremediationidentity'
 //   location: location
@@ -449,4 +459,5 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
 //   }
 // }]
 //output functionkey string = listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
-output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityId
+output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
+output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId

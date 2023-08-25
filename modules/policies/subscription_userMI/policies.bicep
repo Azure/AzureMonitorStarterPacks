@@ -3,16 +3,13 @@ param dcrId string
 param solutionTag string
 param rulename string
 param location string
-param userManagedIdentityResourceId string
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
   '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
   // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
 ]
-var dcrName = split (dcrId,'/')[8]
-
 module policyVM './associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM-${packtag}-${dcrName}'
+  name: 'associationpolicyVM-${packtag}'
   scope: subscription()
   params: {
     packtag: packtag
@@ -25,7 +22,7 @@ module policyVM './associacionpolicyVM.bicep' = {
   }
 }
 module policyARC './associacionpolicyARC.bicep' = {
-  name: 'associationpolicyARC-${packtag}-${dcrName}'
+  name: 'associationpolicyARC-${packtag}'
   scope: subscription()
   params: {
     packtag: packtag
@@ -52,7 +49,6 @@ module arcassignment './assignment.bicep' = {
     assignmentName: 'Assignment-${packtag}-${rulename}-arc'
     roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
-    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
 module vmassignment './assignment.bicep' = {
@@ -67,6 +63,5 @@ module vmassignment './assignment.bicep' = {
     location: location
     roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
-    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }

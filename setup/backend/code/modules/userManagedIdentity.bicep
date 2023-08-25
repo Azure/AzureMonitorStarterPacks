@@ -13,14 +13,29 @@ resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   }
 }
 
-resource roleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roledefinitionId, i) in roleDefinitionIds:  {
-  name: guid('${userIdentityName}-${subscription().subscriptionId}-${i}')
-  properties: {
+module userIdentityRoleAssignments '../../../../modules/rbac/subscription/roleassignment.bicep' = [for (roledefinitionId, i) in roleDefinitionIds:  {
+  name: '${userIdentityName}-${i}'
+  scope: subscription()
+  params: {
+    resourcename: userIdentityName
+    principalId: userManagedIdentity.properties.principalId
+    solutionTag: solutionTag
+    resourceGroup: resourceGroup().name
     roleDefinitionId: roledefinitionId
-    principalId: userManagedIdentity.id
-    principalType: 'ServicePrincipal'
-    description: 'Role assignment for Monstar packs with "${guid('${userIdentityName}-${subscription().subscriptionId}-${i}')}" role definition id.'
+    roleShortName: split(roledefinitionId, '/')[4]
   }
 }]
+// resource roleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roledefinitionId, i) in roleDefinitionIds:  {
+//   name: guid('${userIdentityName}-${subscription().subscriptionId}-${i}')
+//   properties: {
+//     scope: '/subscriptions/${subscription().subscriptionId}'
+//     roleDefinitionId: roledefinitionId
+//     principalId: userManagedIdentity.properties.principalId
+//     principalType: 'ServicePrincipal'
+//     description: 'Role assignment for Monstar packs with "${guid('${userIdentityName}-${subscription().subscriptionId}-${i}')}" role definition id.'
+//   }
+// }]
 
-output userManagedIdentityId string = userManagedIdentity.id
+output userManagedIdentityPrincipalId string = userManagedIdentity.properties.principalId
+output userManagedIdentityClientId string = userManagedIdentity.properties.clientId
+output userManagedIdentityResourceId string = userManagedIdentity.id

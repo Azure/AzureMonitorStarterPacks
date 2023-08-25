@@ -3,6 +3,7 @@ param location string
 param solutionTag string
 param solutionVersion string
 param userManagedIdentity string
+param userManagedIdentityClientId string
 param storageAccountName string
 param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
@@ -90,6 +91,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       {
         name: 'CONTENT'
         value: loadFileAsBase64('../../backend.zip')
+      }
+      {
+        name: 'MSI_CLIENT_ID'
+        value: userManagedIdentityClientId
       }
     ]
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename}'

@@ -1,10 +1,5 @@
-//param vmnames array
-//param vmIDs array = []
-//param vmOSs array = []
-//param arcVMIDs array = []
 param rulename string
 param actionGroupName string
-//param location string= resourceGroup().location
 param emailreceivers array = []
 param emailreiceversemails array  = []
 param useExistingAG bool = false
@@ -12,13 +7,11 @@ param existingAGRG string = ''
 param location string //= resourceGroup().location
 param workspaceId string
 param enableInsightsAlerts string = 'true'
-//param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
-//param insightsRuleRg string = ''
 param packtag string
 param solutionTag string
 param solutionVersion string
 param dceId string
-//param workspaceFriendlyName string
+param userManagedIdentityResourceId string
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
@@ -79,7 +72,6 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
   }
 }
 
-
 module policysetup '../../../modules/policies/subscription/policies.bicep' = if(enableInsightsAlerts == 'true') {
   name: 'policysetup-${packtag}'
   params: {
@@ -88,6 +80,7 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = if(
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
 // Azure recommended Alerts for VMs

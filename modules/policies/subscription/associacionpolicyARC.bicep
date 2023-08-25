@@ -10,6 +10,7 @@ param roledefinitionIds array =[
   '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
   // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
 ]
+
 resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   name: policyName
   properties: {
@@ -83,7 +84,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         effect: '[parameters(\'effect\')]'
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
-          name: 'MonStar-RulesAssociation-${packtag}' 
+          name: 'MonStar-${packtag}-${split(DCRId,'/')[8]}'
           roleDefinitionIds: roledefinitionIds
           deployment: {
             properties: {
@@ -122,7 +123,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   //dcrId: '[concat(\'/subscriptions/\', variables(\'subscriptionId\'), \'/resourceGroups\', variables('defaultRGName'), '/providers/Microsoft.Insights/dataCollectionRules/', variables('dcrName'))]'
                   //DcrId: '[resourceId(\'Microsoft.Insights/dataCollectionRules\', variables (\'DCRName\'))]'
                   subscriptionId: '[subscription().subscriptionId]'
-                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/MonStar-RulesAssociation-\',parameters(\'packTag\')]'
+                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/MonStar-\',parameters(\'packTag\'),\'-\',split(parameters(\'DCRId2\'),\'/\')[8])]'
                 }
                 resources: [
                   {

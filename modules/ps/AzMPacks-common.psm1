@@ -448,7 +448,8 @@ function deploy-pack {
         [string] $solutionVersion,
         [bool] $azAvailable,
         [string] $location,
-        [string] $dceId
+        [string] $dceId,
+        [string] $userManagedIdentityResourceId
         #,
         #[string] $osTarget # Windows, Linux or All
     )
@@ -476,6 +477,7 @@ function deploy-pack {
             solutionTag=$solutionTag
             solutionVersion=$solutionVersion
             dceId=$dceId
+            userManagedIdentityResourceId=$userManagedIdentityResourceId
         }
         if ($useExistingAG) {
             $parameters+=@{
@@ -535,7 +537,8 @@ function install-packs {
         [bool]$confirmEachPack,
         [string]$location,
         [string]$dceId,
-        [bool]$azAvailable
+        [bool]$azAvailable,
+        [string]$userManagedIdentityResourceId
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
@@ -564,7 +567,8 @@ function install-packs {
                 -solutionTag $solutionTag `
                 -solutionVersion $solutionVersion `
                 -location $location `
-                -dceId $dceId
+                -dceId $dceId `
+                -userManagedIdentityResourceId $userManagedIdentityResourceId
             if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
                 if ($azAvailable) {
                     "Installing Grafana dashboard for $($pack.PackName)"

@@ -161,21 +161,22 @@ else {
 #$wsfriendlyname=$ws.Name
 $userId=(Get-AzADUser -SignedIn).Id
 
-# Az available for Grafana setup?
-
-$azAvailable=$false
-try {
-    az
-    $azAvailable=$true
-}
-catch {
-    "didn't find az"
+# Az available for Grafana setup of the modules? Only test if packs are to be deployed.
+if (!($skipPacksSetup)) {
     $azAvailable=$false
-}
-if ($azAvailable) {
-    # This should be moved into the install packs routine eventually
-    az extension add --name amg
-    az account set --subscription $($sub.Id)
+    try {
+        az
+        $azAvailable=$true
+    }
+    catch {
+        "didn't find az"
+        $azAvailable=$false
+    }
+    if ($azAvailable) {
+        # This should be moved into the install packs routine eventually
+        az extension add --name amg
+        az account set --subscription $($sub.Id)
+    }
 }
 #endregion
 #region AMA policy setup
@@ -236,9 +237,11 @@ if (!($skipMainSolutionSetup)) {
     Write-Host "Deploying the backend components(function, logic app and workbook)."
     #try {
         $backend=New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-        -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
-        $packsUserManagedIdentity=$backend.Outputs.packsUserManagedIdentity.value
-        "Returning $packsUserManagedIdentity as packsUserManagedIdentity."
+        -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop # | Out-Null #-Verbose
+        #$backend.Outputs
+        $packsUserManagedIdentityPrincipalId=$backend.Outputs.packsUserManagedIdentityId.Value
+        $packsUserManagedIdentityResourceId=$backend.Outputs.packsUserManagedResourceId.Value
+        
     #}
     #catch {
     #    Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
@@ -261,7 +264,12 @@ if (!($skipPacksSetup)) {
     else {
         Write-Host "Using existing Data Collection Endpoint $dceName"
     }
-
+    # Look for existing user managed identity. 
+    if ([string]::IsNullOrEmpty($packsUserManagedIdentityPrincipalId)) {
+        # Fetch existing managed identity. Name should be:
+        $packsUserManagedIdentityResourceId=(get-azresource -ResourceGroupName $solutionResourceGroup -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name 'packsUserManagedIdentity').ResourceId
+        $packsUserManagedIdentityPrincipalId=(Get-AzADServicePrincipal -DisplayName 'packsUserManagedIdentity').Id
+    }
     # deploy packs if any are enabled
     if ($packs.count -gt 0) {
         if ($useSameAGforAllPacks) {
@@ -299,7 +307,8 @@ if (!($skipPacksSetup)) {
             -confirmEachPack:$confirmEachPack.IsPresent `
             -location $location `
             -dceId $dceId `
-            -azAvailable $azAvailable
+            -azAvailable $azAvailable `
+            -userManagedIdentityResourceId $packsUserManagedIdentityResourceId
 
         # Grafana dashboards
         # if ($deploymentResult -eq $true) {

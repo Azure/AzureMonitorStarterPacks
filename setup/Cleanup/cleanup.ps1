@@ -78,9 +78,10 @@ if ($RemovePacks  -or $RemoveAll) {
             {
                 "Removing assignments for $($pol.PolicyDefinitionId)"
                 foreach ($assignment in $assignments) {
-                    $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
-                    Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
-                    #$ras=Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
+                    # No need to remove role assignments with user defined managed identities.
+                    # $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
+                    # Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
+                    # #$ras=Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
                     # -and $_. -eq $assignments.Identity.PrincipalId} | Remove-AzRoleAssignment
                     "Removing assignment for $($assignment.Identity.PrincipalId)"
                     Remove-AzPolicyAssignment -Id $assignment.PolicyAssignmentId
@@ -127,9 +128,8 @@ insightsresources
     if ($RemoveTag) {
         $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
     }
-    $Alerts | Remove-AzResource -Force
-    #delete data collection endpoints
-    get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
+    $Alerts | Remove-AzResource -Force -AsJob
+
 
 }
 else {
@@ -165,9 +165,16 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     # Remove grafana
     "Removing grafana."
     Get-AzResource -ResourceType 'Microsoft.Dashboard/grafana' -ResourceGroupName $RG | Remove-AzResource -Force
+    #delete data collection endpoints
+    get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove custom remediation role 
     #Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
     # remove storage account
+
+    # remove managed identities
+
+    # remove log analytics workspace
+    
 }
 else {
     "Skipping main solution removal. Use -RemoveMainSolution to remove it"
