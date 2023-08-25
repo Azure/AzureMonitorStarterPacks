@@ -144,7 +144,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     location: location
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    roleDefinitionIds: concat(backendFunctionRoleDefinitionIds,array(customRemdiationRole.outputs.roleDefId))
+    roleDefinitionIds: concat(backendFunctionRoleDefinitionIds,array('/providers/Microsoft.Authorization/roleDefinitions/${customRemdiationRole.outputs.roleDefId}'))
     userIdentityName: 'functionUserManagedIdentity'
   }
 }

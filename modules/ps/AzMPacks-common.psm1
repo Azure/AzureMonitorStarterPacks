@@ -347,25 +347,25 @@ function get-serverswithoutAMA {
     Write-Host "Found $($noAMAlist.Count) Servers without AMA installed."
     return $noAMAlist
 }
-function get-taggedServers {
-param (
-    [string]$tagName
-)
-# Tag based Discovery. VMs or ARC servers containing the tag specified tag will be monitored.
-$allTaggedServersQuery=@"
-    resources
-        | where type == 'microsoft.compute/virtualmachines' and isnotempty(tags.$tagname)
-        | project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.storageProfile.osDisk.osType
-        | union (
-            resources
-            | where type == 'microsoft.hybridcompute/machines' and isnotempty(tags.$tagname)
-            | project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.osType)
-            | extend serverType=iff(type=='microsoft.compute/virtualmachines','vm','arc')
-            | where isnotnull(Applist)
-"@
-    $allTaggedServersList=Search-azgraph -Query $allTaggedServersQuery -UseTenantScope
-    return $allTaggedServersList
-}
+# function get-taggedServers {
+# param (
+#     [string]$tagName
+# )
+# # Tag based Discovery. VMs or ARC servers containing the tag specified tag will be monitored.
+# $allTaggedServersQuery=@"
+#     resources
+#         | where type == 'microsoft.compute/virtualmachines' and isnotempty(tags.$tagname)
+#         | project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.storageProfile.osDisk.osType
+#         | union (
+#             resources
+#             | where type == 'microsoft.hybridcompute/machines' and isnotempty(tags.$tagname)
+#             | project name, id, type, resourceGroup, Applist=tags.$tagname, os=properties.osType)
+#             | extend serverType=iff(type=='microsoft.compute/virtualmachines','vm','arc')
+#             | where isnotnull(Applist)
+# "@
+#     $allTaggedServersList=Search-azgraph -Query $allTaggedServersQuery -UseTenantScope
+#     return $allTaggedServersList
+# }
 function install-ama {
     param (
         [System.Object] $server,

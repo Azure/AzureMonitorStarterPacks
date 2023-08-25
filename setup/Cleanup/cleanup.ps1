@@ -172,6 +172,13 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     # remove storage account
 
     # remove managed identities
+    
+    # Fetch existing managed identity. Name should be:
+    $packsUserManagedIdentityResourceId=(get-azresource -ResourceGroupName $solutionResourceGroup -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name 'packsUserManagedIdentity').ResourceId
+    $packsUserManagedIdentityPrincipalId=(Get-AzADServicePrincipal -DisplayName 'packsUserManagedIdentity').Id
+    # Remove Role assignments - tough one if more than one sub is used
+    #remove resource
+    #do the same for the function MI.
 
     # remove log analytics workspace
     

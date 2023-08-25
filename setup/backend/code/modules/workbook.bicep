@@ -267,7 +267,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -431,7 +431,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "WinOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -519,7 +519,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "Nginx"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -1300,7 +1300,9 @@ var wbConfig='''
                     "params": [],
                     "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\"\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Please confirm the change.",
+                    "title": "Rmediate policies",
+                    "description": "# Please confirm remediation\n\nThis button will trigger a global policy remeadiation.",
+                    "actionName": "Remediate",
                     "runLabel": "Confirm"
                   }
                 },
@@ -1565,7 +1567,7 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/'\n| project  id,Name=name, ['Display Name']=properties.displayName",
+              "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/'\n| project  id,Name=tostring(name), ['Display Name']=properties.displayName\n| join kind = leftouter (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join  (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/') on $left.PolicyId == $right.id\n| project AssignmentDisplayName,Name=tostring(split(PolicyId,\"/\")[8]), PolicyId, Scope=scope) on Name\n| project-away Name1, id",
               "size": 0,
               "exportMultipleValues": true,
               "exportedParameters": [
@@ -1592,10 +1594,21 @@ var wbConfig='''
                     }
                   }
                 ],
-                "filter": true
-              }
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "$gen_link_AssignmentDisplayName_2",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "$gen_link_AssignmentDisplayName_2",
+                  "sortOrder": 2
+                }
+              ]
             },
-            "customWidth": "75",
             "name": "query - 0",
             "styleSettings": {
               "showBorder": true
@@ -1655,6 +1668,13 @@ var wbConfig='''
                     "description": "# Assign policy below to selected scope:\n\n## Policy\n\n{selectedALZPolicies}\n\n## Scope\n\n{selectedALZScopes}",
                     "runLabel": "Assign"
                   }
+                },
+                {
+                  "id": "071a7cd1-94ad-4209-b3ca-0647b4a8ce2d",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Unassign Policy",
+                  "style": "primary",
+                  "linkIsContextBlade": true
                 }
               ]
             },
@@ -1664,26 +1684,6 @@ var wbConfig='''
               "comparison": "isNotEqualTo"
             },
             "name": "links - 2"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/') on $left.PolicyId == $right.id\n| project AssignmentDisplayName, PolicyId, Scope=scope",
-              "size": 0,
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
-              "gridSettings": {
-                "filter": true
-              }
-            },
-            "name": "query - 1",
-            "styleSettings": {
-              "showBorder": true
-            }
           }
         ]
       },

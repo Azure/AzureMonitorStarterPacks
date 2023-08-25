@@ -73,11 +73,7 @@ param (
     # specify the location of the packs.json file
     [Parameter()]
     [string]
-    $packsFilePath="./Packs/packs.json",
-    # specify the discovery method used to identify VMs to monitor
-    [Parameter()]
-    [string]
-    $discoveryType="tags"
+    $packsFilePath="./Packs/packs.json"
 )
 $solutionVersion="0.1.0"
 #region basic initialization
@@ -173,9 +169,19 @@ if (!($skipPacksSetup)) {
         $azAvailable=$false
     }
     if ($azAvailable) {
-        # This should be moved into the install packs routine eventually
         az extension add --name amg
-        az account set --subscription $($sub.Id)
+        $azloggedIn=$false
+        "Testing az cli login..."
+        $output=az account get-access-token --query "expiresOn" --output json
+        if (!$output) {
+            "you don't seem to be logged in to Azure via the Azure CLI."
+            return
+        }
+        else {
+            Write-host "Setting Azure Cli susbscription to $($sub.Id). If you see an error here, you aren't probably logged in. use 'az login' to connect to Azure."
+            az account set --subscription $($sub.Id)
+            $azloggedIn=$true
+        }
     }
 }
 #endregion
@@ -301,13 +307,12 @@ if (!($skipPacksSetup)) {
             -existingAGName $actionGroupName `
             -useSameAGforAllPacks:$useSameAGforAllPacks.IsPresent `
             -workspaceResourceId $ws.ResourceId `
-            -discoveryType $discoveryType `
             -solutionTag $solutionTag `
             -solutionVersion $solutionVersion `
             -confirmEachPack:$confirmEachPack.IsPresent `
             -location $location `
             -dceId $dceId `
-            -azAvailable $azAvailable `
+            -azAvailable $azloggedIn `
             -userManagedIdentityResourceId $packsUserManagedIdentityResourceId
 
         # Grafana dashboards
