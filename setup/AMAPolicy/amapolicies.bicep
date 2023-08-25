@@ -13,6 +13,11 @@
 // Assign initiative to subscription (for now, just one subscription)
 param solutionTag string
 param location string //= resourceGroup().location
+param solutionVersion string
+var roledefinitionIds= [
+     '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // Virtual Machine Contributor
+     '/providers/microsoft.authorization/roleDefinitions/48b40c6e-82e0-4eb3-90d5-19e40f49b624' // Hybrid Server Resource Administrator
+  ]
 
 var rulename = '${solutionTag}-amaPolicy'
 // var policyIDs = [
@@ -69,6 +74,7 @@ module assignment '../../modules/policies/subscription/assignment.bicep' = {
   name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicy
+    AMAUserManagedIdentity
   ]
   scope: subscription()
   params: {
@@ -76,8 +82,20 @@ module assignment '../../modules/policies/subscription/assignment.bicep' = {
     location: location
     assignmentName: 'assign-${rulename}'
     solutionTag: solutionTag
-    roledefinitionIds: [
-      '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
-    ]
+    userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
+    // roledefinitionIds: [
+    //   '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' 
+    // ]
+  }
+}
+// This module creates a user managed identity for the packs to use.
+module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep' = {
+  name: 'AMAUserManagedIdentity'
+  params: {
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    roleDefinitionIds: roledefinitionIds
+    userIdentityName: 'AMAUserManagedIdentity'
   }
 }

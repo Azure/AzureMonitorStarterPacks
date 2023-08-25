@@ -166,6 +166,7 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     "Removing grafana."
     Get-AzResource -ResourceType 'Microsoft.Dashboard/grafana' -ResourceGroupName $RG | Remove-AzResource -Force
     #delete data collection endpoints
+    "Removing data collection endpoints."
     get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove custom remediation role 
     #Remove-AzRoleDefinition -Name 'Custom Role - Remediation Contributor' -Force
@@ -174,7 +175,7 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     # remove managed identities
     
     # Fetch existing managed identity. Name should be:
-    $packsUserManagedIdentityResourceId=(get-azresource -ResourceGroupName $solutionResourceGroup -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name 'packsUserManagedIdentity').ResourceId
+    $packsUserManagedIdentityResourceId=(get-azresource -ResourceGroupName $RG -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name 'packsUserManagedIdentity').ResourceId
     $packsUserManagedIdentityPrincipalId=(Get-AzADServicePrincipal -DisplayName 'packsUserManagedIdentity').Id
     # Remove Role assignments - tough one if more than one sub is used
     #remove resource
@@ -185,5 +186,10 @@ if ($RemoveMainSolution  -or $RemoveAll) {
 }
 else {
     "Skipping main solution removal. Use -RemoveMainSolution to remove it"
+}
+
+if ($RemoveTag) {
+    " Removing tag $RemoveTag from resources."
+    " Not implemented yet."
 }
 

@@ -538,7 +538,8 @@ function install-packs {
         [string]$location,
         [string]$dceId,
         [bool]$azAvailable,
-        [string]$userManagedIdentityResourceId
+        [string]$userManagedIdentityResourceId,
+        [string]$grafanaName
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
@@ -575,7 +576,7 @@ function install-packs {
                     $temppath=$pack.GrafanaDashboard
                     if (get-item $temppath -ErrorAction SilentlyContinue) {
                         "Importing $($pack.GrafanaDashboard) dashboard."
-                        az grafana dashboard import -g $resourceGroup -n "MonstarPacks" --definition $temppath --overwrite true
+                        az grafana dashboard import -g $resourceGroup -n $grafanaName --definition $temppath --overwrite true
                     }
                     else {
                         "Dashboard $($pack.GrafanaDashboard) not found."

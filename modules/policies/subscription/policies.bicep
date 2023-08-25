@@ -50,7 +50,7 @@ module arcassignment './assignment.bicep' = {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
     assignmentName: 'Assignment-${packtag}-${rulename}-arc'
-    roledefinitionIds: roledefinitionIds
+    //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
@@ -65,7 +65,7 @@ module vmassignment './assignment.bicep' = {
     policyDefinitionId: policyVM.outputs.policyId
     assignmentName: 'Assignment-${packtag}-${rulename}-vm'
     location: location
-    roledefinitionIds: roledefinitionIds
+    //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }

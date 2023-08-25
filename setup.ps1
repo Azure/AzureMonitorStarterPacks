@@ -73,9 +73,23 @@ param (
     # specify the location of the packs.json file
     [Parameter()]
     [string]
-    $packsFilePath="./Packs/packs.json"
+    $packsFilePath="./Packs/packs.json",
+    [Parameter()]
+    [string]
+    $grafanalocation
 )
 $solutionVersion="0.1.0"
+$allowedGrafanaRegions=('southcentralus,westcentralus,westeurope,eastus,eastus2,northeurope,uksouth,australiaeast,swedencentral,westus,westus2,westus3,southeastasia,canadacentral,centralindia,eastasia').split(",")
+
+if ([string]::IsNullOrEmpty($grafanalocation)) {
+    $grafanalocation=$location
+}
+if ($grafanalocation -notin $allowedGrafanaRegions) {
+    Write-Error "Grafana is not available in $grafanalocation. Please select a different location."
+    Write-Error "You can use -grafanalocation to specify a different location."
+    return    
+}
+
 #region basic initialization
 Write-Output "Installing/Loading Azure Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
@@ -192,6 +206,7 @@ if (!$skipAMAPolicySetup) {
     $parameters=@{
         solutionTag=$solutionTag
         location=$location
+        solutionVersion=$solutionVersion
     }
     Write-Host "Deploying the AMA policy initiative to the current subscription."
     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
@@ -230,8 +245,10 @@ if (!($skipMainSolutionSetup)) {
     # if ($existingFunctionApp) {
         
     # }
+    $grafanaName="AMSP$($sub.id.split("-")[0])"
+    $functionName="MonitorStarterPacks-$($sub.id.split("-")[0])"
     $parameters=@{
-        functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
+        functionname=$functionName
         location=$location
         storageAccountName=$storageAccountName
         lawresourceid=$ws.ResourceId
@@ -239,6 +256,8 @@ if (!($skipMainSolutionSetup)) {
         solutionTag=$solutionTag
         solutionVersion=$solutionVersion
         currentUserIdObject=$userId
+        grafanaName=$grafanaName
+        grafanalocation=$grafanalocation
     }
     Write-Host "Deploying the backend components(function, logic app and workbook)."
     #try {
@@ -313,7 +332,8 @@ if (!($skipPacksSetup)) {
             -location $location `
             -dceId $dceId `
             -azAvailable $azloggedIn `
-            -userManagedIdentityResourceId $packsUserManagedIdentityResourceId
+            -userManagedIdentityResourceId $packsUserManagedIdentityResourceId `
+            -grafananame "AMSP$($sub.id.split("-")[0])"
 
         # Grafana dashboards
         # if ($deploymentResult -eq $true) {

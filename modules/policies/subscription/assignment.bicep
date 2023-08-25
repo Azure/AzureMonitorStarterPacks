@@ -2,7 +2,7 @@ targetScope = 'subscription'
 param policyDefinitionId string
 param assignmentName string
 param location string
-param roledefinitionIds array
+//param roledefinitionIds array
 param solutionTag string
 param userManagedIdentityResourceId string
 //param utcValue string = utcNow()

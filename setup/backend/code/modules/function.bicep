@@ -92,10 +92,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         name: 'CONTENT'
         value: loadFileAsBase64('../../backend.zip')
       }
-      {
-        name: 'MSI_CLIENT_ID'
-        value: userManagedIdentityClientId
-      }
     ]
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename}'
   }
@@ -216,8 +212,10 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     APPINSIGHTS_INSTRUMENTATIONKEY: reference(appinsights.id, '2020-02-02-preview').InstrumentationKey
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+    MSI_CLIENT_ID: userManagedIdentityClientId
   }
 }
+
 
 resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
   parent: azfunctionsite

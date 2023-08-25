@@ -5,6 +5,8 @@ param location string
 param storageAccountName string
 //param kvname string
 param lawresourceid string
+param grafanaName string
+param grafanalocation string
 param appInsightsLocation string
 //param packageUri string = 'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/discovery.zip'
 @description('UTC timestamp used to create distinct deployment scripts for each deployment')
@@ -69,7 +71,7 @@ module backendFunction 'modules/function.bicep' = {
     solutionVersion: solutionVersion
     storageAccountName: storageAccountName
     userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
-    userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityPrincipalId
+    userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
   }
 }
 
@@ -99,8 +101,8 @@ module amg 'modules/grafana.bicep' = {
   params: {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    location: location
-    grafanaName: 'MonstarPacks'
+    location: grafanalocation
+    grafanaName: grafanaName
     userObjectId: currentUserIdObject
   }
 }
