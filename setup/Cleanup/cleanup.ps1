@@ -174,10 +174,16 @@ if ($RemoveMainSolution  -or $RemoveAll) {
 
     # remove managed identities
     
-    # Fetch existing managed identity. Name should be:
-    $packsUserManagedIdentityResourceId=(get-azresource -ResourceGroupName $RG -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name 'packsUserManagedIdentity').ResourceId
-    $packsUserManagedIdentityPrincipalId=(Get-AzADServicePrincipal -DisplayName 'packsUserManagedIdentity').Id
+    # Fetch existing managed identities. Name should be:
+    $managedIdentityNames=@( 'packsUserManagedIdentity', 'AMAUserManagedIdentity','functionUserManagedIdentity')
+    foreach ($MIName in $managedIdentityNames) {
+        $MIResourceName=(get-azresource -ResourceGroupName $RG -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIName).Name
+        $MIObjectId=(Get-AzADServicePrincipal -DisplayName $MIName).Id
+        Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $MIObjectId} | Remove-AzRoleAssignment
+        get-azresource -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIResourceName -ResourceGroupName $RG | Remove-AzResource -Force
+    }
     # Remove Role assignments - tough one if more than one sub is used
+
     #remove resource
     #do the same for the function MI.
 
