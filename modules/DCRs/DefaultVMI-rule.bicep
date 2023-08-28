@@ -3,6 +3,7 @@ param workspaceResourceId string
 param solutionTag string
 param packtag string
 param ruleName string
+param dceId string
 
 var wsfriendlyname=split(workspaceResourceId, '/')[8]
 // previously used this, but it's complicated when using VMInsights for Linux and Windows
@@ -16,6 +17,7 @@ resource VMIRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   }
   properties: {
     description: 'Data collection rule for VM Insights.'
+    dataCollectionEndpointId: dceId
     dataSources: {
         performanceCounters: [
             {

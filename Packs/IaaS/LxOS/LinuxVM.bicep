@@ -17,6 +17,8 @@ param workspaceId string
 param packtag string
 param solutionTag string
 param solutionVersion string
+param dceId string
+param userManagedIdentityResourceId string
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
@@ -40,6 +42,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
     packtag: packtag
     solutionTag: solutionTag
     ruleName: rulename
+    dceId: dceId
   }
 }
 module InsightsAlerts './VMInsightsAlerts.bicep' = {
@@ -61,5 +64,6 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }

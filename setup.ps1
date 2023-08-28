@@ -74,12 +74,22 @@ param (
     [Parameter()]
     [string]
     $packsFilePath="./Packs/packs.json",
-    # specify the discovery method used to identify VMs to monitor
     [Parameter()]
     [string]
-    $discoveryType="tags"
+    $grafanalocation
 )
 $solutionVersion="0.1.0"
+$allowedGrafanaRegions=('southcentralus,westcentralus,westeurope,eastus,eastus2,northeurope,uksouth,australiaeast,swedencentral,westus,westus2,westus3,southeastasia,canadacentral,centralindia,eastasia').split(",")
+
+if ([string]::IsNullOrEmpty($grafanalocation)) {
+    $grafanalocation=$location
+}
+if ($grafanalocation -notin $allowedGrafanaRegions) {
+    Write-Error "Grafana is not available in $grafanalocation. Please select a different location."
+    Write-Error "You can use -grafanalocation to specify a different location."
+    return    
+}
+
 #region basic initialization
 Write-Output "Installing/Loading Azure Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
@@ -159,9 +169,35 @@ else {
     }
 }
 #$wsfriendlyname=$ws.Name
-
 $userId=(Get-AzADUser -SignedIn).Id
 
+# Az available for Grafana setup of the modules? Only test if packs are to be deployed.
+if (!($skipPacksSetup)) {
+    $azAvailable=$false
+    try {
+        az
+        $azAvailable=$true
+    }
+    catch {
+        "didn't find az"
+        $azAvailable=$false
+    }
+    if ($azAvailable) {
+        az extension add --name amg
+        $azloggedIn=$false
+        "Testing az cli login..."
+        $output=az account get-access-token --query "expiresOn" --output json
+        if (!$output) {
+            "you don't seem to be logged in to Azure via the Azure CLI."
+            return
+        }
+        else {
+            Write-host "Setting Azure Cli susbscription to $($sub.Id). If you see an error here, you aren't probably logged in. use 'az login' to connect to Azure."
+            az account set --subscription $($sub.Id)
+            $azloggedIn=$true
+        }
+    }
+}
 #endregion
 #region AMA policy setup
 if (!$skipAMAPolicySetup) {
@@ -170,6 +206,7 @@ if (!$skipAMAPolicySetup) {
     $parameters=@{
         solutionTag=$solutionTag
         location=$location
+        solutionVersion=$solutionVersion
     }
     Write-Host "Deploying the AMA policy initiative to the current subscription."
     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
@@ -208,8 +245,10 @@ if (!($skipMainSolutionSetup)) {
     # if ($existingFunctionApp) {
         
     # }
+    $grafanaName="AMSP$($sub.id.split("-")[0])"
+    $functionName="MonitorStarterPacks-$($sub.id.split("-")[0])"
     $parameters=@{
-        functionname="MonitorStarterPacks-$($sub.id.split("-")[0])"
+        functionname=$functionName
         location=$location
         storageAccountName=$storageAccountName
         lawresourceid=$ws.ResourceId
@@ -217,11 +256,17 @@ if (!($skipMainSolutionSetup)) {
         solutionTag=$solutionTag
         solutionVersion=$solutionVersion
         currentUserIdObject=$userId
+        grafanaName=$grafanaName
+        grafanalocation=$grafanalocation
     }
     Write-Host "Deploying the backend components(function, logic app and workbook)."
     #try {
-        New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-        -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null #-Verbose
+        $backend=New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+        -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop # | Out-Null #-Verbose
+        #$backend.Outputs
+        $packsUserManagedIdentityPrincipalId=$backend.Outputs.packsUserManagedIdentityId.Value
+        $packsUserManagedIdentityResourceId=$backend.Outputs.packsUserManagedResourceId.Value
+        
     #}
     #catch {
     #    Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
@@ -232,8 +277,24 @@ if (!($skipMainSolutionSetup)) {
 # Reads the packs.json file
 if (!($skipPacksSetup)) {
     Write-Host "Found the following ENABLED packs in packs.json config file:"
+
     $packs=Get-Content -Path $packsFilePath | ConvertFrom-Json| Where-Object {$_.Status -eq 'Enabled'}
     $packs | ForEach-Object {Write-Host "$($_.PackName) - $($_.Status)"}
+    $dceName="DCE-$solutionTag-$location"
+    $dceId="/subscriptions/$($sub.Id)/resourceGroups/$solutionResourceGroup/providers/Microsoft.Insights/dataCollectionEndpoints/$dceName"
+    if (!(Get-AzResource -ResourceId $dceId -ErrorAction SilentlyContinue)) {
+        Write-Host "Endpoint $dceName ($dceId) not found."
+        break
+    }
+    else {
+        Write-Host "Using existing Data Collection Endpoint $dceName"
+    }
+    # Look for existing user managed identity. 
+    if ([string]::IsNullOrEmpty($packsUserManagedIdentityPrincipalId)) {
+        # Fetch existing managed identity. Name should be:
+        $packsUserManagedIdentityResourceId=(get-azresource -ResourceGroupName $solutionResourceGroup -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name 'packsUserManagedIdentity').ResourceId
+        $packsUserManagedIdentityPrincipalId=(Get-AzADServicePrincipal -DisplayName 'packsUserManagedIdentity').Id
+    }
     # deploy packs if any are enabled
     if ($packs.count -gt 0) {
         if ($useSameAGforAllPacks) {
@@ -265,34 +326,48 @@ if (!($skipPacksSetup)) {
             -existingAGName $actionGroupName `
             -useSameAGforAllPacks:$useSameAGforAllPacks.IsPresent `
             -workspaceResourceId $ws.ResourceId `
-            -discoveryType $discoveryType `
             -solutionTag $solutionTag `
             -solutionVersion $solutionVersion `
             -confirmEachPack:$confirmEachPack.IsPresent `
-            -location $location
+            -location $location `
+            -dceId $dceId `
+            -azAvailable $azloggedIn `
+            -userManagedIdentityResourceId $packsUserManagedIdentityResourceId `
+            -grafananame "AMSP$($sub.id.split("-")[0])"
 
         # Grafana dashboards
-        $azAvailable=$false
-        try {
-            az
-            $azAvailable=$true
-        }
-        catch {
-            "didn't find az"
-            $azAvailable=$false
-        }
-        if ($azAvailable) {
-            # This should be moved into the install packs routine eventually
-            az extension add --name amg
-            az account set --subscription $($sub.Id)
-            foreach ($pack in $packs) {
-                if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
-                    "Installing Grafana dashboard for $($pack.PackName)"
-                    $temppath=$pack.GrafanaDashboard
-                    az grafana dashboard import -g $solutionResourceGroup -n "MonstarPacks" --definition $temppath               
-                }
-            }
-        }
+        # if ($deploymentResult -eq $true) {
+        #     $azAvailable=$false
+        #     try {
+        #         az
+        #         $azAvailable=$true
+        #     }
+        #     catch {
+        #         "didn't find az"
+        #         $azAvailable=$false
+        #     }
+        #     if ($azAvailable) {
+        #         # This should be moved into the install packs routine eventually
+        #         az extension add --name amg
+        #         az account set --subscription $($sub.Id)
+        #         foreach ($pack in $packs) {
+        #             if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
+        #                 "Installing Grafana dashboard for $($pack.PackName)"
+        #                 $temppath=$pack.GrafanaDashboard
+        #                 if (get-item $temppath -ErrorAction SilentlyContinue) {
+        #                     "Importing $($pack.GrafanaDashboard) dashboard."
+        #                     az grafana dashboard import -g $solutionResourceGroup -n "MonstarPacks" --definition $temppath
+        #                 }
+        #                 else {
+        #                     "Dashboard $($pack.GrafanaDashboard) not found."
+        #                 }
+        #             }
+        #         }
+        #     }
+        # }
+        # else {
+        #     "Deployment failed for pack $($pack.PackName). Skipping Grafana dashboard deployment, if exists."
+        # }
 #endregion
     }
     else {

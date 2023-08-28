@@ -68,7 +68,7 @@ var wbConfig='''
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Logic/workflows/Backend"
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Logic/workflows/MonitorStarterPacks-Backend"
           },
           {
             "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -103,7 +103,7 @@ var wbConfig='''
               "showDefault": false
             },
             "jsonData": "[\n    { \"value\":\"yes\", \"label\":\"Yes\",\"default\": \"yes\" },\n    { \"value\":\"no\", \"label\":\"No\" }\n]",
-            "value": "yes"
+            "value": "no"
           }
         ],
         "style": "above",
@@ -267,7 +267,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -431,7 +431,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "WinOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -519,7 +519,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -575,6 +575,42 @@ var wbConfig='''
               "groupType": "editable",
               "items": [
                 {
+                  "type": 1,
+                  "content": {
+                    "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.\n\n# Update Action Group\n## Select a list of alerts on the left and a new Action Group to assign to the alert.",
+                    "style": "info"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "showHelp",
+                    "comparison": "isEqualTo",
+                    "value": "yes"
+                  },
+                  "name": "text - 3"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id",
+                    "size": 1,
+                    "exportFieldName": "",
+                    "exportParameterName": "selectedAG",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resourcegraph/resources",
+                    "gridSettings": {
+                      "filter": true
+                    }
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "alertsselected",
+                    "comparison": "isNotEqualTo"
+                  },
+                  "name": "query - 3",
+                  "styleSettings": {
+                    "showBorder": true
+                  }
+                },
+                {
                   "type": 11,
                   "content": {
                     "version": "LinkItem/1.0",
@@ -613,23 +649,28 @@ var wbConfig='''
                           "description": "# This action will disable the selected Alerts\n\n{alertsselected}",
                           "runLabel": "Confirm"
                         }
+                      },
+                      {
+                        "id": "7942ba17-4942-4f4a-b2ea-e19ad806b49d",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Update Action Group",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Update\", \n    \"alerts\":  [{alertsselected}],\n    \"aGroup\": {selectedAG}\n  }\n}\n",
+                          "httpMethod": "POST",
+                          "title": "Update Action Group",
+                          "description": "Updating alerts:\n\n\n{alertsselected}\n\nwith Action Group:\n\n{selectedAG}\n",
+                          "actionName": "updateAG",
+                          "runLabel": "Update"
+                        }
                       }
                     ]
                   },
                   "name": "links - 8"
-                },
-                {
-                  "type": 1,
-                  "content": {
-                    "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.",
-                    "style": "info"
-                  },
-                  "conditionalVisibility": {
-                    "parameterName": "showHelp",
-                    "comparison": "isEqualTo",
-                    "value": "yes"
-                  },
-                  "name": "text - 3"
                 }
               ]
             },
@@ -1182,7 +1223,7 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyId=id, policyName=name) on policyName\n| project policyId, policyName, complianceState, type='Policy'\n| union( policyresources | where type == \"microsoft.policyinsights/policystates\"| extend policySetName=tostring(properties.policySetDefinitionName),complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policySetId=id, policySetName=name) on policySetName\n| project policyId=policySetId, policyName=policySetName, complianceState, type='Set')",
+              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyId=id, policyName=name, pack=tostring(properties.metadata.MonitorStarterPacks)) on policyName\n| project policyId, policyName, complianceState, pack,type='Policy'\n| union( policyresources | where type == \"microsoft.policyinsights/policystates\"| extend policySetName=tostring(properties.policySetDefinitionName),complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policySetId=id, policySetName=name,pack='N/A') on policySetName\n| project policyId=policySetId, policyName=policySetName, pack,complianceState, type='Set')",
               "size": 1,
               "title": "Assignment Status (Compliance)",
               "exportedParameters": [
@@ -1225,7 +1266,8 @@ var wbConfig='''
                       ]
                     }
                   }
-                ]
+                ],
+                "filter": true
               }
             },
             "customWidth": "50",
@@ -1258,7 +1300,9 @@ var wbConfig='''
                     "params": [],
                     "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\"\n  }\n}",
                     "httpMethod": "POST",
-                    "description": "# Please confirm the change.",
+                    "title": "Rmediate policies",
+                    "description": "# Please confirm remediation\n\nThis button will trigger a global policy remeadiation.",
+                    "actionName": "Remediate",
                     "runLabel": "Confirm"
                   }
                 },
@@ -1523,8 +1567,17 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/'\n| project  id,Name=name, ['Display Name']=properties.displayName",
+              "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/'\n| project  id,Name=tostring(name), ['Display Name']=properties.displayName\n| join kind = leftouter (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join  (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/') on $left.PolicyId == $right.id\n| project AssignmentDisplayName,Name=tostring(split(PolicyId,\"/\")[8]), PolicyId, Scope=scope) on Name\n| project-away Name1, id",
               "size": 0,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "selectedALZPolicies",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -1541,8 +1594,20 @@ var wbConfig='''
                     }
                   }
                 ],
-                "filter": true
-              }
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "$gen_link_AssignmentDisplayName_2",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "$gen_link_AssignmentDisplayName_2",
+                  "sortOrder": 2
+                }
+              ]
             },
             "name": "query - 0",
             "styleSettings": {
@@ -1553,8 +1618,16 @@ var wbConfig='''
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where properties.metadata.source=='https://github.com/Azure/ALZ-Monitor/') on $left.PolicyId == $right.id\n| project AssignmentDisplayName, PolicyId, Scope=scope",
-              "size": 0,
+              "query": "resourcecontainers\n| where type == 'microsoft.management/managementgroups' or type =~ 'microsoft.resources/subscriptions'\n| project name, id, subscriptionId, type=split(type,'/')[1]",
+              "size": 1,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "parameterName": "selectedALZScopes",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -1564,10 +1637,53 @@ var wbConfig='''
                 "filter": true
               }
             },
-            "name": "query - 1",
+            "conditionalVisibility": {
+              "parameterName": "selectedALZPolicies",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "query - 3",
             "styleSettings": {
               "showBorder": true
             }
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "paragraph",
+              "links": [
+                {
+                  "id": "d2ddbf42-13e1-4aa7-96ad-114509fe1e32",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Assign Policy",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Assign\",\n    \"Scopes\": [{selectedALZScopes}],\n    \"policies\": [{selectedALZPolicies}]\n\n  }\n}",
+                    "httpMethod": "POST",
+                    "title": "Assign Policy",
+                    "description": "# Assign policy below to selected scope:\n\n## Policy\n\n{selectedALZPolicies}\n\n## Scope\n\n{selectedALZScopes}",
+                    "runLabel": "Assign"
+                  }
+                },
+                {
+                  "id": "071a7cd1-94ad-4209-b3ca-0647b4a8ce2d",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Unassign Policy",
+                  "style": "primary",
+                  "linkIsContextBlade": true
+                }
+              ]
+            },
+            "customWidth": "25",
+            "conditionalVisibility": {
+              "parameterName": "selectedALZPolicies",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "links - 2"
           }
         ]
       },
@@ -1576,7 +1692,10 @@ var wbConfig='''
         "comparison": "isEqualTo",
         "value": "alzinfo"
       },
-      "name": "alzgroup"
+      "name": "alzgroup",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 3,

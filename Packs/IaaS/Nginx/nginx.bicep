@@ -13,6 +13,8 @@ param workspaceId string
 param packtag string
 param solutionTag string
 param solutionVersion string
+param dceId string
+param userManagedIdentityResourceId string
 
 var facilityNames = [
   'daemon'
@@ -42,24 +44,21 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
   }
 }
 
-module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
- name: 'dataCollectionEndpoint-${solutionTag}'
- params: {
-   location: location
-   packtag: packtag
-   solutionTag: solutionTag
-   dceName: 'dataCollectionEndpoint-${solutionTag}'
- }
-}
+// module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
+//  name: 'dataCollectionEndpoint-${solutionTag}'
+//  params: {
+//    location: location
+//    packtag: packtag
+//    solutionTag: solutionTag
+//    dceName: 'dataCollectionEndpoint-${solutionTag}'
+//  }
+// }
 
 module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = {
   name: 'filecollectionrule-${packtag}'
-  dependsOn: [
-    dataCollectionEndpoint
-  ]
   params: {
     location: location
-    endpointResourceId: dataCollectionEndpoint.outputs.dceId
+    endpointResourceId: dceId
     packtag: packtag
     solutionTag: solutionTag
     ruleName: rulename
@@ -94,5 +93,6 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }

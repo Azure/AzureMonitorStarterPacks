@@ -1,10 +1,5 @@
-//param vmnames array
-//param vmIDs array = []
-//param vmOSs array = []
-//param arcVMIDs array = []
 param rulename string
 param actionGroupName string
-//param location string= resourceGroup().location
 param emailreceivers array = []
 param emailreiceversemails array  = []
 param useExistingAG bool = false
@@ -12,12 +7,11 @@ param existingAGRG string = ''
 param location string //= resourceGroup().location
 param workspaceId string
 param enableInsightsAlerts string = 'true'
-//param insightsRuleName string = '' // This will be used to associate the VMs to the rule, only used if enableInsightsAlerts is true
-//param insightsRuleRg string = ''
 param packtag string
 param solutionTag string
 param solutionVersion string
-//param workspaceFriendlyName string
+param dceId string
+param userManagedIdentityResourceId string
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
@@ -33,19 +27,19 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
   }
 }
 
-// Alerts - Event viewer based alerts. Depend on the event viewer logs being enabled on the VMs events are being sent to the workspace via DCRs.
-module eventAlerts 'eventAlerts.bicep' = {
-  name: 'eventAlerts-${packtag}'
-  params: {
-    AGId: ag.outputs.actionGroupResourceId
-    location: location
-    workspaceId: workspaceId
-    packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+// // Alerts - Event viewer based alerts. Depend on the event viewer logs being enabled on the VMs events are being sent to the workspace via DCRs.
+// module eventAlerts 'eventAlerts.bicep' = {
+//   name: 'eventAlerts-${packtag}'
+//   params: {
+//     AGId: ag.outputs.actionGroupResourceId
+//     location: location
+//     workspaceId: workspaceId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
 
-  }
-} 
+//   }
+// } 
 
 // This option uses an existing VMI rule but this can be a tad problematic.
 // resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
@@ -62,6 +56,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
     packtag: packtag
     solutionTag: solutionTag
     ruleName: rulename
+    dceId: dceId
   }
 }
 
@@ -77,7 +72,6 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
   }
 }
 
-
 module policysetup '../../../modules/policies/subscription/policies.bicep' = if(enableInsightsAlerts == 'true') {
   name: 'policysetup-${packtag}'
   params: {
@@ -86,6 +80,7 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = if(
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
 // Azure recommended Alerts for VMs

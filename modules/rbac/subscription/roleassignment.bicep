@@ -14,7 +14,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     description: '${solutionTag}-${roleShortName}-${resourcename}-${utcValue}'
     principalId: principalId
     principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
+    roleDefinitionId: roleDefinitionId
   }
 }
 output roleassignmentname string = roleAssignment.name

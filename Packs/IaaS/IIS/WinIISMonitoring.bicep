@@ -11,7 +11,10 @@ param workspaceId string
 param packtag string
 param solutionTag string
 param solutionVersion string
+param dceId string
+param userManagedIdentityResourceId string
 var workspaceFriendlyName = split(workspaceId, '/')[8]
+
 
 var kind= 'Windows'
 
@@ -115,7 +118,6 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     solutionTag: solutionTag
   }
 }
-
 module policysetup '../../../modules/policies/subscription/policies.bicep' = {
   name: 'policysetup-${packtag}'
   params: {
@@ -124,5 +126,31 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     solutionTag: solutionTag
     rulename: rulename
     location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
+
+module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' = {
+  name: 'dcrIISLogs-${packtag}'
+  params: {
+    location: location
+    ruleName: '${rulename}-IISLogs'
+    lawResourceId: workspaceId
+    packtag: packtag
+    solutionTag: solutionTag
+    endpointResourceId: dceId
+    tableName: 'IISLogs'
+  }
+}
+module policysetupIISLogs '../../../modules/policies/subscription/policies.bicep' = {
+  name: 'policysetup-${packtag}-IISLogs'
+  params: {
+    dcrId: dcrIISLogsMonitoring.outputs.dcrId
+    packtag: packtag
+    solutionTag: solutionTag
+    rulename: '${rulename}-IISLogs'
+    location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+  }
+}
+

@@ -15,6 +15,9 @@ resource AzureManagedGrafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
     '${solutionTag}': 'storageaccount'
     '${solutionTag}-Version': solutionVersion
   }
+  sku: {
+    name: 'Standard'
+  }
   location: location
 }
 
