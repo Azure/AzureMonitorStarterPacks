@@ -49,13 +49,13 @@ Setup has the following parameters:
 
 | Parameter Name | Description | Default Value |
 | --- | --- |  --- |
-| resourceGroup (Mandatory) | Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created. | |
+| solutionResourceGroup (Mandatory) | Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created. | |
+| location (Mandatory) | location for deployment. Default is 'eastus' | |
 | skipAMAPolicySetup | skips AMA policy setup. Default is false. | false |
 | skipMainSolutionSetup | skips deployment of the main components (in case more packs are added later). Default is false. | false |
 | skipPacksSetup | skips packs setup altogether. Default is false. | false |
 | workspaceResourceId | Log Analytics workspace to send the data to. If not provided, a workspace will be requested. If required a new workspace can be created in the wizard. | |
 | solutionTag | tag to be user for discovery. Default value: 'MonitorStarterPacks'. If any value is found in the tag, machines will be targeted for the basic VM Monitoring. The content of the tag is a comma separated list of applications that are installed on the machine (IIS, ADDS,etc.) | 'MonitorStarterPacks' |
-| location | location for deployment. Default is 'eastus' | eastus |
 | packsFilePath | path to local packs.json file. Default is the one in the repo. | "./Packs/packs.json" |
 | useExistingAG | Use existing Action Group for notification. Default is false. If set to true, the following parameters are required: | false |
 
