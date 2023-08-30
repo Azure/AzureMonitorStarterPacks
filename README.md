@@ -72,7 +72,7 @@ New Action Group parameters (when useExistingAg is 'false'):
 **Minimal parameters:**
 
 ```powershell
-.\setup.ps1 -resourceGroup 'rg-xxxxxxx' -location 'eastus'
+.\setup.ps1 -solutionResourceGroup 'rg-xxxxxxx' -location 'eastus'
 ```
 
 This example will deploy the enabled packs in the packs.json file to the resource group rg-xxxxxxx in the eastus location. It will deploy the basic solution and any enabled packs.
