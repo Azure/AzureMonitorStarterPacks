@@ -50,7 +50,7 @@ Setup has the following parameters:
 | Parameter Name | Description | Default Value |
 | --- | --- |  --- |
 | solutionResourceGroup (Mandatory) | Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created. | |
-| location (Mandatory) | location for deployment. Default is 'eastus' | |
+| location (Mandatory) | Location for deployment. (i.e. eastus, uksouth, centralindia) | |
 | skipAMAPolicySetup | skips AMA policy setup. Default is false. | false |
 | skipMainSolutionSetup | skips deployment of the main components (in case more packs are added later). Default is false. | false |
 | skipPacksSetup | skips packs setup altogether. Default is false. | false |
