@@ -1,3 +1,4 @@
+targetScope = 'managementGroup'
 
 // Create Initiative with these policies
 // VMs
@@ -14,6 +15,9 @@
 param solutionTag string
 param location string //= resourceGroup().location
 param solutionVersion string
+param managementGroupId string
+param subscriptionId string
+param resourceGroupName string
 
 var roledefinitionIds= [
      '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // Virtual Machine Contributor
@@ -22,9 +26,9 @@ var roledefinitionIds= [
 
 var rulename = '${solutionTag}-amaPolicy'
 
-module amaPolicy '../../modules/policies/subscription/policySet.bicep' ={
-  name: 'amaPolicy'
-  scope: subscription()
+module amaPolicyMG '../../modules/policies/mg/policySet.bicep' = {
+  name: 'amaPolicymg'
+  scope: managementGroup(managementGroupId)
   params: {
     initiativeDescription: '[${solutionTag}] This initiative deploys the AMA policy set'
     initiativeDisplayName: '[${solutionTag}] Deploy agent with managed identity to Windows, Linux, VMs and Arc Servers and Scale Sets'
@@ -39,12 +43,12 @@ module amaPolicy '../../modules/policies/subscription/policySet.bicep' ={
 module assignment '../../modules/policies/subscription/assignment.bicep' = {
   name: 'assignment-${rulename}'
   dependsOn: [
-    amaPolicy
+    amaPolicyMG
     AMAUserManagedIdentity
   ]
-  scope: subscription()
+  scope: subscription(subscriptionId)
   params: {
-    policyDefinitionId: amaPolicy.outputs.policySetDefId
+    policyDefinitionId: amaPolicyMG.outputs.policySetDefId
     location: location
     assignmentName: 'assign-${rulename}'
     solutionTag: solutionTag
@@ -57,11 +61,24 @@ module assignment '../../modules/policies/subscription/assignment.bicep' = {
 // This module creates a user managed identity for the packs to use.
 module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep' = {
   name: 'AMAUserManagedIdentity'
+  scope: resourceGroup(subscriptionId,resourceGroupName)
   params: {
     location: location
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     roleDefinitionIds: roledefinitionIds
     userIdentityName: 'AMAUserManagedIdentity'
+    deployToManagementGroup: true
   }
 }
+module userIdentityRoleAssignmentsMG '../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roledefinitionIds:  {
+  name: 'AMAUserManagedIdentity-${i}'
+  scope: managementGroup()
+  params: {
+    resourcename: 'AMAUserManagedIdentity'
+    principalId: AMAUserManagedIdentity.outputs.userManagedIdentityPrincipalId
+    solutionTag: solutionTag
+    roleDefinitionId: roledefinitionId
+    roleShortName: split(roledefinitionId, '/')[4]
+  }
+}]

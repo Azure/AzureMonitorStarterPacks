@@ -76,7 +76,12 @@ param (
     $packsFilePath="./Packs/packs.json",
     [Parameter()]
     [string]
-    $grafanalocation
+    $grafanalocation,
+    [Parameter(
+        HelpMessage="Specify whether deployment should be at a single subscription level or at a management group level. Default is subscription."
+    )]
+    [string]
+    $deploymentLevel='subscription'
 )
 $solutionVersion="0.1.0"
 $allowedGrafanaRegions=('southcentralus,westcentralus,westeurope,eastus,eastus2,northeurope,uksouth,australiaeast,swedencentral,westus,westus2,westus3,southeastasia,canadacentral,centralindia,eastasia').split(",")
@@ -168,6 +173,16 @@ else {
         return
     }
 }
+# Determine MG level if needed
+if ($deploymentLevel -eq 'managementgroup') {
+    $MG=new-list -objectList (Get-AzManagementGroup -ErrorAction SilentlyContinue) -type "ManagementGroup" -fieldName1 "DisplayName" -fieldName2 "Id"
+    if ($null -eq $MG) {
+        Write-Error "No management group selected. Exiting."
+        return
+    }
+    $MGId=$MG.Id
+}
+
 #$wsfriendlyname=$ws.Name
 $userId=(Get-AzADUser -SignedIn).Id
 
@@ -201,16 +216,32 @@ if (!($skipPacksSetup)) {
 #endregion
 #region AMA policy setup
 if (!$skipAMAPolicySetup) {
-    Write-Host "Enabling custom policy initiative to enable automatic AMA deployment. The policy only applies to the subscription where the packs are deployed."
+    Write-Host "Enabling custom policy initiative to enable automatic AMA deployment. "
 
-    $parameters=@{
-        solutionTag=$solutionTag
-        location=$location
-        solutionVersion=$solutionVersion
+    if ($deploymentLevel == 'managementgroup') {
+        $parameters=@{
+            solutionTag=$solutionTag
+            location=$location
+            solutionVersion=$solutionVersion
+            deploymentLevel=$deploymentLevel
+            managementGroupId=$MGId
+            subscriptionId=$sub.Id
+            resourceGroupName=$solutionResourceGroup
+        }
+        Write-Host "Deploying the AMA policy initiative to the the selected management group."
+        New-AzResourceGroupDeployment -name "amapolicymg$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+        -TemplateFile './setup/AMAPolicy/amapoliciesmg.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
     }
-    Write-Host "Deploying the AMA policy initiative to the current subscription."
-    New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-    -TemplateFile './setup/AMAPolicy/amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
+    else {
+        $parameters=@{
+            solutionTag=$solutionTag
+            location=$location
+            solutionVersion=$solutionVersion
+        }
+        Write-Host "Deploying the AMA policy initiative to the current subscription."
+        New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+        -TemplateFile './setup/AMAPolicy/amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
+    }
 }
 else {
     Write-Host "Skipping AMA policy check and configuration, as requested."
