@@ -31,4 +31,38 @@ resource amgAdminRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', GrafanaAdminRoleId)
   }
 }
+
+module grafanaReadPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
+  name: 'grafanaReadPermissions'
+  params: {
+    principalId: AzureManagedGrafana.identity.principalId
+    resourcename: grafanaName
+    roleDefinitionId: ReaderRoleId
+    roleShortName: 'Reader'
+    solutionTag: solutionTag
+    resourceGroupName: lawResourceGroup
+  }
+}
+module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
+  name: 'grafanaLAWPermissions'
+  params: {
+    principalId: AzureManagedGrafana.identity.principalId
+    resourcename: grafanaName
+    roleDefinitionId: LogAnalyticsContribuorRoleId
+    roleShortName: 'Log Analytics Contributor'
+    solutionTag: solutionTag
+    resourceGroupName: lawResourceGroup
+  }
+}
+module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
+  name: 'grafanaMonitorPermissions'
+  params: {
+    principalId: AzureManagedGrafana.identity.principalId
+    resourcename: grafanaName
+    roleDefinitionId: MonitoringContributorRoleId
+    roleShortName: 'Monitor Contributor Role'
+    solutionTag: solutionTag
+    resourceGroupName: lawResourceGroup
+  }
+}
 output grafanaId string = AzureManagedGrafana.id
