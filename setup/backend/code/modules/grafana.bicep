@@ -50,7 +50,6 @@ module grafanaReadPermissions '../../../../modules/rbac/resourceGroup/roleassign
     roleDefinitionId: ReaderRoleId
     roleShortName: 'Reader'
     solutionTag: solutionTag
-    resourceGroupName: lawResourceGroup
   }
 }
 module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -61,7 +60,6 @@ module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignm
     roleDefinitionId: LogAnalyticsContribuorRoleId
     roleShortName: 'Log Analytics Contributor'
     solutionTag: solutionTag
-    resourceGroupName: lawResourceGroup
   }
 }
 module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -72,7 +70,6 @@ module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleass
     roleDefinitionId: MonitoringContributorRoleId
     roleShortName: 'Monitor Contributor Role'
     solutionTag: solutionTag
-    resourceGroupName: lawResourceGroup
   }
 }
 

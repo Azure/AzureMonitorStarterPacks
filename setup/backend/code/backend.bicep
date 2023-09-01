@@ -58,7 +58,7 @@ var backendFunctionRoleDefinitionIds = [
 
 // Module below implements function, storage account, and app insights
 module backendFunction 'modules/function.bicep' = {
-  name: 'backendFunciton'
+  name: 'backendFunction'
   dependsOn: [
     functionUserManagedIdentity
   ]
@@ -104,6 +104,7 @@ module amg 'modules/grafana.bicep' = {
     location: grafanalocation
     grafanaName: grafanaName
     userObjectId: currentUserIdObject
+    lawresourceId: lawresourceid
   }
 }
 
