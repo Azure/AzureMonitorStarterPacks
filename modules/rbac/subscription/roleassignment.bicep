@@ -3,9 +3,10 @@ param resourcename string
 param solutionTag string
 param principalId string
 param roleDefinitionId string
-param resourceGroup string
 param roleShortName string //For consistent resource naming and redeployment
 param utcValue string = utcNow()
+
+var roleIdtoUse=subscriptionResourceId('Microsoft.Authorization/roleDefinitions',roleDefinitionId)
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscription().id,principalId,roleDefinitionId)
@@ -14,7 +15,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     description: '${solutionTag}-${roleShortName}-${resourcename}-${utcValue}'
     principalId: principalId
     principalType: 'ServicePrincipal'
-    roleDefinitionId: roleDefinitionId
+    roleDefinitionId: roleIdtoUse
   }
 }
 output roleassignmentname string = roleAssignment.name

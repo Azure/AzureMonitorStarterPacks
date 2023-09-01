@@ -42,8 +42,9 @@ resource amgAdminRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04
   }
 }
 
-module grafanaReadPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
+module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'grafanaReadPermissions'
+  scope: subscription()
   params: {
     principalId: AzureManagedGrafana.identity.principalId
     resourcename: grafanaName

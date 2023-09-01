@@ -49,8 +49,9 @@ Setup has the following parameters:
 
 | Parameter Name | Description | Default Value |
 | --- | --- |  --- |
-| solutionResourceGroup (Mandatory) | Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created. | |
+| solutionResourceGroup (Mandatory) | Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created. ||
 | location (Mandatory) | Location for deployment. (i.e. eastus, uksouth, centralindia) | |
+| grafanalocation (optional)| Location to deploy the Azure Grafana workspace. If not specified, the previous specific location will be used. | same as location |
 | skipAMAPolicySetup | skips AMA policy setup. Default is false. | false |
 | skipMainSolutionSetup | skips deployment of the main components (in case more packs are added later). Default is false. | false |
 | skipPacksSetup | skips packs setup altogether. Default is false. | false |
@@ -58,6 +59,7 @@ Setup has the following parameters:
 | solutionTag | tag to be user for discovery. Default value: 'MonitorStarterPacks'. If any value is found in the tag, machines will be targeted for the basic VM Monitoring. The content of the tag is a comma separated list of applications that are installed on the machine (IIS, ADDS,etc.) | 'MonitorStarterPacks' |
 | packsFilePath | path to local packs.json file. Default is the one in the repo. | "./Packs/packs.json" |
 | useExistingAG | Use existing Action Group for notification. Default is false. If set to true, the following parameters are required: | false |
+| confirmeeachpack | if specified, the setup procedure will ask for confirmation for each pack. | false|
 
 New Action Group parameters (when useExistingAg is 'false'):
 | Parameter Name | Description | Default Value |

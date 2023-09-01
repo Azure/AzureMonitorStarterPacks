@@ -83,43 +83,43 @@ function get-defenderAMApolicyAssignments {
 #         }
 #     }
     
-function set-defenderAMApolicy {
-    param (
-        [string] $scope,
-        [string] $workspaceResourceId,
-        [string] $MIId,
-        [string] $location
-    )
+# function set-defenderAMApolicy {
+#     param (
+#         [string] $scope,
+#         [string] $workspaceResourceId,
+#         [string] $MIId,
+#         [string] $location
+#     )
 
-    # get defender AMA built-in policy
-    $policy=Get-AzPolicySetDefinition -Id '/providers/Microsoft.Authorization/policySetDefinitions/500ab3a2-f1bd-4a5a-8e47-3e09d9a294c3'
+#     # get defender AMA built-in policy
+#     $policy=Get-AzPolicySetDefinition -Id '/providers/Microsoft.Authorization/policySetDefinitions/500ab3a2-f1bd-4a5a-8e47-3e09d9a294c3'
 
-    if ($policy) {
-        if ([string]::IsNullOrEmpty($MIId)) {
-            Write-Host "Using System Assigned Identity"
-            New-AzPolicyAssignment -Name 'Custom Monstar Packs provisioning Azure Monitor agent' `
-                            -DisplayName 'Custom Monstar Packs provisioning Azure Monitor agent' `
-                            -Scope $scope `
-                            -PolicySetDefinition $policy `
-                            -PolicyParameterObject @{'userWorkspaceResourceId'=$workspaceResourceId;'workspaceRegion'=$location}`
-                            -IdentityType SystemAssigned `
-                            -Location $location
-        }
-        else {
-            Write-Host "Using User Assigned Identity - $MIId"
-            New-AzPolicyAssignment -Name 'Custom Monstar Packs provisioning Azure Monitor agent' `
-            -DisplayName 'Custom Monstar Packs provisioning Azure Monitor agent' `
-            -Scope $scope `
-            -PolicySetDefinition $policy `
-            -PolicyParameterObject @{'userWorkspaceResourceId'=$workspaceResourceId;'workspaceRegion'=$location}`
-            -IdentityType UserAssigned `
-            -Location $location
-        }
-    }
-    else {
-        Write-Error "Policy not found."
-    }
-}
+#     if ($policy) {
+#         if ([string]::IsNullOrEmpty($MIId)) {
+#             Write-Host "Using System Assigned Identity"
+#             New-AzPolicyAssignment -Name 'Custom Monstar Packs provisioning Azure Monitor agent' `
+#                             -DisplayName 'Custom Monstar Packs provisioning Azure Monitor agent' `
+#                             -Scope $scope `
+#                             -PolicySetDefinition $policy `
+#                             -PolicyParameterObject @{'userWorkspaceResourceId'=$workspaceResourceId;'workspaceRegion'=$location}`
+#                             -IdentityType SystemAssigned `
+#                             -Location $location
+#         }
+#         else {
+#             Write-Host "Using User Assigned Identity - $MIId"
+#             New-AzPolicyAssignment -Name 'Custom Monstar Packs provisioning Azure Monitor agent' `
+#             -DisplayName 'Custom Monstar Packs provisioning Azure Monitor agent' `
+#             -Scope $scope `
+#             -PolicySetDefinition $policy `
+#             -PolicyParameterObject @{'userWorkspaceResourceId'=$workspaceResourceId;'workspaceRegion'=$location}`
+#             -IdentityType UserAssigned `
+#             -Location $location
+#         }
+#     }
+#     else {
+#         Write-Error "Policy not found."
+#     }
+# }
 function get-tagValue {
     param (
         [string] $tagKey,
