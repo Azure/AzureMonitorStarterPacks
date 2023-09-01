@@ -20,9 +20,8 @@ module userIdentityRoleAssignments '../../../../modules/rbac/subscription/roleas
     resourcename: userIdentityName
     principalId: userManagedIdentity.properties.principalId
     solutionTag: solutionTag
-    resourceGroup: resourceGroup().name
     roleDefinitionId: roledefinitionId
-    roleShortName: split(roledefinitionId, '/')[4]
+    roleShortName: roledefinitionId
   }
 }]
 // resource roleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roledefinitionId, i) in roleDefinitionIds:  {
