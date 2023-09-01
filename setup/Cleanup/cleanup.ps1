@@ -43,7 +43,7 @@ if ($RemoveAMAPolicySet -or $RemoveAll) {
             "Removing assignments for $($init.PolicySetDefinitionId)"
             $assignments | Remove-AzPolicyAssignment 
         }
-        Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
+        Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId -force
     }
 }
 else {

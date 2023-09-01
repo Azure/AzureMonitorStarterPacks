@@ -20,6 +20,9 @@ var wbConfig='''
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "value::tenant"
+        ],
         "parameters": [
           {
             "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -31,16 +34,21 @@ var wbConfig='''
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
+            "query": "resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project id,name, subscriptionId, type=split(type,'/')[1]",
+            "crossComponentResources": [
+              "value::tenant"
+            ],
             "typeSettings": {
               "additionalResourceOptions": [
                 "value::all"
               ],
-              "includeAll": false,
               "showDefault": false
             },
             "timeContext": {
               "durationMs": 86400000
             },
+            "queryType": 1,
+            "resourceType": "microsoft.resources/tenants",
             "value": [
               "value::all"
             ]
@@ -104,11 +112,28 @@ var wbConfig='''
             },
             "jsonData": "[\n    { \"value\":\"yes\", \"label\":\"Yes\",\"default\": \"yes\" },\n    { \"value\":\"no\", \"label\":\"No\" }\n]",
             "value": "no"
+          },
+          {
+            "id": "799daea2-ece5-4d88-b527-901cd0e18c9a",
+            "version": "KqlParameterItem/1.0",
+            "name": "ManagementGroups",
+            "label": "Management Groups",
+            "type": 5,
+            "query": "resourcecontainers\n| where type == 'microsoft.management/managementgroups' \n| project id, name, subscriptionId, type=split(type,'/')[1]",
+            "crossComponentResources": [
+              "value::tenant"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resources/tenants",
+            "value": "/providers/Microsoft.Management/managementGroups/FehseCorpRoot"
           }
         ],
         "style": "above",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "queryType": 1,
+        "resourceType": "microsoft.resources/tenants"
       },
       "customWidth": "50",
       "name": "parameters - 6"
@@ -267,7 +292,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -431,7 +456,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -519,7 +544,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -1725,7 +1750,7 @@ var wbConfig='''
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/amonstarterpacks3/providers/microsoft.operationalinsights/workspaces/ws-amonstar"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
