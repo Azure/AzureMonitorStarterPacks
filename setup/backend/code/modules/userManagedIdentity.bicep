@@ -22,7 +22,7 @@ module userIdentityRoleAssignments '../../../../modules/rbac/subscription/roleas
     principalId: userManagedIdentity.properties.principalId
     solutionTag: solutionTag
     roleDefinitionId: roledefinitionId
-    roleShortName: split(roledefinitionId, '/')[4]
+    roleShortName: roledefinitionId
   }
 }]
 

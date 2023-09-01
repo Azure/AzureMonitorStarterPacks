@@ -43,7 +43,7 @@ if ($RemoveAMAPolicySet -or $RemoveAll) {
             "Removing assignments for $($init.PolicySetDefinitionId)"
             $assignments | Remove-AzPolicyAssignment 
         }
-        Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId -force
+        Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId -Force
     }
 }
 else {
@@ -163,8 +163,8 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     "Removing app insights default alerts."
     get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
     # Remove grafana
-    "Removing grafana."
-    Get-AzResource -ResourceType 'Microsoft.Dashboard/grafana' -ResourceGroupName $RG | Remove-AzResource -Force
+    "Removing grafana. This removes the grafana dashboard and the grafana resource. It takes a while to complete. Make sure it has been removed before running the script again."
+    Get-AzResource -ResourceType 'Microsoft.Dashboard/grafana' -ResourceGroupName $RG | Remove-AzResource -Force -asJob
     #delete data collection endpoints
     "Removing data collection endpoints."
     get-azresource -ResourceType 'Microsoft.Insights/dataCollectionEndpoints' -ResourceGroupName $RG | Remove-AzResource -Force

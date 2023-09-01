@@ -16,8 +16,8 @@ param location string //= resourceGroup().location
 param solutionVersion string
 
 var roledefinitionIds= [
-     '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // Virtual Machine Contributor
-     '/providers/microsoft.authorization/roleDefinitions/48b40c6e-82e0-4eb3-90d5-19e40f49b624' // Hybrid Server Resource Administrator
+     '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // Virtual Machine Contributor
+     '48b40c6e-82e0-4eb3-90d5-19e40f49b624' // Hybrid Server Resource Administrator
   ]
 
 var rulename = '${solutionTag}-amaPolicy'
@@ -49,9 +49,6 @@ module assignment '../../modules/policies/subscription/assignment.bicep' = {
     assignmentName: 'assign-${rulename}'
     solutionTag: solutionTag
     userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
-    // roledefinitionIds: [
-    //   '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' 
-    // ]
   }
 }
 // This module creates a user managed identity for the packs to use.
