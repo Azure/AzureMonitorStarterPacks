@@ -13,22 +13,22 @@ targetScope = 'managementGroup'
 
 // Assign initiative to subscription (for now, just one subscription)
 param solutionTag string
-param location string //= resourceGroup().location
+param location string
 param solutionVersion string
-param managementGroupId string
 param subscriptionId string
 param resourceGroupName string
+param assignmentLevel string
+
+//var managementgroupname= split(managementGroupId, '/')[1]
 
 var roledefinitionIds= [
-     '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // Virtual Machine Contributor
-     '/providers/microsoft.authorization/roleDefinitions/48b40c6e-82e0-4eb3-90d5-19e40f49b624' // Hybrid Server Resource Administrator
-  ]
-
+     '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // Virtual Machine Contributor
+     '48b40c6e-82e0-4eb3-90d5-19e40f49b624' // Hybrid Server Resource Administrator
+]
 var rulename = '${solutionTag}-amaPolicy'
 
 module amaPolicyMG '../../modules/policies/mg/policySet.bicep' = {
   name: 'amaPolicymg'
-  scope: managementGroup(managementGroupId)
   params: {
     initiativeDescription: '[${solutionTag}] This initiative deploys the AMA policy set'
     initiativeDisplayName: '[${solutionTag}] Deploy agent with managed identity to Windows, Linux, VMs and Arc Servers and Scale Sets'
@@ -40,7 +40,24 @@ module amaPolicyMG '../../modules/policies/mg/policySet.bicep' = {
   }
 }
 
-module assignment '../../modules/policies/subscription/assignment.bicep' = {
+module assignment '../../modules/policies/mg/assignment.bicep' = if (assignmentLevel == 'managementGroup'){
+  name: 'assignment-${rulename}'
+  dependsOn: [
+    amaPolicyMG
+    AMAUserManagedIdentity
+  ]
+  params: {
+    policyDefinitionId: amaPolicyMG.outputs.policySetDefId
+    location: location
+    assignmentName: '[AMSP]AMA-Policies'
+    solutionTag: solutionTag
+    userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
+    // roledefinitionIds: [
+    //   '/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c' 
+    // ]
+  }
+}
+module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if (assignmentLevel != 'managementGroup') {
   name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicyMG
@@ -72,13 +89,13 @@ module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep
   }
 }
 module userIdentityRoleAssignmentsMG '../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roledefinitionIds:  {
-  name: 'AMAUserManagedIdentity-${i}'
+  name: 'AMAUserManagedIdentityRoles-${i}'
   scope: managementGroup()
   params: {
     resourcename: 'AMAUserManagedIdentity'
     principalId: AMAUserManagedIdentity.outputs.userManagedIdentityPrincipalId
     solutionTag: solutionTag
     roleDefinitionId: roledefinitionId
-    roleShortName: split(roledefinitionId, '/')[4]
+    roleShortName: roledefinitionId
   }
 }]

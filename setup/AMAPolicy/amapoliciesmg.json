@@ -1,0 +1,186 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.20.4.51522",
+      "templateHash": "2111785977903310665"
+    }
+  },
+  "parameters": {
+    "solutionTag": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "solutionVersion": {
+      "type": "string"
+    },
+    "managementGroupId": {
+      "type": "string"
+    },
+    "subscriptionId": {
+      "type": "string"
+    },
+    "resourceGroupName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "managementgroupname": "[split(parameters('managementGroupId'), '/')[1]]",
+    "roledefinitionIds": [
+      "9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
+      "48b40c6e-82e0-4eb3-90d5-19e40f49b624"
+    ],
+    "rulename": "[format('{0}-amaPolicy', parameters('solutionTag'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "amaPolicymg",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "initiativeDescription": {
+            "value": "[format('[{0}] This initiative deploys the AMA policy set', parameters('solutionTag'))]"
+          },
+          "initiativeDisplayName": {
+            "value": "[format('[{0}] Deploy agent with managed identity to Windows, Linux, VMs and Arc Servers and Scale Sets', parameters('solutionTag'))]"
+          },
+          "initiativeName": {
+            "value": "[format('[{0}]-DeployAMA', parameters('solutionTag'))]"
+          },
+          "category": {
+            "value": "Monitoring"
+          },
+          "version": {
+            "value": "1.0.0"
+          },
+          "solutionTag": {
+            "value": "[parameters('solutionTag')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "10937775127097444327"
+            }
+          },
+          "parameters": {
+            "initiativeName": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "PolicySet name"
+              }
+            },
+            "initiativeDisplayName": {
+              "type": "string",
+              "maxLength": 128,
+              "metadata": {
+                "description": "PolicySet display Name"
+              }
+            },
+            "initiativeDescription": {
+              "type": "string",
+              "metadata": {
+                "description": "PolicySet description"
+              }
+            },
+            "solutionTag": {
+              "type": "string",
+              "minLength": 1,
+              "metadata": {
+                "description": "array of policy IDs"
+              }
+            },
+            "category": {
+              "type": "string",
+              "defaultValue": "Monitoring"
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "1.0.0"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policySetDefinitions",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('initiativeName')]",
+              "properties": {
+                "description": "[parameters('initiativeDescription')]",
+                "displayName": "[parameters('initiativeDisplayName')]",
+                "metadata": {
+                  "category": "[parameters('category')]",
+                  "version": "[parameters('version')]",
+                  "[format('{0}', parameters('solutionTag'))]": "Policy Set"
+                },
+                "parameters": {},
+                "policyDefinitions": [
+                  {
+                    "parameters": {},
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ca817e41-e85a-4783-bc7f-dc532d36235e",
+                    "policyDefinitionReferenceId": ""
+                  },
+                  {
+                    "parameters": {},
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/a4034bc6-ae50-406d-bf76-50f4ee5a7811",
+                    "policyDefinitionReferenceId": ""
+                  },
+                  {
+                    "parameters": {},
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/845857af-0333-4c5d-bbbc-6076697da122",
+                    "policyDefinitionReferenceId": ""
+                  },
+                  {
+                    "parameters": {},
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/94f686d6-9a24-4e19-91f1-de937dc171a4",
+                    "policyDefinitionReferenceId": ""
+                  },
+                  {
+                    "parameters": {},
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4efbd9d8-6bc6-45f6-9be2-7fe9dd5d89ff",
+                    "policyDefinitionReferenceId": ""
+                  },
+                  {
+                    "parameters": {},
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/17b3de92-f710-4cf4-aa55-0e7859f1ed7b",
+                    "policyDefinitionReferenceId": ""
+                  },
+                  {
+                    "parameters": {
+                      "bringYourOwnUserAssignedManagedIdentity": {
+                        "value": false
+                      }
+                    },
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/59c3d93f-900b-4827-a8bd-562e7b956e7c",
+                    "policyDefinitionReferenceId": ""
+                  }
+                ],
+                "policyType": "Custom"
+              }
+            }
+          ],
+          "outputs": {
+            "policySetDefId": {
+              "type": "string",
+              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policySetDefinitions', parameters('initiativeName'))]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

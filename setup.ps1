@@ -66,6 +66,11 @@ param (
     [Parameter()]
     [string]
     $subscriptionId,
+    [Parameter(
+        HelpMessage="Specify the management group where the solution will be deployed. If not specified, the script will ask for one. This is the last of a management group id (e.g. /providers/Microsoft.Management/managementGroups/<management group name>)."
+    )]
+    [string]
+    $managementGroupName,
     # specify to use the same Action Group for all packs, otherwise a new Action Group will be created for each pack
     [Parameter()]
     [switch]
@@ -78,10 +83,10 @@ param (
     [string]
     $grafanalocation,
     [Parameter(
-        HelpMessage="Specify whether deployment should be at a single subscription level or at a management group level. Default is subscription."
+        HelpMessage="Specify whether assignment should be at a single subscription level or at a management group level for pack policies. Default is subscription."
     )]
     [string]
-    $deploymentLevel='subscription'
+    $assignmentLevel='subscription'
 )
 $solutionVersion="0.1.0"
 $allowedGrafanaRegions=('southcentralus,westcentralus,westeurope,eastus,eastus2,northeurope,uksouth,australiaeast,swedencentral,westus,westus2,westus3,southeastasia,canadacentral,centralindia,eastasia').split(",")
@@ -147,7 +152,7 @@ if ($null -eq $sub) {
 # Add test to see if RG is in the same region as the new requested region.
 if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue)) {
     try {
-        New-AzResourceGroup -Name $solutionResourceGroup -Location $location
+        $resourceGroupId=(New-AzResourceGroup -Name $solutionResourceGroup -Location $location).ResourceId
     }
     catch {
         Write-Error "Unable to create resource group $solutionResourceGroup. Please make sure you have the proper permissions to create a resource group in the $location location."
@@ -155,12 +160,14 @@ if (!(Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyCont
     }
 }
 else {
+    $resourceGroupId=(Get-AzResourceGroup -name $solutionResourceGroup).ResourceId
     if ((Get-AzResourceGroup -name $solutionResourceGroup -ErrorAction SilentlyContinue).Location -ne $location) {
         Write-Error "Resource group $solutionResourceGroup already exists in a different location. Please select a different resource group name or delete the existing resource group."
         return
     }
     else {
         Write-Host "Using existing resource group $solutionResourceGroup."
+
     }
 }
 if ( [string]::IsNullOrEmpty($workspaceResourceId)) {
@@ -173,15 +180,20 @@ else {
         return
     }
 }
-# Determine MG level if needed
-if ($deploymentLevel -eq 'managementgroup') {
+#Deployments are always done at MG level now. 
+if ([string]::IsNullOrEmpty($managementGroupName)) {
     $MG=new-list -objectList (Get-AzManagementGroup -ErrorAction SilentlyContinue) -type "ManagementGroup" -fieldName1 "DisplayName" -fieldName2 "Id"
     if ($null -eq $MG) {
         Write-Error "No management group selected. Exiting."
         return
     }
-    $MGId=$MG.Id
+    $MGName=$MG.Name
 }
+else {
+    $MGName=$managementGroupName
+}
+# Determine MG level if needed
+
 
 #$wsfriendlyname=$ws.Name
 $userId=(Get-AzADUser -SignedIn).Id
@@ -218,30 +230,29 @@ if (!($skipPacksSetup)) {
 if (!$skipAMAPolicySetup) {
     Write-Host "Enabling custom policy initiative to enable automatic AMA deployment. "
 
-    if ($deploymentLevel == 'managementgroup') {
-        $parameters=@{
-            solutionTag=$solutionTag
-            location=$location
-            solutionVersion=$solutionVersion
-            deploymentLevel=$deploymentLevel
-            managementGroupId=$MGId
-            subscriptionId=$sub.Id
-            resourceGroupName=$solutionResourceGroup
-        }
-        Write-Host "Deploying the AMA policy initiative to the the selected management group."
-        New-AzResourceGroupDeployment -name "amapolicymg$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-        -TemplateFile './setup/AMAPolicy/amapoliciesmg.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
+    $parameters=@{
+        solutionTag=$solutionTag
+        location=$location
+        solutionVersion=$solutionVersion
+        subscriptionId=$sub.Id
+        resourceGroupName=$solutionResourceGroup
+        assignmentlevel=$assignmentLevel
     }
-    else {
-        $parameters=@{
-            solutionTag=$solutionTag
-            location=$location
-            solutionVersion=$solutionVersion
-        }
-        Write-Host "Deploying the AMA policy initiative to the current subscription."
-        New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
-        -TemplateFile './setup/AMAPolicy/amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
-    }
+    Write-Host "Deploying the AMA policy initiative to the the selected management group."
+    Write-Host "Assigning initiative at the $assignmentLevel level."
+    New-AzManagementGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ManagementGroupId $MGName -location $location`
+    -TemplateFile './setup/AMAPolicy/amapoliciesmg.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
+    # }
+    # else {
+    #     $parameters=@{
+    #         solutionTag=$solutionTag
+    #         location=$location
+    #         solutionVersion=$solutionVersion
+    #     }
+    #     Write-Host "Deploying the AMA policy initiative to the current subscription."
+    #     New-AzResourceGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+    #     -TemplateFile './setup/AMAPolicy/amapolicies.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
+    # }
 }
 else {
     Write-Host "Skipping AMA policy check and configuration, as requested."
@@ -332,6 +343,10 @@ if (!($skipPacksSetup)) {
             Write-host "'useSameAGforAllPacks' flag detected. Please provide AG information to be used to all Packs, either new or existing (depending on useExistingAG switch)"
             if ([string]::IsNullOrEmpty($existingAGName)) {
                 $AGinfo=get-AGInfo -useExistingAG $useExistingAG.IsPresent
+                if ($AGinfo -eq $null) {
+                    Write-Error "No Action Group selected. Exiting."
+                    return
+                }
             }
             else {
                 $AG=get-azactionGroup | Where-Object {$_.Name -eq $existingAGName}
@@ -351,7 +366,7 @@ if (!($skipPacksSetup)) {
         }
 
         install-packs -packinfo $packs `
-            -resourceGroup $solutionResourceGroup `
+            -resourceGroupId $resourceGroupId `
             -AGInfo $AGinfo `
             -useExistingAG:$useExistingAG.IsPresent `
             -existingAGName $actionGroupName `
@@ -364,7 +379,11 @@ if (!($skipPacksSetup)) {
             -dceId $dceId `
             -azAvailable $azloggedIn `
             -userManagedIdentityResourceId $packsUserManagedIdentityResourceId `
-            -grafananame "AMSP$($sub.id.split("-")[0])"
+            -grafananame "AMSP$($sub.id.split("-")[0])" `
+            -assignmentlevel $assignmentLevel `
+            -managementGroupName $MGName `
+            -subscriptionId $sub.Id
+            
 
         # Grafana dashboards
         # if ($deploymentResult -eq $true) {
