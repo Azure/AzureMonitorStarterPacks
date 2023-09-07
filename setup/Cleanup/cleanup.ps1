@@ -105,7 +105,7 @@ insightsresources
 | project rulename=split(properties.dataCollectionRuleId,"/")[8],resourceName=split(resourceId,"/")[8],resourceId, ruleId=properties.dataCollectionRuleId, name
 | where ruleId =~
 '@
-    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG
+    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tags.MonitorStarterPacks -ne $null}
     if ($RemoveTag) {
         $DCRs=$DCRs | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
     }
