@@ -37,11 +37,21 @@ if ($RemoveAMAPolicySet -or $RemoveAll) {
     $inits=Get-AzPolicySetDefinition | where-object {$_.properties.Metadata.MonitorStarterPacks -ne $null}
     foreach ($init in $inits) {
         "Removing policy set $($init.PolicySetDefinitionId)"
-        $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
+        #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
+        $query=@"
+        policyresources
+        | where type == "microsoft.authorization/policyassignments"
+        | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
+        | where PolicyId == '$($init.PolicySetDefinitionId)'
+"@
+        $assignments=Search-AzGraph -Query $query
         if ($assignments.count -ne 0)
         {
-            "Removing assignments for $($init.PolicySetDefinitionId)"
-            $assignments | Remove-AzPolicyAssignment 
+            "Removing assignments for $($pol.PolicyDefinitionId)"
+            foreach ($assignment in $assignments) {
+                "Removing assignment for $($assignment.name)"
+                Remove-AzPolicyAssignment -Id $assignment.id
+            }
         }
         Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId -Force
     }
