@@ -1,3 +1,5 @@
+targetScope = 'managementGroup'
+
 @description('The name for the function app that you wish to create')
 param functionname string
 param currentUserIdObject string
@@ -14,15 +16,12 @@ param appInsightsLocation string
 //param filename string = 'discovery.zip'
 //param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
-@secure()
-
 param solutionVersion string
 
-// var discoveryContainerName = 'discovery'
-// var tempfilename = '${filename}.tmp'
-//Role definition Ids for policy remediation
-// var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
-// var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
+param subscriptionId string
+param resourceGroupName string
+param mgname string
+
 var packPolicyRoleDefinitionIds=[
   '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
   '92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
@@ -37,6 +36,8 @@ var backendFunctionRoleDefinitionIds = [
   'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
   '92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor
   '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor
+  '36243c78-bf99-498c-9df9-86d9f8d28608' // policy contributor
+  'f1a07417-d97a-45cb-824c-7a7467783830' // Managed identity Operator
 ]
 
 //var subscriptionId = subscription().subscriptionId
@@ -59,6 +60,7 @@ var backendFunctionRoleDefinitionIds = [
 // Module below implements function, storage account, and app insights
 module backendFunction 'modules/function.bicep' = {
   name: 'backendFunction'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     functionUserManagedIdentity
   ]
@@ -72,11 +74,13 @@ module backendFunction 'modules/function.bicep' = {
     storageAccountName: storageAccountName
     userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
+    packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
   }
 }
 
 module logicapp './modules/logicapp.bicep' = {
   name: 'BackendLogicApp'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     backendFunction
   ]
@@ -89,6 +93,7 @@ module logicapp './modules/logicapp.bicep' = {
 }
 module workbook './modules/workbook.bicep' = {
   name: 'workbookdeployment'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     lawresourceid: lawresourceid
     location: location
@@ -98,6 +103,7 @@ module workbook './modules/workbook.bicep' = {
 }
 module amg 'modules/grafana.bicep' = {
   name: 'azureManagedGrafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
@@ -111,6 +117,7 @@ module amg 'modules/grafana.bicep' = {
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
   name: 'DCE-${solutionTag}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     packtag: 'dceMainRegion'
@@ -128,27 +135,30 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     solutionVersion: solutionVersion
     roleDefinitionIds: packPolicyRoleDefinitionIds
     userIdentityName: 'packsUserManagedIdentity'
+    mgname: mgname
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
   }
 }
 
-module customRemdiationRole '../../../modules/rbac/subscription/remediationContributor.bicep' = {
-  name: 'customRemediationRole'
-  scope: subscription()
-  params: {
-  }
-}
+// module customRemdiationRole '../../../modules/rbac/subscription/remediationContributor.bicep' = {
+//   name: 'customRemediationRole'
+//   scope: subscription(subscriptionId)
+//   params: {
+//   }
+// }
 
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'functionUserManagedIdentity'
-  dependsOn: [
-    customRemdiationRole
-  ]
   params: {
     location: location
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    roleDefinitionIds: concat(backendFunctionRoleDefinitionIds,array('${customRemdiationRole.outputs.roleDefId}'))
+    roleDefinitionIds: backendFunctionRoleDefinitionIds//,array('${customRemdiationRole.outputs.roleDefId}'))
     userIdentityName: 'functionUserManagedIdentity'
+    mgname: mgname
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
   }
 }
 

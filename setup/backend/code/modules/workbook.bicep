@@ -20,9 +20,6 @@ var wbConfig='''
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "value::tenant"
-        ],
         "parameters": [
           {
             "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -34,21 +31,16 @@ var wbConfig='''
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project id,name, subscriptionId, type=split(type,'/')[1]",
-            "crossComponentResources": [
-              "value::tenant"
-            ],
             "typeSettings": {
               "additionalResourceOptions": [
                 "value::all"
               ],
+              "includeAll": false,
               "showDefault": false
             },
             "timeContext": {
               "durationMs": 86400000
             },
-            "queryType": 1,
-            "resourceType": "microsoft.resources/tenants",
             "value": [
               "value::all"
             ]
@@ -112,28 +104,11 @@ var wbConfig='''
             },
             "jsonData": "[\n    { \"value\":\"yes\", \"label\":\"Yes\",\"default\": \"yes\" },\n    { \"value\":\"no\", \"label\":\"No\" }\n]",
             "value": "no"
-          },
-          {
-            "id": "799daea2-ece5-4d88-b527-901cd0e18c9a",
-            "version": "KqlParameterItem/1.0",
-            "name": "ManagementGroups",
-            "label": "Management Groups",
-            "type": 5,
-            "query": "resourcecontainers\n| where type == 'microsoft.management/managementgroups' \n| project id, name, subscriptionId, type=split(type,'/')[1]",
-            "crossComponentResources": [
-              "value::tenant"
-            ],
-            "typeSettings": {
-              "additionalResourceOptions": []
-            },
-            "queryType": 1,
-            "resourceType": "microsoft.resources/tenants",
-            "value": "/providers/Microsoft.Management/managementGroups/FehseCorpRoot"
           }
         ],
         "style": "above",
-        "queryType": 1,
-        "resourceType": "microsoft.resources/tenants"
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "customWidth": "50",
       "name": "parameters - 6"
@@ -292,7 +267,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -456,7 +431,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "LxOS"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -544,7 +519,7 @@ var wbConfig='''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "IIS"
+                  "value": "LxOS"
                 }
               ],
               "style": "pills",
@@ -1258,9 +1233,9 @@ var wbConfig='''
                 }
               ],
               "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources",
+              "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
-                "{Subscriptions}"
+                "value::tenant"
               ],
               "gridSettings": {
                 "formatters": [
@@ -1295,7 +1270,7 @@ var wbConfig='''
                 "filter": true
               }
             },
-            "customWidth": "50",
+            "customWidth": "75",
             "conditionalVisibility": {
               "parameterName": "tabSelection",
               "comparison": "isEqualTo",
@@ -1350,21 +1325,29 @@ var wbConfig='''
                 }
               ]
             },
-            "customWidth": "50",
+            "customWidth": "25",
             "name": "links - 3"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Policy',['id']) on $left.PolicyId == $right.id\n| project Name,Type, AssignmentDisplayName, scope\n| union (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join (policyresources | where type == \"microsoft.authorization/policysetdefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Initiative',['id']) on $left.PolicyId == $right.id\n| project Name, Type, AssignmentDisplayName, scope)\n",
-              "size": 1,
+              "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Policy',['id'],Pack=tostring(properties.metadata.MonitorStarterPacks)\n| join kind = leftouter (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentName=name,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join kind=leftouter  (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)) on $left.PolicyId == $right.id\n| project tostring(AssignmentName),Name=tostring(split(PolicyId,\"/\")[8]), PolicyId,ScopeLevel=iff(scope contains 'subscriptions',\"Sub\", \"MG\"), Scope=scope) on Name\n| project-away Name1, id\n| union ( policyresources\n| where type == \"microsoft.authorization/policysetdefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Initiative',['id'],Pack=\"_N/A\"\n| join kind = leftouter (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentName=name,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join kind=leftouter  (policyresources\n| where type == \"microsoft.authorization/policysetdefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)) on $left.PolicyId == $right.id\n| project tostring(AssignmentName),Name=tostring(split(PolicyId,\"/\")[8]), PolicyId, ScopeLevel=iff(scope contains 'subscriptions',\"Sub\", \"MG\"),Scope=scope) on Name\n| project-away Name1, id)\n| sort by Pack asc, AssignmentName asc ",
+              "size": 0,
               "title": "Installed Policies and Initiatives with Assignments",
               "noDataMessage": "No MonStar policies (packs) installed.",
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "policyseletedpolicy",
+                  "parameterType": 1
+                }
+              ],
               "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources",
+              "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
-                "{Subscriptions}"
+                "value::tenant"
               ],
               "gridSettings": {
                 "formatters": [
@@ -1373,13 +1356,7 @@ var wbConfig='''
                     "formatter": 1
                   }
                 ],
-                "filter": true,
-                "hierarchySettings": {
-                  "treeType": 1,
-                  "groupBy": [
-                    "Name"
-                  ]
-                }
+                "filter": true
               }
             },
             "conditionalVisibility": {
@@ -1391,6 +1368,108 @@ var wbConfig='''
             "styleSettings": {
               "showBorder": true
             }
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "Select Scope below to assign a policy. There is no need to Select a scope to Unassign the policy.",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "policyseletedpolicy",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "text - 6"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resourcecontainers\n| where type == 'microsoft.management/managementgroups' or type =~ 'microsoft.resources/subscriptions'\n| project name, id, subscriptionId, type=split(type,'/')[1]",
+              "size": 0,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "parameterName": "policyscopes",
+                  "parameterType": 1,
+                  "quote": "\""
+                }
+              ],
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "policyseletedpolicy",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "query - 15",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "Policies To Assign: {policyseletedpolicy}\n\nScopes: {policyscopes}"
+            },
+            "conditionalVisibility": {
+              "parameterName": "policyseletedpolicy",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "text - 4"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "paragraph",
+              "links": [
+                {
+                  "id": "63320366-2b93-4e52-831c-55f7c6de4043",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Assign Policy",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Assign\",\n    \"Scopes\": [{policyscopes}],\n    \"policies\": [{policyseletedpolicy}]\n  }\n}",
+                    "httpMethod": "POST",
+                    "title": "Assign Policy",
+                    "description": "# Assign policy below to selected scope:\n\n## Policy\n\n{policyseletedpolicy}\n\n## Scope\n\n{policyscopes}",
+                    "runLabel": "Assign"
+                  }
+                },
+                {
+                  "id": "ed3b8c20-e2ef-4768-b0b9-bfcc254602e6",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Unassign Policy",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Unassign\",\n    \"policies\": [{policyseletedpolicy}]\n  }\n}",
+                    "httpMethod": "POST",
+                    "title": "Unassign Policies",
+                    "description": "# Unassign policy or policies below from their scopes.\n\n## Policy\n\n{policyseletedpolicy}\n\n",
+                    "actionName": "Unassign Policies",
+                    "runLabel": "Unassign"
+                  }
+                }
+              ]
+            },
+            "customWidth": "25",
+            "conditionalVisibility": {
+              "parameterName": "policyseletedpolicy",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "links - 2 - Copy"
           }
         ]
       },
@@ -1750,7 +1829,7 @@ var wbConfig='''
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/amonstarterpacks3/providers/microsoft.operationalinsights/workspaces/ws-amonstar"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

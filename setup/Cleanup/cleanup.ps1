@@ -72,7 +72,14 @@ if ($RemovePacks  -or $RemoveAll) {
         }
         if ($remove) {
             "Removing policy $($pol.PolicyDefinitionId) and assignments for pack $($pol.properties.Metadata.MonitorStarterPacks)"
-            $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
+            #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId # Only works for the current subscription. Need to use resource graph.
+            $query=@"
+            policyresources
+            | where type == "microsoft.authorization/policyassignments"
+            | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
+            | where PolicyId == '$($pol.PolicyDefinitionId)'
+"@
+            $assignments=Search-AzGraph -Query $query
             
             if ($assignments.count -ne 0)
             {
@@ -83,8 +90,8 @@ if ($RemovePacks  -or $RemoveAll) {
                     # Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
                     # #$ras=Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
                     # -and $_. -eq $assignments.Identity.PrincipalId} | Remove-AzRoleAssignment
-                    "Removing assignment for $($assignment.Identity.PrincipalId)"
-                    Remove-AzPolicyAssignment -Id $assignment.PolicyAssignmentId
+                    "Removing assignment for $($assignment.name)"
+                    Remove-AzPolicyAssignment -Id $assignment.id
                 }
                 "Removing policy definition for $($pol.PolicyDefinitionId)"
                 Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force

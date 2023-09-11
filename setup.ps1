@@ -300,21 +300,23 @@ if (!($skipMainSolutionSetup)) {
         currentUserIdObject=$userId
         grafanaName=$grafanaName
         grafanalocation=$grafanalocation
+        subscriptionId=$sub.Id
+        resourceGroupName=$solutionResourceGroup
+        mgname=$MGName
     }
     Write-Host "Deploying the backend components(function, logic app and workbook)."
-    #try {
-        $backend=New-AzResourceGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $solutionResourceGroup `
+    try {
+        $backend=New-AzManagementGroupDeployment -name "maindeployment$(get-date -format "ddmmyyHHmmss")" -ManagementGroupId $MGName -location $location `
         -TemplateFile './setup/backend/code/backend.bicep' -templateParameterObject $parameters -ErrorAction Stop # | Out-Null #-Verbose
         #$backend.Outputs
         $packsUserManagedIdentityPrincipalId=$backend.Outputs.packsUserManagedIdentityId.Value
         $packsUserManagedIdentityResourceId=$backend.Outputs.packsUserManagedResourceId.Value
-        
-    #}
-    #catch {
-    #    Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
-    #    Write-Error $_.Exception.Message
-    #    return
-    #}
+    }
+    catch {
+        Write-Error "Unable to deploy the backend components. Please make sure you have the proper permissions to deploy resources in the $solutionResourceGroup resource group."
+        Write-Error $_.Exception.Message
+        return
+    }
 }
 # Reads the packs.json file
 if (!($skipPacksSetup)) {
@@ -343,7 +345,7 @@ if (!($skipPacksSetup)) {
             Write-host "'useSameAGforAllPacks' flag detected. Please provide AG information to be used to all Packs, either new or existing (depending on useExistingAG switch)"
             if ([string]::IsNullOrEmpty($existingAGName)) {
                 $AGinfo=get-AGInfo -useExistingAG $useExistingAG.IsPresent
-                if ($AGinfo -eq $null) {
+                if ($null -eq $AGinfo) {
                     Write-Error "No Action Group selected. Exiting."
                     return
                 }

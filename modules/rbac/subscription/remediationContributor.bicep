@@ -3,6 +3,8 @@ targetScope = 'subscription'
 @description('Array of actions for the roleDefinition')
 param actions array = [
   'Microsoft.PolicyInsights/remediations/write'
+  // 'Microsoft.Authorization/policyAssignments/delete'
+  // 'Microsoft.Authorization/policyAssignments/write'
 ]
 
 @description('Array of notActions for the roleDefinition')
@@ -16,7 +18,7 @@ param roleDescription string = 'Subscription Level Remediation Role'
 
 var roleDefName = guid(subscription().id, string(actions), string(notActions))
 
-resource roleDef 'Microsoft.Authorization/roleDefinitions@2018-07-01' = {
+resource roleDef 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' = {
   name: roleDefName
   properties: {
     roleName: roleName

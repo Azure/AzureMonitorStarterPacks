@@ -78,17 +78,19 @@ module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if
 // This module creates a user managed identity for the packs to use.
 module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep' = {
   name: 'AMAUserManagedIdentity'
-  scope: resourceGroup(subscriptionId,resourceGroupName)
+  //scope: resourceGroup(subscriptionId,resourceGroupName)
   params: {
     location: location
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     roleDefinitionIds: roledefinitionIds
     userIdentityName: 'AMAUserManagedIdentity'
-    deployToManagementGroup: true
+    mgname: managementGroup().name
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
   }
 }
-module userIdentityRoleAssignmentsMG '../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roledefinitionIds:  {
+module userIdentityRoleAssignments '../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roledefinitionIds:  {
   name: 'AMAUserManagedIdentityRoles-${i}'
   scope: managementGroup()
   params: {
