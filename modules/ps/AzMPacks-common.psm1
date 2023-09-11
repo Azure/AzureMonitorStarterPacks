@@ -442,14 +442,17 @@ function deploy-pack {
         [bool] $useExistingAG,
         [object] $AGInfo,
         [bool] $enableBasicVMPlatformAlerts=$false,
-        [string] $resourceGroup,
+        [string] $resourceGroupId,
         [string] $discoveryType,
         [string] $solutionTag,
         [string] $solutionVersion,
         [bool] $azAvailable,
         [string] $location,
         [string] $dceId,
-        [string] $userManagedIdentityResourceId
+        [string] $userManagedIdentityResourceId,
+        [string] $assignmentlevel,
+        [string] $managementGroupName,
+        [string] $subscriptionId
         #,
         #[string] $osTarget # Windows, Linux or All
     )
@@ -464,20 +467,17 @@ function deploy-pack {
     #     # Use Existing Action Group 
     #     #$useExistingAG=$true
         $parameters=@{
-            #vmIDs=@($serverListLocal)
-            #vmOSs=@($serverList.os)
-            #arcvmIDs = $arcvmIds
             location=$location
             rulename=$packinfo.ruleName
             workspaceId=$workspaceResourceId
-            #workspaceFriendlyName=$workspaceResourceId.split('/')[8]
             useExistingAG=$useExistingAG
-            #osTarget=$packinfo.osTarget
             packtag=$packinfo.RequiredTag
             solutionTag=$solutionTag
             solutionVersion=$solutionVersion
             dceId=$dceId
             userManagedIdentityResourceId=$userManagedIdentityResourceId
+            mgname=$managementGroupName
+            #assignmentlevel=$assignmentlevel
         }
         if ($useExistingAG) {
             $parameters+=@{
@@ -509,16 +509,39 @@ function deploy-pack {
         if ($null -ne $packinfo.GrafanaDashboard) {
             "Deploying Grafana Dashboard."
         }
-
-        Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group."
-        try {
-            New-AzResourceGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ResourceGroupName $resourceGroup `
-            -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop -Force | out-null
-            return $true
+        if ($assignmentlevel -ne 'managementgroup') { #assignments at subscription level for policies.
+            Write-Host "Deploying pack $($packinfo.PackName) in $($resourceGroup) resource group and assigning policies at subscription level."
+            $parameters+=@{
+                resourceGroupId=$resourceGroupId
+                subscriptionId=$($resourceGroupId.split('/')[2])
+                assignmentlevel='subscription'
+            }
+            try {
+                New-AzManagementGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ManagementGroupId $managementGroupName -Location $location `
+                -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop # | out-null
+                return $true
+            }
+            catch {
+                Write-Error $_.Exception.Message
+                return $false
+            }
         }
-        catch {
-            Write-Error $_.Exception.Message
-            return $false
+        else {
+            Write-Host "Deploying pack $($packinfo.PackName) at management group level (policies) in $($resourceGroup) resource group."
+            $parameters+=@{
+                resourceGroupId=$resourceGroupId
+                subscriptionId=$($resourceGroupId.split('/')[2])
+                assignmentlevel='managementGroup'
+            }
+            try {
+                New-AzManagementGroupDeployment -Name "deployment$(get-date -format "ddmmyyHHmmss")" -ManagementGroupId $managementGroupName -Location $location `
+                -TemplateFile $packinfo.TemplateLocation -templateParameterObject $parameters -WarningAction SilentlyContinue -ErrorAction Stop # | out-null
+                return $true
+            }
+            catch {
+                Write-Error $_.Exception.Message
+                return $false
+            }
         }
 }
 
@@ -530,7 +553,7 @@ function install-packs {
         [string]$existingAGName="",
         [bool]$useSameAGforAllPacks,
         [object]$AGInfo,
-        [string]$resourceGroup,
+        [string]$resourceGroupId,
         [string]$discoveryType,
         [string]$solutionTag,
         [string]$solutionVersion,
@@ -539,7 +562,10 @@ function install-packs {
         [string]$dceId,
         [bool]$azAvailable,
         [string]$userManagedIdentityResourceId,
-        [string]$grafanaName
+        [string]$grafanaName,
+        [string]$assignmentlevel,
+        [string]$managementGroupName,
+        [string]$subscriptionId
     )
     if (!($useSameAGforAllPacks)) {
         $AGinfo=get-AGInfo -useExistingAG $useExistingAG
@@ -563,13 +589,17 @@ function install-packs {
                 -workspaceResourceId $workspaceResourceId `
                 -useExistingAG $useExistingAG `
                 -AGInfo $AGinfo `
-                -resourceGroup $resourceGroup `
+                -resourceGroupId $resourceGroupId `
                 -discoveryType $discoveryType `
                 -solutionTag $solutionTag `
                 -solutionVersion $solutionVersion `
                 -location $location `
                 -dceId $dceId `
-                -userManagedIdentityResourceId $userManagedIdentityResourceId
+                -userManagedIdentityResourceId $userManagedIdentityResourceId `
+                -assignmentlevel $assignmentlevel `
+                -managementGroupName $managementGroupName `
+                -subscriptionId $subscriptionId
+            $resourceGroup=$resourceGroupId.split('/')[4]
             if (!([string]::IsNullOrEmpty($pack.GrafanaDashboard))) {
                 if ($azAvailable) {
                     "Installing Grafana dashboard for $($pack.PackName)"
@@ -608,94 +638,3 @@ function get-AGInfo {
     }
     return $AG
 }
-# function install-amaAndDCR {
-#     param (
-#         [System.Object] $serverList,
-#         [string] $wsfriendlyname,
-#         [object] $ws,
-#         [string] $location,
-#         [string] $resourceGroup,
-#         [switch] $useExistingDCR,
-#         [switch] $DontAutoInstallAMA
-#     )
-#     $amaServers=get-amaEnabledServer #Gets a list of servers with AMA installed.
-#     Write-Host "Creating/Selecting VMInsights DCR. If UseExistingDCR is specified, a list of DCRs will be presented. If not, the script will look for a default DCR. If not found, a new DCR will be created."
-#     Write-Host "Searching for default VMInsights DCR. (MSVMI-$wsfriendlyname)"
-#     if ($useExistingDCR) {
-#         $DCRid=select-dcr
-#     }
-#     else {
-#         $DCRId=get-defaultVMI_DCR -wsfriendlyname $wsfriendlyname
-#         if ($DCRId) {
-#             Write-Host "Found default VMInsights DCR, based on MSVMI-<workspace name> pattern: $DCRId"
-#         }
-#         else { #Create a new DCR.
-#             $DCRId=create-vmiDCR -workspaceResourceId $ws.ResourceId -resourceGroup $resourceGroup -location $location
-#             if (!$DCRId) {
-#                 Write-Error "DCR creation failed."
-#                 exit
-#             }
-#             else {
-#                 Write-Host "DCR created successfully. RuleId: $DCRId"
-#             }
-#         }
-#     }
-#     # Now that we have the Rule Id to be used (being new or existing) we can associate it with the servers.
-#     foreach ($server in $serverList) {  #loop through all servers tagged with AppList      
-#         if ($server.id -notin $amaServers.resourceId)
-#         {
-#             Write-Host "Server $($server.name) is missing AMA."
-#             if ($DontAutoInstallAMA) {
-#                 $answer=Read-Host "Install? (y/n)"
-#                 if ($answer -eq 'y') {
-#                     install-ama -server $server -location $location
-#                 }
-#                 else { Write-Host "Skipping AMA install...don't know why except you are testing this." }
-#             }
-#             else {
-#                 install-ama -server $server -location $location
-#             }          
-#         }
-#         #Associate the DCR with the server.
-#         Write-Host "Associating DCR ($DCRId) with the server. $($server.name))"
-#         associate-dcr -server $server -DCRRuleId $DCRId -osTarget 'All'
-#     }   
-# }
-# function copy-toBlob {
-#     param (
-#         [Parameter(Mandatory = $true)]
-#         [string]
-#         $FilePath,
-#         [Parameter(Mandatory = $true)]
-#         [string]
-#         $storageaccountName,
-#         [Parameter(Mandatory = $true)]
-#         [string]
-#         $resourcegroup,
-#         [Parameter(Mandatory = $true)]
-#         [string]
-#         $containerName,
-#         [Parameter(Mandatory = $false)]
-#         [switch]
-#         $force
-#     )
-#     try {
-#         $saParams = @{
-#             ResourceGroupName = $resourcegroup
-#             Name              = $storageaccountName
-#         }
-#         $scParams = @{
-#             Container = $containerName
-#         }
-#         $bcParams = @{
-#             File = $FilePath
-#             Blob = ($FilePath | Split-Path -Leaf)
-#         }
-#         if ($force)
-#         { Get-AzStorageAccount @saParams | Get-AzStorageContainer @scParams | Set-AzStorageBlobContent @bcParams -Force | Out-Null }
-#         else { Get-AzStorageAccount @saParams | Get-AzStorageContainer @scParams | Set-AzStorageBlobContent @bcParams | Out-Null }
-#     }
-#     catch {
-#         Write-Error $_.Exception.Message
-#     }
-# }

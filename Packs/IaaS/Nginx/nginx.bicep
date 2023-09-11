@@ -1,3 +1,5 @@
+targetScope = 'managementGroup'
+
 param rulename string
 param actionGroupName string
 //param location string= resourceGroup().location
@@ -5,16 +7,21 @@ param emailreceivers array = []
 param emailreiceversemails array  = []
 param useExistingAG bool = false
 param existingAGRG string = ''
-//param enableBasicVMPlatformAlerts bool = false
-param location string //= resourceGroup().location
+param location string 
 param workspaceId string
-//param workspaceFriendlyName string
-//param osTarget string
 param packtag string
 param solutionTag string
 param solutionVersion string
 param dceId string
 param userManagedIdentityResourceId string
+param mgname string // this the last part of the management group id
+param subscriptionId string
+param resourceGroupId string
+param assignmentLevel string
+
+var ruleshortname = 'Nginx'
+
+var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var facilityNames = [
   'daemon'
@@ -33,6 +40,7 @@ var logLevels =[
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: actionGroupName
+  scope: resourceGroup(subscriptionId, existingAGRG)
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
@@ -40,22 +48,12 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
     solutionTag: solutionTag
-    //location: location defailt is global
   }
 }
 
-// module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-//  name: 'dataCollectionEndpoint-${solutionTag}'
-//  params: {
-//    location: location
-//    packtag: packtag
-//    solutionTag: solutionTag
-//    dceName: 'dataCollectionEndpoint-${solutionTag}'
-//  }
-// }
-
 module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = {
   name: 'filecollectionrule-${packtag}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     endpointResourceId: dceId
@@ -75,6 +73,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
 }
 module Alerts './nginxalerts.bicep' = {
   name: 'Alerts-${packtag}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     workspaceId: workspaceId
@@ -85,7 +84,7 @@ module Alerts './nginxalerts.bicep' = {
     
   }
 }
-module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+module policysetup '../../../modules/policies/mg/policies.bicep' = {
   name: 'policysetup-${packtag}'
   params: {
     dcrId: fileCollectionRule.outputs.ruleId
@@ -94,5 +93,9 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     rulename: rulename
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
+    mgname: mgname
+    ruleshortname: ruleshortname
+    assignmentLevel: assignmentLevel
+    subscriptionId: subscriptionId
   }
 }

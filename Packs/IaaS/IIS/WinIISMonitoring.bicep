@@ -1,3 +1,5 @@
+targetScope='managementGroup'
+
 param rulename string
 param actionGroupName string = ''
 param emailreceivers array = []
@@ -14,6 +16,14 @@ param solutionVersion string
 param dceId string
 param userManagedIdentityResourceId string
 var workspaceFriendlyName = split(workspaceId, '/')[8]
+
+param mgname string // this the last part of the management group id
+param subscriptionId string
+param resourceGroupId string
+param assignmentLevel string
+
+var ruleshortname = 'IIS1'
+var resourceGroupName = split(resourceGroupId, '/')[4]
 
 
 var kind= 'Windows'
@@ -79,6 +89,7 @@ var performanceCounters=[
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
 module ag '../../../modules/actiongroups/ag.bicep' = {
   name: actionGroupName
+  scope: resourceGroup(subscriptionId, existingAGRG)
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
@@ -94,6 +105,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
 
 module Alerts './WinIISAlerts.bicep' = {
   name: 'Alerts-${packtag}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     workspaceId: workspaceId
@@ -106,6 +118,7 @@ module Alerts './WinIISAlerts.bicep' = {
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   name: 'dcrPerformance-${packtag}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     rulename: rulename
@@ -116,9 +129,10 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     counterSpecifiers: performanceCounters
     packtag: packtag
     solutionTag: solutionTag
+    dceId: dceId
   }
 }
-module policysetup '../../../modules/policies/subscription/policies.bicep' = {
+module policysetup '../../../modules/policies/mg/policies.bicep' = {
   name: 'policysetup-${packtag}'
   params: {
     dcrId: dcrbasicvmMonitoring.outputs.dcrId
@@ -127,11 +141,16 @@ module policysetup '../../../modules/policies/subscription/policies.bicep' = {
     rulename: rulename
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
+    mgname: mgname
+    ruleshortname: '${ruleshortname}-1'
+    assignmentLevel: assignmentLevel
+    subscriptionId: subscriptionId
   }
 }
 
 module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' = {
   name: 'dcrIISLogs-${packtag}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     ruleName: '${rulename}-IISLogs'
@@ -142,8 +161,9 @@ module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' =
     tableName: 'IISLogs'
   }
 }
-module policysetupIISLogs '../../../modules/policies/subscription/policies.bicep' = {
+module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
   name: 'policysetup-${packtag}-IISLogs'
+  scope: managementGroup(mgname)
   params: {
     dcrId: dcrIISLogsMonitoring.outputs.dcrId
     packtag: packtag
@@ -151,6 +171,10 @@ module policysetupIISLogs '../../../modules/policies/subscription/policies.bicep
     rulename: '${rulename}-IISLogs'
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
+    mgname: mgname
+    ruleshortname: '${ruleshortname}-2'
+    assignmentLevel: assignmentLevel
+    subscriptionId: subscriptionId
   }
 }
 

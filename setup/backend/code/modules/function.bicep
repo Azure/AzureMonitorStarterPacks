@@ -4,6 +4,7 @@ param solutionTag string
 param solutionVersion string
 param userManagedIdentity string
 param userManagedIdentityClientId string
+param packsUserManagedId string
 param storageAccountName string
 param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
@@ -213,6 +214,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     MSI_CLIENT_ID: userManagedIdentityClientId
+    PacksUserManagedId: packsUserManagedId
   }
 }
 
