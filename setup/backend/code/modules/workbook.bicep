@@ -709,8 +709,20 @@ var wbConfig='''
                     "columnMatch": "Group",
                     "formatter": 1
                   }
+                ],
+                "sortBy": [
+                  {
+                    "itemKey": "name",
+                    "sortOrder": 1
+                  }
                 ]
-              }
+              },
+              "sortBy": [
+                {
+                  "itemKey": "name",
+                  "sortOrder": 1
+                }
+              ]
             },
             "customWidth": "50",
             "name": "query - 6 - Copy",
@@ -1033,14 +1045,14 @@ var wbConfig='''
                   },
                   {
                     "operator": "contains",
-                    "thresholdValue": "Workspace",
+                    "thresholdValue": "|",
                     "representation": "success",
                     "text": "Ingestion KQL"
                   },
                   {
                     "operator": "Default",
                     "thresholdValue": null,
-                    "representation": "success",
+                    "representation": "stopped",
                     "text": "Custom KQL"
                   }
                 ],

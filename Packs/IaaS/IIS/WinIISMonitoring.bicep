@@ -129,6 +129,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     counterSpecifiers: performanceCounters
     packtag: packtag
     solutionTag: solutionTag
+    dceId: dceId
   }
 }
 module policysetup '../../../modules/policies/mg/policies.bicep' = {
