@@ -24,14 +24,16 @@ var resourceGroupName = split(resourceGroupId, '/')[4]
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: actionGroupName
-  scope: resourceGroup(subscriptionId, existingAGRG)
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    location: location
   }
 }
 // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
