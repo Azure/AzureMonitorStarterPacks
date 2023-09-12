@@ -8,8 +8,6 @@ param useExistingAG bool
 param existingAGRG string = ''
 param location string //= resourceGroup().location
 param workspaceId string
-//param workspaceFriendlyName string
-//param osTarget string = 'Windows'
 param packtag string
 param solutionTag string
 param solutionVersion string
@@ -24,8 +22,6 @@ param assignmentLevel string
 
 var ruleshortname = 'IIS1'
 var resourceGroupName = split(resourceGroupId, '/')[4]
-
-
 var kind= 'Windows'
 
 // the xpathqueries define which counters are collected
@@ -89,19 +85,20 @@ var performanceCounters=[
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
 module ag '../../../modules/actiongroups/ag.bicep' = {
   name: actionGroupName
-  scope: resourceGroup(subscriptionId, existingAGRG)
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
-    //location: location defailt is global
+    subscriptionId: subscriptionId
+    location: location
   }
 }
 
-// // Alerts - the module below creates the alerts and associates them with the action group
+// Alerts - the module below creates the alerts and associates them with the action group
 
 module Alerts './WinIISAlerts.bicep' = {
   name: 'Alerts-${packtag}'

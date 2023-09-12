@@ -1,15 +1,20 @@
+targetScope = 'managementGroup'
 // Action Group to be created
+param subscriptionId string
 param actionGroupName string
 //param location string= resourceGroup().location
 param emailreceivers array = []
 param emailreiceversemails array = []
 param useExistingAG bool 
 param existingAGRG string = ''
+param newRGresourceGroup string = ''
 param solutionTag string
-var deploymentName = 'ag-${uniqueString(resourceGroup().id)}'
-
+param location string
+var deploymentName = 'ag-test'
+//new action group
 module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
   name: deploymentName
+  scope: resourceGroup(subscriptionId, newRGresourceGroup)
   params: {
     actiongroupname: actionGroupName
     emailreceivers: emailreceivers
@@ -17,13 +22,11 @@ module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
     groupshortname: actionGroupName
     location: 'global'
     solutionTag: solutionTag
-    //location: location defailt is global
   }
 }
 //existing action group
-
-resource age 'Microsoft.Insights/actionGroups@2018-09-01-preview' existing = if (useExistingAG) {
+resource age 'Microsoft.Insights/actionGroups@2023-01-01' existing = if (useExistingAG) {
   name: actionGroupName
-  scope: resourceGroup(existingAGRG)
+  scope: resourceGroup(subscriptionId, existingAGRG)
 }
 output actionGroupResourceId string = useExistingAG ? age.id : ag.outputs.agGroupId

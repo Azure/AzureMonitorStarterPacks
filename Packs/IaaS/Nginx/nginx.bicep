@@ -40,14 +40,16 @@ var logLevels =[
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: actionGroupName
-  scope: resourceGroup(subscriptionId, existingAGRG)
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    location: location
   }
 }
 

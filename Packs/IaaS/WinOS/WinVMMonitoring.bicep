@@ -21,15 +21,17 @@ var ruleshortname = 'VMI-OS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
-  name: actionGroupName
-  scope: resourceGroup(subscriptionId, existingAGRG)
+  name: 'actiongroup'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     useExistingAG: useExistingAG
+    newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    location: location
     //location: location defailt is global
   }
 }
