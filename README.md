@@ -14,7 +14,8 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 
 ## Pre-requisites and recommendations
 
-- Azure Subscription - an Azure subscription to deploy the components
+- Azure Subscription - an Azure subscription to deploy the components. You may need a global administrator role to elevate access to management groups in the subscription's tenant. Detail instrucution is available [here](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin#elevate-access-for-a-global-administrator).
+- Management Group and Management Group role Assignment: You may need to have a management group containing the target subscription and a management group role assignment for managment group access (something like Management Group Contributor) thru IAM. 
 - **Recommended**: [Azure Cloud Shell](https://shell.azure.com) access to deploy the components. Azure Cloud Shell is recommended since most of the required are pre-installed. 
 - Alternative: deploy from a local workstation with the following components installed:
 
