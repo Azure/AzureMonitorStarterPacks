@@ -240,7 +240,7 @@ if (!$skipAMAPolicySetup) {
     }
     Write-Host "Deploying the AMA policy initiative to the the selected management group."
     Write-Host "Assigning initiative at the $assignmentLevel level."
-    New-AzManagementGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ManagementGroupId $MGName -location $location`
+    New-AzManagementGroupDeployment -name "amapolicy$(get-date -format "ddmmyyHHmmss")" -ManagementGroupId $MGName -location $location `
     -TemplateFile './setup/AMAPolicy/amapoliciesmg.bicep' -templateParameterObject $parameters -ErrorAction Stop  | Out-Null 
     # }
     # else {
