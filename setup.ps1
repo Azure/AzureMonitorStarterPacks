@@ -224,6 +224,9 @@ if (!($skipPacksSetup)) {
             $azloggedIn=$true
         }
     }
+    else {
+        $azloggedIn=$false
+    }
 }
 #endregion
 #region AMA policy setup
