@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.6"
+      "version": "9.5.8"
     },
     {
       "type": "datasource",
@@ -99,7 +99,7 @@
         "content": "# Windows Operating System Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -423,7 +423,7 @@
         "content": "# Health and Availability",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -515,7 +515,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -652,7 +652,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -777,7 +777,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -898,7 +898,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1032,7 +1032,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureMonitor": {
@@ -1077,7 +1077,7 @@
         "content": "# Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -1174,11 +1174,11 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Memory\"\r\n| where Name == \"AvailableMB\"\r\n| extend memorySizeMB = todouble(parse_json(Tags).[\"vm.azm.ms/memorySizeMB\"])\r\n| extend PercentageBytesinUse = Val/memorySizeMB*100\r\n| summarize  AvgMemUse = avg(PercentageBytesinUse) by Namespace, _ResourceId, Computer ",
+            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Memory\"\r\n| where Name == \"AvailableMB\"\r\n| extend memorySizeMB = todouble(parse_json(Tags).[\"vm.azm.ms/memorySizeMB\"])\r\n| extend PercentageBytesinUse = Val/memorySizeMB*100\r\n| summarize  AvgMemUse = avg(PercentageBytesinUse) by Namespace, _ResourceId, Computer\r\n| top 10 by AvgMemUse",
             "resources": [
               "$Workspace"
             ],
@@ -1197,7 +1197,7 @@
           "refId": "B"
         }
       ],
-      "title": "Memory Utilisation Overview",
+      "title": "Top 10 Memory Utilisation",
       "transformations": [],
       "type": "table"
     },
@@ -1295,11 +1295,11 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Processor\"\r\n| where Name == \"UtilizationPercentage\"\r\n| summarize AvgCPUUtilisation = avg(Val) by Namespace, _ResourceId, Computer ",
+            "query": "InsightsMetrics\r\n| where _ResourceId in ($Resources) \r\n| where Namespace == \"Processor\"\r\n| where Name == \"UtilizationPercentage\"\r\n| summarize AvgCPUUtilisation = avg(Val) by Namespace, _ResourceId, Computer \r\n| top 10 by AvgCPUUtilisation",
             "resources": [
               "$Workspace"
             ],
@@ -1318,7 +1318,7 @@
           "refId": "B"
         }
       ],
-      "title": "Processor Utilisation Overview",
+      "title": "Top 10 Processor Utilisation",
       "transformations": [],
       "type": "table"
     }
@@ -1448,6 +1448,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Start Pack / Windows Operating System",
-  "uid": "WindowsOSMonStarPackDash",
-  "version": 31
+  "uid": "AzMonStarPackWinOS",
+  "version": 34
 }
