@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.6"
+      "version": "9.5.8"
     },
     {
       "type": "datasource",
@@ -99,7 +99,7 @@
         "content": "# Linux Operating System Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -421,7 +421,7 @@
         "content": "# Health and Availability",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -509,7 +509,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -646,7 +646,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -771,7 +771,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -820,8 +820,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -905,7 +904,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -947,8 +946,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1040,7 +1038,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureMonitor": {
@@ -1085,7 +1083,7 @@
         "content": "# Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -1111,8 +1109,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1183,7 +1180,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1233,8 +1230,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1305,7 +1301,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1426,6 +1422,7 @@
         "definition": "",
         "hide": 0,
         "includeAll": true,
+        "label": "Resources",
         "multi": true,
         "name": "Resources",
         "options": [],
@@ -1435,7 +1432,7 @@
             "resources": []
           },
           "azureResourceGraph": {
-            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack in (\"LxOS\") and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
+            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack contains \"LxOS\" and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -1458,6 +1455,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Start Pack / Linux Operating System",
-  "uid": "LinuxOSMonStarPackDash",
-  "version": 9
+  "uid": "AzMonStarPackLinuxOS",
+  "version": 12
 }

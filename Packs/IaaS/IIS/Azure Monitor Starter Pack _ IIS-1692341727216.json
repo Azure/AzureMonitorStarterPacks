@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.6"
+      "version": "9.5.8"
     },
     {
       "type": "datasource",
@@ -99,7 +99,7 @@
         "content": "# IIS Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -169,7 +169,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -393,7 +393,7 @@
         "content": "# Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -444,7 +444,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1271,7 +1271,7 @@
             "resources": []
           },
           "azureResourceGraph": {
-            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack in (\"IIS\", \"WOS,IIS\") and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
+            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack contains \"IIS\" and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -1294,6 +1294,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Starter Pack / IIS",
-  "uid": "IISMonStarPackDash",
-  "version": 4
+  "uid": "AzMonStarPackIIS",
+  "version": 6
 }

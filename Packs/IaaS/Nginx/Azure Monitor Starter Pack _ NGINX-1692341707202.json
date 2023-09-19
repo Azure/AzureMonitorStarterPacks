@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.6"
+      "version": "9.5.8"
     },
     {
       "type": "datasource",
@@ -93,7 +93,7 @@
         "content": "# NGINX Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -149,7 +149,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -178,6 +178,7 @@
         "type": "grafana-azure-monitor-datasource",
         "uid": "${DS_AZURE_MONITOR}"
       },
+      "description": "This panel shows the status of the NGINX daemons. You will need to enable Change Tracking and Inventory to report on this - https://learn.microsoft.com/en-us/azure/automation/change-tracking/overview-monitoring-agent?tabs=win-az-vm",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -313,7 +314,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -512,7 +513,7 @@
         "content": "# Health and Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "type": "text"
     },
     {
@@ -609,7 +610,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.6",
+      "pluginVersion": "9.5.8",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1035,7 +1036,7 @@
             "resources": []
           },
           "azureResourceGraph": {
-            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack in (\"Nginx\") and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
+            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack contains \"Nginx\" and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -1052,12 +1053,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Starter Pack / NGINX",
-  "uid": "NGINXMonStarPackDash",
-  "version": 9
+  "uid": "AzMonStarPackNGINX",
+  "version": 12
 }
