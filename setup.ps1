@@ -290,8 +290,8 @@ if (!($skipMainSolutionSetup)) {
     # if ($existingFunctionApp) {
         
     # }
-    $grafanaName="AMSP$($sub.id.split("-")[0])"
-    $functionName="MonitorStarterPacks-$($sub.id.split("-")[0])"
+    $grafanaName="AMSP$randomstoragechars"
+    $functionName="MonitorStarterPacks-$randomstoragechars"
     $parameters=@{
         functionname=$functionName
         location=$location
