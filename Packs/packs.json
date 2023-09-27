@@ -3,7 +3,7 @@
       "PackName": "AMSP-Windows-VM-OS",
       "RuleName": "AMSP-VMI_Server_OS",
       "ModuleType": "IaaS",
-      "Status": "Enabled",
+      "Status": "Disabled",
       "RequiredTag" : "WinOS",
       "osTarget" : "Windows",
       "DiscoveryType": "OS",
@@ -16,7 +16,7 @@
       "PackName": "AMSP-Linux-VM-OS",
       "RuleName": "AMSP-VMI_Server_Linux",
       "ModuleType": "IaaS",
-      "Status": "Enabled",
+      "Status": "Disabled",
       "RequiredTag" : "LxOS",
       "osTarget" : "Linux",
       "DiscoveryType": "OS",
@@ -31,7 +31,7 @@
       "PackName": "AMSP-Linux-Nginx",
       "RuleName": "AMSP-nginxMonitoring",
       "ModuleType": "IaaS",
-      "Status": "Enabled",
+      "Status": "Disabled",
       "RequiredTag" : "Nginx",
       "osTarget" : "Linux",
       "PackageName": "nginx",
@@ -45,7 +45,7 @@
         "PackName": "AMSP-Windows-IIS",
         "RuleName": "AMSP-IIS-Server",
         "ModuleType": "IaaS",
-        "Status": "Enabled",
+        "Status": "Disabled",
         "RequiredTag" : "IIS",
         "osTarget" : "Windows",
         "DiscoveryType": "RoleName",
@@ -54,5 +54,33 @@
         "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
         "moduleParameters": [
         ]      
+    },
+    {
+      "PackName": "AMSP-Windows-IIS-2016",
+      "RuleName": "AMSP-IIS-Server2016",
+      "ModuleType": "IaaS",
+      "Status": "Enabled",
+      "RequiredTag" : "IIS2016",
+      "osTarget" : "Windows",
+      "DiscoveryType": "RoleName",
+      "RoleName" : "IIS-Server",
+      "TemplateLocation" : "./Packs/IaaS/IIS2016/WinIIS2016Monitoring.bicep",
+      "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
+      "moduleParameters": [
+      ]      
+    },
+    {
+      "PackName": "AMSP-Windows-DNS2016",
+      "RuleName": "AMSP-DNS2016-Server",
+      "ModuleType": "IaaS",
+      "Status": "Enabled",
+      "RequiredTag" : "DNS2016",
+      "osTarget" : "Windows",
+      "DiscoveryType": "RoleName",
+      "RoleName" : "Dns",
+      "TemplateLocation" : "./Packs/IaaS/DNS2016/WinDns2016Monitoring.bicep",
+      "GrafanaDashboard": "./Packs/IaaS/DNS2016/Azure Monitor Starter Pack _ DNS2016.json",
+      "moduleParameters": [
+      ]      
     }
 ]
