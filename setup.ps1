@@ -104,7 +104,7 @@ if ($grafanalocation -notin $allowedGrafanaRegions) {
 Write-Output "Installing/Loading Azure Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
-        install-module az.resourcegraph -AllowPrerelease -Force
+        install-module az.resourcegraph -Force
         import-module az.ResourceGraph #-Force
     }
     catch {
