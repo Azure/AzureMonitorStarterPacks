@@ -104,7 +104,7 @@ if ($grafanalocation -notin $allowedGrafanaRegions) {
 Write-Output "Installing/Loading Azure Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
-        install-module az.resourcegraph -AllowPrerelease -Force
+        install-module az.resourcegraph -Force
         import-module az.ResourceGraph #-Force
     }
     catch {
@@ -273,7 +273,7 @@ if (!($skipMainSolutionSetup)) {
     $existingSAs=Get-AzStorageAccount -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
     if ($existingSAs) {
         if ($existingSAs.count -gt 1) {
-            $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
+            $storageaccountName=(new-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
         }
         else {
             $storageaccountName=$existingSAs.StorageAccountName

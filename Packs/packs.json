@@ -54,5 +54,33 @@
         "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
         "moduleParameters": [
         ]      
+    },
+    {
+      "PackName": "AMSP-Windows-IIS-2016",
+      "RuleName": "AMSP-IIS-Server2016",
+      "ModuleType": "IaaS",
+      "Status": "Enabled",
+      "RequiredTag" : "IIS2016",
+      "osTarget" : "Windows",
+      "DiscoveryType": "RoleName",
+      "RoleName" : "IIS-Server",
+      "TemplateLocation" : "./Packs/IaaS/IIS2016/WinIIS2016Monitoring.bicep",
+      "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
+      "moduleParameters": [
+      ]      
+    },
+    {
+      "PackName": "AMSP-Windows-DNS2016",
+      "RuleName": "AMSP-DNS2016-Server",
+      "ModuleType": "IaaS",
+      "Status": "Enabled",
+      "RequiredTag" : "DNS2016",
+      "osTarget" : "Windows",
+      "DiscoveryType": "RoleName",
+      "RoleName" : "Dns",
+      "TemplateLocation" : "./Packs/IaaS/DNS2016/WinDns2016Monitoring.bicep",
+      "GrafanaDashboard": "./Packs/IaaS/DNS2016/Azure Monitor Starter Pack _ DNS2016.json",
+      "moduleParameters": [
+      ]      
     }
 ]

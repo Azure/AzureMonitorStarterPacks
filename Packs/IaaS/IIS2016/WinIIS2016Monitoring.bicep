@@ -20,44 +20,64 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 
-var ruleshortname = 'IIS1'
+var ruleshortname = 'IIS2016'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 
 // the xpathqueries define which counters are collected
 var xPathQueries=[
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2216)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2221)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1071 or EventID=1073)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1135 or EventID=1134)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2226 or EventID=2230 or EventID=2231 or EventID=2232)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2274 or EventID=2268 or EventID=2220 or EventID=2219 or EventID=2214)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5172 or EventID=5173)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5174 or EventID=5179 or EventID=5180)]]'
   'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5152)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5010 or EventID=5011 or EventID=5012 or EventID=5013)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5009)]]'
-  'Application!*[System[Provider[@Name=\'Active Server Pages\'] and (EventID=500 or EventID=499 or EventID=23 or EventID=22 or EventID=21 or EventID=20 or EventID=19 or EventID=18 or EventID=17 or EventID=16 or EventID=9 or EventID=8 or EventID=7 or EventID=6 or EventID=5)]]'
   'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1037)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2208)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2206)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1062)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1126)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1133)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1173)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1175)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2201)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2203)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2204)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2274 or EventID=2268 or EventID=2220 or EventID=2219 or EventID=2214)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5088 or EventID=5061 or EventID=5060)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2296)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2295)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2293)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC\'] and (EventID=1133)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2261)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5036)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2264)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2298)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2206)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2208)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2218)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2258)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2227)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2233)]]'
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2226 or EventID=2230 or EventID=2231 or EventID=2232)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5174 or EventID=5179 or EventID=5180)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5085)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5054 or EventID=5091)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2258)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2261)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2264)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2281)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2293)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2295)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2296)]]'
+  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2298)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5005)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5030)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5036)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5053)]]'
   'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5063)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5058)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5066)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5067)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5153)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6001)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6002)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6003)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6004)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6005)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6006)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6007)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6008)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6009)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6010)]]'
+  'System!*[System[Provider[@Name=\'Microsoft-Windows-W3LOGSVC\'] and (EventID=6011)]]'
+  'System!*[System[Provider[@Name=\'Service Control Manager\'] and (EventID=7023 or EventID=7024)]]'
+  'System!*[System[Provider[@Name=\'Service Control Manager\'] and (EventID=7031)]]'
+  'System!*[System[Provider[@Name=\'Service Control Manager\'] and (EventID=7034)]]'
+  'System!*[System[Provider[@Name=\'Service Control Manager\'] and (EventID=7043)]]'  
 ]
 // The performance counters define which counters are collected
 var performanceCounters=[
@@ -111,7 +131,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
-module Alerts './WinIISAlerts.bicep' = {
+module Alerts './WinIIS2016Alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {

@@ -15,18 +15,18 @@ param lawResourceId string
 param solutionTag string
 param packtag string
 
-var tableNameToUse = 'CustomAzMA${tableName}_CL'
-var streamName= 'Custom-${tableNameToUse}'
+// var tableNameToUse = 'CustomAzMA${tableName}_CL'
+// var streamName= 'Custom-${tableNameToUse}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
-module table '../LAW/table.bicep' = {
-  name: tableNameToUse
-  params: {
-    parentname: lawFriendlyName
-    tableName: tableNameToUse
-    retentionDays: 31
-  }
-}
+// module table '../LAW/table.bicep' = {
+//   name: tableNameToUse
+//   params: {
+//     parentname: lawFriendlyName
+//     tableName: tableNameToUse
+//     retentionDays: 31
+//   }
+// }
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: ruleName
@@ -58,18 +58,18 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
     dataFlows: [
       {
           streams: [
-            streamName
+            'Microsoft-W3CIISLog'
           ]
           destinations: [
               lawFriendlyName
           ]
           transformKql: 'source'
-          outputStream: streamName
+          outputStream: 'Microsoft-W3CIISLog'
       }
     ]
     
     streamDeclarations: {
-      '${streamName}': {
+      'Custom-MyTable_CL': {
         columns: [
           {
             name: 'TimeGenerated'
