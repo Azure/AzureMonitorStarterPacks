@@ -64,8 +64,8 @@ if ($resources) {
                             #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
                             #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
                             
-                            $tag.Remove($tagName)
-                            Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
+                            #$tag.Remove($tagName)
+                            Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Delete
                         }
                         else {
                             if ($tag.$tagName.Split(',') -notcontains $TagValue) {
@@ -77,8 +77,8 @@ if ($resources) {
                                 if ($tagarray.Count -eq 0) {
                                     "Removing tag since it has no values."
                                     $tag.Remove($tagName)
-                                    #$tagToRemove=@{"$($TagName)"="$($tag.$tagValue)"}
-                                    Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
+                                    $tagToRemove=@{"$($TagName)"="$($tag.$tagValue)"}
+                                    Update-AzTag -ResourceId $resource.Resource -Tag $tagToRemove -Operation Delete
                                 }
                                 else {
                                     $tag[$tagName]=$tagarray -join ','
