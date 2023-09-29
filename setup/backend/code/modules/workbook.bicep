@@ -182,7 +182,7 @@ var wbConfig='''
     {
       "type": 1,
       "content": {
-        "json": "# Getting Started\n\nWelcome to the Azure Monitor Starter Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs. You may also disable all the monitoring for a specific server. This will remove the tags and the rule associations*\n- Enable/Disable Alerts\n- Check policy status and start remediation if required.\n- Check Monitor pack associations\n"
+        "json": "# Getting Started\n\nWelcome to the Azure Monitor Starter Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs. You may also disable all the monitoring for a specific server. This will remove the tags and the rule associations*\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts.\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations\n"
       },
       "conditionalVisibility": {
         "parameterName": "tabSelection",
@@ -599,7 +599,7 @@ var wbConfig='''
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id",
+                    "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id, emailReceivers=strcat(properties.emailReceivers[0].name,\"(\",properties.emailReceivers[0].emailAddress,\")\")",
                     "size": 1,
                     "exportFieldName": "",
                     "exportParameterName": "selectedAG",
@@ -609,6 +609,17 @@ var wbConfig='''
                       "value::tenant"
                     ],
                     "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "id",
+                          "formatter": 13,
+                          "formatOptions": {
+                            "linkTarget": "OpenBlade",
+                            "linkIsContextBlade": true,
+                            "showIcon": true
+                          }
+                        }
+                      ],
                       "filter": true
                     }
                   },
@@ -740,7 +751,7 @@ var wbConfig='''
               }
             },
             "customWidth": "70",
-            "name": "query - 6",
+            "name": "queryOtherAlerts",
             "styleSettings": {
               "showBorder": true
             }
@@ -768,7 +779,7 @@ var wbConfig='''
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id",
+                    "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id, emailReceivers=strcat(properties.emailReceivers[0].name,\"(\",properties.emailReceivers[0].emailAddress,\")\")",
                     "size": 1,
                     "exportFieldName": "",
                     "exportParameterName": "selectedAG",
@@ -778,11 +789,7 @@ var wbConfig='''
                       "filter": true
                     }
                   },
-                  "conditionalVisibility": {
-                    "parameterName": "alertsselected",
-                    "comparison": "isNotEqualTo"
-                  },
-                  "name": "query - 3",
+                  "name": "agQuery2",
                   "styleSettings": {
                     "showBorder": true
                   }
@@ -852,6 +859,10 @@ var wbConfig='''
               ]
             },
             "customWidth": "30",
+            "conditionalVisibility": {
+              "parameterName": "alertsselectednopack",
+              "comparison": "isNotEqualTo"
+            },
             "name": "AlertsSubGroup1"
           }
         ]
@@ -1867,19 +1878,73 @@ var wbConfig='''
       }
     },
     {
-      "type": 3,
+      "type": 12,
       "content": {
-        "version": "KqlItem/1.0",
-        "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    cloud_RoleName\n| where timestamp > ago(30d)\n| where cloud_RoleName =~ 'MonitorStarterPacks-6c64f9ed' //and operation_Name =~ 'tagmgmt'\n| order by timestamp desc\n| take 20",
-        "size": 0,
-        "title": "Function Runs",
-        "timeContext": {
-          "durationMs": 86400000
-        },
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "crossComponentResources": [
-          "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Insights/components/MonitorStarterPacks-6c64f9ed"
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "parameters": [
+                {
+                  "id": "dfce71e0-74f5-46ee-b952-004f421cbee4",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AppInsightResources",
+                  "type": 5,
+                  "query": "resources\n| where type == \"microsoft.insights/components\"\n| project id\n",
+                  "crossComponentResources": [
+                    "value::tenant"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": []
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resources/tenants",
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/amonstarterpacks3/providers/Microsoft.Insights/components/MonitorStarterPacks-6c64f9ed"
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants"
+            },
+            "name": "parameters - 14"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    cloud_RoleName\n| where timestamp > ago(30d)\n| order by timestamp desc\n| take 20\n",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{AppInsightResources}"
+              ],
+              "gridSettings": {
+                "filter": true
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "tabSelection",
+              "comparison": "isEqualTo",
+              "value": "backend"
+            },
+            "name": "AppInsightsQuery1",
+            "styleSettings": {
+              "showBorder": true
+            }
+          }
         ]
       },
       "conditionalVisibility": {
@@ -1887,14 +1952,11 @@ var wbConfig='''
         "comparison": "isEqualTo",
         "value": "backend"
       },
-      "name": "query - 15",
-      "styleSettings": {
-        "showBorder": true
-      }
+      "name": "AppInsightsGroup"
     }
   ],
   "fallbackResourceIds": [
-    "azure monitor"
+    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/amonstarterpacks3/providers/microsoft.operationalinsights/workspaces/ws-amonstar"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

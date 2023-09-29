@@ -273,7 +273,7 @@ if (!($skipMainSolutionSetup)) {
     $existingSAs=Get-AzStorageAccount -ResourceGroupName $solutionResourceGroup -ErrorAction SilentlyContinue
     if ($existingSAs) {
         if ($existingSAs.count -gt 1) {
-            $storageaccountName=(create-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
+            $storageaccountName=(new-list -objectList $existingSAs -type "StorageAccount" -fieldName1 "StorageAccountName" -fieldName2 "ResourceGroupName").StorageAccountName
         }
         else {
             $storageaccountName=$existingSAs.StorageAccountName
