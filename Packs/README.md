@@ -1,5 +1,7 @@
 # Packs documentation
 
+The recommended experience to deploy the packs is by using the setup.ps1 file but they can be deployed separately.
+
 ## Windows OS (WinOS)
 
 This pack leverage the VM Insights rules. It implements the following:
@@ -7,7 +9,7 @@ This pack leverage the VM Insights rules. It implements the following:
 - Alerts (6) - Memory, Disk, Heartbeat, CPU. See details [here](./IaaS/WinOS/VMInsightsAlerts.bicep)
 - Grafana Dashboard
 
-[Deploy](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2main%2FPacks%2FIaaS%2FWinOS%2Fmonitoring.json)
+[![deploy](image.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2main%2FPacks%2FIaaS%2FWinOS%2Fmonitoring.json)
 
 ## Linux OS (LxOS)
 
