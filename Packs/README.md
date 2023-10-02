@@ -32,7 +32,7 @@ It has around 50 event rule collection items. It also has the following performa
 
 It contains the alerts define in [this file](../Packs/IaaS/IIS2016/WinIIS2016Alerts.bicep).
 
-[Deploy](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FIIS2016%2FWinIIS2016Monitoring.json)
+[Deploy](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Fdocsupdate%2FPacks%2FIaaS%2FIIS2016%2FWinIIS2016Monitoring.json)
 
 ## Nginx (Nginx) preview
 
