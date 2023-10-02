@@ -78,7 +78,7 @@
       "osTarget" : "Windows",
       "DiscoveryType": "RoleName",
       "RoleName" : "Dns",
-      "TemplateLocation" : "./Packs/IaaS/DNS2016/WinDns2016Monitoring.bicep",
+      "TemplateLocation" : "./Packs/IaaS/DNS2016/monitoring.bicep",
       "GrafanaDashboard": "./Packs/IaaS/DNS2016/Azure Monitor Starter Pack _ DNS2016.json",
       "moduleParameters": [
       ]      
