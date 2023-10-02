@@ -9,7 +9,7 @@
       "DiscoveryType": "OS",
       "RoleName" : "N/A",
       "RequireParameters" : false,
-      "TemplateLocation" : "./Packs/IaaS/WinOS/WinVMMonitoring.bicep",
+      "TemplateLocation" : "./Packs/IaaS/WinOS/monitoring.bicep",
       "GrafanaDashboard": "./Packs/IaaS/WinOS/Azure Monitor Start Pack - Windows Operating System-1692086853589.json"
     },
     {
@@ -22,7 +22,7 @@
       "DiscoveryType": "OS",
       "RoleName" : "N/A",
       "RequireParameters" : false,
-      "TemplateLocation" : "./Packs/IaaS/LxOS/LinuxVM.bicep",
+      "TemplateLocation" : "./Packs/IaaS/LxOS/monitoring.bicep",
       "GrafanaDashboard": "./Packs/IaaS/LxOS/Azure Monitor Start Pack _ Linux Operating System-1692092035812.json",
       "moduleParameters": [
       ]    
@@ -36,7 +36,7 @@
       "osTarget" : "Linux",
       "PackageName": "nginx",
       "DiscoveryType": "PackageName",
-      "TemplateLocation" : "./Packs/IaaS/Nginx/nginx.bicep",
+      "TemplateLocation" : "./Packs/IaaS/Nginx/monitoring.bicep",
       "GrafanaDashboard": "./Packs/IaaS/Nginx/Azure Monitor Starter Pack _ NGINX-1692341707202.json",
       "moduleParameters": [
       ]      
@@ -50,7 +50,7 @@
         "osTarget" : "Windows",
         "DiscoveryType": "RoleName",
         "RoleName" : "Web-Server",
-        "TemplateLocation" : "./Packs/IaaS/IIS/WinIISMonitoring.bicep",
+        "TemplateLocation" : "./Packs/IaaS/IIS/monitoring.bicep",
         "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
         "moduleParameters": [
         ]      
@@ -64,7 +64,7 @@
       "osTarget" : "Windows",
       "DiscoveryType": "RoleName",
       "RoleName" : "IIS-Server",
-      "TemplateLocation" : "./Packs/IaaS/IIS2016/WinIIS2016Monitoring.bicep",
+      "TemplateLocation" : "./Packs/IaaS/IIS2016/monitoring.bicep",
       "GrafanaDashboard": "./Packs/IaaS/IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json",
       "moduleParameters": [
       ]      
