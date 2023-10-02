@@ -8,8 +8,8 @@ param useExistingAG bool
 param existingAGRG string = ''
 param location string //= resourceGroup().location
 param workspaceId string
-param packtag string
-param solutionTag string
+param packtag string = 'IIS2016'
+param solutionTag string = 'MonitorStarterPacks'
 param solutionVersion string
 param dceId string
 param userManagedIdentityResourceId string
