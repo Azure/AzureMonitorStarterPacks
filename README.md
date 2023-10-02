@@ -83,6 +83,8 @@ More examples of setup can be found [here](./Docs/setup-examples.md).
 
 ## Starter Packs
 
+Packs can also be deployed individually. However, multiple parameters will be required.
+
 Review Packs documentation [here](./Packs/README.md).
 
 ## Authoring Guide
