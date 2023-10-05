@@ -5,6 +5,10 @@ param($Request, $TriggerMetadata)
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 $userIdentityId=$ENV:PacksUserManagedId # Comes from the Function App settings (Configuration)
+if ([string]::IsNullOrEmpty($userIdentityId)) {
+    "Error - PacksUserManagedId is not set."
+    break
+}
 $SolutionTag=$Request.Body.SolutionTag
 $action=$Request.Body.Action
 "Action Selected: $action"

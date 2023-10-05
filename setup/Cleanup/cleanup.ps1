@@ -66,7 +66,7 @@ if ($RemovePacks -or $RemoveAll) {
     $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
     # retrive unique list of packs installed
     $packs=$pols.properties.Metadata.MonitorStarterPacks | Select-Object -Unique
-    "Found $($packs.count) packs: $packs"
+    "Found $($packs.count) packs with DCRs: $packs"
     # if ($RemoveTag) {
     #     "Removing packs with tag $RemoveTag."
     #     $pols=$pols | where-object {$_.properties.Metadata.MonitorStarterPacks -eq $RemoveTag}
@@ -94,7 +94,7 @@ if ($RemovePacks -or $RemoveAll) {
             | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
             | where PolicyId == '$($pol.PolicyDefinitionId)'
 "@
-                $assignments=Search-AzGraph -Query $query
+                $assignments=Search-AzGraph -Query $query -UseTenantScope
                 
                 if ($assignments.count -ne 0)
                 {
@@ -108,18 +108,23 @@ if ($RemovePacks -or $RemoveAll) {
                         "Removing assignment for $($assignment.name)"
                         Remove-AzPolicyAssignment -Id $assignment.id
                     }
-                    "Removing policy definition for $($pol.PolicyDefinitionId)"
-                    Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force
-                }
+                 }
+                "Removing policy definition for $($pol.PolicyDefinitionId)"
+                Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force
             }
             else {
                 "Skipping pack $($pol.Name)"
             }
         }
+    }
         # If something remains, clear all dead assignments in the current subscription
         #Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where-object {$_.ObjectType -eq 'unknown'}  | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
         # remove DCR associations
-    $query=@'
+        $dcrs=Get-AzDataCollectionRule -ResourceGroupName $RG | Where-Object {$_.tags.MonitorStarterPacks -ne $null} 
+        # retrive unique list of packs installed
+        $packs=$dcrs.tags.MonitorStarterPacks | Select-Object -Unique
+    foreach ($pack in $packs) {
+        $query=@'
 insightsresources
 | where type == "microsoft.insights/datacollectionruleassociations"
 | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]
@@ -134,7 +139,7 @@ insightsresources
         foreach ($DCR in $DCRs)
         {
             $searchQuery=$query + "'$($DCR.Id)'"
-            $dcras=Search-AzGraph -Query $searchQuery
+            $dcras=Search-AzGraph -Query $searchQuery -UseTenantScope
             foreach ($dcra in $dcras) {
                 "Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
                 Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.resourceId -AssociationName $dcra.name
@@ -179,7 +184,10 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     Get-azresource -ResourceType 'Microsoft.Resources/deploymentScripts' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove app insights
     "Removing app insights."
-    Get-AzApplicationInsights -ResourceGroupName $RG | Remove-AzApplicationInsights
+    $appinsights=Get-AzApplicationInsights -ResourceGroupName $RG -ErrorAction SilentlyContinue
+    if ($appinsights) {
+        $appinsights | Remove-AzApplicationInsights -Force
+    }
     #remove app insights default alerts
     "Removing app insights default alerts."
     get-azresource -ResourceType 'microsoft.alertsmanagement/smartDetectorAlertRules' -ResourceGroupName $RG | Remove-AzResource -Force
@@ -198,10 +206,14 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     # Fetch existing managed identities. Name should be:
     $managedIdentityNames=@( 'packsUserManagedIdentity', 'AMAUserManagedIdentity','functionUserManagedIdentity')
     foreach ($MIName in $managedIdentityNames) {
-        $MIResourceName=(get-azresource -ResourceGroupName $RG -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIName).Name
-        $MIObjectId=(Get-AzADServicePrincipal -DisplayName $MIName).Id
-        Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $MIObjectId} | Remove-AzRoleAssignment
-        get-azresource -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIResourceName -ResourceGroupName $RG | Remove-AzResource -Force
+        $MIResourceName=(get-azresource -ResourceGroupName $RG -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIName -ErrorAction SilentlyContinue).Name
+        $MIObjectId=(Get-AzADServicePrincipal -DisplayName $MIName -ErrorAction SilentlyContinue).Id
+        if ($MIObjectId) {
+            Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $MIObjectId} | Remove-AzRoleAssignment
+        }
+        if ($MIResourceName) {
+            get-azresource -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIResourceName -ResourceGroupName $RG | Remove-AzResource -Force
+        }
     }
     # Remove Role assignments - tough one if more than one sub is used
 
