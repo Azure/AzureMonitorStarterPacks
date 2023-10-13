@@ -200,15 +200,12 @@ $userId=(Get-AzADUser -SignedIn).Id
 
 # Az available for Grafana setup of the modules? Only test if packs are to be deployed.
 if (!($skipPacksSetup)) {
-    $azAvailable=$false
-    try {
-        az
-        $azAvailable=$true
-    }
-    catch {
-        "didn't find az"
-        $azAvailable=$false
-    }
+
+    # check whether Azure CLI is installed
+    if (Get-Command 'az.*' -ErrorAction SilentlyContinue) {
+        $azAvailable=$true}
+    else {$azAvailable=$false}
+
     if ($azAvailable) {
         az extension add --name amg
         $azloggedIn=$false
