@@ -207,7 +207,8 @@ function select-workspace {
     )
     #$wslist=Get-AzOperationalInsightsWorkspace
 
-    $wslist=Search-AzGraph -Query "resources | where type == 'microsoft.operationalinsights/workspaces' | project name, resourceGroup, subscriptionId, id"
+    # find workspaces in the same region as the deployment
+    $wslist=Search-AzGraph -Query "resources | where type == 'microsoft.operationalinsights/workspaces' and location =~ '$($location)' | project name, resourceGroup, subscriptionId, id"
     $wslist.Add(@{name="Create New..."})
     
     $selection=new-list -objectList $wslist -type "Workspace" -fieldName1 "name" -fieldName2 "resourceGroup"

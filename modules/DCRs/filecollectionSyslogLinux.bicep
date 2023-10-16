@@ -23,9 +23,11 @@ param syslogDataSourceName string = 'sysLogsDataSource-1688419672'
 var tableNameToUse = 'CustomAzMA${tableName}_CL'
 var streamName= 'Custom-${tableNameToUse}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
+var lawResourceGroup = split(lawResourceId,'/')[4]
 
 module table '../LAW/table.bicep' = {
   name: tableNameToUse
+  scope: resourceGroup(lawResourceGroup)
   params: {
     parentname: lawFriendlyName
     tableName: tableNameToUse

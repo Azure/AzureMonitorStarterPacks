@@ -186,7 +186,7 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     "Removing app insights."
     $appinsights=Get-AzApplicationInsights -ResourceGroupName $RG -ErrorAction SilentlyContinue
     if ($appinsights) {
-        $appinsights | Remove-AzApplicationInsights -Force
+        $appinsights | Remove-AzApplicationInsights -Confirm:$false
     }
     #remove app insights default alerts
     "Removing app insights default alerts."
