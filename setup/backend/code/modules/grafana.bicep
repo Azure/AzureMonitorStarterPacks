@@ -19,7 +19,7 @@ var MonitoringContributorRoleId = '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Moni
 resource AzureManagedGrafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
   name: grafanaName
   tags: {
-    '${solutionTag}': 'storageaccount'
+    '${solutionTag}': 'grafana'
     '${solutionTag}-Version': solutionVersion
   }
   sku: {

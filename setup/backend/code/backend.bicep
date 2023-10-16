@@ -39,7 +39,9 @@ var backendFunctionRoleDefinitionIds = [
   '36243c78-bf99-498c-9df9-86d9f8d28608' // policy contributor
   'f1a07417-d97a-45cb-824c-7a7467783830' // Managed identity Operator
 ]
-
+var logicappRequiredRoleassignments = [
+  '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
+]
 //var subscriptionId = subscription().subscriptionId
 // var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
 // var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
@@ -89,6 +91,8 @@ module logicapp './modules/logicapp.bicep' = {
     location: location
     solutionTag: solutionTag
     solutionVersion: solutionVersion
+    keyvaultid: keyvault.outputs.kvResourceId
+    subscriptionId: subscriptionId
   }
 }
 module workbook './modules/workbook.bicep' = {
@@ -101,6 +105,7 @@ module workbook './modules/workbook.bicep' = {
     solutionVersion: solutionVersion
   }
 }
+
 module amg 'modules/grafana.bicep' = {
   name: 'azureManagedGrafana'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -161,6 +166,35 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     subscriptionId: subscriptionId
   }
 }
+
+//Add keyvault
+module keyvault 'modules/keyvault.bicep' = {
+  name: 'monstarkeyvault'
+  dependsOn: [
+    backendFunction
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    kvName: 'amspkv-${split(functionname,'-')[1]}'
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    functionName: functionname
+  }
+}
+
+//Add permissions for loginapp as a user to keyvault
+module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in logicappRequiredRoleassignments:  {
+  name: 'logiapprbac-${i}'
+  scope: managementGroup(mgname)
+  params: {
+    resourcename: keyvault.outputs.kvResourceId
+    principalId: logicapp.outputs.logicAppPrincipalId
+    solutionTag: solutionTag
+    roleDefinitionId: roledefinitionId
+    roleShortName: roledefinitionId
+  }
+}]
 
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
