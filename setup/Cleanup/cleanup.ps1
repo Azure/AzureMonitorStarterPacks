@@ -215,8 +215,12 @@ if ($RemoveMainSolution  -or $RemoveAll) {
             get-azresource -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIResourceName -ResourceGroupName $RG | Remove-AzResource -Force
         }
     }
-    # Remove Role assignments - tough one if more than one sub is used
-
+    # Remove Key Vault
+    "Removing key vault."
+    Get-AzResource -ResourceType 'Microsoft.KeyVault/vaults' -ResourceGroupName $RG | Remove-AzResource -Force
+    # Remove api connection for logic app
+    "Removing api connection for logic app."
+    Get-AzResource -ResourceType 'Microsoft.Web/connections' -ResourceGroupName $RG | Remove-AzResource -Force
     #remove resource
     #do the same for the function MI.
 
