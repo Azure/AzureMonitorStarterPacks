@@ -1,0 +1,284 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Install Azure Monitor Starter Packs",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "instanceDetailsLabel": "MonStar Packs Deployment Details",
+                            "subscription": {
+                                "constraints": {
+                                    "validations": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "mgmtGroupAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
+                            }
+                        },
+                        {
+                            "name": "ResGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
+                            "name": "StorAcctsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Storage/storageAccounts?api-version=2022-09-01')]"
+                            }
+                        },
+                        {
+                            "name": "LogAnalyticsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
+                            }
+                        },
+                        {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
+                        {
+                            "name": "StorageAccountsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Configuration",
+                    "label": "MonStar Configuration",
+                    "elements": [
+                        {
+                            "name": "ResourceGroupStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Resource Group",
+                            "toolTip": "This will be the Resource Group in which the MonStar Packs` resources will be deployed in.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "resourceGroupNameNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Resource Group Name for MonStar Packs",
+                            "subLabel": "",
+                            "defaultValue": "rg-MonitorStarterPacks",
+                            "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
+                                "regex": "",
+                                "validationMessage": ""
+                            },
+                            "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "resourceGroupNameExisting",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Resource Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
+                        },
+                        {
+                            "name": "ActionGroupStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Action Group",
+                            "toolTip": "This will be the Action Group to receive alert emails.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "existingAG",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Action Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Action Group to receive alerts.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'Existing')]"
+                        },
+                        {
+                            "name": "ActionGroupNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "User Email or Action Group",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "The Email Action Group that will receive email alerts for Monster Packs.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
+                                "validationMessage": "Email is not valid. Please re-enter."
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "existingStorageAccount",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Storage Account",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Storage Account to support solution",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Storage Account...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "LogAnalyticsWorkspaceResource",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Log Analytics Workspace",
+                            "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
+                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "constraints": {
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "ManagementGroup",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Management Group",
+                            "multiselect": true,
+                            "selectAll": true,
+                            "defaultValue": "[]",
+                            "toolTip": "Select Management Group to deploy policies to.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Management Groups Pools...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').mgmtGroupAPI.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required":  "[if(steps('Configuration').optionVMMetrics, false, true)]"
+                            },
+                            "visible": "[if(steps('Configuration').optionVMMetrics, false, true)]"
+                        },
+                        {
+                            "name": "AppInsightsLocation",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Location for App Insights",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "The location to deploy the Function app insights",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "grafanaLocation",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Location for Azure Managed Grafana",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "The location to deploy the the Azure Managed Grafana.",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "functionName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Name for the Azure Function",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "The name of the Azure Function",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": false
+                        }
+                        
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "ActionGroup": "[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').ActionGroupNew, last(split(steps('Configuration').existingAG, '/')))]",
+                "ManagementGroup": "[steps('Configuration').ManagementGroup]",
+                "LogAnalyticsWorkspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "ResourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "ResourceGroupStatus": "[steps('Configuration').ResourceGroupStatus]",
+                "StorageAccountName": "[steps('Configuration').existingStorageAccount.name]",
+                "solutionTag": "MonitorStarterPacks",
+                "solutionVersion":"1.0.0",
+                "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
+                "mgname": "[steps('basics').resourceScope.managementGroup.name]",
+                "location": "[steps('basics').resourceScope.location.name]",
+                "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]",
+                "grafanaLocation": "[steps('Configuration').grafanaLocation]",
+                "functionName": "[steps('Configuration').functionName]"
+            },
+            "kind": "Subscription",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
+        }
+    }
+}
