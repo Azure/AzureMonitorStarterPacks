@@ -27,7 +27,7 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 
 Direct deployment:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fportal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2F//raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/PrintServerMPs/setup/CustomSetup/monstar.json/uiFormDefinitionUri/%3A%2F%2Fraw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/PrintServerMPs/setup/CustomSetup/setup.json) 
 
 ### Download the Solution
 
