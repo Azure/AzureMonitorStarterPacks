@@ -104,7 +104,7 @@ if ($grafanalocation -notin $allowedGrafanaRegions) {
 Write-Output "Installing/Loading Azure Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
-        install-module az.resourcegraph -Force
+        install-module az.resourcegraph #-Force # if -Force is used, it causes issues in the CLI (older Az.Account module is loaded)
         import-module az.ResourceGraph #-Force
     }
     catch {
