@@ -30,7 +30,8 @@ It contains the alerts define in [this file](../Packs/IaaS/IIS/WinIISAlerts.bice
 
 Note that only the first Virtual SMTP instance has data being collected.
 
-[![deploy](image.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2main%2FPacks%2FIaaS%2FIIS%2Fmonitoring.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2Fpacks%2FPacks%2FIIS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2Fsetup%2FCustomSetup%2Fsetup.json)
+
 
 ## IIS 2016 (IIS2016)
 
