@@ -293,6 +293,7 @@
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "workspaceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "solutionTag":"MonitorStarterPacks",
+                "solutionVersion":"1.0.0",
                 "dceId":"[steps('Configuration').dataCollectionEndpointId]",
                 "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
                 "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName,'')]",
