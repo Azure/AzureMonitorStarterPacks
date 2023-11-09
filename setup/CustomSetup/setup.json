@@ -205,9 +205,9 @@
                             "name": "ManagementGroup",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Management Group",
-                            "multiselect": true,
-                            "selectAll": true,
-                            "defaultValue": "[]",
+                            "multiselect": false,
+                            "selectAll": false,
+                            "defaultValue": "",
                             "toolTip": "Select Management Group to deploy policies to.",
                             "filter": true,
                             "filterPlaceholder": "Filter Management Groups Pools...",
@@ -217,6 +217,36 @@
                                 "required":  "[if(steps('Configuration').optionVMMetrics, false, true)]"
                             },
                             "visible": "[if(steps('Configuration').optionVMMetrics, false, true)]"
+                        },
+                        {
+                            "name": "assignmentLevel",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Assign Policies to ManagementGroup or Subscription",
+                            "toolTip": "This will define the initial assignment Level for the policies.",
+                            "defaultValue": "Sub",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "Management Group",
+                                        "value": "MG"
+                                    },
+                                    {
+                                        "label": "Subscription",
+                                        "value": "Sub"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "deployAMAPolicy",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy AMA Policy Intiative",
+                            "constraints": {
+                                "required": true,
+                                "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
+                            }
                         },
                         {
                             "name": "AppInsightsLocation",
@@ -253,6 +283,18 @@
                                 "required": true
                             },
                             "visible": false
+                        },
+                        {
+                            "name": "grafanaName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Name for the Azure Managed Grafana resource.",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "The name of the AMG",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": true
                         }
                         
                     ]
@@ -261,20 +303,19 @@
         },
         "outputs": {
             "parameters": {
+                "mgname": "[steps('basics').resourceScope.managementGroup.name]",
+                "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
+                "ResourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "location": "[steps('basics').resourceScope.location.name]",
+                "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "ActionGroup": "[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').ActionGroupNew, last(split(steps('Configuration').existingAG, '/')))]",
                 "ManagementGroup": "[steps('Configuration').ManagementGroup]",
-                "LogAnalyticsWorkspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
-                "ResourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
-                "ResourceGroupStatus": "[steps('Configuration').ResourceGroupStatus]",
-                "StorageAccountName": "[steps('Configuration').existingStorageAccount.name]",
-                "solutionTag": "MonitorStarterPacks",
-                "solutionVersion":"1.0.0",
-                "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
-                "mgname": "[steps('basics').resourceScope.managementGroup.name]",
-                "location": "[steps('basics').resourceScope.location.name]",
-                "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]",
+                "workspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
+                "functionName": "[steps('Configuration').functionName]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
-                "functionName": "[steps('Configuration').functionName]"
+                "grafanaName": "[steps('Configuration').grafanaName]",
+                "StorageAccountName": "[steps('Configuration').existingStorageAccount.name]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",

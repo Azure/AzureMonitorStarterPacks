@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7230571338355007869"
+      "templateHash": "14352761893906832326"
     }
   },
   "parameters": {
@@ -29,9 +29,6 @@
     },
     "deployAMApolicy": {
       "type": "bool"
-    },
-    "currentUserIdObject": {
-      "type": "string"
     },
     "functionName": {
       "type": "string"
@@ -808,9 +805,6 @@
           "appInsightsLocation": {
             "value": "[parameters('location')]"
           },
-          "currentUserIdObject": {
-            "value": "[parameters('currentUserIdObject')]"
-          },
           "functionname": {
             "value": "[parameters('functionName')]"
           },
@@ -852,7 +846,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "10768649152068236728"
+              "templateHash": "4937597612093329026"
             }
           },
           "parameters": {
@@ -861,9 +855,6 @@
               "metadata": {
                 "description": "The name for the function app that you wish to create"
               }
-            },
-            "currentUserIdObject": {
-              "type": "string"
             },
             "location": {
               "type": "string"
@@ -1680,9 +1671,6 @@
                   "grafanaName": {
                     "value": "[parameters('grafanaName')]"
                   },
-                  "userObjectId": {
-                    "value": "[parameters('currentUserIdObject')]"
-                  },
                   "lawresourceId": {
                     "value": "[parameters('lawresourceid')]"
                   }
@@ -1694,7 +1682,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17536868250711155489"
+                      "templateHash": "13556570943843783224"
                     }
                   },
                   "parameters": {
@@ -1708,9 +1696,6 @@
                       "type": "string"
                     },
                     "solutionVersion": {
-                      "type": "string"
-                    },
-                    "userObjectId": {
                       "type": "string"
                     },
                     "utcValue": {
@@ -1744,21 +1729,6 @@
                         "type": "SystemAssigned"
                       },
                       "location": "[parameters('location')]"
-                    },
-                    {
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Dashboard/grafana/{0}', parameters('grafanaName'))]",
-                      "name": "[guid(resourceGroup().id, parameters('grafanaName'), variables('GrafanaAdminRoleId'))]",
-                      "properties": {
-                        "description": "[format('{0}-GrafanaAdmin-{1}-{2}', parameters('solutionTag'), parameters('userObjectId'), parameters('utcValue'))]",
-                        "principalId": "[parameters('userObjectId')]",
-                        "principalType": "User",
-                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('GrafanaAdminRoleId'))]"
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.Dashboard/grafana', parameters('grafanaName'))]"
-                      ]
                     },
                     {
                       "type": "Microsoft.Resources/deployments",

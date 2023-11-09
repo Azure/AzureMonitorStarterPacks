@@ -7,7 +7,7 @@ param location string
 param assignmentLevel string
 param workspaceResourceId string
 param deployAMApolicy bool
-param currentUserIdObject string // This is to automatically assign permissions to Grafana.
+//param currentUserIdObject string // This is to automatically assign permissions to Grafana.
 param functionName string
 param grafanaLocation string
 param grafanaName string
@@ -33,7 +33,7 @@ module backend '../backend/code/backend.bicep' = {
   name: 'backend'
   params: {
     appInsightsLocation: location
-    currentUserIdObject: currentUserIdObject
+//    currentUserIdObject: currentUserIdObject
     functionname: functionName
     grafanalocation: grafanaLocation
     grafanaName: grafanaName

@@ -2,7 +2,7 @@ targetScope = 'managementGroup'
 
 @description('The name for the function app that you wish to create')
 param functionname string
-param currentUserIdObject string
+//param currentUserIdObject string
 param location string
 param storageAccountName string
 //param kvname string
@@ -114,7 +114,7 @@ module amg 'modules/grafana.bicep' = {
     solutionVersion: solutionVersion
     location: grafanalocation
     grafanaName: grafanaName
-    userObjectId: currentUserIdObject
+    //userObjectId: currentUserIdObject
     lawresourceId: lawresourceid
   }
 }

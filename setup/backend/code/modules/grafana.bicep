@@ -4,7 +4,7 @@ param grafanaName string
 param location string
 param solutionTag string
 param solutionVersion string
-param userObjectId string
+//param userObjectId string
 param utcValue string = utcNow()
 param lawresourceId string
 
@@ -31,16 +31,16 @@ resource AzureManagedGrafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
   location: location
 }
 
-resource amgAdminRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id,grafanaName,GrafanaAdminRoleId)
-  scope: AzureManagedGrafana
-  properties: {
-    description: '${solutionTag}-GrafanaAdmin-${userObjectId}-${utcValue}'
-    principalId: userObjectId
-    principalType: 'User'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', GrafanaAdminRoleId)
-  }
-}
+// resource amgAdminRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid(resourceGroup().id,grafanaName,GrafanaAdminRoleId)
+//   scope: AzureManagedGrafana
+//   properties: {
+//     description: '${solutionTag}-GrafanaAdmin-${userObjectId}-${utcValue}'
+//     principalId: userObjectId
+//     principalType: 'User'
+//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', GrafanaAdminRoleId)
+//   }
+// }
 
 module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignment.bicep' = {
   name: 'grafanaReadPermissions'
