@@ -5,12 +5,17 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4088199728228046092"
+      "templateHash": "11152702214712240801"
     }
   },
   "parameters": {
     "rulename": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "AMSP-IIS-Server"
+    },
+    "packtag": {
+      "type": "string",
+      "defaultValue": "IIS"
     },
     "actionGroupName": {
       "type": "string",
@@ -35,9 +40,6 @@
       "type": "string"
     },
     "workspaceId": {
-      "type": "string"
-    },
-    "packtag": {
       "type": "string"
     },
     "solutionTag": {
