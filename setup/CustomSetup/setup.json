@@ -12,12 +12,8 @@
                         {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
-                            "instanceDetailsLabel": "MonStar Packs Deployment Details",
-                            "subscription": {
-                                "constraints": {
-                                    "validations": []
-                                }
-                            }
+                            "kind": "ManagementGroup",
+                            "instanceDetailsLabel": "MonStar Packs Deployment Details"
                         },
                         {
                             "name": "mgmtGroupAPI",
@@ -26,46 +22,6 @@
                                 "method": "GET",
                                 "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
                             }
-                        },
-                        {
-                            "name": "ResGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2021-04-01')]"
-                            }
-                        },
-                        {
-                            "name": "StorAcctsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Storage/storageAccounts?api-version=2022-09-01')]"
-                            }
-                        },
-                        {
-                            "name": "LogAnalyticsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
-                            }
-                        },
-                        {
-                            "name": "ActionGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
-                            }
-                        },
-                        {
-                            "name": "StorageAccountsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]"
-                            }
                         }
                     ]
                 },
@@ -73,6 +29,62 @@
                     "name": "Configuration",
                     "label": "MonStar Configuration",
                     "elements": [
+                        {
+                            "name": "subscriptionAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2022-12-01"
+                            }
+                        },
+                        {
+                            "name": "ResGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
+                            "name": "LogAnalyticsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
+                            }
+                        },
+                        {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
+                        {
+                            "name": "StorageAccountsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]"
+                            }
+                        },
+                        {
+                            "name": "subscriptionId",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Select Subscription",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Subscription to deploy resources to.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Subscriptions...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').subscriptionAPI.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        },
                         {
                             "name": "ResourceGroupStatus",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -98,7 +110,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Resource Group Name for MonStar Packs",
                             "subLabel": "",
-                            "defaultValue": "rg-MonitorStarterPacks",
+                            "defaultValue": "rg-MonstarPacks",
                             "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
@@ -118,7 +130,7 @@
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "allowedValues": "[map(steps('Configuration').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
@@ -154,7 +166,7 @@
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('basics').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
                             "visible": "[equals(steps('Configuration').ActionGroupStatus, 'Existing')]"
@@ -184,7 +196,7 @@
                             "filterPlaceholder": "Filter Storage Account...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('basics').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "allowedValues": "[map(steps('Configuration').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
                             "visible": true
@@ -202,23 +214,6 @@
                             "visible": true
                         },
                         {
-                            "name": "ManagementGroup",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Management Group",
-                            "multiselect": false,
-                            "selectAll": false,
-                            "defaultValue": "",
-                            "toolTip": "Select Management Group to deploy policies to.",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Management Groups Pools...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[map(steps('basics').mgmtGroupAPI.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required":  "[if(steps('Configuration').optionVMMetrics, false, true)]"
-                            },
-                            "visible": "[if(steps('Configuration').optionVMMetrics, false, true)]"
-                        },
-                        {
                             "name": "assignmentLevel",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Assign Policies to ManagementGroup or Subscription",
@@ -228,11 +223,11 @@
                                 "allowedValues": [
                                     {
                                         "label": "Management Group",
-                                        "value": "MG"
+                                        "value": "ManagementGroup"
                                     },
                                     {
                                         "label": "Subscription",
-                                        "value": "Sub"
+                                        "value": "Subscription"
                                     }
                                 ],
                                 "required": true
@@ -309,7 +304,6 @@
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "ActionGroup": "[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').ActionGroupNew, last(split(steps('Configuration').existingAG, '/')))]",
-                "ManagementGroup": "[steps('Configuration').ManagementGroup]",
                 "workspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "functionName": "[steps('Configuration').functionName]",
