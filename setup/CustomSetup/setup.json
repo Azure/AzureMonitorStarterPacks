@@ -210,18 +210,6 @@
                             "visible": true
                         },
                         {
-                            "name": "functionName",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Name for the Azure Function",
-                            "subLabel": "",
-                            "defaultValue": "",
-                            "toolTip": "The name of the Azure Function",
-                            "constraints": {
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
                             "name": "grafanaName",
                             "type": "Microsoft.Common.TextBox",
                             "label": "Name for the Azure Managed Grafana resource.",
@@ -248,8 +236,8 @@
                 "workspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
-                "grafanaName": "[steps('Configuration').grafanaName]",
-                "StorageAccountName": "[last(split(steps('Configuration').existingStorageAccount, '/'))]",
+                "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "storageAccountName": "[last(split(steps('Configuration').existingStorageAccount, '/'))]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]"
             },
             "kind": "ManagementGroup",
