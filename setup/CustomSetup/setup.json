@@ -181,7 +181,7 @@
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Deploy AMA Policy Intiative",
                             "constraints": {
-                                "required": true,
+                                "required": false,
                                 "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
                             }
                         },
@@ -241,7 +241,7 @@
         "outputs": {
             "parameters": {
                 "mgname": "[steps('basics').resourceScope.managementGroup.name]",
-                "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
+                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
                 "ResourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
@@ -250,7 +250,7 @@
                 "functionName": "[steps('Configuration').functionName]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[steps('Configuration').grafanaName]",
-                "StorageAccountName": "[steps('Configuration').existingStorageAccount.name]"
+                "StorageAccountName": "[last(split(steps('Configuration').existingStorageAccount, '/'))]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
