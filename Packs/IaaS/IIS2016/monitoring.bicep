@@ -1,9 +1,9 @@
 targetScope='managementGroup'
 
 @description('Name of the DCR rule to be created')
-param rulename string
+param rulename string = 'AMSP-IIS2016-Server'
 @description('Name of the Action Group to be used or created.')
-param actionGroupName string
+param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
 param emailreceivers array = []
 @description('Email addresses to be used for the Action Group if being created.')
