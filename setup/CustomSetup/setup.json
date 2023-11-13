@@ -242,7 +242,7 @@
             "parameters": {
                 "mgname": "[steps('basics').resourceScope.managementGroup.name]",
                 "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
-                "ResourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "workspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
