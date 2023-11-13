@@ -247,10 +247,10 @@
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "workspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
-                "functionName": "[steps('Configuration').functionName]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[steps('Configuration').grafanaName]",
-                "StorageAccountName": "[last(split(steps('Configuration').existingStorageAccount, '/'))]"
+                "StorageAccountName": "[last(split(steps('Configuration').existingStorageAccount, '/'))]",
+                "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
