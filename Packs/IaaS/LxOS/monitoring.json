@@ -5,40 +5,66 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7026911890792045350"
+      "templateHash": "15356301938453929034"
     }
   },
   "parameters": {
     "rulename": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "AMSP-VMI-Linux",
+      "metadata": {
+        "description": "Name of the DCR rule to be created"
+      }
     },
     "actionGroupName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Action Group to be used or created."
+      }
     },
     "emailreceivers": {
       "type": "array",
-      "defaultValue": []
+      "defaultValue": [],
+      "metadata": {
+        "description": "Email receiver names to be used for the Action Group if being created."
+      }
     },
     "emailreiceversemails": {
       "type": "array",
-      "defaultValue": []
+      "defaultValue": [],
+      "metadata": {
+        "description": "Email addresses to be used for the Action Group if being created."
+      }
     },
     "useExistingAG": {
       "type": "bool",
-      "defaultValue": false
+      "metadata": {
+        "description": "If set to true, a new Action group will be created"
+      }
     },
     "existingAGRG": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the existing resource group to be used for the Action Group if existing."
+      }
     },
     "location": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "location for the deployment."
+      }
     },
     "workspaceId": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Full resource ID of the log analytics workspace to be used for the deployment."
+      }
     },
     "packtag": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "LxOS"
     },
     "solutionTag": {
       "type": "string"
@@ -47,10 +73,16 @@
       "type": "string"
     },
     "dceId": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
+      }
     },
     "userManagedIdentityResourceId": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Full resource ID of the user managed identity to be used for the deployment"
+      }
     },
     "mgname": {
       "type": "string"

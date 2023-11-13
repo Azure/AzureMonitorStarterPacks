@@ -1,7 +1,7 @@
 targetScope='managementGroup'
 
 @description('Name of the DCR rule to be created')
-param rulename string
+param rulename string = 'AMSP-Windows-PS2016'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string
 @description('Email receiver names to be used for the Action Group if being created.')

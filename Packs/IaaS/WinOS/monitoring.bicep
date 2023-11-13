@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
 @description('Name of the DCR rule to be created')
-param rulename string
+param rulename string = 'AMSP-Windows-OS'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string
 @description('Email receiver names to be used for the Action Group if being created.')
@@ -15,7 +15,7 @@ param existingAGRG string = ''
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-param packtag string
+param packtag string = 'WinOS'
 param solutionTag string
 param solutionVersion string
 param dceId string
