@@ -296,7 +296,7 @@
                 "solutionVersion":"1.0.0",
                 "dceId":"[steps('Configuration').dataCollectionEndpointId]",
                 "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
-                "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG),'/'))]",
+                "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
                 "emailreceivers":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceivers,'')]",
                 "emailreiceversemails":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemails,'')]",
                 "existingAGRG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, steps('Configuration').existingAG)]",
