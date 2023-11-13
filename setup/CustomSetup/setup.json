@@ -219,7 +219,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": false
+                            "visible": true
                         },
                         {
                             "name": "grafanaName",
