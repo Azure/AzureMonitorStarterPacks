@@ -234,7 +234,7 @@
                         {
                             "name": "userManagedIdentitiesId",
                             "type": "Microsoft.Common.DropDown",
-                            "label": "Select user managed identity endpoint.",
+                            "label": "Select user managed identity for Packs.",
                             "multiselect": false,
                             "defaultValue": "",
                             "toolTip": "Select User Managed identity for the pack.",
@@ -287,7 +287,7 @@
         "outputs": {
             "parameters": {
                 "mgname": "[steps('basics').resourceScope.managementGroup.name]",
-                "subscriptionId": "[steps('Configuration').subscriptionId]",
+                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
                 "resourceGroupId": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, steps('Configuration').resourceGroupNameExisting)]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
