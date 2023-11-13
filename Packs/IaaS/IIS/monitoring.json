@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11152702214712240801"
+      "templateHash": "486114020080098173"
     }
   },
   "parameters": {
@@ -143,7 +143,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[parameters('actionGroupName')]",
+      "name": "actionGroupName-deployment",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -352,7 +352,7 @@
             "value": "[parameters('workspaceId')]"
           },
           "AGId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', parameters('actionGroupName')), '2022-09-01').outputs.actionGroupResourceId.value]"
+            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'actionGroupName-deployment'), '2022-09-01').outputs.actionGroupResourceId.value]"
           },
           "packtag": {
             "value": "[parameters('packtag')]"
@@ -1303,7 +1303,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', parameters('actionGroupName'))]"
+        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'actionGroupName-deployment')]"
       ]
     },
     {

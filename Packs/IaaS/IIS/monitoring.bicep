@@ -95,7 +95,7 @@ var performanceCounters=[
 
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
 module ag '../../../modules/actiongroups/ag.bicep' = {
-  name: actionGroupName
+  name: 'actionGroupName-deployment'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
