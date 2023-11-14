@@ -10,17 +10,6 @@ Workbooks/Grafana Dashboards
 
 ### Details
 
-## Packs.json structure
-
-![PackJsonStructure](image-6.png)
-PackName - Pack name
-RuleName - Name of the DCR to be created in Azure
-ModuleType - IaaS is the only supported type
-Status - Enabled/Disabled. Defines whether the pack will be installed or not during setup
-RequiredTag - Tag that will be used to assign the DCR to the VMs
-TemplateLocation - file path to the main bicep file for that pack. The file must be in the Packs folder.
-GrafanaDashaboard - location of the Grafana dashboard json file to be imported during setup.
-
 ### DCR/Policy Templates
 
 #### VMInsights template

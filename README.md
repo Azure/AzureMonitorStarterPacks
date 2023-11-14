@@ -23,14 +23,21 @@ The Main solution can be deployed by clicking the link below.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2Fsetup%2FCustomSetup%2Fsetup.json)
 
-
-
 ## Starter Packs
 
 Packs can also be deployed individually or all at the same time.
 
 Review Packs documentation [here](./Packs/README.md).
 
+## Grafana Dashboards
+
+Each pack may have its own Grafana dashboard. The Grafana dashboards are not deployed along with the ARM templates. They need to be deployed separately. To do so, follow the steps below:
+
+1. Navigate the repository to the Pack folder and identify the file. For example:
+![Grafana Dashboard](image.png)
+2. Run the following command:
+
+`az grafana dashboard import -g <your resource Group> -n <name of azure managed grafana> --definition <filename> --overwrite true`
 ## Authoring Guide
 
 Click [here](./Docs/authoring.md) for guidance on how to create new packs.

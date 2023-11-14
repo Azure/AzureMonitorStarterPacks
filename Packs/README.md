@@ -1,7 +1,6 @@
 # Packs documentation
 
-The recommended experience to deploy the packs is by using the setup.ps1 file but they can be deployed separately.
-
+The recommended experience to deploy the packs is by using the provided interface. You can also use ARM and Bicep Templates. See section below.
 
 To deploy all IaaS packs, click the icon below:
 
@@ -63,3 +62,8 @@ It has around 50 event rule collection items. It also has the following performa
 
 It contains the alerts define in [this file](../Packs/IaaS/DNS2016/WinDns2016Alerts.bicep).
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FDNS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+
+
+# Using ARM and Bicep Templates.
+
+Each pack is composed of a bicep template that contains the rules and alerts. There is an equivalente ARM template that can be used instead. The ARM template is generated from the bicep template. The ARM template is used by the interface to deploy the packs and, same as bicep template, it can be used to deploy the packs using Azure CLI or PowerShell, in a pipeline for example.
