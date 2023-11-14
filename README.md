@@ -15,80 +15,19 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 ## Pre-requisites and recommendations
 
 - Azure Subscription - an Azure subscription to deploy the components
-- **Recommended**: [Azure Cloud Shell](https://shell.azure.com) access to deploy the components. Azure Cloud Shell is recommended since most of the required are pre-installed. 
-- Alternative: deploy from a local workstation with the following components installed:
-
-    - PowerShell 7.1 or later
-    - Azure Powershell Az module (v10 or later)
-    - Bicep CLI (our Azure CLI, which will include  Bicep)
-    - git
+- A Management group structure with at least one management group. Most of the elements like policies and permissions need to be deployed at a management group level.
 
 ## Setup
 
-Direct deployment:
+The Main solution can be deployed by clicking the link below.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2Fsetup%2FCustomSetup%2Fsetup.json)
 
 
-### Download the Solution
-
-1. Clone the repository to a local folder:
-
-    `git clone https://github.com/Azure/AzureMonitorStarterPacks.git`
-
-2. Change directory to the repository folder:
-
-    `cd AzureMonitorStarterPacks`
-
-3. Run ./setup.ps1 as per below instructions.
-
-### Deploy the Solution
-
-Setup can be separated in 3 steps:
-
-1. AMA Policy Initiative Setup
-2. Main Solution Setup (Workbook, Logic App, Function)
-3. Monitoring Packs Setup
-
-Setup has the following parameters:
-
-| Parameter Name | Description | Default Value |
-| --- | --- |  --- |
-| solutionResourceGroup (Mandatory) | Monitor components resource Group. This is where DCRs and Log Analytics Workspace will be created. ||
-| location (Mandatory) | Location for deployment. (i.e. eastus, uksouth, centralindia) | |
-| grafanalocation (optional)| Location to deploy the Azure Grafana workspace. If not specified, the previous specific location will be used. | same as location |
-| skipAMAPolicySetup | skips AMA policy setup. Default is false. | false |
-| skipMainSolutionSetup | skips deployment of the main components (in case more packs are added later). Default is false. | false |
-| skipPacksSetup | skips packs setup altogether. Default is false. | false |
-| workspaceResourceId | Log Analytics workspace to send the data to. If not provided, a workspace will be requested. If required a new workspace can be created in the wizard. | |
-| solutionTag | tag to be user for discovery. Default value: 'MonitorStarterPacks'. If any value is found in the tag, machines will be targeted for the basic VM Monitoring. The content of the tag is a comma separated list of applications that are installed on the machine (IIS, ADDS,etc.) | 'MonitorStarterPacks' |
-| packsFilePath | path to local packs.json file. Default is the one in the repo. | "./Packs/packs.json" |
-| useExistingAG | Use existing Action Group for notification. Default is false. If set to true, the following parameters are required: | false |
-| confirmeeachpack | if specified, the setup procedure will ask for confirmation for each pack. | false|
-
-New Action Group parameters (when useExistingAg is 'false'):
-| Parameter Name | Description | Default Value |
-| --- | --- |  --- |
-| emailreceivers=@() | Array of email receiver names (not emails) | |
-| emailreceiversEmails=@() | Array of email receiver emails (respectively to the previous array) | |
-| subscriptionId | Subscription ID. Default is the one in the context. | _current context_ |
-| useSameAGforAllPacks | Use the same Action Group for all packs. Default is false.  | false |
-
-### Examples
-
-**Minimal parameters:**
-
-```powershell
-.\setup.ps1 -solutionResourceGroup 'rg-xxxxxxx' -location 'eastus'
-```
-
-This example will deploy the enabled packs in the packs.json file to the resource group rg-xxxxxxx in the eastus location. It will deploy the basic solution and any enabled packs.
-
-More examples of setup can be found [here](./Docs/setup-examples.md).
 
 ## Starter Packs
 
-Packs can also be deployed individually. However, multiple parameters will be required.
+Packs can also be deployed individually or all at the same time.
 
 Review Packs documentation [here](./Packs/README.md).
 
