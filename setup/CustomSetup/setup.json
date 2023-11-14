@@ -294,7 +294,7 @@
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                "storageAccountName": "[if(equals(steps('Configuration').assignmentLevel,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
+                "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
                 "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
