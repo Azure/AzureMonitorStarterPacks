@@ -17,7 +17,6 @@ param appInsightsLocation string
 //param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
 param solutionVersion string
-
 param subscriptionId string
 param resourceGroupName string
 param mgname string

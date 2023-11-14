@@ -1,6 +1,8 @@
 param logAnalyticsWorkspaceName string
 param location string
 param solutionTag string
+param newLogAnalyticsWSName string = ''
+param createNewLogAnalyticsWS bool = false
 
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName

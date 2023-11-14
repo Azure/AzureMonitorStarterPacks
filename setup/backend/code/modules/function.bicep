@@ -24,45 +24,50 @@ var sasConfig = {
   keyToSign: 'key2'
 }
 //Storage Account
-resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+// Switching to account being created in the beggining of the process.
+
+// resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+//   name: storageAccountName
+//   location: location
+//   tags: {
+//     '${solutionTag}': 'storageaccount'
+//     '${solutionTag}-Version': solutionVersion
+//   }
+//   sku: {
+//     name: 'Standard_LRS'
+//   }
+//   kind: 'StorageV2'
+//   properties: {
+//     accessTier: 'Hot'
+//     allowBlobPublicAccess: false
+//     allowSharedKeyAccess: true
+//     supportsHttpsTrafficOnly: true
+//   }
+//   resource blobServices 'blobServices'={
+//     name: 'default'
+//     properties: {
+//         cors: {
+//             corsRules: []
+//         }
+//         deleteRetentionPolicy: {
+//             enabled: false
+//         }
+//     }
+//     resource container1 'containers'={
+//       name: 'discovery'
+//       properties: {
+//         immutableStorageWithVersioning: {
+//             enabled: false
+//         }
+//         denyEncryptionScopeOverride: false
+//         defaultEncryptionScope: '$account-encryption-key'
+//         publicAccess: 'None'
+//       }
+//     }
+//   }
+// }
+resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
-  location: location
-  tags: {
-    '${solutionTag}': 'storageaccount'
-    '${solutionTag}-Version': solutionVersion
-  }
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-  properties: {
-    accessTier: 'Hot'
-    allowBlobPublicAccess: false
-    allowSharedKeyAccess: true
-    supportsHttpsTrafficOnly: true
-  }
-  resource blobServices 'blobServices'={
-    name: 'default'
-    properties: {
-        cors: {
-            corsRules: []
-        }
-        deleteRetentionPolicy: {
-            enabled: false
-        }
-    }
-    resource container1 'containers'={
-      name: 'discovery'
-      properties: {
-        immutableStorageWithVersioning: {
-            enabled: false
-        }
-        denyEncryptionScopeOverride: false
-        defaultEncryptionScope: '$account-encryption-key'
-        publicAccess: 'None'
-      }
-    }
-  }
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -97,7 +102,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename}'
   }
 }
-
 
 resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: '${functionname}-farm'

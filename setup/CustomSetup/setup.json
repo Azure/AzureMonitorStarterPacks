@@ -128,6 +128,40 @@
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
                         },
                         {
+                            "name": "storageAccountStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Storage Account",
+                            "toolTip": "This will be the Storage Account for the Solution",
+                            "defaultValue": "Existing",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "storageAccountNameNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Name for the new Storage Account. Must be unique globally!",
+                            "defaultValue": "amonsterpacksxxxx",
+                            "toolTip": "Use only allowed characters. Change xxxx to randon characters",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z]{1,30}$",
+                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                            },
+                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'New')]"
+                        },
+                        {
                             "name": "existingStorageAccount",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Existing Storage Account",
@@ -141,7 +175,43 @@
                                 "allowedValues": "[map(steps('Configuration').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
+                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'Existing')]"
+                        },
+
+                        {
+                            "name": "LAWStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Log Analytics Workspace",
+                            "toolTip": "This will be the log analytics workspace from which data will be read and stored.",
+                            "defaultValue": "Existing",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
                             "visible": true
+                        },
+                        {
+                            "name": "LogAnalyticsWorkspaceResourceNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Log Analytics Workspace Name for MonStar Packs",
+                            "subLabel": "",
+                            "defaultValue": "Monster-LA",
+                            "toolTip": "Log Analytics Workspace Name for MonStar Packs.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').LAWStatus, 'New')]",
+                                "regex": "",
+                                "validationMessage": ""
+                            },
+                            "visible": "[equals(steps('Configuration').LAWStatus, 'New')]"
                         },
                         {
                             "name": "LogAnalyticsWorkspaceResource",
@@ -150,10 +220,10 @@
                             "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "constraints": {
-                                "required": true
+                                "required": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
                             },
                             "infoMessages": [],
-                            "visible": true
+                            "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
                         },
                         {
                             "name": "assignmentLevel",
@@ -180,6 +250,7 @@
                             "name": "deployAMAPolicy",
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Deploy AMA Policy Intiative",
+                            "toolTip": "The AMA Initiative will be applied at the selected scope and will take care of installing the AMA agent to servers, VMs and VMSS.",
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
@@ -208,20 +279,7 @@
                                 "required": true
                             },
                             "visible": true
-                        },
-                        {
-                            "name": "grafanaName",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Name for the Azure Managed Grafana resource.",
-                            "subLabel": "",
-                            "defaultValue": "",
-                            "toolTip": "The name of the AMG",
-                            "constraints": {
-                                "required": true
-                            },
-                            "visible": true
                         }
-                        
                     ]
                 }
             ]
@@ -233,12 +291,15 @@
                 "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
-                "workspaceResourceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                "storageAccountName": "[last(split(steps('Configuration').existingStorageAccount, '/'))]",
-                "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]"
+                "storageAccountName": "[if(equals(steps('Configuration').assignmentLevel,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
+                "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
+                "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
+                "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

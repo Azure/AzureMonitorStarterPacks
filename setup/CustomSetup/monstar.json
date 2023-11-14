@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "14352761893906832326"
+      "templateHash": "18166187326937395322"
     }
   },
   "parameters": {
@@ -18,14 +18,26 @@
     "resourceGroupName": {
       "type": "string"
     },
+    "createNewResourceGroup": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "location": {
       "type": "string"
     },
     "assignmentLevel": {
       "type": "string"
     },
-    "workspaceResourceId": {
-      "type": "string"
+    "newLogAnalyticsWSName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "createNewLogAnalyticsWS": {
+      "type": "bool"
+    },
+    "existingLogAnalyticsWSId": {
+      "type": "string",
+      "defaultValue": ""
     },
     "deployAMApolicy": {
       "type": "bool"
@@ -48,6 +60,158 @@
     "solutionVersion": "0.1"
   },
   "resources": [
+    {
+      "condition": "[parameters('createNewResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "resourceGroup-Deployment",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "resourceGroupName": {
+            "value": "[parameters('resourceGroupName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "solutionTag": {
+            "value": "[variables('solutionTag')]"
+          },
+          "solutionVersion": {
+            "value": "[variables('solutionVersion')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "9195451697593365350"
+            }
+          },
+          "parameters": {
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "solutionVersion": {
+              "type": "string"
+            },
+            "solutionTag": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2023-07-01",
+              "name": "[parameters('resourceGroupName')]",
+              "location": "[parameters('location')]",
+              "tags": {
+                "solutionTag": "[parameters('solutionTag')]",
+                "solutionVersion": "[parameters('solutionVersion')]"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "condition": "[parameters('createNewLogAnalyticsWS')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "logAnalytics-Deployment",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "logAnalyticsWorkspaceName": {
+            "value": "[parameters('newLogAnalyticsWSName')]"
+          },
+          "solutionTag": {
+            "value": "[variables('solutionTag')]"
+          },
+          "createNewLogAnalyticsWS": {
+            "value": "[parameters('createNewLogAnalyticsWS')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "8619474227524068963"
+            }
+          },
+          "parameters": {
+            "logAnalyticsWorkspaceName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "solutionTag": {
+              "type": "string"
+            },
+            "newLogAnalyticsWSName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "createNewLogAnalyticsWS": {
+              "type": "bool",
+              "defaultValue": false
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2022-10-01",
+              "name": "[parameters('logAnalyticsWorkspaceName')]",
+              "location": "[parameters('location')]",
+              "tags": {
+                "[format('{0}', parameters('solutionTag'))]": "Log Analytics workspace"
+              },
+              "properties": {
+                "sku": {
+                  "name": "PerGB2018"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "customerId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+            },
+            "lawresourceid": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+      ]
+    },
     {
       "condition": "[parameters('deployAMApolicy')]",
       "type": "Microsoft.Resources/deployments",
@@ -789,7 +953,10 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -814,9 +981,7 @@
           "grafanaName": {
             "value": "[parameters('grafanaName')]"
           },
-          "lawresourceid": {
-            "value": "[parameters('workspaceResourceId')]"
-          },
+          "lawresourceid": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -2808,7 +2973,11 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+      ]
     }
   ]
 }
