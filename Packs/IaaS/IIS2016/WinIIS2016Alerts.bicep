@@ -4,7 +4,7 @@ param AGId string
 param packtag string
 param solutionTag string
 param solutionVersion string
-param moduleprefix string = 'AMSP-Win-IIS'
+param moduleprefix string = 'AMSP-IIS2016'
 // Alert list
 
 var alertlist = [

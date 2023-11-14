@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "18166187326937395322"
+      "templateHash": "3455671255350174580"
     }
   },
   "parameters": {
@@ -1011,7 +1011,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4937597612093329026"
+              "templateHash": "2201698488874703278"
             }
           },
           "parameters": {
@@ -1128,7 +1128,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9436916660503816289"
+                      "templateHash": "13830923059818661406"
                     }
                   },
                   "parameters": {
@@ -1191,58 +1191,6 @@
                   },
                   "resources": [
                     {
-                      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-                      "apiVersion": "2021-06-01",
-                      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'discovery')]",
-                      "properties": {
-                        "immutableStorageWithVersioning": {
-                          "enabled": false
-                        },
-                        "denyEncryptionScopeOverride": false,
-                        "defaultEncryptionScope": "$account-encryption-key",
-                        "publicAccess": "None"
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]"
-                      ]
-                    },
-                    {
-                      "type": "Microsoft.Storage/storageAccounts/blobServices",
-                      "apiVersion": "2021-06-01",
-                      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
-                      "properties": {
-                        "cors": {
-                          "corsRules": []
-                        },
-                        "deleteRetentionPolicy": {
-                          "enabled": false
-                        }
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-                      ]
-                    },
-                    {
-                      "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2021-06-01",
-                      "name": "[parameters('storageAccountName')]",
-                      "location": "[parameters('location')]",
-                      "tags": {
-                        "[format('{0}', parameters('solutionTag'))]": "storageaccount",
-                        "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                      },
-                      "sku": {
-                        "name": "Standard_LRS"
-                      },
-                      "kind": "StorageV2",
-                      "properties": {
-                        "accessTier": "Hot",
-                        "allowBlobPublicAccess": false,
-                        "allowSharedKeyAccess": true,
-                        "supportsHttpsTrafficOnly": true
-                      }
-                    },
-                    {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
                       "name": "deployscript-MonstarPacks",
@@ -1263,7 +1211,7 @@
                           },
                           {
                             "name": "AZURE_STORAGE_KEY",
-                            "secureValue": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value]"
+                            "secureValue": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]"
                           },
                           {
                             "name": "CONTENT",
@@ -1273,8 +1221,7 @@
                         "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5}', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]",
-                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                        "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]"
                       ]
                     },
                     {
@@ -1388,8 +1335,8 @@
                       "apiVersion": "2021-03-01",
                       "name": "[format('{0}/{1}', parameters('functionname'), 'appsettings')]",
                       "properties": {
-                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('storageAccountName'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value, environment().suffixes.storage)]",
-                        "AzureWebJobsStorage": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('storageAccountName'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value, environment().suffixes.storage)]",
+                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('storageAccountName'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value, environment().suffixes.storage)]",
+                        "AzureWebJobsStorage": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('storageAccountName'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value, environment().suffixes.storage)]",
                         "WEBSITE_CONTENTSHARE": "[parameters('storageAccountName')]",
                         "FUNCTIONS_WORKER_RUNTIME": "powershell",
                         "FUNCTIONS_EXTENSION_VERSION": "~4",
@@ -1403,8 +1350,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Insights/components', parameters('functionname'))]",
-                        "[resourceId('Microsoft.Web/sites', parameters('functionname'))]",
-                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                        "[resourceId('Microsoft.Web/sites', parameters('functionname'))]"
                       ]
                     },
                     {
@@ -1412,12 +1358,11 @@
                       "apiVersion": "2021-02-01",
                       "name": "[format('{0}/{1}', parameters('functionname'), 'MSDeploy')]",
                       "properties": {
-                        "packageUri": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').primaryEndpoints.blob, variables('discoveryContainerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01', variables('sasConfig')).accountSasToken)]"
+                        "packageUri": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, variables('discoveryContainerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites', parameters('functionname'))]",
-                        "[resourceId('Microsoft.Resources/deploymentScripts', 'deployscript-MonstarPacks')]",
-                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                        "[resourceId('Microsoft.Resources/deploymentScripts', 'deployscript-MonstarPacks')]"
                       ]
                     },
                     {

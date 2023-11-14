@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "17853051693286199672"
+      "templateHash": "5182151894436227873"
     }
   },
   "parameters": {
@@ -4371,42 +4371,66 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "486114020080098173"
+              "templateHash": "2758112859695963315"
             }
           },
           "parameters": {
             "rulename": {
               "type": "string",
-              "defaultValue": "AMSP-IIS-Server"
+              "defaultValue": "AMSP-IIS-Server",
+              "metadata": {
+                "description": "Name of the DCR rule to be created"
+              }
+            },
+            "actionGroupName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Action Group to be used or created."
+              }
+            },
+            "emailreceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Email receiver names to be used for the Action Group if being created."
+              }
+            },
+            "emailreiceversemails": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Email addresses to be used for the Action Group if being created."
+              }
+            },
+            "useExistingAG": {
+              "type": "bool",
+              "metadata": {
+                "description": "If set to true, a new Action group will be created"
+              }
+            },
+            "existingAGRG": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the existing resource group to be used for the Action Group if existing."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "location for the deployment."
+              }
+            },
+            "workspaceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Full resource ID of the log analytics workspace to be used for the deployment."
+              }
             },
             "packtag": {
               "type": "string",
               "defaultValue": "IIS"
-            },
-            "actionGroupName": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "emailreceivers": {
-              "type": "array",
-              "defaultValue": []
-            },
-            "emailreiceversemails": {
-              "type": "array",
-              "defaultValue": []
-            },
-            "useExistingAG": {
-              "type": "bool"
-            },
-            "existingAGRG": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "location": {
-              "type": "string"
-            },
-            "workspaceId": {
-              "type": "string"
             },
             "solutionTag": {
               "type": "string"
@@ -4415,10 +4439,16 @@
               "type": "string"
             },
             "dceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Full resource ID of the data collection endpoint to be used for the deployment."
+              }
             },
             "userManagedIdentityResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Full resource ID of the user managed identity to be used for the deployment"
+              }
             },
             "mgname": {
               "type": "string"
@@ -4737,7 +4767,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11187571577085489637"
+                      "templateHash": "444845660585364541"
                     }
                   },
                   "parameters": {
@@ -4761,7 +4791,7 @@
                     },
                     "moduleprefix": {
                       "type": "string",
-                      "defaultValue": "AMSP-Win-IIS"
+                      "defaultValue": "AMSP-IIS"
                     }
                   },
                   "variables": {
@@ -7825,7 +7855,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12571792263290438383"
+              "templateHash": "9910778598378085181"
             }
           },
           "parameters": {
@@ -8244,7 +8274,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11187571577085489637"
+                      "templateHash": "15742914507645569291"
                     }
                   },
                   "parameters": {
@@ -8268,7 +8298,7 @@
                     },
                     "moduleprefix": {
                       "type": "string",
-                      "defaultValue": "AMSP-Win-IIS"
+                      "defaultValue": "AMSP-IIS2016"
                     }
                   },
                   "variables": {

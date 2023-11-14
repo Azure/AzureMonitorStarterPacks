@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12571792263290438383"
+      "templateHash": "9910778598378085181"
     }
   },
   "parameters": {
@@ -424,7 +424,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11187571577085489637"
+              "templateHash": "15742914507645569291"
             }
           },
           "parameters": {
@@ -448,7 +448,7 @@
             },
             "moduleprefix": {
               "type": "string",
-              "defaultValue": "AMSP-Win-IIS"
+              "defaultValue": "AMSP-IIS2016"
             }
           },
           "variables": {
