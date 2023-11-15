@@ -15,6 +15,21 @@ param functionName string
 param grafanaLocation string
 param grafanaName string
 param storageAccountName string
+param resourceGroupId string = ''
+
+// Packs` stuff
+param deployPacks bool = false
+@description('Name of the Action Group to be used or created.')
+param actionGroupName string = ''
+@description('Email receiver names to be used for the Action Group if being created.')
+param emailreceivers array = []
+@description('Email addresses to be used for the Action Group if being created.')
+param emailreiceversemails array = []
+@description('If set to true, a new Action group will be created')
+param useExistingAG bool
+@description('Name of the existing resource group to be used for the Action Group if existing.')
+param existingAGRG string = ''
+
 
 var solutionTag='MonitorStarterPacks'
 var solutionVersion='0.1'
@@ -26,10 +41,10 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
     resourceGroupName: resourceGroupName
     location: location
     solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    
+    solutionVersion: solutionVersion    
   }
 }
+
 module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS) {
   name: 'logAnalytics-Deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -79,5 +94,29 @@ module backend '../backend/code/backend.bicep' = {
     solutionVersion: solutionVersion
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
+  }
+}
+
+module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
+  name: 'DeployAllPacks'
+  dependsOn: [
+    backend
+  ]
+  params: {
+    assignmentLevel: assignmentLevel
+    location: location
+    dceId: backend.outputs.dceId
+    mgname: mgname
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    subscriptionId: subscriptionId
+    useExistingAG: false
+    userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
+    workspaceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
+    actionGroupName: actionGroupName
+    resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
+    emailreceivers: emailreceivers
+    emailreiceversemails: emailreiceversemails
+    existingAGRG: existingAGRG
   }
 }

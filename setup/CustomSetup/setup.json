@@ -557,7 +557,91 @@
                                 "required": true
                             },
                             "visible": true
+                        
+                        },
+                        {
+                            "name": "deployPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All Packs",
+                            "toolTip": "Select to deploy all packs.",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
+                            }
+                        },
+                        {
+                            "name": "ActionGroupStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Action Group",
+                            "toolTip": "This will be the Action Group to receive alert emails.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').deployPacks, true)]"
+                        },
+                        {
+                            "name": "existingAG",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Action Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Action Group to receive alerts.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'Existing'))]"
+                        },
+                        {
+                            "name": "NewActionGroupName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "New Action Group Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'New'))]"
+                        },
+                        {
+                            "name": "emailreceivers",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Email Receiver(s)",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'New'))]"
+                        },
+                        {
+                            "name": "emailreceiversemails",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Email Receiver(s) email(s)",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'New'))]"
                         }
+
                     ]
                 }
             ]
@@ -577,7 +661,8 @@
                 "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
-                "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]"
+                "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
+                "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', last(split(steps('Configuration').resourceGroupNameExisting, '/')))]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

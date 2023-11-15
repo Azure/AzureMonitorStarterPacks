@@ -197,3 +197,5 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
 
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+output dceId string = dataCollectionEndpoint.outputs.dceId
+

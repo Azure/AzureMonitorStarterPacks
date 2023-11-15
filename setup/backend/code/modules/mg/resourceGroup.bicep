@@ -13,3 +13,4 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
     solutionVersion: solutionVersion
   }
 }
+output newResourceGroupId string = resourceGroup.id
