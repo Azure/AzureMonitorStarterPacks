@@ -26,7 +26,7 @@ param emailreceivers array = []
 @description('Email addresses to be used for the Action Group if being created.')
 param emailreiceversemails array = []
 @description('If set to true, a new Action group will be created')
-param useExistingAG bool
+param useExistingAG bool = false
 @description('Name of the existing resource group to be used for the Action Group if existing.')
 param existingAGRG string = ''
 
@@ -110,7 +110,7 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: false
+    useExistingAG: useExistingAG
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     workspaceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     actionGroupName: actionGroupName
