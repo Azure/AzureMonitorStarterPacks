@@ -46,6 +46,14 @@
                             }
                         },
                         {
+                            "name": "grafanaLocationsAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
                             "name": "LogAnalyticsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -258,24 +266,294 @@
                         },
                         {
                             "name": "AppInsightsLocation",
-                            "type": "Microsoft.Common.TextBox",
+                            "type": "Microsoft.Common.DropDown",
                             "label": "Location for App Insights",
-                            "subLabel": "",
+                            "multiselect": false,
                             "defaultValue": "",
                             "toolTip": "The location to deploy the Function app insights",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Location...",
+                            "defaultDescription": "A value for selection",
                             "constraints": {
-                                "required": true
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label":  "East US",
+                                        "value":  "eastus"
+                                    },
+                                    {
+                                        "label":  "South Central US",
+                                        "value":  "southcentralus"
+                                    },
+                                    {
+                                        "label":  "North Europe",
+                                        "value":  "northeurope"
+                                    },
+                                    {
+                                        "label":  "West Europe",
+                                        "value":  "westeurope"
+                                    },
+                                    {
+                                        "label":  "Southeast Asia",
+                                        "value":  "southeastasia"
+                                    },
+                                    {
+                                        "label":  "West US 2",
+                                        "value":  "westus2"
+                                    },
+                                    {
+                                        "label":  "UK South",
+                                        "value":  "uksouth"
+                                    },
+                                    {
+                                        "label":  "Canada Central",
+                                        "value":  "canadacentral"
+                                    },
+                                    {
+                                        "label":  "Central India",
+                                        "value":  "centralindia"
+                                    },
+                                    {
+                                        "label":  "Japan East",
+                                        "value":  "japaneast"
+                                    },
+                                    {
+                                        "label":  "Australia East",
+                                        "value":  "australiaeast"
+                                    },
+                                    {
+                                        "label":  "Korea Central",
+                                        "value":  "koreacentral"
+                                    },
+                                    {
+                                        "label":  "France Central",
+                                        "value":  "francecentral"
+                                    },
+                                    {
+                                        "label":  "Central US",
+                                        "value":  "centralus"
+                                    },
+                                    {
+                                        "label":  "East US 2",
+                                        "value":  "eastus2"
+                                    },
+                                    {
+                                        "label":  "East Asia",
+                                        "value":  "eastasia"
+                                    },
+                                    {
+                                        "label":  "West US",
+                                        "value":  "westus"
+                                    },
+                                    {
+                                        "label":  "South Africa North",
+                                        "value":  "southafricanorth"
+                                    },
+                                    {
+                                        "label":  "North Central US",
+                                        "value":  "northcentralus"
+                                    },
+                                    {
+                                        "label":  "Brazil South",
+                                        "value":  "brazilsouth"
+                                    },
+                                    {
+                                        "label":  "Switzerland North",
+                                        "value":  "switzerlandnorth"
+                                    },
+                                    {
+                                        "label":  "Norway East",
+                                        "value":  "norwayeast"
+                                    },
+                                    {
+                                        "label":  "Norway West",
+                                        "value":  "norwaywest"
+                                    },
+                                    {
+                                        "label":  "Australia Southeast",
+                                        "value":  "australiasoutheast"
+                                    },
+                                    {
+                                        "label":  "Australia Central 2",
+                                        "value":  "australiacentral2"
+                                    },
+                                    {
+                                        "label":  "Germany West Central",
+                                        "value":  "germanywestcentral"
+                                    },
+                                    {
+                                        "label":  "Switzerland West",
+                                        "value":  "switzerlandwest"
+                                    },
+                                    {
+                                        "label":  "UAE Central",
+                                        "value":  "uaecentral"
+                                    },
+                                    {
+                                        "label":  "UK West",
+                                        "value":  "ukwest"
+                                    },
+                                    {
+                                        "label":  "Japan West",
+                                        "value":  "japanwest"
+                                    },
+                                    {
+                                        "label":  "Brazil Southeast",
+                                        "value":  "brazilsoutheast"
+                                    },
+                                    {
+                                        "label":  "UAE North",
+                                        "value":  "uaenorth"
+                                    },
+                                    {
+                                        "label":  "Australia Central",
+                                        "value":  "australiacentral"
+                                    },
+                                    {
+                                        "label":  "France South",
+                                        "value":  "francesouth"
+                                    },
+                                    {
+                                        "label":  "South India",
+                                        "value":  "southindia"
+                                    },
+                                    {
+                                        "label":  "West US 3",
+                                        "value":  "westus3"
+                                    },
+                                    {
+                                        "label":  "Korea South",
+                                        "value":  "koreasouth"
+                                    },
+                                    {
+                                        "label":  "Sweden Central",
+                                        "value":  "swedencentral"
+                                    },
+                                    {
+                                        "label":  "Canada East",
+                                        "value":  "canadaeast"
+                                    },
+                                    {
+                                        "label":  "Jio India Central",
+                                        "value":  "jioindiacentral"
+                                    },
+                                    {
+                                        "label":  "Jio India West",
+                                        "value":  "jioindiawest"
+                                    },
+                                    {
+                                        "label":  "Qatar Central",
+                                        "value":  "qatarcentral"
+                                    },
+                                    {
+                                        "label":  "South Africa West",
+                                        "value":  "southafricawest"
+                                    },
+                                    {
+                                        "label":  "Germany North",
+                                        "value":  "germanynorth"
+                                    },
+                                    {
+                                        "label":  "Poland Central",
+                                        "value":  "polandcentral"
+                                    },
+                                    {
+                                        "label":  "Israel Central",
+                                        "value":  "israelcentral"
+                                    },
+                                    {
+                                        "label":  "Italy North",
+                                        "value":  "italynorth"
+                                    }                                
+                                ]
                             },
                             "visible": "true"
                         },
                         {
                             "name": "grafanaLocation",
-                            "type": "Microsoft.Common.TextBox",
+                            "type": "Microsoft.Common.DropDown",
                             "label": "Location for Azure Managed Grafana",
-                            "subLabel": "",
+                            "multiselect": false,
                             "defaultValue": "",
-                            "toolTip": "The location to deploy the the Azure Managed Grafana.",
+                            "toolTip": "Location for Azure Managed Grafana",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Location...",
+                            "defaultDescription": "A value for selection",
                             "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "South Central US",
+                                        "value": "southcentralus"
+                                    },
+                                    {
+                                        "label": "Australia East",
+                                        "value": "australiaeast"
+                                    },
+                                    {
+                                        "label": "UK South",
+                                        "value": "uksouth"
+                                    },
+                                    {
+                                        "label": "North Europe",
+                                        "value": "northeurope"
+                                    },
+                                    {
+                                        "label": "East US 2",
+                                        "value": "eastus2"
+                                    },
+                                    {
+                                        "label": "East US",
+                                        "value": "eastus"
+                                    },
+                                    {
+                                        "label": "West Europe",
+                                        "value": "westeurope"
+                                    },
+                                    {
+                                        "label": "West Central US",
+                                        "value": "westcentralus"
+                                    },
+                                    {
+                                        "label": "East US 2 EUAP",
+                                        "value": "eastus2euap"
+                                    },
+                                    {
+                                        "label": "Central US EUAP",
+                                        "value": "centraluseuap"
+                                    },
+                                     {
+                                        "label": "Central India",
+                                        "value": "centralindia"
+                                    },
+                                    {
+                                        "label": "Canada Central",
+                                        "value": "canadacentral"
+                                    },
+                                    {
+                                        "label": "Southeast Asia",
+                                        "value": "southeastasia"
+                                    },
+                                    {
+                                        "label": "Central US",
+                                        "value": "centralus"
+                                    },
+                                    {
+                                        "label": "West US",
+                                        "value": "westus"
+                                    },
+                                    {
+                                        "label": "West US 2",
+                                        "value": "westus2"
+                                    },
+                                    {
+                                        "label": "West US 3",
+                                        "value": "westus3"
+                                    },
+                                    {
+                                        "label": "Sweden Central",
+                                        "value": "swedencentral"
+                                    }
+                                ],
                                 "required": true
                             },
                             "visible": true
