@@ -579,10 +579,23 @@
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Deploy All Packs",
                             "toolTip": "Select to deploy all packs.",
+                            "defaultValue": true,
                             "constraints": {
                                 "required": false,
-                                "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
+                                "validationMessage": "Select to deploy the available packs to the selected environment."
                             }
+                        },
+                        {
+                            "name":"packsText",
+                            "type": "Microsoft.Common.TextBlock",
+							"options": {
+								"text": "When selected, all packs available will be deployed.",
+								"link": {
+									"label": "Learn more",
+									"uri": "https://github.com/Azure/AzureMonitorStarterPacks/tree/main/Packs#readme"
+								}
+							},
+                            "visible": "[equals(steps('Packs').deployPacks, true)]"
                         },
                         {
                             "name": "ActionGroupStatus",
@@ -668,6 +681,7 @@
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
+                "deployPacks": "[steps('Packs').deployPacks]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
                 "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",

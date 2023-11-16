@@ -118,5 +118,6 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }

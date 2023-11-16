@@ -24,6 +24,7 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
+param grafanaName string
 
 var ruleshortname = 'VMI-OS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -107,6 +108,20 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     subscriptionId: subscriptionId
   }
 }
+// Grafana upload and install
+module grafana 'ds.bicep' = {
+  name: 'grafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    fileName: 'grafana.json'
+    grafanaName: grafanaName
+    location: location
+    resourceGroupName: resourceGroupName
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+  }
+}
+
 // Azure recommended Alerts for VMs
 // These are the (very) basic recommeded alerts for VM, based on platform metrics
 // module vmrecommended 'AzureBasicMetricAlerts.bicep' = if (enableBasicVMPlatformAlerts) {

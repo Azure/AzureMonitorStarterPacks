@@ -24,8 +24,9 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
+param grafanaName string
 
-module WinOSPack './WinOS/monitoring.json' = {
+module WinOSPack './WinOS/monitoring.bicep' = {
   name: 'WinOSPack'
   params: {
     actionGroupName: actionGroupName
@@ -43,9 +44,10 @@ module WinOSPack './WinOS/monitoring.json' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }
-module LxOSPack './LxOS/monitoring.json' = {
+module LxOSPack './LxOS/monitoring.bicep' = {
   name: 'LxOSPack-deployment'
   params: {
     actionGroupName: actionGroupName
@@ -65,7 +67,7 @@ module LxOSPack './LxOS/monitoring.json' = {
     existingAGRG: existingAGRG
   }
 }
-module IIS './IIS/monitoring.json' = {
+module IIS './IIS/monitoring.bicep' = {
   name: 'IISPack-deployment'
   params: {
     actionGroupName: actionGroupName
@@ -86,7 +88,7 @@ module IIS './IIS/monitoring.json' = {
   }
 }
 
-module IIS2016 './IIS2016/monitoring.json' = {
+module IIS2016 './IIS2016/monitoring.bicep' = {
   name: 'IIS2016-deployment'
   params: {
     actionGroupName: actionGroupName
@@ -106,7 +108,7 @@ module IIS2016 './IIS2016/monitoring.json' = {
     existingAGRG: existingAGRG
   }
 }
-module DNS2016 './DNS2016/monitoring.json' = {
+module DNS2016 './DNS2016/monitoring.bicep' = {
   name: 'DNS2016-deployment'
   params: {
     actionGroupName: actionGroupName
@@ -126,7 +128,7 @@ module DNS2016 './DNS2016/monitoring.json' = {
     existingAGRG: existingAGRG
   }
 }
-module PS2016 './PS2016/monitoring.json' = {
+module PS2016 './PS2016/monitoring.bicep' = {
   name: 'PS2016-deployment'
   params: {
     actionGroupName: actionGroupName
@@ -146,7 +148,7 @@ module PS2016 './PS2016/monitoring.json' = {
     existingAGRG: existingAGRG
   }
 }
-module Nginx './Nginx/monitoring.json' = {
+module Nginx './Nginx/monitoring.bicep' = {
   name: 'Nginx-deployment'
   params: {
     actionGroupName: actionGroupName
