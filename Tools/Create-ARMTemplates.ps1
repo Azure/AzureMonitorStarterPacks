@@ -1,6 +1,12 @@
 # Get all the subfolders recursively
 # First update main solution files
 $mainMonstarPacksFiles = @(
+    [
+        {
+            "Folder"="./setup/CustomSetup",
+            "File":"monstar.bicep"
+        },
+
     "./setup/CustomSetup/monstar.bicep"
     "./Packs/IaaS/AllIaaSPacks.bicep"
 ) 

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4348837257225627998"
+      "templateHash": "824314564999690011"
     }
   },
   "parameters": {
@@ -3041,7 +3041,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "18020412182275723326"
+              "templateHash": "8850713192944506810"
             }
           },
           "parameters": {
@@ -3193,7 +3193,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "16730519839120098854"
+                      "templateHash": "2049065254619130420"
                     }
                   },
                   "parameters": {
@@ -5273,7 +5273,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "5462116417930270824"
+                              "templateHash": "3474163315765971695"
                             }
                           },
                           "parameters": {
@@ -5321,7 +5321,7 @@
                                     "value": "[variables('$fxv#0')]"
                                   }
                                 ],
-                                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az grafana dashboard import -g {3} -n {4} --definition {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'), parameters('fileName'))]"
+                                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az config set extension.use_dynamic_install=yes_without_prompt && az grafana dashboard import -g {3} -n {4} --definition {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'), parameters('fileName'))]"
                               }
                             }
                           ]

@@ -25,6 +25,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: loadFileAsBase64('./Azure Monitor Start Pack - Windows Operating System-1692086853589.json')
       }
     ]
-    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --definition ${fileName} --overwrite true'
+    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az config set extension.use_dynamic_install=yes_without_prompt && az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --definition ${fileName} --overwrite true'
   }
 }

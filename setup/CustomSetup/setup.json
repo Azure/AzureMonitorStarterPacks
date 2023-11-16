@@ -490,8 +490,48 @@
                             "constraints": {
                                 "allowedValues": [
                                     {
+                                        "label": "East US",
+                                        "value": "eastus"
+                                    },
+                                    {
+                                        "label": "East US 2",
+                                        "value": "eastus2"
+                                    },
+                                    {
                                         "label": "South Central US",
                                         "value": "southcentralus"
+                                    },
+                                    {
+                                        "label": "West Central US",
+                                        "value": "westcentralus"
+                                    },
+                                    {
+                                        "label": "West US",
+                                        "value": "westus"
+                                    },
+                                    {
+                                        "label": "West US 2",
+                                        "value": "westus2"
+                                    },
+                                    {
+                                        "label": "West US 3",
+                                        "value": "westus3"
+                                    },
+                                    {
+                                        "label": "Canada Central",
+                                        "value": "canadacentral"
+                                    },
+                                    {
+                                        "label": "Central US",
+                                        "value": "centralus"
+                                    },
+                                    {
+                                        "label": "East US 2 EUAP",
+                                        "value": "eastus2euap"
+                                    },
+                                    {
+                                        "label": "Central US EUAP",
+                                        "value": "centraluseuap"
                                     },
                                     {
                                         "label": "Australia East",
@@ -506,57 +546,20 @@
                                         "value": "northeurope"
                                     },
                                     {
-                                        "label": "East US 2",
-                                        "value": "eastus2"
-                                    },
-                                    {
-                                        "label": "East US",
-                                        "value": "eastus"
-                                    },
-                                    {
                                         "label": "West Europe",
                                         "value": "westeurope"
                                     },
-                                    {
-                                        "label": "West Central US",
-                                        "value": "westcentralus"
-                                    },
-                                    {
-                                        "label": "East US 2 EUAP",
-                                        "value": "eastus2euap"
-                                    },
-                                    {
-                                        "label": "Central US EUAP",
-                                        "value": "centraluseuap"
-                                    },
+
                                      {
                                         "label": "Central India",
                                         "value": "centralindia"
                                     },
-                                    {
-                                        "label": "Canada Central",
-                                        "value": "canadacentral"
-                                    },
+
                                     {
                                         "label": "Southeast Asia",
                                         "value": "southeastasia"
                                     },
-                                    {
-                                        "label": "Central US",
-                                        "value": "centralus"
-                                    },
-                                    {
-                                        "label": "West US",
-                                        "value": "westus"
-                                    },
-                                    {
-                                        "label": "West US 2",
-                                        "value": "westus2"
-                                    },
-                                    {
-                                        "label": "West US 3",
-                                        "value": "westus3"
-                                    },
+                                    
                                     {
                                         "label": "Sweden Central",
                                         "value": "swedencentral"
