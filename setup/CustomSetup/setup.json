@@ -566,7 +566,14 @@
                             },
                             "visible": true
                         
-                        },
+                        }
+
+                    ]
+                },
+                {
+                    "name": "Packs",
+                    "label": "Packs",
+                    "elements": [
                         {
                             "name": "deployPacks",
                             "type": "Microsoft.Common.CheckBox",
@@ -595,7 +602,7 @@
                                 ],
                                 "required": true
                             },
-                            "visible": "[equals(steps('Configuration').deployPacks, true)]"
+                            "visible": "[equals(steps('Packs').deployPacks, true)]"
                         },
                         {
                             "name": "existingAG",
@@ -611,7 +618,7 @@
                                 "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'Existing'))]"
+                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
                         },
                         {
                             "name": "NewActionGroupName",
@@ -623,7 +630,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceivers",
@@ -635,7 +642,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceiversemails",
@@ -647,9 +654,8 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Configuration').deployPacks, true),equals(steps('Configuration').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         }
-
                     ]
                 }
             ]
@@ -671,11 +677,11 @@
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
                 "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
-                "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
-                "emailreceivers":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceivers,'')]",
-                "emailreiceversemails":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemails,'')]",
-                "existingAGRG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(take(split(steps('Configuration').existingAG,'/'),5)))]",
-                "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]"
+                "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
+                "emailreceivers":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceivers,'')]",
+                "emailreiceversemails":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemails,'')]",
+                "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
+                "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
