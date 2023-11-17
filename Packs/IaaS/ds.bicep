@@ -9,7 +9,7 @@ param packsManagedIdentityResourceId string
 var tempfilename = '${fileName}.tmp'
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-MonstarPacks-IIS2016'
+  name: 'deployscript-MonstarPacks'
   tags: {
     '${solutionTag}': 'deploymentScript'
     '${solutionTag}-Version': solutionVersion

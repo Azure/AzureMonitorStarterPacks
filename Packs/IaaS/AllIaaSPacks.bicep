@@ -181,7 +181,7 @@ module grafana 'ds.bicep' = {
   name: 'grafana'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
-    fileName: 'grafana.json'
+    fileName: 'grafana.zip'
     grafanaName: grafanaName
     location: location
     resourceGroupName: resourceGroupName
