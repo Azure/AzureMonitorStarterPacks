@@ -26,6 +26,8 @@ param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
 
+var resourceGroupName = split(resourceGroupId, '/')[4]
+
 module WinOSPack './WinOS/monitoring.bicep' = {
   name: 'WinOSPack'
   params: {
@@ -172,5 +174,19 @@ module Nginx './Nginx/monitoring.bicep' = {
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+  }
+}
+// Grafana upload and install
+module grafana 'ds.bicep' = {
+  name: 'grafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    fileName: 'grafana.json'
+    grafanaName: grafanaName
+    location: location
+    resourceGroupName: resourceGroupName
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    packsManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }

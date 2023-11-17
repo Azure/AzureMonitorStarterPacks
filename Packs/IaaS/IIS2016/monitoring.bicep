@@ -216,17 +216,17 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
   }
 }
 
-// Grafana upload and install
-module grafana 'ds.bicep' = {
-  name: 'grafana'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    fileName: 'grafana.json'
-    grafanaName: grafanaName
-    location: location
-    resourceGroupName: resourceGroupName
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    packsManagedIdentityResourceId: userManagedIdentityResourceId
-  }
-}
+// // Grafana upload and install
+// module grafana 'ds.bicep' = {
+//   name: 'grafana'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     fileName: 'grafana.json'
+//     grafanaName: grafanaName
+//     location: location
+//     resourceGroupName: resourceGroupName
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     packsManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }

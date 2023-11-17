@@ -29,9 +29,9 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     environmentVariables: [
       {
         name: 'CONTENT'
-        value: loadFileAsBase64('./Azure Monitor Starter Pack _ IIS-1692341727216.json')
+        value: loadFileAsBase64('./Grafana.zip')
       }
     ]
-    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az extension add --name amg && az login --identity && az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --definition ${fileName} --overwrite true'
+    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az extension add --name amg && az login --identity && unzip ${fileName} && for file in *.json; do az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --definition $file --overwrite true;done'
   }
 }
