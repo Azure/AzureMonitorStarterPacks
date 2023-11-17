@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12711003220519024898"
+      "templateHash": "12414748889145244019"
     }
   },
   "parameters": {
@@ -293,7 +293,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+      ]
     },
     {
       "condition": "[parameters('createNewLogAnalyticsWS')]",

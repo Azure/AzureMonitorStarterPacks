@@ -48,6 +48,9 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
   name:'newstorage-deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
+  dependsOn: [
+    resourgeGroup
+  ]
   params: {
     location: location
     solutionVersion: solutionVersion
