@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "14297974761365450598"
+      "templateHash": "16305770290049677952"
     }
   },
   "parameters": {
@@ -157,7 +157,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "6116152704792473198"
+              "templateHash": "2498309587524573706"
             }
           },
           "parameters": {
@@ -2240,7 +2240,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11494363166880149340"
+                      "templateHash": "4586106155861903761"
                     }
                   },
                   "parameters": {
@@ -2274,7 +2274,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacks-WinOS",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                         "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
@@ -2375,7 +2375,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9510529842840322097"
+              "templateHash": "4632495328839530369"
             }
           },
           "parameters": {
@@ -4464,7 +4464,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "865818629262006185"
+                      "templateHash": "4817845247033026239"
                     }
                   },
                   "parameters": {
@@ -4498,7 +4498,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacks-LxOS",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                         "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
@@ -4599,7 +4599,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "16482395190539445989"
+              "templateHash": "2880608837656034000"
             }
           },
           "parameters": {
@@ -8059,7 +8059,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15562212896447139841"
+                      "templateHash": "12633025887086134775"
                     }
                   },
                   "parameters": {
@@ -8093,7 +8093,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacks-IIS",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                         "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
@@ -8194,7 +8194,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "15525399443106047284"
+              "templateHash": "14507317634738858370"
             }
           },
           "parameters": {
@@ -11677,7 +11677,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15562212896447139841"
+                      "templateHash": "14263823219313155161"
                     }
                   },
                   "parameters": {
@@ -11711,7 +11711,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacks-IIS2016",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                         "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
@@ -11812,7 +11812,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4078219429542954601"
+              "templateHash": "7812196696218449648"
             }
           },
           "parameters": {
@@ -14599,7 +14599,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12755873209684484438"
+                      "templateHash": "2245242108854628239"
                     }
                   },
                   "parameters": {
@@ -14633,7 +14633,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacks-DNS2016",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                         "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
@@ -16960,7 +16960,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "14512863627097851825"
+              "templateHash": "4127406249511119747"
             }
           },
           "parameters": {
@@ -19164,7 +19164,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "14387203787237749989"
+                      "templateHash": "14022933437085840510"
                     }
                   },
                   "parameters": {
@@ -19198,7 +19198,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacks-Nginx",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                         "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"

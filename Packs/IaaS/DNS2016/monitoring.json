@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4078219429542954601"
+      "templateHash": "7812196696218449648"
     }
   },
   "parameters": {
@@ -2792,7 +2792,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12755873209684484438"
+              "templateHash": "2245242108854628239"
             }
           },
           "parameters": {
@@ -2826,7 +2826,7 @@
             {
               "type": "Microsoft.Resources/deploymentScripts",
               "apiVersion": "2020-10-01",
-              "name": "deployscript-MonstarPacks",
+              "name": "deployscript-MonstarPacks-DNS2016",
               "tags": {
                 "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                 "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"

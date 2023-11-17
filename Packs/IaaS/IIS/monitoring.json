@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16482395190539445989"
+      "templateHash": "2880608837656034000"
     }
   },
   "parameters": {
@@ -3465,7 +3465,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "15562212896447139841"
+              "templateHash": "12633025887086134775"
             }
           },
           "parameters": {
@@ -3499,7 +3499,7 @@
             {
               "type": "Microsoft.Resources/deploymentScripts",
               "apiVersion": "2020-10-01",
-              "name": "deployscript-MonstarPacks",
+              "name": "deployscript-MonstarPacks-IIS",
               "tags": {
                 "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
                 "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"

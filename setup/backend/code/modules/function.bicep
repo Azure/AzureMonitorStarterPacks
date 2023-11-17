@@ -40,7 +40,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   location: location
   kind: 'AzureCLI'
   properties: {
-    azCliVersion: '2.26.1'
+    azCliVersion: '2.42.0'
     timeout: 'PT5M'
     retentionInterval: 'PT1H'
     environmentVariables: [
