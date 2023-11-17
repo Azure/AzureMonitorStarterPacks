@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "15567927927148370637"
+      "templateHash": "12711003220519024898"
     }
   },
   "parameters": {
@@ -1283,7 +1283,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1726461212853407744"
+              "templateHash": "14433875246603472736"
             }
           },
           "parameters": {
@@ -1400,7 +1400,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "7422089435285651310"
+                      "templateHash": "10393934723754502855"
                     }
                   },
                   "parameters": {
@@ -1490,7 +1490,7 @@
                             "value": "[variables('$fxv#0')]"
                           }
                         ],
-                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5}', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
+                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite ', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]"
@@ -3471,7 +3471,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11977091169501169706"
+              "templateHash": "17903564284097403582"
             }
           },
           "parameters": {
@@ -22084,7 +22084,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "fileName": {
-                    "value": "grafana.json"
+                    "value": "grafana.zip"
                   },
                   "grafanaName": {
                     "value": "[parameters('grafanaName')]"

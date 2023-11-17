@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11977091169501169706"
+      "templateHash": "17903564284097403582"
     }
   },
   "parameters": {
@@ -18618,7 +18618,7 @@
         "mode": "Incremental",
         "parameters": {
           "fileName": {
-            "value": "grafana.json"
+            "value": "grafana.zip"
           },
           "grafanaName": {
             "value": "[parameters('grafanaName')]"
