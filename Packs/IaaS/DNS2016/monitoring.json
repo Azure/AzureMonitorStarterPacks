@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "15329151063491869405"
+      "templateHash": "4078219429542954601"
     }
   },
   "parameters": {
@@ -97,6 +97,9 @@
       "type": "string"
     },
     "assignmentLevel": {
+      "type": "string"
+    },
+    "grafanaName": {
       "type": "string"
     }
   },
@@ -474,7 +477,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11335219399298147312"
+              "templateHash": "3095471329711295393"
             }
           },
           "parameters": {
@@ -498,7 +501,7 @@
             },
             "moduleprefix": {
               "type": "string",
-              "defaultValue": "AMSP-Win-Dns-2016"
+              "defaultValue": "AMSP-DNS2016"
             }
           },
           "variables": {
@@ -2747,6 +2750,111 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('dcrPerformance-{0}', parameters('packtag')))]"
       ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "grafana",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "fileName": {
+            "value": "grafana.json"
+          },
+          "grafanaName": {
+            "value": "[parameters('grafanaName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "resourceGroupName": {
+            "value": "[variables('resourceGroupName')]"
+          },
+          "solutionTag": {
+            "value": "[parameters('solutionTag')]"
+          },
+          "solutionVersion": {
+            "value": "[parameters('solutionVersion')]"
+          },
+          "packsManagedIdentityResourceId": {
+            "value": "[parameters('userManagedIdentityResourceId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "12755873209684484438"
+            }
+          },
+          "parameters": {
+            "solutionTag": {
+              "type": "string"
+            },
+            "solutionVersion": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "grafanaName": {
+              "type": "string"
+            },
+            "fileName": {
+              "type": "string"
+            },
+            "packsManagedIdentityResourceId": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": "ewogICJfX2lucHV0cyI6IFsKICAgIHsKICAgICAgIm5hbWUiOiAiRFNfQVpVUkVfTU9OSVRPUiIsCiAgICAgICJsYWJlbCI6ICJBenVyZSBNb25pdG9yIiwKICAgICAgImRlc2NyaXB0aW9uIjogIiIsCiAgICAgICJ0eXBlIjogImRhdGFzb3VyY2UiLAogICAgICAicGx1Z2luSWQiOiAiZ3JhZmFuYS1henVyZS1tb25pdG9yLWRhdGFzb3VyY2UiLAogICAgICAicGx1Z2luTmFtZSI6ICJBenVyZSBNb25pdG9yIgogICAgfQogIF0sCiAgIl9fZWxlbWVudHMiOiB7fSwKICAiX19yZXF1aXJlcyI6IFsKICAgIHsKICAgICAgInR5cGUiOiAiZ3JhZmFuYSIsCiAgICAgICJpZCI6ICJncmFmYW5hIiwKICAgICAgIm5hbWUiOiAiR3JhZmFuYSIsCiAgICAgICJ2ZXJzaW9uIjogIjkuNS42IgogICAgfSwKICAgIHsKICAgICAgInR5cGUiOiAiZGF0YXNvdXJjZSIsCiAgICAgICJpZCI6ICJncmFmYW5hLWF6dXJlLW1vbml0b3ItZGF0YXNvdXJjZSIsCiAgICAgICJuYW1lIjogIkF6dXJlIE1vbml0b3IiLAogICAgICAidmVyc2lvbiI6ICIxLjAuMCIKICAgIH0sCiAgICB7CiAgICAgICJ0eXBlIjogInBhbmVsIiwKICAgICAgImlkIjogInBpZWNoYXJ0IiwKICAgICAgIm5hbWUiOiAiUGllIGNoYXJ0IiwKICAgICAgInZlcnNpb24iOiAiIgogICAgfSwKICAgIHsKICAgICAgInR5cGUiOiAicGFuZWwiLAogICAgICAiaWQiOiAic3RhdCIsCiAgICAgICJuYW1lIjogIlN0YXQiLAogICAgICAidmVyc2lvbiI6ICIiCiAgICB9LAogICAgewogICAgICAidHlwZSI6ICJwYW5lbCIsCiAgICAgICJpZCI6ICJ0YWJsZSIsCiAgICAgICJuYW1lIjogIlRhYmxlIiwKICAgICAgInZlcnNpb24iOiAiIgogICAgfSwKICAgIHsKICAgICAgInR5cGUiOiAicGFuZWwiLAogICAgICAiaWQiOiAidGV4dCIsCiAgICAgICJuYW1lIjogIlRleHQiLAogICAgICAidmVyc2lvbiI6ICIiCiAgICB9LAogICAgewogICAgICAidHlwZSI6ICJwYW5lbCIsCiAgICAgICJpZCI6ICJ0aW1lc2VyaWVzIiwKICAgICAgIm5hbWUiOiAiVGltZSBzZXJpZXMiLAogICAgICAidmVyc2lvbiI6ICIiCiAgICB9CiAgXSwKICAiYW5ub3RhdGlvbnMiOiB7CiAgICAibGlzdCI6IFsKICAgICAgewogICAgICAgICJidWlsdEluIjogMSwKICAgICAgICAiZGF0YXNvdXJjZSI6IHsKICAgICAgICAgICJ0eXBlIjogImdyYWZhbmEiLAogICAgICAgICAgInVpZCI6ICItLSBHcmFmYW5hIC0tIgogICAgICAgIH0sCiAgICAgICAgImVuYWJsZSI6IHRydWUsCiAgICAgICAgImhpZGUiOiB0cnVlLAogICAgICAgICJpY29uQ29sb3IiOiAicmdiYSgwLCAyMTEsIDI1NSwgMSkiLAogICAgICAgICJuYW1lIjogIkFubm90YXRpb25zICYgQWxlcnRzIiwKICAgICAgICAidHlwZSI6ICJkYXNoYm9hcmQiCiAgICAgIH0KICAgIF0KICB9LAogICJkZXNjcmlwdGlvbiI6ICJUaGlzIGRhc2hib2FyZCBwcm92aWRlcyBhbiBvdmVydmlldyBvZiB0aGUgaGVhbHRoIGFuZCBwZXJmb3JtYW5jZSBvZiB0aGUgcmVzb3VyY2VzIG1vbml0b3JlZCBpbiBBenVyZSBNb25pdG9yIGVuYWJsZWQgYnkgdGhlIEROUyAyMDE2IE1vbml0b3JpbmcgU3RhcnRlciBQYWNrIiwKICAiZWRpdGFibGUiOiB0cnVlLAogICJmaXNjYWxZZWFyU3RhcnRNb250aCI6IDAsCiAgImdyYXBoVG9vbHRpcCI6IDAsCiAgImlkIjogbnVsbCwKICAibGlua3MiOiBbXSwKICAibGl2ZU5vdyI6IGZhbHNlLAogICJwYW5lbHMiOiBbCiAgXSwKICAicmVmcmVzaCI6ICIiLAogICJzY2hlbWFWZXJzaW9uIjogMzgsCiAgInN0eWxlIjogImRhcmsiLAogICJ0YWdzIjogW10sCiAgInRlbXBsYXRpbmciOiB7CiAgICAibGlzdCI6IFsKICAgICAgewogICAgICAgICJjdXJyZW50IjogewogICAgICAgICAgInNlbGVjdGVkIjogZmFsc2UsCiAgICAgICAgICAidGV4dCI6ICJBenVyZSBNb25pdG9yIiwKICAgICAgICAgICJ2YWx1ZSI6ICJBenVyZSBNb25pdG9yIgogICAgICAgIH0sCiAgICAgICAgImhpZGUiOiAwLAogICAgICAgICJpbmNsdWRlQWxsIjogZmFsc2UsCiAgICAgICAgImxhYmVsIjogIkRhdGFzb3VyY2UiLAogICAgICAgICJtdWx0aSI6IGZhbHNlLAogICAgICAgICJuYW1lIjogIkRhdGFzb3VyY2UiLAogICAgICAgICJvcHRpb25zIjogW10sCiAgICAgICAgInF1ZXJ5IjogImdyYWZhbmEtYXp1cmUtbW9uaXRvci1kYXRhc291cmNlIiwKICAgICAgICAicmVmcmVzaCI6IDEsCiAgICAgICAgInJlZ2V4IjogIiIsCiAgICAgICAgInNraXBVcmxTeW5jIjogZmFsc2UsCiAgICAgICAgInR5cGUiOiAiZGF0YXNvdXJjZSIKICAgICAgfSwKICAgICAgewogICAgICAgICJjdXJyZW50Ijoge30sCiAgICAgICAgImRhdGFzb3VyY2UiOiB7CiAgICAgICAgICAidHlwZSI6ICJncmFmYW5hLWF6dXJlLW1vbml0b3ItZGF0YXNvdXJjZSIsCiAgICAgICAgICAidWlkIjogIiR7RFNfQVpVUkVfTU9OSVRPUn0iCiAgICAgICAgfSwKICAgICAgICAiZGVmaW5pdGlvbiI6ICIiLAogICAgICAgICJoaWRlIjogMCwKICAgICAgICAiaW5jbHVkZUFsbCI6IHRydWUsCiAgICAgICAgImxhYmVsIjogIlN1YnNjcmlwdGlvbnMiLAogICAgICAgICJtdWx0aSI6IHRydWUsCiAgICAgICAgIm5hbWUiOiAiU3Vic2NyaXB0aW9ucyIsCiAgICAgICAgIm9wdGlvbnMiOiBbXSwKICAgICAgICAicXVlcnkiOiB7CiAgICAgICAgICAiYXp1cmVMb2dBbmFseXRpY3MiOiB7CiAgICAgICAgICAgICJxdWVyeSI6ICIiLAogICAgICAgICAgICAicmVzb3VyY2VzIjogW10KICAgICAgICAgIH0sCiAgICAgICAgICAicXVlcnlUeXBlIjogIkF6dXJlIFN1YnNjcmlwdGlvbnMiLAogICAgICAgICAgInJlZklkIjogIkEiCiAgICAgICAgfSwKICAgICAgICAicmVmcmVzaCI6IDEsCiAgICAgICAgInJlZ2V4IjogIiIsCiAgICAgICAgInNraXBVcmxTeW5jIjogZmFsc2UsCiAgICAgICAgInNvcnQiOiAwLAogICAgICAgICJ0eXBlIjogInF1ZXJ5IgogICAgICB9LAogICAgICB7CiAgICAgICAgImN1cnJlbnQiOiB7fSwKICAgICAgICAiZGF0YXNvdXJjZSI6IHsKICAgICAgICAgICJ0eXBlIjogImdyYWZhbmEtYXp1cmUtbW9uaXRvci1kYXRhc291cmNlIiwKICAgICAgICAgICJ1aWQiOiAiJHtEU19BWlVSRV9NT05JVE9SfSIKICAgICAgICB9LAogICAgICAgICJkZWZpbml0aW9uIjogIiIsCiAgICAgICAgImhpZGUiOiAwLAogICAgICAgICJpbmNsdWRlQWxsIjogdHJ1ZSwKICAgICAgICAibGFiZWwiOiAiV29ya3NwYWNlKHMpIiwKICAgICAgICAibXVsdGkiOiB0cnVlLAogICAgICAgICJuYW1lIjogIldvcmtzcGFjZSIsCiAgICAgICAgIm9wdGlvbnMiOiBbXSwKICAgICAgICAicXVlcnkiOiB7CiAgICAgICAgICAiYXp1cmVMb2dBbmFseXRpY3MiOiB7CiAgICAgICAgICAgICJxdWVyeSI6ICIiLAogICAgICAgICAgICAicmVzb3VyY2VzIjogW10KICAgICAgICAgIH0sCiAgICAgICAgICAicXVlcnlUeXBlIjogIkF6dXJlIFdvcmtzcGFjZXMiLAogICAgICAgICAgInJlZklkIjogIkEiLAogICAgICAgICAgInN1YnNjcmlwdGlvbiI6ICIkU3Vic2NyaXB0aW9ucyIKICAgICAgICB9LAogICAgICAgICJyZWZyZXNoIjogMSwKICAgICAgICAicmVnZXgiOiAiIiwKICAgICAgICAic2tpcFVybFN5bmMiOiBmYWxzZSwKICAgICAgICAic29ydCI6IDAsCiAgICAgICAgInR5cGUiOiAicXVlcnkiCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAiY3VycmVudCI6IHt9LAogICAgICAgICJkYXRhc291cmNlIjogewogICAgICAgICAgInR5cGUiOiAiZ3JhZmFuYS1henVyZS1tb25pdG9yLWRhdGFzb3VyY2UiLAogICAgICAgICAgInVpZCI6ICIke0RTX0FaVVJFX01PTklUT1J9IgogICAgICAgIH0sCiAgICAgICAgImRlZmluaXRpb24iOiAiIiwKICAgICAgICAiaGlkZSI6IDAsCiAgICAgICAgImluY2x1ZGVBbGwiOiB0cnVlLAogICAgICAgICJsYWJlbCI6ICJSZXNvdXJjZXMiLAogICAgICAgICJtdWx0aSI6IHRydWUsCiAgICAgICAgIm5hbWUiOiAiUmVzb3VyY2VzIiwKICAgICAgICAib3B0aW9ucyI6IFtdLAogICAgICAgICJxdWVyeSI6IHsKICAgICAgICAgICJhenVyZUxvZ0FuYWx5dGljcyI6IHsKICAgICAgICAgICAgInF1ZXJ5IjogIiIsCiAgICAgICAgICAgICJyZXNvdXJjZXMiOiBbXQogICAgICAgICAgfSwKICAgICAgICAgICJhenVyZVJlc291cmNlR3JhcGgiOiB7CiAgICAgICAgICAgICJxdWVyeSI6ICJyZXNvdXJjZXNcclxufCBleHRlbmQgU3RhcnRlclBhY2sgPSB0YWdzLk1vbml0b3JTdGFydGVyUGFja3NcclxufCB3aGVyZSBTdGFydGVyUGFjayBpbiAoXCJETlMyMDE2XCIsIFwiV09TLEROUzIwMTZcIikgYW5kIHR5cGUgaW4gKFwibWljcm9zb2Z0Lmh5YnJpZGNvbXB1dGUvbWFjaGluZXNcIiwgXCJtaWNyb3NvZnQuY29tcHV0ZS92aXJ0dWFsbWFjaGluZXNcIilcclxufCBwcm9qZWN0IHZhbHVlID0gdG9sb3dlcihpZCksIGxhYmVsID0gbmFtZSIKICAgICAgICAgIH0sCiAgICAgICAgICAicXVlcnlUeXBlIjogIkF6dXJlIFJlc291cmNlIEdyYXBoIiwKICAgICAgICAgICJyZWZJZCI6ICJBIiwKICAgICAgICAgICJzdWJzY3JpcHRpb25zIjogWwogICAgICAgICAgICAiJFN1YnNjcmlwdGlvbnMiCiAgICAgICAgICBdCiAgICAgICAgfSwKICAgICAgICAicmVmcmVzaCI6IDEsCiAgICAgICAgInJlZ2V4IjogIiIsCiAgICAgICAgInNraXBVcmxTeW5jIjogZmFsc2UsCiAgICAgICAgInNvcnQiOiAwLAogICAgICAgICJ0eXBlIjogInF1ZXJ5IgogICAgICB9CiAgICBdCiAgfSwKICAidGltZSI6IHsKICAgICJmcm9tIjogIm5vdy02aCIsCiAgICAidG8iOiAibm93IgogIH0sCiAgInRpbWVwaWNrZXIiOiB7fSwKICAidGltZXpvbmUiOiAiIiwKICAidGl0bGUiOiAiQXp1cmUgTW9uaXRvciBTdGFydGVyIFBhY2sgLyBETlMyMDE2IiwKICAidWlkIjogIkROUzIwMTZNb25TdGFyUGFja0Rhc2giLAogICJ2ZXJzaW9uIjogNAp9",
+            "tempfilename": "[format('{0}.tmp', parameters('fileName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2020-10-01",
+              "name": "deployscript-MonstarPacks",
+              "tags": {
+                "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
+                "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
+              },
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('packsManagedIdentityResourceId'))]": {}
+                }
+              },
+              "kind": "AzureCLI",
+              "properties": {
+                "azCliVersion": "2.42.0",
+                "timeout": "PT5M",
+                "retentionInterval": "PT1H",
+                "environmentVariables": [
+                  {
+                    "name": "CONTENT",
+                    "value": "[variables('$fxv#0')]"
+                  }
+                ],
+                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az extension add --name amg && az login --identity && az grafana dashboard import -g {3} -n {4} --definition {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'), parameters('fileName'))]"
+              }
+            }
+          ]
+        }
+      }
     }
   ]
 }

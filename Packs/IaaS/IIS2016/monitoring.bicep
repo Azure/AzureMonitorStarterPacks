@@ -27,6 +27,7 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
+param grafanaName string
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS2016'
@@ -215,3 +216,17 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
   }
 }
 
+// Grafana upload and install
+module grafana 'ds.bicep' = {
+  name: 'grafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    fileName: 'grafana.json'
+    grafanaName: grafanaName
+    location: location
+    resourceGroupName: resourceGroupName
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    packsManagedIdentityResourceId: userManagedIdentityResourceId
+  }
+}

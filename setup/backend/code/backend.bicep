@@ -142,6 +142,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
+    addRGRoleAssignments: true
   }
 }
 

@@ -31,13 +31,17 @@ Review Packs documentation [here](./Packs/README.md).
 
 ## Grafana Dashboards
 
-Each pack may have its own Grafana dashboard. The Grafana dashboards are not deployed along with the ARM templates. They need to be deployed separately. To do so, follow the steps below:
+Each pack may have its own Grafana dashboard. The Grafana dashboards are deploying along with each pack.
+In order for the current user to have access to the Grafana environment, the user needs to be added to the Grafana Admins group. This can be done by running the following these instructions.
 
-1. Navigate the repository to the Pack folder and identify the file. For example:
-![Grafana Dashboard](image.png)
-2. Run the following command:
+1. Navigate the recently deployed Grafana environment and click on Access Control (IAM) and click on Add role assignment.
 
-`az grafana dashboard import -g <your resource Group> -n <name of azure managed grafana> --definition <filename> --overwrite true`
+![Alt text](./Docs/media/grafana1.png)
+
+![Alt text](./Docs/media/grafana2.png)
+
+2. Select the proper user or users. The process may take a few minutes to assign the proper permissions.
+
 ## Authoring Guide
 
 Click [here](./Docs/authoring.md) for guidance on how to create new packs.

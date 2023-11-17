@@ -65,6 +65,7 @@ module LxOSPack './LxOS/monitoring.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }
 module IIS './IIS/monitoring.bicep' = {
@@ -85,6 +86,7 @@ module IIS './IIS/monitoring.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }
 
@@ -106,6 +108,7 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }
 module DNS2016 './DNS2016/monitoring.bicep' = {
@@ -126,6 +129,7 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }
 module PS2016 './PS2016/monitoring.bicep' = {
@@ -146,6 +150,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }
 module Nginx './Nginx/monitoring.bicep' = {
@@ -166,5 +171,6 @@ module Nginx './Nginx/monitoring.bicep' = {
     emailreceivers: emailreceivers
     emailreiceversemails: emailreiceversemails
     existingAGRG: existingAGRG
+    grafanaName: grafanaName
   }
 }

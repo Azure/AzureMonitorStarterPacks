@@ -29,7 +29,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     environmentVariables: [
       {
         name: 'CONTENT'
-        value: loadFileAsBase64('./Azure Monitor Start Pack - Windows Operating System-1692086853589.json')
+        value: loadFileAsBase64('./Azure Monitor Starter Pack _ NGINX-1692341707202.json')
       }
     ]
     scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az extension add --name amg && az login --identity && az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --definition ${fileName} --overwrite true'

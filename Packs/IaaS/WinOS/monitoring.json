@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "6090191529532506127"
+      "templateHash": "6116152704792473198"
     }
   },
   "parameters": {
@@ -2076,6 +2076,9 @@
           },
           "solutionVersion": {
             "value": "[parameters('solutionVersion')]"
+          },
+          "packsManagedIdentityResourceId": {
+            "value": "[parameters('userManagedIdentityResourceId')]"
           }
         },
         "template": {
@@ -2085,7 +2088,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1323112425496885568"
+              "templateHash": "11494363166880149340"
             }
           },
           "parameters": {
@@ -2106,6 +2109,9 @@
             },
             "fileName": {
               "type": "string"
+            },
+            "packsManagedIdentityResourceId": {
+              "type": "string"
             }
           },
           "variables": {
@@ -2122,9 +2128,15 @@
                 "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
               },
               "location": "[parameters('location')]",
+              "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('packsManagedIdentityResourceId'))]": {}
+                }
+              },
               "kind": "AzureCLI",
               "properties": {
-                "azCliVersion": "2.26.1",
+                "azCliVersion": "2.42.0",
                 "timeout": "PT5M",
                 "retentionInterval": "PT1H",
                 "environmentVariables": [
@@ -2133,7 +2145,7 @@
                     "value": "[variables('$fxv#0')]"
                   }
                 ],
-                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az extension add --name amg && az grafana dashboard import -g {3} -n {4} --definition {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'), parameters('fileName'))]"
+                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az extension add --name amg && az login --identity && az grafana dashboard import -g {3} -n {4} --definition {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'), parameters('fileName'))]"
               }
             }
           ]

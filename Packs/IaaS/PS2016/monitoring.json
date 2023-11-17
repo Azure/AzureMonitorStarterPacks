@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "10926930927679188074"
+      "templateHash": "12634842291322969730"
     }
   },
   "parameters": {
@@ -96,6 +96,9 @@
       "type": "string"
     },
     "assignmentLevel": {
+      "type": "string"
+    },
+    "grafanaName": {
       "type": "string"
     }
   },

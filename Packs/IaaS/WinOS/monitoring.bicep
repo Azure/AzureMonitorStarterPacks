@@ -119,6 +119,7 @@ module grafana 'ds.bicep' = {
     resourceGroupName: resourceGroupName
     solutionTag: solutionTag
     solutionVersion: solutionVersion
+    packsManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
 
