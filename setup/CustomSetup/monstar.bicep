@@ -15,6 +15,7 @@ param functionName string
 param grafanaLocation string
 param grafanaName string
 param storageAccountName string
+param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 
 // Packs` stuff
@@ -42,6 +43,16 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
     location: location
     solutionTag: solutionTag
     solutionVersion: solutionVersion    
+  }
+}
+module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
+  name:'newstorage-deployment'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    location: location
+    solutionVersion: solutionVersion
+    solutionTag: solutionTag
+    storageAccountName: storageAccountName
   }
 }
 

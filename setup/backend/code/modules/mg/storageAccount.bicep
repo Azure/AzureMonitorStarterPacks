@@ -3,7 +3,7 @@ param location string
 param solutionTag string
 param solutionVersion string
 
-resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
   location: location
   tags: {
@@ -43,5 +43,5 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
     }
   }
 }
-output storageAccountName string = discoveryStorage.name
-output storageAccountResourceId string = discoveryStorage.id
+output storageAccountName string = storageAccount.name
+output storageAccountResourceId string = storageAccount.id
