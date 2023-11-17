@@ -236,7 +236,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "label": "Select user managed identity for Packs.",
                             "multiselect": false,
-                            "defaultValue": "",
+                            "defaultValue": "packsUserManagedIdentity",
                             "toolTip": "Select User Managed identity for the pack.",
                             "filter": true,
                             "filterPlaceholder": "Filter Storage Account...",
