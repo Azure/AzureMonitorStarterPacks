@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "solutionTag": {
+            "value": "MonitorStarterPacks"
+        },
+        "solutionVersion": {
+            "value": "1.0.0"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "resourceGroupName": {
+            "value": "rg-MonstarPacks"
+        },
+        "grafanaName": {
+            "value": "AMSP6c64f9ed"
+        },
+        "fileName": {
+            "value": "grafana.zip"
+        },
+        "packsManagedIdentityResourceId": {
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-MonstarPacks/providers/Microsoft.ManagedIdentity/userAssignedIdentities/packsUserManagedIdentity"
+        }
+    }
+}

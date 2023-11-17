@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4417456629185091504"
+      "templateHash": "11554551951976601560"
     }
   },
   "parameters": {
@@ -18646,7 +18646,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "2875401893658405993"
+              "templateHash": "9940730892370063404"
             }
           },
           "parameters": {
@@ -18703,7 +18703,7 @@
                     "value": "[variables('$fxv#0')]"
                   }
                 ],
-                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az extension add --name amg && az login --identity && unzip {3} && for file in *.json; do az grafana dashboard import -g {4} -n {5} --definition $file --overwrite true;done', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'))]"
+                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az extension add --name amg && az login --identity && unzip {3} && for file in *.json; do az grafana dashboard import -g {4} -n {5} --definition \"$file\" --overwrite true;done', variables('tempfilename'), variables('tempfilename'), parameters('fileName'), parameters('fileName'), parameters('resourceGroupName'), parameters('grafanaName'))]"
               }
             }
           ]
