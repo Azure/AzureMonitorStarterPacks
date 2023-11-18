@@ -4,7 +4,7 @@ param AGId string
 param packtag string
 param solutionTag string
 param solutionVersion string
-param moduleprefix string = 'AMSP-Win-Dns-2016'
+param moduleprefix string = 'AMSP-DNS2016'
 // Alert list  
 
 var alertlist = [

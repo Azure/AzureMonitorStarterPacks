@@ -1,25 +1,35 @@
 targetScope='managementGroup'
 
-param rulename string
+@description('Name of the DCR rule to be created')
+param rulename string = 'AMSP-IIS-Server'
+@description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
+@description('Email receiver names to be used for the Action Group if being created.')
 param emailreceivers array = []
+@description('Email addresses to be used for the Action Group if being created.')
 param emailreiceversemails array = []
-param useExistingAG bool 
+@description('If set to true, a new Action group will be created')
+param useExistingAG bool
+@description('Name of the existing resource group to be used for the Action Group if existing.')
 param existingAGRG string = ''
+@description('location for the deployment.')
 param location string //= resourceGroup().location
+@description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-param packtag string
+param packtag string = 'IIS'
 param solutionTag string
 param solutionVersion string
+@description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
+@description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-var workspaceFriendlyName = split(workspaceId, '/')[8]
-
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
+param grafanaName string
 
+var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS1'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
@@ -95,7 +105,7 @@ var performanceCounters=[
 
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
 module ag '../../../modules/actiongroups/ag.bicep' = {
-  name: actionGroupName
+  name: 'actionGroupName-deployment'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
@@ -186,3 +196,17 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
   }
 }
 
+// // Grafana upload and install
+// module grafana 'ds.bicep' = {
+//   name: 'grafana'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     fileName: 'grafana.json'
+//     grafanaName: grafanaName
+//     location: location
+//     resourceGroupName: resourceGroupName
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     packsManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }

@@ -5,12 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "3044769811122034863"
+      "templateHash": "8019514232739838466"
     }
   },
   "parameters": {
     "rulename": {
       "type": "string",
+      "defaultValue": "AMSP-Windows-OS",
       "metadata": {
         "description": "Name of the DCR rule to be created"
       }
@@ -62,7 +63,8 @@
       }
     },
     "packtag": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "WinOS"
     },
     "solutionTag": {
       "type": "string"
@@ -86,6 +88,9 @@
       "type": "string"
     },
     "assignmentLevel": {
+      "type": "string"
+    },
+    "grafanaName": {
       "type": "string"
     }
   },

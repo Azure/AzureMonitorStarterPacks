@@ -5,18 +5,20 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "5158854008894750993"
+      "templateHash": "7534064264147640200"
     }
   },
   "parameters": {
     "rulename": {
       "type": "string",
+      "defaultValue": "AMSP-IIS2016-Server",
       "metadata": {
         "description": "Name of the DCR rule to be created"
       }
     },
     "actionGroupName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Name of the Action Group to be used or created."
       }
@@ -95,6 +97,9 @@
       "type": "string"
     },
     "assignmentLevel": {
+      "type": "string"
+    },
+    "grafanaName": {
       "type": "string"
     }
   },
@@ -194,7 +199,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[parameters('actionGroupName')]",
+      "name": "ag-deployment",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -403,7 +408,7 @@
             "value": "[parameters('workspaceId')]"
           },
           "AGId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', parameters('actionGroupName')), '2022-09-01').outputs.actionGroupResourceId.value]"
+            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'ag-deployment'), '2022-09-01').outputs.actionGroupResourceId.value]"
           },
           "packtag": {
             "value": "[parameters('packtag')]"
@@ -422,7 +427,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11187571577085489637"
+              "templateHash": "15742914507645569291"
             }
           },
           "parameters": {
@@ -446,7 +451,7 @@
             },
             "moduleprefix": {
               "type": "string",
-              "defaultValue": "AMSP-Win-IIS"
+              "defaultValue": "AMSP-IIS2016"
             }
           },
           "variables": {
@@ -1354,7 +1359,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', parameters('actionGroupName'))]"
+        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'ag-deployment')]"
       ]
     },
     {

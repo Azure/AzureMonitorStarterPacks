@@ -1,0 +1,311 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Install Azure Monitor Starter Packs",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "kind": "ManagementGroup",
+                            "instanceDetailsLabel": "MonStar Packs Deployment Details"
+                        },
+                        {
+                            "name": "mgmtGroupAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Configuration",
+                    "label": "MonStar Configuration",
+                    "elements": [
+                        {
+                            "name": "subscriptionAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2022-12-01"
+                            }
+                        },
+                        {
+                            "name": "ResGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
+                            "name": "LogAnalyticsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
+                            }
+                        },
+                        {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
+                        {
+                            "name": "dataCollectionEndpointAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/dataCollectionEndpoints?api-version=2022-06-01')]"
+                            }
+                        },
+                        {
+                            "name": "userManagedIdentitiesAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities?api-version=2023-01-31')]"
+                            }
+                        },                      
+                        {
+                            "name": "subscriptionId",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Select Subscription",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Subscription to deploy resources to.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Subscriptions...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').subscriptionAPI.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "ResourceGroupStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Resource Group",
+                            "toolTip": "This will be the Resource Group in which the MonStar Packs` resources will be deployed in.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "resourceGroupNameNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Resource Group Name for MonStar Packs",
+                            "subLabel": "",
+                            "defaultValue": "rg-MonstarPacks",
+                            "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
+                                "regex": "",
+                                "validationMessage": ""
+                            },
+                            "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "resourceGroupNameExisting",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Resource Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
+                        },
+                        {
+                            "name": "ActionGroupStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Action Group",
+                            "toolTip": "This will be the Action Group to receive alert emails.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "existingAG",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Action Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Action Group to receive alerts.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'Existing')]"
+                        },
+                        {
+                            "name": "NewActionGroupName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "New Action Group Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "emailreceivers",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Email Receiver(s)",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "emailreceiversemails",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Email Receiver(s) email(s)",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "dataCollectionEndpointId",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Select data collection endpoint.",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Storage Account to support solution",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Storage Account...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').dataCollectionEndpointAPI.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "userManagedIdentitiesId",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Select user managed identity for Packs.",
+                            "multiselect": false,
+                            "defaultValue": "packsUserManagedIdentity",
+                            "toolTip": "Select User Managed identity for the pack.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Storage Account...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').userManagedIdentitiesAPI.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "LogAnalyticsWorkspaceResource",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Log Analytics Workspace",
+                            "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
+                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "constraints": {
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "assignmentLevel",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Assign Policies to ManagementGroup or Subscription",
+                            "toolTip": "This will define the initial assignment Level for the policies.",
+                            "defaultValue": "Subscription",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "Management Group",
+                                        "value": "ManagementGroup"
+                                    },
+                                    {
+                                        "label": "Subscription",
+                                        "value": "Subscription"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        }                     
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "mgname": "[steps('basics').resourceScope.managementGroup.name]",
+                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
+                "resourceGroupId": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, steps('Configuration').resourceGroupNameExisting)]",
+                "location": "[steps('basics').resourceScope.location.name]",
+                "assignmentLevel": "[steps('Configuration').assignmentLevel]",
+                "workspaceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "solutionTag":"MonitorStarterPacks",
+                "solutionVersion":"1.0.0",
+                "dceId":"[steps('Configuration').dataCollectionEndpointId]",
+                "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
+                "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
+                "emailreceivers":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceivers,'')]",
+                "emailreiceversemails":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemails,'')]",
+                "existingAGRG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(take(split(steps('Configuration').existingAG,'/'),5)))]",
+                "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
+                "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]"
+            },
+            "kind": "ManagementGroup",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "managementGroupId": "[steps('basics').resourceScope.managementGroup.id]"
+        }
+    }
+}

@@ -5,20 +5,19 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16917654573381673650"
+      "templateHash": "12634842291322969730"
     }
   },
   "parameters": {
     "rulename": {
       "type": "string",
-      "defaultValue": "AMSP-Linux-Nginx",
+      "defaultValue": "AMSP-Windows-PS2016",
       "metadata": {
         "description": "Name of the DCR rule to be created"
       }
     },
     "actionGroupName": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Name of the Action Group to be used or created."
       }
@@ -39,6 +38,7 @@
     },
     "useExistingAG": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "If set to true, a new Action group will be created"
       }
@@ -64,13 +64,15 @@
     },
     "packtag": {
       "type": "string",
-      "defaultValue": "Nginx"
+      "defaultValue": "PS2016"
     },
     "solutionTag": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "MonitorStarterPacks"
     },
     "solutionVersion": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "0.1.0"
     },
     "dceId": {
       "type": "string",
@@ -101,20 +103,28 @@
     }
   },
   "variables": {
-    "ruleshortname": "Nginx",
+    "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
+    "ruleshortname": "PS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
-    "facilityNames": [
-      "daemon"
+    "kind": "Windows",
+    "xPathQueries": [
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=83) and (Provider[@Name='Microsoft-Windows-PrintBRM' or @Name='PrintBrm'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=360) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Operational!*[System[(EventID=701 or EventID=702 or EventID=703 or EventID=704) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=364 or EventID=365 or EventID=367) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=315) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=371) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=356) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=513 or EventID=514) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=600 or EventID=601) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=515 or EventID=516 or EventID=517 or EventID=518 or EventID=519 or EventID=520) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+      "Microsoft-Windows-PrintService/Admin!*[System[(EventID=502 or EventID=503 or EventID=504 or EventID=505 or EventID=506 or EventID=507 or EventID=508 or EventID=509 or EventID=510 or EventID=511 or EventID=512) and (Provider[@Name='Microsoft-Windows-PrintService'])]]"
     ],
-    "logLevels": [
-      "Debug",
-      "Info",
-      "Notice",
-      "Warning",
-      "Error",
-      "Critical",
-      "Alert",
-      "Emergency"
+    "performanceCounters": [
+      "\\Print Queue(_Total)\\Jobs",
+      "\\Print Queue(_Total)\\Jobs Spooling",
+      "\\Print Queue(_Total)\\Total Jobs Printed",
+      "\\Print Queue(_Total)\\Total Pages Printed"
     ]
   },
   "resources": [
@@ -314,287 +324,6 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('filecollectionrule-{0}', parameters('packtag'))]",
-      "subscriptionId": "[parameters('subscriptionId')]",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "endpointResourceId": {
-            "value": "[parameters('dceId')]"
-          },
-          "packtag": {
-            "value": "[parameters('packtag')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
-          },
-          "ruleName": {
-            "value": "[parameters('rulename')]"
-          },
-          "filepatterns": {
-            "value": [
-              "/var/log/nginx/access.log"
-            ]
-          },
-          "lawResourceId": {
-            "value": "[parameters('workspaceId')]"
-          },
-          "tableName": {
-            "value": "NginxLogs"
-          },
-          "facilityNames": {
-            "value": "[variables('facilityNames')]"
-          },
-          "logLevels": {
-            "value": "[variables('logLevels')]"
-          },
-          "syslogDataSourceName": {
-            "value": "NginxLogs-1238219"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "8002872076334624211"
-            }
-          },
-          "parameters": {
-            "ruleName": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the name of the data collection rule to create."
-              }
-            },
-            "endpointResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the resource id of the data collection endpoint."
-              }
-            },
-            "tableName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the table."
-              }
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the location in which to create the data collection rule."
-              }
-            },
-            "filepatterns": {
-              "type": "array"
-            },
-            "lawResourceId": {
-              "type": "string"
-            },
-            "solutionTag": {
-              "type": "string"
-            },
-            "packtag": {
-              "type": "string"
-            },
-            "facilityNames": {
-              "type": "array"
-            },
-            "logLevels": {
-              "type": "array"
-            },
-            "syslogDataSourceName": {
-              "type": "string",
-              "defaultValue": "sysLogsDataSource-1688419672"
-            }
-          },
-          "variables": {
-            "tableNameToUse": "[format('CustomAzMA{0}_CL', parameters('tableName'))]",
-            "streamName": "[format('Custom-{0}', variables('tableNameToUse'))]",
-            "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]",
-            "lawResourceGroup": "[split(parameters('lawResourceId'), '/')[4]]"
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Insights/dataCollectionRules",
-              "apiVersion": "2022-06-01",
-              "name": "[parameters('ruleName')]",
-              "location": "[parameters('location')]",
-              "tags": {
-                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-              },
-              "kind": "Linux",
-              "properties": {
-                "dataSources": {
-                  "syslog": [
-                    {
-                      "streams": [
-                        "Microsoft-Syslog"
-                      ],
-                      "facilityNames": "[parameters('facilityNames')]",
-                      "logLevels": "[parameters('logLevels')]",
-                      "name": "[parameters('syslogDataSourceName')]"
-                    }
-                  ],
-                  "logFiles": [
-                    {
-                      "streams": [
-                        "[variables('streamName')]"
-                      ],
-                      "filePatterns": "[parameters('filepatterns')]",
-                      "format": "text",
-                      "settings": {
-                        "text": {
-                          "recordStartTimestampFormat": "ISO 8601"
-                        }
-                      },
-                      "name": "[variables('tableNameToUse')]"
-                    }
-                  ]
-                },
-                "destinations": {
-                  "logAnalytics": [
-                    {
-                      "workspaceResourceId": "[parameters('lawResourceId')]",
-                      "name": "[variables('lawFriendlyName')]"
-                    }
-                  ]
-                },
-                "dataFlows": [
-                  {
-                    "streams": [
-                      "Microsoft-Syslog"
-                    ],
-                    "destinations": [
-                      "[variables('lawFriendlyName')]"
-                    ],
-                    "transformKql": "source | where SyslogMessage == \"Stopped A high performance web server and a reverse proxy server.\" or SyslogMessage == \"Started A high performance web server and a reverse proxy server.\"",
-                    "outputStream": "Microsoft-Syslog"
-                  },
-                  {
-                    "streams": [
-                      "[variables('streamName')]"
-                    ],
-                    "destinations": [
-                      "[variables('lawFriendlyName')]"
-                    ],
-                    "transformKql": "source",
-                    "outputStream": "[variables('streamName')]"
-                  }
-                ],
-                "dataCollectionEndpointId": "[parameters('endpointResourceId')]",
-                "streamDeclarations": {
-                  "[format('{0}', variables('streamName'))]": {
-                    "columns": [
-                      {
-                        "name": "TimeGenerated",
-                        "type": "datetime"
-                      },
-                      {
-                        "name": "RawData",
-                        "type": "string"
-                      }
-                    ]
-                  }
-                }
-              },
-              "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('lawResourceGroup')), 'Microsoft.Resources/deployments', variables('tableNameToUse'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[variables('tableNameToUse')]",
-              "resourceGroup": "[variables('lawResourceGroup')]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "parentname": {
-                    "value": "[variables('lawFriendlyName')]"
-                  },
-                  "tableName": {
-                    "value": "[variables('tableNameToUse')]"
-                  },
-                  "retentionDays": {
-                    "value": 31
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "8927710276797462866"
-                    }
-                  },
-                  "parameters": {
-                    "parentname": {
-                      "type": "string"
-                    },
-                    "tableName": {
-                      "type": "string"
-                    },
-                    "retentionDays": {
-                      "type": "int",
-                      "defaultValue": 31
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.OperationalInsights/workspaces/tables",
-                      "apiVersion": "2022-10-01",
-                      "name": "[format('{0}/{1}', parameters('parentname'), parameters('tableName'))]",
-                      "properties": {
-                        "totalRetentionInDays": "[parameters('retentionDays')]",
-                        "plan": "Analytics",
-                        "schema": {
-                          "name": "[parameters('tableName')]",
-                          "columns": [
-                            {
-                              "name": "TimeGenerated",
-                              "type": "datetime"
-                            },
-                            {
-                              "name": "RawData",
-                              "type": "string"
-                            }
-                          ]
-                        },
-                        "retentionInDays": "[parameters('retentionDays')]"
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          "outputs": {
-            "ruleId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('ruleName'))]"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
       "name": "[format('Alerts-{0}', parameters('packtag'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -630,7 +359,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1535411604399807434"
+              "templateHash": "15949903005818308169"
             }
           },
           "parameters": {
@@ -651,21 +380,134 @@
             },
             "solutionVersion": {
               "type": "string"
+            },
+            "moduleprefix": {
+              "type": "string",
+              "defaultValue": "AMSP-Win-PS2016"
             }
           },
           "variables": {
-            "moduleprefix": "AMSP-LxOS-Nginx",
             "alertlist": [
               {
-                "alertRuleDescription": "Nginx stopped.",
-                "alertRuleDisplayName": "Nginx service stopped.",
-                "alertRuleName": "AlertRule-Nginx-1",
-                "alertRuleSeverity": 1,
+                "alertRuleDescription": "Ensure the server is accessible.",
+                "alertRuleDisplayName": "Ensure the server is accessible.",
+                "alertRuleName": "AlertRule-PS-2016-1",
+                "alertRuleSeverity": 2,
                 "autoMitigate": true,
                 "evaluationFrequency": "PT15M",
                 "windowSize": "PT15M",
                 "alertType": "rows",
-                "query": "Syslog | where SyslogMessage == \"Stopped A high performance web server and a reverse proxy server.\""
+                "query": "Event | where  EventID in (83) and EventLog == 'Microsoft-Windows-PrintService/Admin' and (Source == 'Microsoft-Windows-PrintBRM' or Source == 'PrintBrm')"
+              },
+              {
+                "alertRuleDescription": "Manually install the color profile.",
+                "alertRuleDisplayName": "Manually install the color profile.",
+                "alertRuleName": "AlertRule-PS-2016-2",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (360) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Retry printing or restart the print server.",
+                "alertRuleDisplayName": "Retry printing or restart the print server.",
+                "alertRuleName": "AlertRule-PS-2016-3",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (701,702,703,704) and EventLog == 'Microsoft-Windows-PrintService/Operational!*' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Install the Printer Driver.",
+                "alertRuleDisplayName": "Install the Printer Driver.",
+                "alertRuleName": "AlertRule-PS-2016-4",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (364,365,367) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Restart the print spooler fix sharing problems and check Group Policy.",
+                "alertRuleDisplayName": "Restart the print spooler fix sharing problems and check Group Policy.",
+                "alertRuleName": "AlertRule-PS-2016-5",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (315) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Restart the print spooler and unshare the printer.",
+                "alertRuleDisplayName": "Restart the print spooler and unshare the printer.",
+                "alertRuleName": "AlertRule-PS-2016-6",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (371) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Update the printer driver.",
+                "alertRuleDisplayName": "Update the printer driver.",
+                "alertRuleName": "AlertRule-PS-2016-7",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (356) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Check Group Policy and network connectivity.",
+                "alertRuleDisplayName": "Check Group Policy and network connectivity.",
+                "alertRuleName": "AlertRule-PS-2016-8",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (513,514) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Try again or install an updated printer driver.",
+                "alertRuleDisplayName": "Try again or install an updated printer driver.",
+                "alertRuleName": "AlertRule-PS-2016-9",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (600,601) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Check network connectivity and Group Policy.",
+                "alertRuleDisplayName": "Check network connectivity and Group Policy.",
+                "alertRuleName": "AlertRule-PS-2016-10",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (515,516,517,518,519,520) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Check resource availability.",
+                "alertRuleDisplayName": "Check resource availability.",
+                "alertRuleName": "AlertRule-PS-2016-11",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (502,503,504,505,506,507,508,509,510,511,512) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
               }
             ]
           },
@@ -673,7 +515,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Alerts', variables('moduleprefix'))]",
+              "name": "[format('{0}-Alerts', parameters('moduleprefix'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -690,7 +532,7 @@
                     "value": "[parameters('location')]"
                   },
                   "moduleprefix": {
-                    "value": "[variables('moduleprefix')]"
+                    "value": "[parameters('moduleprefix')]"
                   },
                   "packtag": {
                     "value": "[parameters('packtag')]"
@@ -1279,6 +1121,156 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
+      "name": "[format('dcrPerformance-{0}', parameters('packtag'))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "rulename": {
+            "value": "[parameters('rulename')]"
+          },
+          "workspaceId": {
+            "value": "[parameters('workspaceId')]"
+          },
+          "wsfriendlyname": {
+            "value": "[variables('workspaceFriendlyName')]"
+          },
+          "kind": {
+            "value": "[variables('kind')]"
+          },
+          "xPathQueries": {
+            "value": "[variables('xPathQueries')]"
+          },
+          "counterSpecifiers": {
+            "value": "[variables('performanceCounters')]"
+          },
+          "packtag": {
+            "value": "[parameters('packtag')]"
+          },
+          "solutionTag": {
+            "value": "[parameters('solutionTag')]"
+          },
+          "dceId": {
+            "value": "[parameters('dceId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "1587489619762012162"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "rulename": {
+              "type": "string"
+            },
+            "workspaceId": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "defaultValue": "Windows"
+            },
+            "wsfriendlyname": {
+              "type": "string",
+              "defaultValue": "TBD"
+            },
+            "xPathQueries": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "counterSpecifiers": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "samplingFrequencyInSeconds": {
+              "type": "int",
+              "defaultValue": 300
+            },
+            "packtag": {
+              "type": "string"
+            },
+            "solutionTag": {
+              "type": "string"
+            },
+            "dceId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "apiVersion": "2022-06-01",
+              "name": "[parameters('rulename')]",
+              "location": "[parameters('location')]",
+              "tags": {
+                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+              },
+              "kind": "[parameters('kind')]",
+              "properties": {
+                "dataCollectionEndpointId": "[parameters('dceId')]",
+                "description": "[format('Data Collection Rule for {0}}} - {1}}}', parameters('kind'), parameters('rulename'))]",
+                "destinations": {
+                  "logAnalytics": [
+                    {
+                      "workspaceResourceId": "[parameters('workspaceId')]",
+                      "name": "[parameters('wsfriendlyname')]"
+                    }
+                  ]
+                },
+                "dataSources": {
+                  "windowsEventLogs": "[if(empty(parameters('xPathQueries')), json('null'), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
+                  "performanceCounters": [
+                    {
+                      "streams": [
+                        "Microsoft-Perf"
+                      ],
+                      "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
+                      "counterSpecifiers": "[parameters('counterSpecifiers')]",
+                      "name": "PerfCountersDataSource"
+                    }
+                  ]
+                },
+                "dataFlows": [
+                  {
+                    "streams": [
+                      "Microsoft-Event",
+                      "Microsoft-Perf"
+                    ],
+                    "destinations": [
+                      "[parameters('wsfriendlyname')]"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "outputs": {
+            "dcrId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('rulename'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
       "name": "[format('policysetup-{0}', parameters('packtag'))]",
       "location": "[deployment().location]",
       "properties": {
@@ -1288,7 +1280,7 @@
         "mode": "Incremental",
         "parameters": {
           "dcrId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('filecollectionrule-{0}', parameters('packtag'))), '2022-09-01').outputs.ruleId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('dcrPerformance-{0}', parameters('packtag'))), '2022-09-01').outputs.dcrId.value]"
           },
           "packtag": {
             "value": "[parameters('packtag')]"
@@ -1309,7 +1301,7 @@
             "value": "[parameters('mgname')]"
           },
           "ruleshortname": {
-            "value": "[variables('ruleshortname')]"
+            "value": "[format('{0}-1', variables('ruleshortname'))]"
           },
           "assignmentLevel": {
             "value": "[parameters('assignmentLevel')]"
@@ -2165,7 +2157,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('filecollectionrule-{0}', parameters('packtag')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('dcrPerformance-{0}', parameters('packtag')))]"
       ]
     }
   ]

@@ -1,0 +1,3 @@
+Pipeline Tasks
+- create arm templates for monstar.bicep, allIaaSPacks.bicep and for each pack
+- generate/update function zip file

@@ -1,9 +1,9 @@
 targetScope='managementGroup'
 
 @description('Name of the DCR rule to be created')
-param rulename string
+param rulename string = 'AMSP-IIS2016-Server'
 @description('Name of the Action Group to be used or created.')
-param actionGroupName string
+param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
 param emailreceivers array = []
 @description('Email addresses to be used for the Action Group if being created.')
@@ -27,6 +27,7 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
+param grafanaName string
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS2016'
@@ -124,7 +125,7 @@ var performanceCounters=[
 
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
 module ag '../../../modules/actiongroups/ag.bicep' = {
-  name: actionGroupName
+  name: 'ag-deployment'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
@@ -215,3 +216,17 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
   }
 }
 
+// // Grafana upload and install
+// module grafana 'ds.bicep' = {
+//   name: 'grafana'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     fileName: 'grafana.json'
+//     grafanaName: grafanaName
+//     location: location
+//     resourceGroupName: resourceGroupName
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     packsManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }

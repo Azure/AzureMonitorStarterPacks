@@ -2,7 +2,7 @@ targetScope = 'managementGroup'
 
 @description('The name for the function app that you wish to create')
 param functionname string
-param currentUserIdObject string
+//param currentUserIdObject string
 param location string
 param storageAccountName string
 //param kvname string
@@ -17,7 +17,6 @@ param appInsightsLocation string
 //param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param solutionTag string
 param solutionVersion string
-
 param subscriptionId string
 param resourceGroupName string
 param mgname string
@@ -114,7 +113,7 @@ module amg 'modules/grafana.bicep' = {
     solutionVersion: solutionVersion
     location: grafanalocation
     grafanaName: grafanaName
-    userObjectId: currentUserIdObject
+    //userObjectId: currentUserIdObject
     lawresourceId: lawresourceid
   }
 }
@@ -143,6 +142,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
+    addRGRoleAssignments: true
   }
 }
 
@@ -198,3 +198,5 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
 
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+output dceId string = dataCollectionEndpoint.outputs.dceId
+
