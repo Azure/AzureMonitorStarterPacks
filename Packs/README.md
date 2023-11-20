@@ -4,7 +4,7 @@ The recommended experience to deploy the packs is by using the provided interfac
 
 To deploy all IaaS packs, click the icon below:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FAllIaaSPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FAllIaaSPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 ## Windows OS (WinOS)
 
 This pack leverage the VM Insights rules. It implements the following:
@@ -12,7 +12,7 @@ This pack leverage the VM Insights rules. It implements the following:
 - Alerts (6) - Memory, Disk, Heartbeat, CPU. See details [here](./IaaS/WinOS/VMInsightsAlerts.bicep)
 - Grafana Dashboard
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FWinOS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FWinOS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 ## Linux OS (LxOS)
 
@@ -21,7 +21,7 @@ This pack leverage the VM Insights rules. It implements the following:
 - Alerts (6) - Memory, Disk, Heartbeat, CPU. See details [here](./IaaS/LxOS/VMInsightsAlerts.bicep)
 - Grafana Dashboard
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FLxOS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FLxOS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 ## IIS (IIS)
 
@@ -33,7 +33,7 @@ It contains the alerts define in [this file](../Packs/IaaS/IIS/WinIISAlerts.bice
 
 Note that only the first Virtual SMTP instance has data being collected.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FIIS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FIIS%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 
 ## IIS 2016 (IIS2016)
@@ -43,7 +43,7 @@ It has around 50 event rule collection items. It also has the following performa
 
 It contains the alerts define in [this file](../Packs/IaaS/IIS2016/WinIIS2016Alerts.bicep).
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FIIS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FIIS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 ## Nginx (Nginx) preview
 
@@ -51,7 +51,7 @@ This pack contains a single DCR rule that collect Nginx accesslog as well as sys
 
 It implements a single alert regarding nginx service being stopped.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FNginx%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FNginx%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 
 ## DNS 2016
@@ -61,7 +61,7 @@ This pack uses the 'modules/DCRs/dcr-basicWinVM.bicep' bicep template to impleme
 It has around 50 event rule collection items. It also has the following performance counters being collected. See [this file](../Packs/IaaS/DNS2016/WinDns2016Monitoring.bicep) for the complete list.
 
 It contains the alerts define in [this file](../Packs/IaaS/DNS2016/WinDns2016Alerts.bicep).
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FDNS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FDNS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 ## PS 2016 (Print Server 2016)
 
@@ -69,7 +69,7 @@ This pack uses the 'modules/DCRs/dcr-basicWinVM.bicep' bicep template to impleme
 
 It has about 
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FIaaS%2FS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FPrintServerMPs%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FIaaS%2FS2016%2Fmonitoring.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 # Using ARM and Bicep Templates.
 
