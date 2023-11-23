@@ -31,7 +31,7 @@ Review Packs documentation [here](./Packs/README.md).
 
 ## Grafana Dashboards
 
-Each pack may have its own Grafana dashboard. The Grafana dashboards are deploying along with each pack.
+Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed along with each pack.
 In order for the current user to have access to the Grafana environment, the user needs to be added to the Grafana Admins group. This can be done by running the following these instructions.
 
 1. Navigate the recently deployed Grafana environment and click on Access Control (IAM) and click on Add role assignment.
@@ -41,6 +41,35 @@ In order for the current user to have access to the Grafana environment, the use
 ![Alt text](./Docs/media/grafana2.png)
 
 2. Select the proper user or users. The process may take a few minutes to assign the proper permissions.
+
+## Removing the solution
+
+In order to remove the solution, you can run the following script. The script will remove all the resources created by the solution.
+
+```powershell
+./setup/cleanup/cleanup.ps1 -RG <Resource Group Name> -RemoveAll
+```
+
+Alternatively, you can select to remove specific components of the solution by using the following parameters:
+
+- RemovePacks : Removes all the packs deployed by the solution
+- RemoveAMAPolicySet : Removes the policy set deployed by the solution
+- RemoveMainSolution : Removes the main solution deployed by the solution
+
+Once completed, some resources will remain in the resource group. These resources are not removed by the script and need to be removed manually. The resources are:
+
+- Storage Account
+- Log Analytics Workspace
+
+Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
+
+Note 2: To completeley remove the Log Analytics workspace, use the -ForceDelete parameter. This will remove the workspace and all the data in it (ignoring the retention period).
+
+Example:
+
+```powershell
+remove-AzOperationalInsightsWorkspace -ResourceGroupName <Resource Group> -Name <Workspace name> -ForceDelete -force
+```
 
 ## Authoring Guide
 
