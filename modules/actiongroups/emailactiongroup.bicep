@@ -4,13 +4,12 @@ param groupshortname string
 param emailreceiver string
 param emailreiceversemail string
 param solutionTag string
+param Tags object
 
 resource ag 'Microsoft.Insights/actionGroups@2023-01-01' = {
     name: 'New-AG'
     location: location
-    tags: {
-      '${solutionTag}': 'AG'
-    }
+    tags: Tags
     properties: {
         groupShortName: groupshortname
         enabled: true

@@ -47,6 +47,7 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     location: location
+    Tags: Tags
     //location: location defailt is global
   }
 }

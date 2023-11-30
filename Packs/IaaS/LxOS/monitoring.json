@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "908290082854395832"
+      "templateHash": "17671003846409010371"
     }
   },
   "parameters": {
@@ -146,6 +146,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "Tags": {
+            "value": "[variables('Tags')]"
           }
         },
         "template": {
@@ -155,7 +158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4578982031277275603"
+              "templateHash": "2318737756503069054"
             }
           },
           "parameters": {
@@ -186,6 +189,9 @@
             },
             "solutionTag": {
               "type": "string"
+            },
+            "Tags": {
+              "type": "object"
             },
             "location": {
               "type": "string"
@@ -222,6 +228,9 @@
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
+                  },
+                  "Tags": {
+                    "value": "[parameters('Tags')]"
                   }
                 },
                 "template": {
@@ -231,7 +240,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17023941540805994664"
+                      "templateHash": "12078785433656182442"
                     }
                   },
                   "parameters": {
@@ -252,6 +261,9 @@
                     },
                     "solutionTag": {
                       "type": "string"
+                    },
+                    "Tags": {
+                      "type": "object"
                     }
                   },
                   "resources": [
@@ -260,9 +272,7 @@
                       "apiVersion": "2023-01-01",
                       "name": "New-AG",
                       "location": "[parameters('location')]",
-                      "tags": {
-                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                      },
+                      "tags": "[parameters('Tags')]",
                       "properties": {
                         "groupShortName": "[parameters('groupshortname')]",
                         "enabled": true,
@@ -289,7 +299,7 @@
           "outputs": {
             "actionGroupResourceId": {
               "type": "string",
-              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
             }
           }
         }

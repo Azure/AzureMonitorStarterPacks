@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "1141088014118178986"
+      "templateHash": "6264972126369908507"
     }
   },
   "parameters": {
@@ -214,6 +214,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "Tags": {
+            "value": "[variables('Tags')]"
           }
         },
         "template": {
@@ -223,7 +226,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4578982031277275603"
+              "templateHash": "2318737756503069054"
             }
           },
           "parameters": {
@@ -254,6 +257,9 @@
             },
             "solutionTag": {
               "type": "string"
+            },
+            "Tags": {
+              "type": "object"
             },
             "location": {
               "type": "string"
@@ -290,6 +296,9 @@
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
+                  },
+                  "Tags": {
+                    "value": "[parameters('Tags')]"
                   }
                 },
                 "template": {
@@ -299,7 +308,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17023941540805994664"
+                      "templateHash": "12078785433656182442"
                     }
                   },
                   "parameters": {
@@ -320,6 +329,9 @@
                     },
                     "solutionTag": {
                       "type": "string"
+                    },
+                    "Tags": {
+                      "type": "object"
                     }
                   },
                   "resources": [
@@ -328,9 +340,7 @@
                       "apiVersion": "2023-01-01",
                       "name": "New-AG",
                       "location": "[parameters('location')]",
-                      "tags": {
-                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                      },
+                      "tags": "[parameters('Tags')]",
                       "properties": {
                         "groupShortName": "[parameters('groupshortname')]",
                         "enabled": true,
@@ -357,7 +367,7 @@
           "outputs": {
             "actionGroupResourceId": {
               "type": "string",
-              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
             }
           }
         }
@@ -1327,11 +1337,8 @@
           "counterSpecifiers": {
             "value": "[variables('performanceCounters')]"
           },
-          "packtag": {
-            "value": "[parameters('packtag')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
+          "Tags": {
+            "value": "[variables('Tags')]"
           },
           "dceId": {
             "value": "[parameters('dceId')]"
@@ -1344,7 +1351,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1587489619762012162"
+              "templateHash": "15586190674869500289"
             }
           },
           "parameters": {
@@ -1377,11 +1384,8 @@
               "type": "int",
               "defaultValue": 300
             },
-            "packtag": {
-              "type": "string"
-            },
-            "solutionTag": {
-              "type": "string"
+            "Tags": {
+              "type": "object"
             },
             "dceId": {
               "type": "string"
@@ -1393,9 +1397,7 @@
               "apiVersion": "2022-06-01",
               "name": "[parameters('rulename')]",
               "location": "[parameters('location')]",
-              "tags": {
-                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-              },
+              "tags": "[parameters('Tags')]",
               "kind": "[parameters('kind')]",
               "properties": {
                 "dataCollectionEndpointId": "[parameters('dceId')]",
@@ -2357,11 +2359,8 @@
           "lawResourceId": {
             "value": "[parameters('workspaceId')]"
           },
-          "packtag": {
-            "value": "[parameters('packtag')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
+          "Tags": {
+            "value": "[variables('Tags')]"
           },
           "endpointResourceId": {
             "value": "[parameters('dceId')]"
@@ -2377,7 +2376,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4192211388027091512"
+              "templateHash": "926628126860187676"
             }
           },
           "parameters": {
@@ -2408,11 +2407,8 @@
             "lawResourceId": {
               "type": "string"
             },
-            "solutionTag": {
-              "type": "string"
-            },
-            "packtag": {
-              "type": "string"
+            "Tags": {
+              "type": "object"
             }
           },
           "variables": {
@@ -2424,9 +2420,7 @@
               "apiVersion": "2022-06-01",
               "name": "[parameters('ruleName')]",
               "location": "[parameters('location')]",
-              "tags": {
-                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-              },
+              "tags": "[parameters('Tags')]",
               "kind": "Windows",
               "properties": {
                 "dataCollectionEndpointId": "[parameters('endpointResourceId')]",

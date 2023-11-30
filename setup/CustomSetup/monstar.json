@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "13091799965734600006"
+      "templateHash": "2096491735676357395"
     }
   },
   "parameters": {
@@ -3361,7 +3361,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11652108102557770332"
+              "templateHash": "3722612431770915891"
             }
           },
           "parameters": {
@@ -3522,7 +3522,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "2841271160173788384"
+                      "templateHash": "1867180198542725208"
                     }
                   },
                   "parameters": {
@@ -3660,6 +3660,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           }
                         },
                         "template": {
@@ -3669,7 +3672,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -3700,6 +3703,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -3736,6 +3742,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -3745,7 +3754,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -3766,6 +3775,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -3774,9 +3786,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -3803,7 +3813,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -5588,7 +5598,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "908290082854395832"
+                      "templateHash": "17671003846409010371"
                     }
                   },
                   "parameters": {
@@ -5729,6 +5739,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           }
                         },
                         "template": {
@@ -5738,7 +5751,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -5769,6 +5782,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -5805,6 +5821,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -5814,7 +5833,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -5835,6 +5854,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -5843,9 +5865,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -5872,7 +5892,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -7657,7 +7677,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "1141088014118178986"
+                      "templateHash": "6264972126369908507"
                     }
                   },
                   "parameters": {
@@ -7866,6 +7886,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           }
                         },
                         "template": {
@@ -7875,7 +7898,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -7906,6 +7929,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -7942,6 +7968,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -7951,7 +7980,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -7972,6 +8001,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -7980,9 +8012,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -8009,7 +8039,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -8979,11 +9009,8 @@
                           "counterSpecifiers": {
                             "value": "[variables('performanceCounters')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "dceId": {
                             "value": "[parameters('dceId')]"
@@ -8996,7 +9023,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1587489619762012162"
+                              "templateHash": "15586190674869500289"
                             }
                           },
                           "parameters": {
@@ -9029,11 +9056,8 @@
                               "type": "int",
                               "defaultValue": 300
                             },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             },
                             "dceId": {
                               "type": "string"
@@ -9045,9 +9069,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('rulename')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "[parameters('kind')]",
                               "properties": {
                                 "dataCollectionEndpointId": "[parameters('dceId')]",
@@ -10009,11 +10031,8 @@
                           "lawResourceId": {
                             "value": "[parameters('workspaceId')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "endpointResourceId": {
                             "value": "[parameters('dceId')]"
@@ -10029,7 +10048,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4192211388027091512"
+                              "templateHash": "926628126860187676"
                             }
                           },
                           "parameters": {
@@ -10060,11 +10079,8 @@
                             "lawResourceId": {
                               "type": "string"
                             },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "packtag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
@@ -10076,9 +10092,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('ruleName')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "Windows",
                               "properties": {
                                 "dataCollectionEndpointId": "[parameters('endpointResourceId')]",
@@ -11105,7 +11119,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "391994958166792946"
+                      "templateHash": "1053432341269639723"
                     }
                   },
                   "parameters": {
@@ -11337,6 +11351,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           }
                         },
                         "template": {
@@ -11346,7 +11363,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -11377,6 +11394,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -11413,6 +11433,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -11422,7 +11445,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -11443,6 +11466,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -11451,9 +11477,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -11480,7 +11504,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -12450,11 +12474,8 @@
                           "counterSpecifiers": {
                             "value": "[variables('performanceCounters')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "dceId": {
                             "value": "[parameters('dceId')]"
@@ -12467,7 +12488,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1587489619762012162"
+                              "templateHash": "15586190674869500289"
                             }
                           },
                           "parameters": {
@@ -12500,11 +12521,8 @@
                               "type": "int",
                               "defaultValue": 300
                             },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             },
                             "dceId": {
                               "type": "string"
@@ -12516,9 +12534,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('rulename')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "[parameters('kind')]",
                               "properties": {
                                 "dataCollectionEndpointId": "[parameters('dceId')]",
@@ -13480,11 +13496,8 @@
                           "lawResourceId": {
                             "value": "[parameters('workspaceId')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "endpointResourceId": {
                             "value": "[parameters('dceId')]"
@@ -13500,7 +13513,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4192211388027091512"
+                              "templateHash": "926628126860187676"
                             }
                           },
                           "parameters": {
@@ -13531,11 +13544,8 @@
                             "lawResourceId": {
                               "type": "string"
                             },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "packtag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
@@ -13547,9 +13557,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('ruleName')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "Windows",
                               "properties": {
                                 "dataCollectionEndpointId": "[parameters('endpointResourceId')]",
@@ -14576,7 +14584,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "1098097409835256819"
+                      "templateHash": "12229588580252095144"
                     }
                   },
                   "parameters": {
@@ -14848,14 +14856,17 @@
                           "newRGresourceGroup": {
                             "value": "[variables('resourceGroupName')]"
                           },
-                          "solutionTag": {
-                            "value": "[variables('Tags').solutionTag]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "subscriptionId": {
                             "value": "[parameters('subscriptionId')]"
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "solutionTag": {
+                            "value": "[variables('Tags').solutionTag]"
                           }
                         },
                         "template": {
@@ -14865,7 +14876,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -14896,6 +14907,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -14932,6 +14946,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -14941,7 +14958,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -14962,6 +14979,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -14970,9 +14990,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -14999,7 +15017,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -16266,11 +16284,8 @@
                           "counterSpecifiers": {
                             "value": "[variables('performanceCounters')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[variables('Tags').solutionTag]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "dceId": {
                             "value": "[parameters('dceId')]"
@@ -16283,7 +16298,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1587489619762012162"
+                              "templateHash": "15586190674869500289"
                             }
                           },
                           "parameters": {
@@ -16316,11 +16331,8 @@
                               "type": "int",
                               "defaultValue": 300
                             },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             },
                             "dceId": {
                               "type": "string"
@@ -16332,9 +16344,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('rulename')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "[parameters('kind')]",
                               "properties": {
                                 "dataCollectionEndpointId": "[parameters('dceId')]",
@@ -17349,7 +17359,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11476815752236679953"
+                      "templateHash": "10492139690197468486"
                     }
                   },
                   "parameters": {
@@ -17513,6 +17523,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           }
                         },
                         "template": {
@@ -17522,7 +17535,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -17553,6 +17566,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -17589,6 +17605,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -17598,7 +17617,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -17619,6 +17638,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -17627,9 +17649,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -17656,7 +17676,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -18450,11 +18470,8 @@
                           "counterSpecifiers": {
                             "value": "[variables('performanceCounters')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "dceId": {
                             "value": "[parameters('dceId')]"
@@ -18467,7 +18484,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1587489619762012162"
+                              "templateHash": "15586190674869500289"
                             }
                           },
                           "parameters": {
@@ -18500,11 +18517,8 @@
                               "type": "int",
                               "defaultValue": 300
                             },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             },
                             "dceId": {
                               "type": "string"
@@ -18516,9 +18530,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('rulename')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "[parameters('kind')]",
                               "properties": {
                                 "dataCollectionEndpointId": "[parameters('dceId')]",
@@ -19533,7 +19545,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11275752438214879691"
+                      "templateHash": "1237810508108279086"
                     }
                   },
                   "parameters": {
@@ -19687,6 +19699,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           }
                         },
                         "template": {
@@ -19696,7 +19711,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4578982031277275603"
+                              "templateHash": "2318737756503069054"
                             }
                           },
                           "parameters": {
@@ -19727,6 +19742,9 @@
                             },
                             "solutionTag": {
                               "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
                             },
                             "location": {
                               "type": "string"
@@ -19763,6 +19781,9 @@
                                   },
                                   "solutionTag": {
                                     "value": "[parameters('solutionTag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -19772,7 +19793,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17023941540805994664"
+                                      "templateHash": "12078785433656182442"
                                     }
                                   },
                                   "parameters": {
@@ -19793,6 +19814,9 @@
                                     },
                                     "solutionTag": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -19801,9 +19825,7 @@
                                       "apiVersion": "2023-01-01",
                                       "name": "New-AG",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "groupShortName": "[parameters('groupshortname')]",
                                         "enabled": true,
@@ -19830,7 +19852,7 @@
                           "outputs": {
                             "actionGroupResourceId": {
                               "type": "string",
-                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
+                              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
                             }
                           }
                         }
@@ -19854,11 +19876,8 @@
                           "endpointResourceId": {
                             "value": "[parameters('dceId')]"
                           },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "Tags": {
+                            "value": "[variables('Tags')]"
                           },
                           "ruleName": {
                             "value": "[parameters('rulename')]"
@@ -19891,7 +19910,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "8002872076334624211"
+                              "templateHash": "6845190083190442520"
                             }
                           },
                           "parameters": {
@@ -19925,11 +19944,8 @@
                             "lawResourceId": {
                               "type": "string"
                             },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "packtag": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             },
                             "facilityNames": {
                               "type": "array"
@@ -19954,9 +19970,7 @@
                               "apiVersion": "2022-06-01",
                               "name": "[parameters('ruleName')]",
                               "location": "[parameters('location')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-                              },
+                              "tags": "[parameters('Tags')]",
                               "kind": "Linux",
                               "properties": {
                                 "dataSources": {
@@ -21679,14 +21693,17 @@
                   "resourceGroupName": {
                     "value": "[variables('resourceGroupName')]"
                   },
+                  "customerTags": {
+                    "value": "[parameters('customerTags')]"
+                  },
+                  "packsManagedIdentityResourceId": {
+                    "value": "[parameters('userManagedIdentityResourceId')]"
+                  },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
                   },
                   "solutionVersion": {
                     "value": "[parameters('solutionVersion')]"
-                  },
-                  "packsManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
                   }
                 },
                 "template": {
@@ -21696,16 +21713,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "93835514855636001"
+                      "templateHash": "14074029612197248444"
                     }
                   },
                   "parameters": {
-                    "solutionTag": {
-                      "type": "string"
-                    },
-                    "solutionVersion": {
-                      "type": "string"
-                    },
                     "location": {
                       "type": "string"
                     },
@@ -21720,21 +21731,28 @@
                     },
                     "packsManagedIdentityResourceId": {
                       "type": "string"
+                    },
+                    "customerTags": {
+                      "type": "object"
+                    },
+                    "solutionTag": {
+                      "type": "string"
+                    },
+                    "solutionVersion": {
+                      "type": "string"
                     }
                   },
                   "variables": {
                     "$fxv#0": "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",
-                    "tempfilename": "[format('{0}.tmp', parameters('fileName'))]"
+                    "tempfilename": "[format('{0}.tmp', parameters('fileName'))]",
+                    "Tags": "[if(equals(parameters('customerTags'), null()), createObject('solutionTag', parameters('solutionTag'), 'solutionVersion', parameters('solutionVersion')), union(createObject('solutionTag', parameters('solutionTag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]"
                   },
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
                       "name": "deployscript-MonstarPacks",
-                      "tags": {
-                        "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
-                        "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                      },
+                      "tags": "[variables('Tags')]",
                       "location": "[parameters('location')]",
                       "identity": {
                         "type": "userAssigned",

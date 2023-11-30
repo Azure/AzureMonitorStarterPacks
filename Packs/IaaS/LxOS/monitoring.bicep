@@ -51,6 +51,7 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     location: location
+    Tags: Tags
   }
 }
 // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.

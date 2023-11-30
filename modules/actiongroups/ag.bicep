@@ -9,6 +9,7 @@ param useExistingAG bool
 param existingAGRG string = ''
 param newRGresourceGroup string = ''
 param solutionTag string
+param Tags object
 param location string
 
 //new action group
@@ -22,11 +23,12 @@ module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
     groupshortname: actionGroupName
     location: 'global'
     solutionTag: solutionTag
+    Tags: Tags
   }
 }
 //existing action group
 resource age 'Microsoft.Insights/actionGroups@2023-01-01' existing = if (useExistingAG) {
-  name: 'ExistingAG'
+  name: actionGroupName
   scope: resourceGroup(subscriptionId, existingAGRG)
 }
 output actionGroupResourceId string = useExistingAG ? age.id : ag.outputs.agGroupId

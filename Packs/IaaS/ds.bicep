@@ -1,19 +1,21 @@
-param solutionTag string
-param solutionVersion string
 param location string
 param resourceGroupName string
 param grafanaName string
 param fileName string
 param packsManagedIdentityResourceId string
+param customerTags object
+param solutionTag string
+param solutionVersion string
 
 var tempfilename = '${fileName}.tmp'
-
+var Tags = (customerTags== null) ? {'solutionTag': solutionTag
+'solutionVersion': solutionVersion} : union({
+  'solutionTag': solutionTag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-MonstarPacks'
-  tags: {
-    '${solutionTag}': 'deploymentScript'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   location: location
   identity: {
     type: 'userAssigned'

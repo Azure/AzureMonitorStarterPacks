@@ -189,9 +189,10 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     emailreiceversemail: emailreiceversemail
     useExistingAG: useExistingAG
     newRGresourceGroup: resourceGroupName
-    solutionTag: Tags['solutionTag']
+    Tags: Tags
     subscriptionId: subscriptionId
     location: location
+    solutionTag: Tags['solutionTag']
   }
 }
 
@@ -220,8 +221,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     kind: kind
     xPathQueries: xPathQueries
     counterSpecifiers: performanceCounters
-    packtag: packtag
-    solutionTag: Tags['solutionTag']
+    Tags: Tags
     dceId: dceId
   }
 }

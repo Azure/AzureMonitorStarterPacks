@@ -73,6 +73,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     location: location
+    Tags: Tags
   }
 }
 
@@ -100,8 +101,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     kind: kind
     xPathQueries: xPathQueries
     counterSpecifiers: performanceCounters
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     dceId: dceId
   }
 }

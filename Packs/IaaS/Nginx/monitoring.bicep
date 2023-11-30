@@ -66,6 +66,7 @@ module ag '../../../modules/actiongroups/ag.bicep' =  {
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     location: location
+    Tags: Tags
   }
 }
 
@@ -75,8 +76,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
   params: {
     location: location
     endpointResourceId: dceId
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     ruleName: rulename
     filepatterns: [
       '/var/log/nginx/access.log'

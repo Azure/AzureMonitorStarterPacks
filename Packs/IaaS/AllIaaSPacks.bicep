@@ -193,8 +193,9 @@ module grafana 'ds.bicep' = {
     grafanaName: grafanaName
     location: location
     resourceGroupName: resourceGroupName
+    customerTags: customerTags
+    packsManagedIdentityResourceId: userManagedIdentityResourceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    packsManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
