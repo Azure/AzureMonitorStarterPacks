@@ -649,9 +649,9 @@
                             "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
-                            "name": "emailreceivers",
+                            "name": "emailreceiver",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s)",
+                            "label": "Email Receiver (Display Name)",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
@@ -661,9 +661,9 @@
                             "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
-                            "name": "emailreceiversemails",
+                            "name": "emailreceiversemail",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s) email(s)",
+                            "label": "Email Receiver email",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
@@ -709,8 +709,8 @@
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
                 "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
-                "emailreceivers":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceivers,'')]",
-                "emailreiceversemails":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemails,'')]",
+                "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
+                "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemail,'')]",
                 "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
                 "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "customerTags": "[steps('tags').tagsByResource]"
