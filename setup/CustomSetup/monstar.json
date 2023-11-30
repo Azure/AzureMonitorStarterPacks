@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "6935766558611315558"
+      "templateHash": "13091799965734600006"
     }
   },
   "parameters": {
@@ -409,7 +409,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "2942080221898629169"
+              "templateHash": "9478278558827820433"
             }
           },
           "parameters": {
@@ -803,7 +803,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12555265292081083246"
+                      "templateHash": "4583237805662522026"
                     }
                   },
                   "parameters": {
@@ -932,7 +932,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -1024,7 +1024,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -1257,7 +1257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "5047374995183483896"
+              "templateHash": "954986262979864012"
             }
           },
           "parameters": {
@@ -1368,7 +1368,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15070725696379821901"
+                      "templateHash": "3742289879410813100"
                     }
                   },
                   "parameters": {
@@ -1574,7 +1574,7 @@
                         "FUNCTIONS_WORKER_RUNTIME": "powershell",
                         "FUNCTIONS_EXTENSION_VERSION": "~4",
                         "ResourceGroup": "[resourceGroup().name]",
-                        "SolutionTag": "[parameters('Tags').solutionTag.value]",
+                        "SolutionTag": "[parameters('Tags').solutionTag]",
                         "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('functionname')), '2020-02-02-preview').InstrumentationKey]",
                         "APPLICATIONINSIGHTS_CONNECTION_STRING": "[format('InstrumentationKey={0}', reference(resourceId('Microsoft.Insights/components', parameters('functionname')), '2020-02-02-preview').InstrumentationKey)]",
                         "ApplicationInsightsAgent_EXTENSION_VERSION": "~2",
@@ -2002,7 +2002,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "1014746101787553554"
+                      "templateHash": "8804736010301511404"
                     }
                   },
                   "parameters": {
@@ -2069,7 +2069,7 @@
                             "value": "Reader"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           }
                         },
                         "template": {
@@ -2154,7 +2154,7 @@
                             "value": "Log Analytics Contributor"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           }
                         },
                         "template": {
@@ -2239,7 +2239,7 @@
                             "value": "Monitor Contributor Role"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           }
                         },
                         "template": {
@@ -2314,7 +2314,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCE-{0}-{1}', parameters('Tags').solutionTag.value, parameters('location'))]",
+              "name": "[format('DCE-{0}-{1}', parameters('Tags').solutionTag, parameters('location'))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -2330,7 +2330,7 @@
                     "value": "[parameters('Tags')]"
                   },
                   "dceName": {
-                    "value": "[format('DCE-{0}-{1}', parameters('Tags').solutionTag.value, parameters('location'))]"
+                    "value": "[format('DCE-{0}-{1}', parameters('Tags').solutionTag, parameters('location'))]"
                   }
                 },
                 "template": {
@@ -2420,7 +2420,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12555265292081083246"
+                      "templateHash": "4583237805662522026"
                     }
                   },
                   "parameters": {
@@ -2549,7 +2549,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -2641,7 +2641,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -2767,7 +2767,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12555265292081083246"
+                      "templateHash": "4583237805662522026"
                     }
                   },
                   "parameters": {
@@ -2896,7 +2896,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -2988,7 +2988,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag.value]"
+                            "value": "[parameters('Tags').solutionTag]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -3203,7 +3203,7 @@
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'BackendLogicApp'), '2022-09-01').outputs.logicAppPrincipalId.value]"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags').solutionTag.value]"
+                    "value": "[parameters('Tags').solutionTag]"
                   },
                   "roleDefinitionId": {
                     "value": "[variables('logicappRequiredRoleassignments')[copyIndex()]]"
@@ -3284,7 +3284,7 @@
             },
             "dceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DCE-{0}-{1}', parameters('Tags').solutionTag.value, parameters('location'))), '2022-09-01').outputs.dceId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DCE-{0}-{1}', parameters('Tags').solutionTag, parameters('location'))), '2022-09-01').outputs.dceId.value]"
             }
           }
         }
@@ -3361,7 +3361,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8059242237473446029"
+              "templateHash": "11652108102557770332"
             }
           },
           "parameters": {
@@ -14576,7 +14576,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "14876165852973977564"
+                      "templateHash": "1098097409835256819"
                     }
                   },
                   "parameters": {
@@ -14849,7 +14849,7 @@
                             "value": "[variables('resourceGroupName')]"
                           },
                           "solutionTag": {
-                            "value": "[variables('Tags').solutionTag.value]"
+                            "value": "[variables('Tags').solutionTag]"
                           },
                           "subscriptionId": {
                             "value": "[parameters('subscriptionId')]"
@@ -16270,7 +16270,7 @@
                             "value": "[parameters('packtag')]"
                           },
                           "solutionTag": {
-                            "value": "[variables('Tags').solutionTag.value]"
+                            "value": "[variables('Tags').solutionTag]"
                           },
                           "dceId": {
                             "value": "[parameters('dceId')]"
@@ -16401,7 +16401,7 @@
                             "value": "[parameters('packtag')]"
                           },
                           "solutionTag": {
-                            "value": "[variables('Tags').solutionTag.value]"
+                            "value": "[variables('Tags').solutionTag]"
                           },
                           "rulename": {
                             "value": "[parameters('rulename')]"
