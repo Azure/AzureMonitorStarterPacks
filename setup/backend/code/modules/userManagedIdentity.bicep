@@ -40,7 +40,7 @@ module userIdentityRoleAssignments '../../../../modules/rbac/mg/roleassignment.b
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
-    solutionTag: Tags['solutionTag'].value
+    solutionTag: Tags['solutionTag']
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }
@@ -52,7 +52,7 @@ module userIdentityRoleAssignmentRG '../../../../modules/rbac/resourceGroup/role
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
-    solutionTag: Tags['solutionTag'].value
+    solutionTag: Tags['solutionTag']
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }

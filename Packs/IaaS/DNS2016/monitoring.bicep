@@ -189,7 +189,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     emailreiceversemail: emailreiceversemail
     useExistingAG: useExistingAG
     newRGresourceGroup: resourceGroupName
-    solutionTag: Tags['solutionTag'].value
+    solutionTag: Tags['solutionTag']
     subscriptionId: subscriptionId
     location: location
   }
@@ -221,7 +221,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     xPathQueries: xPathQueries
     counterSpecifiers: performanceCounters
     packtag: packtag
-    solutionTag: Tags['solutionTag'].value
+    solutionTag: Tags['solutionTag']
     dceId: dceId
   }
 }
@@ -230,7 +230,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
   params: {
     dcrId: dcrbasicvmMonitoring.outputs.dcrId
     packtag: packtag
-    solutionTag: Tags['solutionTag'].value
+    solutionTag: Tags['solutionTag']
     rulename: rulename
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId

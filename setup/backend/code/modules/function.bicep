@@ -163,7 +163,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     FUNCTIONS_WORKER_RUNTIME:'powershell'
     FUNCTIONS_EXTENSION_VERSION:'~4'
     ResourceGroup: resourceGroup().name
-    SolutionTag: Tags['solutionTag'].value
+    SolutionTag: Tags['solutionTag']
     APPINSIGHTS_INSTRUMENTATIONKEY: reference(appinsights.id, '2020-02-02-preview').InstrumentationKey
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
