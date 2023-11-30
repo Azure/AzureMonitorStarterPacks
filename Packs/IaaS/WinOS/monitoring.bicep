@@ -25,7 +25,6 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-param grafanaName string
 param customerTags object
 var Tags = union({
   '${solutionTag}': packtag

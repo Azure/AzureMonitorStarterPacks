@@ -14,9 +14,12 @@ param deployAMApolicy bool
 param functionName string
 param grafanaLocation string
 param grafanaName string
+param newGrafana bool = true
+param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
+
 
 // Packs` stuff
 param deployPacks bool = false
@@ -34,9 +37,9 @@ param customerTags object
 
 var solutionTag='MonitorStarterPacks'
 var solutionVersion='0.1'
-var Tags = (customerTags== null) ? {'solutionTag': solutionTag
+var Tags = (customerTags== null) ? {'${solutionTag}': 'BackendComponent'
 'solutionVersion': solutionVersion} : union({
-  'solutionTag': solutionTag
+  '${solutionTag}': 'BackendComponent'
   'solutionVersion': solutionVersion
 },customerTags['All'])
 
@@ -93,6 +96,18 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
   }
 }
 
+module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
+  name: 'azureManagedGrafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    Tags: Tags
+    location: grafanaLocation
+    grafanaName: grafanaName
+    //userObjectId: currentUserIdObject
+    lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
+  }
+}
+
 module backend '../backend/code/backend.bicep' = {
   name: 'backend'
   dependsOn: [
@@ -134,7 +149,7 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    grafanaResourceId: newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
   }

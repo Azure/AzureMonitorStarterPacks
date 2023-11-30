@@ -62,6 +62,14 @@
                             }
                         },
                         {
+                            "name": "AzureManagedGrafanaApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
+                            }
+                        },
+                        {
                             "name": "dataCollectionEndpointAPI",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {

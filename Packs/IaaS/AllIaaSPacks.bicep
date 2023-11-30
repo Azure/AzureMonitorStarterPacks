@@ -24,7 +24,7 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-param grafanaName string
+param grafanaResourceId string
 param customerTags object
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -47,7 +47,6 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -69,7 +68,6 @@ module LxOSPack './LxOS/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -91,7 +89,6 @@ module IIS './IIS/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -114,7 +111,6 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -136,7 +132,6 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -158,7 +153,6 @@ module PS2016 './PS2016/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -180,7 +174,6 @@ module Nginx './Nginx/monitoring.bicep' = {
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
-    grafanaName: grafanaName
     customerTags: customerTags
   }
 }
@@ -190,7 +183,7 @@ module grafana 'ds.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     fileName: 'grafana.zip'
-    grafanaName: grafanaName
+    grafanaResourceId: grafanaResourceId
     location: location
     resourceGroupName: resourceGroupName
     customerTags: customerTags

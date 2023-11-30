@@ -101,18 +101,6 @@ module workbook './modules/workbook.bicep' = {
   }
 }
 
-module amg 'modules/grafana.bicep' = {
-  name: 'azureManagedGrafana'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    Tags: Tags
-    location: grafanalocation
-    grafanaName: grafanaName
-    //userObjectId: currentUserIdObject
-    lawresourceId: lawresourceid
-  }
-}
-
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
   name: 'DCE-${Tags['solutionTag']}-${location}'
