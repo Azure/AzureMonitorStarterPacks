@@ -1,12 +1,14 @@
 targetScope = 'managementGroup'
+@description('The Tag value for this pack')
+param packtag string = 'WinOS'
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-Windows-OS'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array  = []
+param emailreiceversemail string  = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool = false
 @description('Name of the existing resource group to be used for the Action Group if existing.')
@@ -15,7 +17,6 @@ param existingAGRG string = ''
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-param packtag string = 'WinOS'
 param solutionTag string
 param solutionVersion string
 param dceId string
@@ -25,17 +26,22 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
-
+param customerTags object
+var Tags = union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags)
 var ruleshortname = 'VMI-OS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
+
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
   name: 'actiongroup'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     useExistingAG: useExistingAG
     newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
@@ -72,8 +78,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
   params: {
     location: location
     workspaceResourceId: workspaceId
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     ruleName: rulename
     dceId: dceId
   }
@@ -87,8 +92,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 

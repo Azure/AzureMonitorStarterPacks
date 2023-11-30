@@ -3,9 +3,9 @@ targetScope = 'managementGroup'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
 @description('Name of the existing resource group to be used for the Action Group if existing.')
@@ -25,6 +25,7 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
+param customerTags object
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
@@ -43,10 +44,11 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 module LxOSPack './LxOS/monitoring.bicep' = {
@@ -64,10 +66,11 @@ module LxOSPack './LxOS/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 module IIS './IIS/monitoring.bicep' = {
@@ -85,10 +88,11 @@ module IIS './IIS/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 
@@ -107,10 +111,11 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 module DNS2016 './DNS2016/monitoring.bicep' = {
@@ -128,10 +133,11 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 module PS2016 './PS2016/monitoring.bicep' = {
@@ -149,10 +155,11 @@ module PS2016 './PS2016/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 module Nginx './Nginx/monitoring.bicep' = {
@@ -170,10 +177,11 @@ module Nginx './Nginx/monitoring.bicep' = {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }
 // Grafana upload and install

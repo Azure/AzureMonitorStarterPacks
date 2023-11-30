@@ -1,15 +1,13 @@
 param logAnalyticsWorkspaceName string
 param location string
-param solutionTag string
 param newLogAnalyticsWSName string = ''
 param createNewLogAnalyticsWS bool = false
+param Tags object
 
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName
   location: location
-  tags: {
-    '${solutionTag}': 'Log Analytics workspace'
-  }
+  tags: Tags
   properties: {
     sku: {
       name: 'PerGB2018'

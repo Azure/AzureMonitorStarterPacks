@@ -1,15 +1,11 @@
 param storageAccountName string
 param location string
-param solutionTag string
-param solutionVersion string
+param Tags object
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
   location: location
-  tags: {
-    '${solutionTag}': 'storageaccount'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   sku: {
     name: 'Standard_LRS'
   }

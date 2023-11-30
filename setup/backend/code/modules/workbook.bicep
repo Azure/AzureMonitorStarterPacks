@@ -1,5 +1,4 @@
-param solutionTag string
-param solutionVersion string
+param Tags object
 param location string
 param lawresourceid string
 
@@ -2512,10 +2511,7 @@ var wbConfig = loadTextContent('./workbook.json')
 
 resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
   location: location
-  tags: {
-    '${solutionTag}': 'mainworkbook'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   kind: 'shared'
   name: guid('monstar')
   properties:{

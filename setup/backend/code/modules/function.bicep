@@ -1,7 +1,6 @@
 param functionname string
 param location string
-param solutionTag string
-param solutionVersion string
+param Tags object
 param userManagedIdentity string
 param userManagedIdentityClientId string
 param packsUserManagedId string
@@ -10,7 +9,7 @@ param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param lawresourceid string
 param appInsightsLocation string
-
+param extraTags object = {}
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 param apiManagementKey string= base64(newGuid())
@@ -33,10 +32,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   dependsOn: [
     azfunctionsiteconfig
   ]
-  tags: {
-    '${solutionTag}': 'deploymentScript'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   location: location
   kind: 'AzureCLI'
   properties: {
@@ -64,10 +60,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
 resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: '${functionname}-farm'
   location: location
-  tags: {
-    '${solutionTag}': 'serverfarm'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
@@ -93,10 +86,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
   name: functionname
   location: location
   kind: 'functionapp'
-  tags: {
-    '${solutionTag}': 'site'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   identity: {
       type: 'UserAssigned'
       userAssignedIdentities: {
@@ -146,6 +136,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
           http20Enabled: false
           functionAppScaleLimit: 200
           minimumElasticInstanceCount: 0
+          minTlsVersion: '1.2'       
       }
       scmSiteAlsoStopped: false
       clientAffinityEnabled: false
@@ -158,6 +149,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
       redundancyMode: 'None'
       storageAccountRequired: false
       keyVaultReferenceIdentity: 'SystemAssigned'
+
   }
 }
 
@@ -171,7 +163,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     FUNCTIONS_WORKER_RUNTIME:'powershell'
     FUNCTIONS_EXTENSION_VERSION:'~4'
     ResourceGroup: resourceGroup().name
-    SolutionTag: solutionTag
+    SolutionTag: Tags['solutionTag'].value
     APPINSIGHTS_INSTRUMENTATIONKEY: reference(appinsights.id, '2020-02-02-preview').InstrumentationKey
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
@@ -180,12 +172,12 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   }
 }
 
-
 resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
   parent: azfunctionsite
   dependsOn: [
     deploymentScript
   ]
+  
   name: 'MSDeploy'
   properties: {
     packageUri: '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
@@ -194,10 +186,7 @@ resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
 
 resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   name: functionname
-  tags: {
-    '${solutionTag}': 'InsightsComponent'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   location: appInsightsLocation
   kind: 'web'
   properties: {
@@ -216,7 +205,8 @@ var keyName = 'monitoringKey'
 resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
   dependsOn: [ 
     azfunctionsiteconfig 
-  ] 
+  ]
+  tags: Tags
   name: '${functionname}/default/${keyName}'  
   properties: {  
     name: keyName  

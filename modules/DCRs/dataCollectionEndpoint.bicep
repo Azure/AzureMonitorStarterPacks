@@ -1,14 +1,11 @@
 param dceName string
 param location string
-param solutionTag string
-param packtag string
+param Tags object
 
 resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021-09-01-preview' = {
   name: dceName
   location: location
-  tags: {
-    '${solutionTag}': packtag
-  }
+  tags: Tags
   properties: {
     networkAcls: {
       publicNetworkAccess: 'Enabled'

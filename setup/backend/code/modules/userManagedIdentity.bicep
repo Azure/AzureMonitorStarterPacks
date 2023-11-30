@@ -1,7 +1,6 @@
 targetScope = 'managementGroup'
 param location string
-param solutionTag string
-param solutionVersion string
+param Tags object
 param roleDefinitionIds array
 param userIdentityName string
 param mgname string
@@ -30,8 +29,7 @@ module userManagedIdentity './umidentityresource.bicep' = {
   scope: resourceGroup(subscriptionId,resourceGroupName)
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     userIdentityName: userIdentityName
   }
 }
@@ -42,7 +40,7 @@ module userIdentityRoleAssignments '../../../../modules/rbac/mg/roleassignment.b
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
-    solutionTag: solutionTag
+    solutionTag: Tags['solutionTag'].value
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }
@@ -54,7 +52,7 @@ module userIdentityRoleAssignmentRG '../../../../modules/rbac/resourceGroup/role
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
-    solutionTag: solutionTag
+    solutionTag: Tags['solutionTag'].value
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }

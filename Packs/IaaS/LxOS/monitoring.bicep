@@ -6,9 +6,9 @@ param rulename string = 'AMSP-VMI-Linux'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
 @description('Name of the existing resource group to be used for the Action Group if existing.')
@@ -29,19 +29,23 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
-
+param customerTags object
+var Tags = union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags)
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'VMI-LxOS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
-  name: actionGroupName
+  name: 'New-AG'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     useExistingAG: useExistingAG
     newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
@@ -56,8 +60,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
   params: {
     location: location
     workspaceResourceId: workspaceId
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     ruleName: rulename
     dceId: dceId
   }
@@ -70,8 +73,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 module policysetup '../../../modules/policies/mg/policies.bicep' = {

@@ -1,6 +1,5 @@
 param functioname string
-param solutionTag string
-param solutionVersion string
+param Tags object
 param location string
 param keyvaultid string
 param subscriptionId string
@@ -15,11 +14,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
   // dependsOn: [
   //   logicappConnection
   // ]
-  tags: {
-    '${solutionTag}': 'logicapp'
-    '${solutionTag}-Version': solutionVersion
-  }
-
+  tags: Tags
   location: location
   identity: {
     type: 'SystemAssigned'

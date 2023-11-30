@@ -2,8 +2,7 @@ param location string
 param workspaceId string
 param AGId string
 param packtag string
-param solutionTag string
-param solutionVersion string
+param Tags object
 /*
 List of Insights default metrics:
 LogicalDisk WriteBytesPerSecond 15M 
@@ -105,8 +104,7 @@ module alertsnew '../../../modules/alerts/alerts.bicep' = {
     location: location
     moduleprefix: moduleprefix
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     workspaceId: workspaceId
   }
 }

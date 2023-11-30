@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7534064264147640200"
+      "templateHash": "391994958166792946"
     }
   },
   "parameters": {
@@ -23,16 +23,16 @@
         "description": "Name of the Action Group to be used or created."
       }
     },
-    "emailreceivers": {
-      "type": "array",
-      "defaultValue": [],
+    "emailreceiver": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Email receiver names to be used for the Action Group if being created."
       }
     },
-    "emailreiceversemails": {
-      "type": "array",
-      "defaultValue": [],
+    "emailreiceversemail": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Email addresses to be used for the Action Group if being created."
       }
@@ -101,9 +101,13 @@
     },
     "grafanaName": {
       "type": "string"
+    },
+    "customerTags": {
+      "type": "object"
     }
   },
   "variables": {
+    "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
     "ruleshortname": "IIS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -213,11 +217,11 @@
           "existingAGRG": {
             "value": "[parameters('existingAGRG')]"
           },
-          "emailreceivers": {
-            "value": "[parameters('emailreceivers')]"
+          "emailreceiver": {
+            "value": "[parameters('emailreceiver')]"
           },
-          "emailreiceversemails": {
-            "value": "[parameters('emailreiceversemails')]"
+          "emailreiceversemail": {
+            "value": "[parameters('emailreiceversemail')]"
           },
           "useExistingAG": {
             "value": "[parameters('useExistingAG')]"
@@ -242,7 +246,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1962184090603211748"
+              "templateHash": "4578982031277275603"
             }
           },
           "parameters": {
@@ -252,13 +256,13 @@
             "actionGroupName": {
               "type": "string"
             },
-            "emailreceivers": {
-              "type": "array",
-              "defaultValue": []
+            "emailreceiver": {
+              "type": "string",
+              "defaultValue": ""
             },
-            "emailreiceversemails": {
-              "type": "array",
-              "defaultValue": []
+            "emailreiceversemail": {
+              "type": "string",
+              "defaultValue": ""
             },
             "useExistingAG": {
               "type": "bool"
@@ -278,15 +282,12 @@
               "type": "string"
             }
           },
-          "variables": {
-            "deploymentName": "ag-test"
-          },
           "resources": [
             {
               "condition": "[not(parameters('useExistingAG'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[variables('deploymentName')]",
+              "name": "ag-new",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('newRGresourceGroup')]",
               "properties": {
@@ -298,11 +299,11 @@
                   "actiongroupname": {
                     "value": "[parameters('actionGroupName')]"
                   },
-                  "emailreceivers": {
-                    "value": "[parameters('emailreceivers')]"
+                  "emailreceiver": {
+                    "value": "[parameters('emailreceiver')]"
                   },
-                  "emailreiceversemails": {
-                    "value": "[parameters('emailreiceversemails')]"
+                  "emailreiceversemail": {
+                    "value": "[parameters('emailreiceversemail')]"
                   },
                   "groupshortname": {
                     "value": "[parameters('actionGroupName')]"
@@ -321,7 +322,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "2425853910946393933"
+                      "templateHash": "17023941540805994664"
                     }
                   },
                   "parameters": {
@@ -334,11 +335,11 @@
                     "groupshortname": {
                       "type": "string"
                     },
-                    "emailreceivers": {
-                      "type": "array"
+                    "emailreceiver": {
+                      "type": "string"
                     },
-                    "emailreiceversemails": {
-                      "type": "array"
+                    "emailreiceversemail": {
+                      "type": "string"
                     },
                     "solutionTag": {
                       "type": "string"
@@ -348,32 +349,28 @@
                     {
                       "type": "Microsoft.Insights/actionGroups",
                       "apiVersion": "2023-01-01",
-                      "name": "[parameters('actiongroupname')]",
+                      "name": "New-AG",
                       "location": "[parameters('location')]",
                       "tags": {
                         "[format('{0}', parameters('solutionTag'))]": "AG"
                       },
                       "properties": {
-                        "copy": [
-                          {
-                            "name": "emailReceivers",
-                            "count": "[length(range(0, length(parameters('emailreceivers'))))]",
-                            "input": {
-                              "name": "[parameters('emailreceivers')[range(0, length(parameters('emailreceivers')))[copyIndex('emailReceivers')]]]",
-                              "emailAddress": "[parameters('emailreiceversemails')[range(0, length(parameters('emailreceivers')))[copyIndex('emailReceivers')]]]",
-                              "useCommonAlertSchema": false
-                            }
-                          }
-                        ],
                         "groupShortName": "[parameters('groupshortname')]",
-                        "enabled": true
+                        "enabled": true,
+                        "emailReceivers": [
+                          {
+                            "name": "[parameters('emailreceiver')]",
+                            "emailAddress": "[parameters('emailreiceversemail')]",
+                            "useCommonAlertSchema": false
+                          }
+                        ]
                       }
                     }
                   ],
                   "outputs": {
                     "agGroupId": {
                       "type": "string",
-                      "value": "[resourceId('Microsoft.Insights/actionGroups', parameters('actiongroupname'))]"
+                      "value": "[resourceId('Microsoft.Insights/actionGroups', 'New-AG')]"
                     }
                   }
                 }
@@ -383,7 +380,7 @@
           "outputs": {
             "actionGroupResourceId": {
               "type": "string",
-              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', variables('deploymentName')), '2022-09-01').outputs.agGroupId.value)]"
+              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', 'ExistingAG'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
             }
           }
         }
@@ -413,11 +410,8 @@
           "packtag": {
             "value": "[parameters('packtag')]"
           },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
-          },
-          "solutionVersion": {
-            "value": "[parameters('solutionVersion')]"
+          "Tags": {
+            "value": "[variables('Tags')]"
           }
         },
         "template": {
@@ -427,7 +421,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "15742914507645569291"
+              "templateHash": "5107644619156935321"
             }
           },
           "parameters": {
@@ -443,11 +437,8 @@
             "packtag": {
               "type": "string"
             },
-            "solutionTag": {
-              "type": "string"
-            },
-            "solutionVersion": {
-              "type": "string"
+            "Tags": {
+              "type": "object"
             },
             "moduleprefix": {
               "type": "string",
@@ -781,11 +772,8 @@
                   "packtag": {
                     "value": "[parameters('packtag')]"
                   },
-                  "solutionTag": {
-                    "value": "[parameters('solutionTag')]"
-                  },
-                  "solutionVersion": {
-                    "value": "[parameters('solutionVersion')]"
+                  "Tags": {
+                    "value": "[parameters('Tags')]"
                   },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
@@ -798,7 +786,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17921040337123514091"
+                      "templateHash": "75933667383542312"
                     }
                   },
                   "parameters": {
@@ -817,11 +805,8 @@
                     "packtag": {
                       "type": "string"
                     },
-                    "solutionTag": {
-                      "type": "string"
-                    },
-                    "solutionVersion": {
-                      "type": "string"
+                    "Tags": {
+                      "type": "object"
                     },
                     "moduleprefix": {
                       "type": "string"
@@ -878,11 +863,8 @@
                           "packtag": {
                             "value": "[parameters('packtag')]"
                           },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
-                          },
-                          "solutionVersion": {
-                            "value": "[parameters('solutionVersion')]"
+                          "Tags": {
+                            "value": "[parameters('Tags')]"
                           },
                           "alertType": {
                             "value": "[parameters('alertlist')[copyIndex()].alertType]"
@@ -898,7 +880,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "982917926388079909"
+                              "templateHash": "1955376536405090411"
                             }
                           },
                           "parameters": {
@@ -948,11 +930,8 @@
                             "packtag": {
                               "type": "string"
                             },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "solutionVersion": {
-                              "type": "string"
+                            "Tags": {
+                              "type": "object"
                             },
                             "threshold": {
                               "type": "int",
@@ -1023,11 +1002,8 @@
                                   "packtag": {
                                     "value": "[parameters('packtag')]"
                                   },
-                                  "solutionTag": {
-                                    "value": "[parameters('solutionTag')]"
-                                  },
-                                  "solutionVersion": {
-                                    "value": "[parameters('solutionVersion')]"
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   }
                                 },
                                 "template": {
@@ -1037,7 +1013,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17294789744221740203"
+                                      "templateHash": "5611522469594456278"
                                     }
                                   },
                                   "parameters": {
@@ -1080,11 +1056,8 @@
                                     "packtag": {
                                       "type": "string"
                                     },
-                                    "solutionTag": {
-                                      "type": "string"
-                                    },
-                                    "solutionVersion": {
-                                      "type": "string"
+                                    "Tags": {
+                                      "type": "object"
                                     }
                                   },
                                   "resources": [
@@ -1093,10 +1066,7 @@
                                       "apiVersion": "2023-03-15-preview",
                                       "name": "[parameters('alertRuleName')]",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                                        "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "description": "[parameters('alertRuleDescription')]",
                                         "ruleResolveConfiguration": {},
@@ -1192,14 +1162,8 @@
                                   "query": {
                                     "value": "[parameters('query')]"
                                   },
-                                  "packtag": {
-                                    "value": "[parameters('packtag')]"
-                                  },
-                                  "solutionTag": {
-                                    "value": "[parameters('solutionTag')]"
-                                  },
-                                  "solutionVersion": {
-                                    "value": "[parameters('solutionVersion')]"
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
                                   },
                                   "threshold": {
                                     "value": "[parameters('threshold')]"
@@ -1218,7 +1182,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "17705228431369681648"
+                                      "templateHash": "1486731342993087831"
                                     }
                                   },
                                   "parameters": {
@@ -1258,20 +1222,14 @@
                                     "query": {
                                       "type": "string"
                                     },
-                                    "packtag": {
-                                      "type": "string"
-                                    },
-                                    "solutionTag": {
-                                      "type": "string"
-                                    },
-                                    "solutionVersion": {
-                                      "type": "string"
-                                    },
                                     "threshold": {
                                       "type": "int"
                                     },
                                     "metricMeasureColumn": {
                                       "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
                                     },
                                     "operator": {
                                       "type": "string",
@@ -1291,10 +1249,7 @@
                                       "apiVersion": "2023-03-15-preview",
                                       "name": "[parameters('alertRuleName')]",
                                       "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                                        "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                                      },
+                                      "tags": "[parameters('Tags')]",
                                       "properties": {
                                         "description": "[parameters('alertRuleDescription')]",
                                         "ruleResolveConfiguration": {},

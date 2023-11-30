@@ -5,9 +5,9 @@ param rulename string = 'AMSP-IIS-Server'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string =''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
 @description('Name of the existing resource group to be used for the Action Group if existing.')
@@ -28,6 +28,11 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
+param customerTags object
+var Tags = union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags)
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS1'
@@ -109,8 +114,8 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     useExistingAG: useExistingAG
     newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
@@ -129,8 +134,7 @@ module Alerts './WinIISAlerts.bicep' = {
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR

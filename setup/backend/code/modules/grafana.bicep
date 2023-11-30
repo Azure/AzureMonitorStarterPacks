@@ -2,8 +2,7 @@
 
 param grafanaName string
 param location string
-param solutionTag string
-param solutionVersion string
+param Tags object
 //param userObjectId string
 param utcValue string = utcNow()
 param lawresourceId string
@@ -18,10 +17,7 @@ var MonitoringContributorRoleId = '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Moni
 
 resource AzureManagedGrafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
   name: grafanaName
-  tags: {
-    '${solutionTag}': 'grafana'
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   sku: {
     name: 'Standard'
   }
@@ -50,7 +46,7 @@ module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignm
     resourcename: grafanaName
     roleDefinitionId: ReaderRoleId
     roleShortName: 'Reader'
-    solutionTag: solutionTag
+    solutionTag: Tags['solutionTag'].value
   }
 }
 module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -60,7 +56,7 @@ module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignm
     resourcename: grafanaName
     roleDefinitionId: LogAnalyticsContribuorRoleId
     roleShortName: 'Log Analytics Contributor'
-    solutionTag: solutionTag
+    solutionTag: Tags['solutionTag'].value
   }
 }
 module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -70,7 +66,7 @@ module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleass
     resourcename: grafanaName
     roleDefinitionId: MonitoringContributorRoleId
     roleShortName: 'Monitor Contributor Role'
-    solutionTag: solutionTag
+    solutionTag: Tags['solutionTag'].value
   }
 }
 

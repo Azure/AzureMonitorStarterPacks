@@ -15,8 +15,7 @@ param appInsightsLocation string
 //param utcValue string = utcNow()
 //param filename string = 'discovery.zip'
 //param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
-param solutionTag string
-param solutionVersion string
+param Tags object
 param subscriptionId string
 param resourceGroupName string
 param mgname string
@@ -70,8 +69,7 @@ module backendFunction 'modules/function.bicep' = {
     functionname: functionname
     lawresourceid: lawresourceid
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     storageAccountName: storageAccountName
     userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
@@ -88,8 +86,7 @@ module logicapp './modules/logicapp.bicep' = {
   params: {
     functioname: functionname
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     keyvaultid: keyvault.outputs.kvResourceId
     subscriptionId: subscriptionId
   }
@@ -100,8 +97,7 @@ module workbook './modules/workbook.bicep' = {
   params: {
     lawresourceid: lawresourceid
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 
@@ -109,8 +105,7 @@ module amg 'modules/grafana.bicep' = {
   name: 'azureManagedGrafana'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     location: grafanalocation
     grafanaName: grafanaName
     //userObjectId: currentUserIdObject
@@ -120,13 +115,12 @@ module amg 'modules/grafana.bicep' = {
 
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-  name: 'DCE-${solutionTag}-${location}'
+  name: 'DCE-${Tags['solutionTag'].value}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
-    packtag: 'dceMainRegion'
-    solutionTag: solutionTag
-    dceName: 'DCE-${solutionTag}-${location}'
+    Tags: Tags
+    dceName: 'DCE-${Tags['solutionTag'].value}-${location}'
   }
 }
 
@@ -135,8 +129,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'packsUserManagedIdentity'
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     roleDefinitionIds: packPolicyRoleDefinitionIds
     userIdentityName: 'packsUserManagedIdentity'
     mgname: mgname
@@ -157,8 +150,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'functionUserManagedIdentity'
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     roleDefinitionIds: backendFunctionRoleDefinitionIds//,array('${customRemdiationRole.outputs.roleDefId}'))
     userIdentityName: 'functionUserManagedIdentity'
     mgname: mgname
@@ -177,8 +169,7 @@ module keyvault 'modules/keyvault.bicep' = {
   params: {
     kvName: 'amspkv-${split(functionname,'-')[1]}'
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     functionName: functionname
   }
 }
@@ -190,7 +181,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
   params: {
     resourcename: keyvault.outputs.kvResourceId
     principalId: logicapp.outputs.logicAppPrincipalId
-    solutionTag: solutionTag
+    solutionTag: Tags['solutionTag'].value
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }

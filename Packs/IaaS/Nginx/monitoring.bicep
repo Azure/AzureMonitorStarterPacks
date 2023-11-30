@@ -7,9 +7,9 @@ param rulename string = 'AMSP-Linux-Nginx'
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
 @description('Name of the existing resource group to be used for the Action Group if existing.')
@@ -30,7 +30,11 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
-
+param customerTags object
+var Tags = union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags)
 var ruleshortname = 'Nginx'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -51,12 +55,12 @@ var logLevels =[
 
 // Action Group
 module ag '../../../modules/actiongroups/ag.bicep' =  {
-  name: actionGroupName
+  name: 'actionGroup'
   params: {
     actionGroupName: actionGroupName
     existingAGRG: existingAGRG
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     useExistingAG: useExistingAG
     newRGresourceGroup: resourceGroupName
     solutionTag: solutionTag
@@ -93,8 +97,7 @@ module Alerts './nginxalerts.bicep' = {
     workspaceId: workspaceId
     AGId: ag.outputs.actionGroupResourceId
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     
   }
 }

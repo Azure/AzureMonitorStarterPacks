@@ -23,17 +23,22 @@ param deployPacks bool = false
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool = false
 @description('Name of the existing resource group to be used for the Action Group if existing.')
 param existingAGRG string = ''
-
+param customerTags object
 
 var solutionTag='MonitorStarterPacks'
 var solutionVersion='0.1'
+var Tags = (customerTags== null) ? {'solutionTag': solutionTag
+'solutionVersion': solutionVersion} : union({
+  'solutionTag': solutionTag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
@@ -41,8 +46,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
   params: {
     resourceGroupName: resourceGroupName
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion    
+    Tags: Tags
   }
 }
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
@@ -53,8 +57,7 @@ module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (cr
   ]
   params: {
     location: location
-    solutionVersion: solutionVersion
-    solutionTag: solutionTag
+    Tags: Tags
     storageAccountName: storageAccountName
   }
 }
@@ -68,7 +71,7 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
   params: {
     location: location
     logAnalyticsWorkspaceName: newLogAnalyticsWSName
-    solutionTag: solutionTag
+    Tags: Tags
     createNewLogAnalyticsWS: createNewLogAnalyticsWS
   }
 }
@@ -86,6 +89,7 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
+    Tags: Tags
   }
 }
 
@@ -104,8 +108,7 @@ module backend '../backend/code/backend.bicep' = {
     location: location
     mgname: mgname
     resourceGroupName: resourceGroupName
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
   }
@@ -121,17 +124,18 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     location: location
     dceId: backend.outputs.dceId
     mgname: mgname
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    customerTags: Tags
     subscriptionId: subscriptionId
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     workspaceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     actionGroupName: actionGroupName
     resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     existingAGRG: existingAGRG
     grafanaName: grafanaName
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
   }
 }

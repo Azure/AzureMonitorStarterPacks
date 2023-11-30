@@ -1,12 +1,12 @@
 param actiongroupname string
 param location string
 param groupshortname string
-param emailreceivers array 
-param emailreiceversemails array
+param emailreceiver string
+param emailreiceversemail string
 param solutionTag string
 
 resource ag 'Microsoft.Insights/actionGroups@2023-01-01' = {
-    name: actiongroupname
+    name: 'New-AG'
     location: location
     tags: {
       '${solutionTag}': 'AG'
@@ -14,11 +14,13 @@ resource ag 'Microsoft.Insights/actionGroups@2023-01-01' = {
     properties: {
         groupShortName: groupshortname
         enabled: true
-        emailReceivers: [ for i in range(0,length(emailreceivers)): {
-          name: emailreceivers[i]
-          emailAddress: emailreiceversemails[i]
+        emailReceivers: [ 
+          {
+          name: emailreceiver
+          emailAddress: emailreiceversemail
           useCommonAlertSchema: false
-        }]
+        }
+      ]
       }
 }
 output agGroupId string = ag.id

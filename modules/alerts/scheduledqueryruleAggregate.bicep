@@ -11,11 +11,9 @@ param evaluationFrequency string = 'PT15M'
 param autoMitigate bool = false
 param query string
 //param starterPackName string
-param packtag string
-param solutionTag string
-param solutionVersion string
 param threshold int
 param metricMeasureColumn string
+param Tags object
 
 @allowed([
   'GreaterThan'
@@ -30,10 +28,7 @@ param operator string
 resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
   location: location
   name: alertRuleName
-  tags: {
-    '${solutionTag}': packtag
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
   properties: {
     description: alertRuleDescription
     ruleResolveConfiguration: {
