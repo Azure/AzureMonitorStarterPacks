@@ -104,7 +104,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
     location: grafanaLocation
     grafanaName: grafanaName
     //userObjectId: currentUserIdObject
-    lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
+    //lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
   }
 }
 
@@ -117,8 +117,6 @@ module backend '../backend/code/backend.bicep' = {
     appInsightsLocation: location
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
-    grafanalocation: grafanaLocation
-    grafanaName: grafanaName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     location: location
     mgname: mgname

@@ -62,6 +62,14 @@
                             }
                         },
                         {
+                            "name": "AzureManagedGrafanaApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
+                            }
+                        },
+                        {
                             "name": "LogAnalyticsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -478,6 +486,38 @@
                             "visible": "true"
                         },
                         {
+                            "name": "GrafanaStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Grafana",
+                            "toolTip": "This will be the Grafana Instance used for the MonStar Packs.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "ExistingGrafanaInstance",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Azure Managed Grafana",
+                            "toolTip": "Existing Azure Managed Grafana",
+                            "resourceType": "Microsoft.Dashboard/grafana",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
+                            },
+                            "infoMessages": [],
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
+                        },
+                        {
                             "name": "grafanaLocation",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Location for Azure Managed Grafana",
@@ -713,7 +753,8 @@
                 "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemail,'')]",
                 "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
                 "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
-                "customerTags": "[steps('tags').tagsByResource]"
+                "customerTags": "[steps('tags').tagsByResource]",
+                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

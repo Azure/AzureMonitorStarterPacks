@@ -287,7 +287,19 @@
                                 "required": true
                             },
                             "visible": true
-                        }                     
+                        },
+                        {
+                            "name": "ExistingGrafanaInstance",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Azure Managed Grafana",
+                            "toolTip": "Existing Azure Managed Grafana",
+                            "resourceType": "Microsoft.Dashboard/grafana",
+                            "constraints": {
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }                   
                     ]
                 },
                 {
@@ -323,7 +335,8 @@
                 "existingAGRG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(take(split(steps('Configuration').existingAG,'/'),5)))]",
                 "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                "customerTags": "[steps('tags').tagsByResource]"
+                "customerTags": "[steps('tags').tagsByResource]",
+                "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
