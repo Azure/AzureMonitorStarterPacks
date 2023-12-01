@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "975283729201565830"
+      "templateHash": "11699919671264448330"
     }
   },
   "parameters": {
@@ -104,7 +104,7 @@
     }
   },
   "variables": {
-    "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
     "ruleshortname": "IIS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",

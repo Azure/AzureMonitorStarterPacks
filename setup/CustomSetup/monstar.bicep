@@ -36,10 +36,11 @@ param existingAGRG string = ''
 param customerTags object
 
 var solutionTag='MonitorStarterPacks'
+var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
-var Tags = (customerTags=={}) ? {'${solutionTag}': 'BackendComponent'
+var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
 'solutionVersion': solutionVersion} : union({
-  '${solutionTag}': 'BackendComponent'
+  '${solutionTagComponents}': 'BackendComponent'
   'solutionVersion': solutionVersion
 },customerTags['All'])
 
@@ -89,7 +90,7 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
     assignmentLevel: assignmentLevel
     location: location
     resourceGroupName: resourceGroupName
-    solutionTag: solutionTag
+    solutionTag: solutionTagComponents
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     Tags: Tags

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "589263198766229224"
+      "templateHash": "2876831295220847862"
     }
   },
   "parameters": {
@@ -101,7 +101,7 @@
     }
   },
   "variables": {
-    "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
     "ruleshortname": "Nginx",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
     "facilityNames": [

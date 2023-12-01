@@ -29,10 +29,11 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
-var Tags = union({
+var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
+'solutionVersion': solutionVersion} : union({
   '${solutionTag}': packtag
   'solutionVersion': solutionVersion
-},customerTags)
+},customerTags['All'])
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'VMI-LxOS'
 var resourceGroupName = split(resourceGroupId, '/')[4]

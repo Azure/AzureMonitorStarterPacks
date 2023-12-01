@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11805759286381156491"
+      "templateHash": "6997974959253884551"
     }
   },
   "parameters": {
@@ -4306,7 +4306,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "3788586848492808521"
+              "templateHash": "10456499083646325524"
             }
           },
           "parameters": {
@@ -4402,7 +4402,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
             "ruleshortname": "IIS1",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -7742,7 +7742,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "975283729201565830"
+              "templateHash": "11699919671264448330"
             }
           },
           "parameters": {
@@ -7841,7 +7841,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
             "ruleshortname": "IIS2016",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -11201,7 +11201,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "10054872371367518387"
+              "templateHash": "6913247954433216144"
             }
           },
           "parameters": {
@@ -11298,7 +11298,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
             "ruleshortname": "DNS2016",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -13970,7 +13970,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "16058573456743770521"
+              "templateHash": "12846215816771377663"
             }
           },
           "parameters": {
@@ -14068,7 +14068,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
             "ruleshortname": "PS2016",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -16150,7 +16150,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "589263198766229224"
+              "templateHash": "2876831295220847862"
             }
           },
           "parameters": {
@@ -16246,7 +16246,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "ruleshortname": "Nginx",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
             "facilityNames": [

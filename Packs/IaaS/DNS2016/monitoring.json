@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "10054872371367518387"
+      "templateHash": "6913247954433216144"
     }
   },
   "parameters": {
@@ -102,7 +102,7 @@
     }
   },
   "variables": {
-    "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
     "ruleshortname": "DNS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",

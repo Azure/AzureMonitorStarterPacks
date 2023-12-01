@@ -10,4 +10,5 @@
     'Az.ResourceGraph' = '0.13.0'
     'Az.Monitor' = '4.5.0'
     'Az.PolicyInsights' = '1.6.2'
+    'Az.ConnectedMachine' = '0.5.2'
 }

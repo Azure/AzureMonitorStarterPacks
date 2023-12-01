@@ -23,7 +23,8 @@ if ($resources) {
     switch ($action) {
         'AddTag' {
             foreach ($resource in $resources) {
-                "Running $action for $($resource.Resource) resource. TagValue: $TagValue"
+                $resourceName=$resource.Resource.split('/')[8]
+                "Running $action for $resourceName resource. TagValue: $TagValue"
                 #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
                 $tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
                 #"Current tags: $($tag)"
@@ -33,6 +34,8 @@ if ($resources) {
                 if ($tag.Keys -notcontains $TagName) { # doesn´t have the monitoring tag
                     $tag.Add($TagName, $TagValue)
                     Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
+                    #Check if agent exists. If not, install it.
+                    
                 }
                 else { #Monitoring Tag exists  
                     if ($tag.$tagName.Split(',') -notcontains $TagValue) {
@@ -42,6 +45,45 @@ if ($resources) {
                     }
                     else {
                         "$($tag[$TagName]) already has the $TagValue value"
+                    }
+                }
+                if ($resource.OS -eq 'Linux') {
+                    $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
+                }
+                else {
+                    $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
+                }
+                if ($agentstatus) {
+                    "Agent already installed."
+                }
+                else {
+                    "Agent not installed. Installing..."
+                    if ($resource.OS -eq 'Linux') { # 
+                        if ($resource.Resource.split('/')[7] -eq 'virtualMachines') {
+                            # Virtual machine - add extension
+                            $agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location 
+                        }
+                        else {
+                            # Arc machine -add extension
+                            $agent= New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade
+                            
+                        }
+                    }
+                    else { # Windows
+                        if ($resource.Resource.split('/')[7] -eq 'virtualMachines') {
+                            # Virtual machine - add extension
+                            $agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag
+                        }
+                        else {
+                            # Arc machine -add extension
+                            $agent= New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade
+                        }
+                    }
+                    if ($agent) {
+                        "Agent installed."
+                    }
+                    else {
+                        "Agent not installed."
                     }
                 }
                 #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
