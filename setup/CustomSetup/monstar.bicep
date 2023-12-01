@@ -14,7 +14,7 @@ param deployAMApolicy bool
 param functionName string
 param grafanaLocation string
 param grafanaName string
-param newGrafana bool = true
+param newGrafana bool
 param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false

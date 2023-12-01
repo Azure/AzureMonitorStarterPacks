@@ -506,6 +506,21 @@
                             "visible": true
                         },
                         {
+                            "name": "NewGrafanaName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Name for the new Grafana environment.",
+                            "subLabel": "",
+                            "defaultValue": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                            "toolTip": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
+                                "regex": "",
+                                "validationMessage": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit."
+                            },
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
+                        },
+                        
+                        {
                             "name": "ExistingGrafanaInstance",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "label": "Azure Managed Grafana",
@@ -739,7 +754,7 @@
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "deployPacks": "[steps('Packs').deployPacks]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
-                "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "grafanaName": "[steps('Configuration').NewGrafanaName]",
                 "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountStatus,'New')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
@@ -755,6 +770,7 @@
                 "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
                 "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "customerTags": "[steps('tags').tagsByResource]",
+                "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]"
             },
             "kind": "ManagementGroup",
