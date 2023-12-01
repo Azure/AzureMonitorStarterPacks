@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.8"
+      "version": "9.5.13"
     },
     {
       "type": "datasource",
@@ -89,6 +89,30 @@
         "x": 0,
         "y": 0
       },
+      "id": 28,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<sub>*Note: If you have multiple workspaces, and you are not seeing data in the visualisations below, please first select the workspace that you have used in the configuration of the Azure Monitor Starter Packs in the options above.*</sub>",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.5.13",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 20,
+        "x": 0,
+        "y": 2
+      },
       "id": 6,
       "options": {
         "code": {
@@ -99,7 +123,7 @@
         "content": "# Linux Operating System Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "type": "text"
     },
     {
@@ -127,7 +151,7 @@
         "h": 9,
         "w": 5,
         "x": 0,
-        "y": 2
+        "y": 4
       },
       "id": 2,
       "options": {
@@ -202,7 +226,7 @@
         "h": 9,
         "w": 5,
         "x": 5,
-        "y": 2
+        "y": 4
       },
       "id": 4,
       "options": {
@@ -275,7 +299,7 @@
         "h": 9,
         "w": 5,
         "x": 10,
-        "y": 2
+        "y": 4
       },
       "id": 26,
       "options": {
@@ -350,7 +374,7 @@
         "h": 9,
         "w": 5,
         "x": 15,
-        "y": 2
+        "y": 4
       },
       "id": 27,
       "options": {
@@ -409,7 +433,7 @@
         "h": 2,
         "w": 20,
         "x": 0,
-        "y": 11
+        "y": 13
       },
       "id": 14,
       "options": {
@@ -421,7 +445,7 @@
         "content": "# Health and Availability",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "type": "text"
     },
     {
@@ -487,7 +511,7 @@
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 12,
       "options": {
@@ -509,7 +533,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -631,7 +655,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 13
+        "y": 15
       },
       "id": 10,
       "options": {
@@ -646,7 +670,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -748,7 +772,7 @@
         "h": 10,
         "w": 8,
         "x": 12,
-        "y": 13
+        "y": 15
       },
       "hideTimeOverride": true,
       "id": 16,
@@ -771,7 +795,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -887,7 +911,7 @@
         "h": 12,
         "w": 10,
         "x": 0,
-        "y": 23
+        "y": 25
       },
       "id": 18,
       "options": {
@@ -1023,7 +1047,7 @@
         "h": 12,
         "w": 10,
         "x": 10,
-        "y": 23
+        "y": 25
       },
       "id": 20,
       "options": {
@@ -1071,7 +1095,7 @@
         "h": 2,
         "w": 20,
         "x": 0,
-        "y": 35
+        "y": 37
       },
       "id": 22,
       "options": {
@@ -1165,7 +1189,7 @@
         "h": 12,
         "w": 11,
         "x": 0,
-        "y": 37
+        "y": 39
       },
       "id": 24,
       "options": {
@@ -1286,7 +1310,7 @@
         "h": 12,
         "w": 9,
         "x": 11,
-        "y": 37
+        "y": 39
       },
       "id": 25,
       "options": {
@@ -1455,6 +1479,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Start Pack / Linux Operating System",
-  "uid": "AzMonStarPackLinuxOS",
-  "version": 12
+  "uid": "LinuxOSMonStarPackDash",
+  "version": 13,
+  "weekStart": ""
 }

@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.8"
+      "version": "9.5.13"
     },
     {
       "type": "datasource",
@@ -85,9 +85,33 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 18,
+        "w": 21,
         "x": 0,
         "y": 0
+      },
+      "id": 15,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<sub>*Note: If you have multiple workspaces, and you are not seeing data in the visualisations below, please first select the workspace that you have used in the configuration of the Azure Monitor Starter Packs in the options above.*</sub>",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.5.13",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 21,
+        "x": 0,
+        "y": 2
       },
       "id": 1,
       "options": {
@@ -99,7 +123,7 @@
         "content": "# IIS Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "type": "text"
     },
     {
@@ -151,9 +175,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
+        "w": 7,
         "x": 0,
-        "y": 2
+        "y": 4
       },
       "id": 2,
       "options": {
@@ -169,7 +193,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -216,9 +240,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
-        "x": 6,
-        "y": 2
+        "w": 7,
+        "x": 7,
+        "y": 4
       },
       "id": 13,
       "options": {
@@ -320,9 +344,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
-        "x": 12,
-        "y": 2
+        "w": 7,
+        "x": 14,
+        "y": 4
       },
       "id": 14,
       "options": {
@@ -379,9 +403,9 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 18,
+        "w": 21,
         "x": 0,
-        "y": 11
+        "y": 13
       },
       "id": 3,
       "options": {
@@ -393,7 +417,7 @@
         "content": "# Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "type": "text"
     },
     {
@@ -424,10 +448,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 9,
+        "h": 8,
+        "w": 7,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 4,
       "options": {
@@ -444,7 +468,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -476,37 +500,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "mode": "thresholds"
           },
           "mappings": [],
           "thresholds": {
@@ -526,28 +520,31 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 9,
-        "x": 9,
-        "y": 13
+        "h": 8,
+        "w": 7,
+        "x": 7,
+        "y": 15
       },
-      "id": 5,
+      "id": 17,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "textMode": "auto"
       },
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "Perf \r\n| where _ResourceId in ($Resources)\r\n| where ObjectName == \"Web Service\" and CounterName == \"Connection Attempts/sec\"\r\n| summarize AverageConnectionAttempts = avg(CounterValue) by bin(TimeGenerated, 10m), Computer\r\n| order by TimeGenerated asc",
+            "query": "W3CIISLog \r\n| where _ResourceId in ($Resources)\r\n| summarize avg(TimeTaken)",
             "resources": [
               "$Workspace"
             ]
@@ -564,8 +561,101 @@
           "refId": "A"
         }
       ],
-      "title": "Average Connection Attempts/Sec",
-      "type": "timeseries"
+      "title": "Average Time Taken",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${DS_AZURE_MONITOR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "StatusCount"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "lcd",
+                  "type": "gauge"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 14,
+        "y": 15
+      },
+      "id": 16,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.5.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "W3CIISLog \r\n| where _ResourceId in ($Resources)\r\n| summarize StatusCount = count() by scStatus\r\n| order by StatusCount",
+            "resources": [
+              "$Workspace"
+            ]
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "IIS Status Codes",
+      "type": "table"
     },
     {
       "datasource": {
@@ -612,8 +702,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -626,9 +715,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
+        "w": 7,
         "x": 0,
-        "y": 20
+        "y": 23
       },
       "id": 6,
       "options": {
@@ -711,8 +800,105 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 7,
+        "y": 23
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "Perf \r\n| where _ResourceId in ($Resources)\r\n| where ObjectName == \"Web Service\" and CounterName == \"Connection Attempts/sec\"\r\n| summarize AverageConnectionAttempts = avg(CounterValue) by bin(TimeGenerated, 10m), Computer\r\n| order by TimeGenerated asc",
+            "resources": [
+              "$Workspace"
+            ]
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Average Connection Attempts/Sec",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${DS_AZURE_MONITOR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
               },
               {
                 "color": "red",
@@ -726,9 +912,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
-        "x": 9,
-        "y": 20
+        "w": 7,
+        "x": 14,
+        "y": 23
       },
       "id": 7,
       "options": {
@@ -827,9 +1013,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
+        "w": 10,
         "x": 0,
-        "y": 27
+        "y": 30
       },
       "id": 9,
       "options": {
@@ -928,9 +1114,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
-        "x": 9,
-        "y": 27
+        "w": 11,
+        "x": 10,
+        "y": 30
       },
       "id": 8,
       "options": {
@@ -1029,11 +1215,11 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
+        "w": 10,
         "x": 0,
-        "y": 34
+        "y": 37
       },
-      "id": 11,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [
@@ -1051,7 +1237,7 @@
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics \r\n| where _ResourceId in ($Resources)\r\n| where Namespace == \"Network\"\r\n| where Name == \"WriteBytesPerSecond\"\r\n| summarize Writes = avg(Val) by bin(TimeGenerated, 10m), Computer\r\n| order by TimeGenerated asc",
+            "query": "InsightsMetrics \r\n| where _ResourceId in ($Resources)\r\n| where Namespace == \"Network\"\r\n| where Name == \"ReadBytesPerSecond\"\r\n| summarize Writes = avg(Val) by bin(TimeGenerated, 10m), Computer\r\n| order by TimeGenerated asc",
             "resources": [
               "$Workspace"
             ]
@@ -1068,7 +1254,7 @@
           "refId": "A"
         }
       ],
-      "title": "Network Write Bytes/sec",
+      "title": "Network Read Bytes/sec",
       "type": "timeseries"
     },
     {
@@ -1130,11 +1316,11 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
-        "x": 9,
-        "y": 34
+        "w": 11,
+        "x": 10,
+        "y": 37
       },
-      "id": 12,
+      "id": 11,
       "options": {
         "legend": {
           "calcs": [
@@ -1152,7 +1338,7 @@
       "targets": [
         {
           "azureLogAnalytics": {
-            "query": "InsightsMetrics \r\n| where _ResourceId in ($Resources)\r\n| where Namespace == \"Network\"\r\n| where Name == \"ReadBytesPerSecond\"\r\n| summarize Writes = avg(Val) by bin(TimeGenerated, 10m), Computer\r\n| order by TimeGenerated asc",
+            "query": "InsightsMetrics \r\n| where _ResourceId in ($Resources)\r\n| where Namespace == \"Network\"\r\n| where Name == \"WriteBytesPerSecond\"\r\n| summarize Writes = avg(Val) by bin(TimeGenerated, 10m), Computer\r\n| order by TimeGenerated asc",
             "resources": [
               "$Workspace"
             ]
@@ -1169,7 +1355,7 @@
           "refId": "A"
         }
       ],
-      "title": "Network Read Bytes/sec",
+      "title": "Network Write Bytes/sec",
       "type": "timeseries"
     }
   ],
@@ -1294,6 +1480,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Starter Pack / IIS",
-  "uid": "AzMonStarPackIIS",
-  "version": 6
+  "uid": "IISMonStarPackDash",
+  "version": 16,
+  "weekStart": ""
 }
