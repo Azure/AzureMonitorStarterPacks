@@ -749,6 +749,7 @@
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
                 "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
+                "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
                 "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
                 "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemail,'')]",
                 "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",

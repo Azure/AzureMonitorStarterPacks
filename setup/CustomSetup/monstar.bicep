@@ -20,7 +20,6 @@ param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 
-
 // Packs` stuff
 param deployPacks bool = false
 @description('Name of the Action Group to be used or created.')
@@ -34,6 +33,8 @@ param useExistingAG bool = false
 @description('Name of the existing resource group to be used for the Action Group if existing.')
 param existingAGRG string = ''
 param customerTags object
+param existingActionGroupId string
+
 
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
@@ -104,6 +105,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
     Tags: Tags
     location: grafanaLocation
     grafanaName: grafanaName
+    solutionTag: solutionTagComponents
     //userObjectId: currentUserIdObject
     //lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
   }
@@ -125,6 +127,7 @@ module backend '../backend/code/backend.bicep' = {
     Tags: Tags
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
+    solutionTag: solutionTagComponents
   }
 }
 
@@ -151,5 +154,6 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     grafanaResourceId: newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
+    existingActionGroupResourceId: existingActionGroupId
   }
 }

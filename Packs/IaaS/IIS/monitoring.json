@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "10456499083646325524"
+      "templateHash": "13974476155752907156"
     }
   },
   "parameters": {
@@ -14,40 +14,6 @@
       "defaultValue": "AMSP-IIS-Server",
       "metadata": {
         "description": "Name of the DCR rule to be created"
-      }
-    },
-    "actionGroupName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the Action Group to be used or created."
-      }
-    },
-    "emailreceiver": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Email receiver names to be used for the Action Group if being created."
-      }
-    },
-    "emailreiceversemail": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Email addresses to be used for the Action Group if being created."
-      }
-    },
-    "useExistingAG": {
-      "type": "bool",
-      "metadata": {
-        "description": "If set to true, a new Action group will be created"
-      }
-    },
-    "existingAGRG": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the existing resource group to be used for the Action Group if existing."
       }
     },
     "location": {
@@ -98,6 +64,9 @@
     },
     "customerTags": {
       "type": "object"
+    },
+    "actionGroupResourceId": {
+      "type": "string"
     }
   },
   "variables": {
@@ -177,202 +146,6 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "actionGroupName-deployment",
-      "location": "[deployment().location]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "actionGroupName": {
-            "value": "[parameters('actionGroupName')]"
-          },
-          "existingAGRG": {
-            "value": "[parameters('existingAGRG')]"
-          },
-          "emailreceiver": {
-            "value": "[parameters('emailreceiver')]"
-          },
-          "emailreiceversemail": {
-            "value": "[parameters('emailreiceversemail')]"
-          },
-          "useExistingAG": {
-            "value": "[parameters('useExistingAG')]"
-          },
-          "newRGresourceGroup": {
-            "value": "[variables('resourceGroupName')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
-          },
-          "subscriptionId": {
-            "value": "[parameters('subscriptionId')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "Tags": {
-            "value": "[variables('Tags')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "2318737756503069054"
-            }
-          },
-          "parameters": {
-            "subscriptionId": {
-              "type": "string"
-            },
-            "actionGroupName": {
-              "type": "string"
-            },
-            "emailreceiver": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "emailreiceversemail": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "useExistingAG": {
-              "type": "bool"
-            },
-            "existingAGRG": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "newRGresourceGroup": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "solutionTag": {
-              "type": "string"
-            },
-            "Tags": {
-              "type": "object"
-            },
-            "location": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
-              "condition": "[not(parameters('useExistingAG'))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "ag-new",
-              "subscriptionId": "[parameters('subscriptionId')]",
-              "resourceGroup": "[parameters('newRGresourceGroup')]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "actiongroupname": {
-                    "value": "[parameters('actionGroupName')]"
-                  },
-                  "emailreceiver": {
-                    "value": "[parameters('emailreceiver')]"
-                  },
-                  "emailreiceversemail": {
-                    "value": "[parameters('emailreiceversemail')]"
-                  },
-                  "groupshortname": {
-                    "value": "[parameters('actionGroupName')]"
-                  },
-                  "location": {
-                    "value": "global"
-                  },
-                  "solutionTag": {
-                    "value": "[parameters('solutionTag')]"
-                  },
-                  "Tags": {
-                    "value": "[parameters('Tags')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "12078785433656182442"
-                    }
-                  },
-                  "parameters": {
-                    "actiongroupname": {
-                      "type": "string"
-                    },
-                    "location": {
-                      "type": "string"
-                    },
-                    "groupshortname": {
-                      "type": "string"
-                    },
-                    "emailreceiver": {
-                      "type": "string"
-                    },
-                    "emailreiceversemail": {
-                      "type": "string"
-                    },
-                    "solutionTag": {
-                      "type": "string"
-                    },
-                    "Tags": {
-                      "type": "object"
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Insights/actionGroups",
-                      "apiVersion": "2023-01-01",
-                      "name": "New-AG",
-                      "location": "[parameters('location')]",
-                      "tags": "[parameters('Tags')]",
-                      "properties": {
-                        "groupShortName": "[parameters('groupshortname')]",
-                        "enabled": true,
-                        "emailReceivers": [
-                          {
-                            "name": "[parameters('emailreceiver')]",
-                            "emailAddress": "[parameters('emailreiceversemail')]",
-                            "useCommonAlertSchema": false
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "agGroupId": {
-                      "type": "string",
-                      "value": "[resourceId('Microsoft.Insights/actionGroups', 'New-AG')]"
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "outputs": {
-            "actionGroupResourceId": {
-              "type": "string",
-              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', 'ag-new'), '2022-09-01').outputs.agGroupId.value)]"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
       "name": "[format('Alerts-{0}', parameters('packtag'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -389,7 +162,7 @@
             "value": "[parameters('workspaceId')]"
           },
           "AGId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'actionGroupName-deployment'), '2022-09-01').outputs.actionGroupResourceId.value]"
+            "value": "[parameters('actionGroupResourceId')]"
           },
           "packtag": {
             "value": "[parameters('packtag')]"
@@ -1296,10 +1069,7 @@
             }
           ]
         }
-      },
-      "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'actionGroupName-deployment')]"
-      ]
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",

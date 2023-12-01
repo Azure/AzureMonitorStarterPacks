@@ -5,6 +5,7 @@ param functionname string
 //param currentUserIdObject string
 param location string
 param storageAccountName string
+param solutionTag string
 //param kvname string
 param lawresourceid string
 param appInsightsLocation string
@@ -72,6 +73,7 @@ module backendFunction 'modules/function.bicep' = {
     userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
     packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+    solutionTag: solutionTag
   }
 }
 
@@ -101,12 +103,12 @@ module workbook './modules/workbook.bicep' = {
 
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-  name: 'DCE-${Tags['MonitorStarterPacks']}-${location}'
+  name: 'DCE-${Tags['${solutionTag}']}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     Tags: Tags
-    dceName: 'DCE-${Tags['MonitorStarterPacks']}-${location}'
+    dceName: 'DCE-${Tags['${solutionTag}']}-${location}'
   }
 }
 
@@ -122,6 +124,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
     addRGRoleAssignments: true
+    solutionTag: solutionTag
   }
 }
 
@@ -142,6 +145,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
+    solutionTag: solutionTag
   }
 }
 
@@ -167,7 +171,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
   params: {
     resourcename: keyvault.outputs.kvResourceId
     principalId: logicapp.outputs.logicAppPrincipalId
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: Tags['${solutionTag}']
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }

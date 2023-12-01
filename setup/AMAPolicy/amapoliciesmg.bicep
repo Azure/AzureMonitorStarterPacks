@@ -88,6 +88,7 @@ module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep
     mgname: managementGroup().name
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
+    solutionTag: solutionTag
   }
 }
 module userIdentityRoleAssignments '../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roledefinitionIds:  {

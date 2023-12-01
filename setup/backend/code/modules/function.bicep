@@ -9,10 +9,11 @@ param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param lawresourceid string
 param appInsightsLocation string
-param extraTags object = {}
+
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 param apiManagementKey string= base64(newGuid())
+param solutionTag string
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -163,7 +164,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     FUNCTIONS_WORKER_RUNTIME:'powershell'
     FUNCTIONS_EXTENSION_VERSION:'~4'
     ResourceGroup: resourceGroup().name
-    SolutionTag: Tags['MonitorStarterPacks']
+    SolutionTag: Tags['${solutionTag}']
     APPINSIGHTS_INSTRUMENTATIONKEY: reference(appinsights.id, '2020-02-02-preview').InstrumentationKey
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'

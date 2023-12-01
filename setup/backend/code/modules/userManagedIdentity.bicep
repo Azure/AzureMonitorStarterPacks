@@ -7,6 +7,7 @@ param mgname string
 param subscriptionId string
 param resourceGroupName string
 param addRGRoleAssignments bool = false
+param solutionTag string
 var RGroleDefinitionIds=[
 
   //contributor roles
@@ -40,7 +41,7 @@ module userIdentityRoleAssignments '../../../../modules/rbac/mg/roleassignment.b
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: Tags['${solutionTag}']
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }
@@ -52,7 +53,7 @@ module userIdentityRoleAssignmentRG '../../../../modules/rbac/resourceGroup/role
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: Tags['${solutionTag}']
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }

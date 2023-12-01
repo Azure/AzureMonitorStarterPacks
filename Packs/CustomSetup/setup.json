@@ -200,9 +200,9 @@
                             "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
                         },
                         {
-                            "name": "emailreceivers",
+                            "name": "emailreceiver",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s)",
+                            "label": "Email Receiver",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
@@ -212,9 +212,9 @@
                             "visible": "[equals(steps('Configuration').ActionGroupStatus, 'New')]"
                         },
                         {
-                            "name": "emailreceiversemails",
+                            "name": "emailreceiversemail",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s) email(s)",
+                            "label": "Email Receiver email address.",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
@@ -330,8 +330,9 @@
                 "dceId":"[steps('Configuration').dataCollectionEndpointId]",
                 "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
                 "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
-                "emailreceivers":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceivers,'')]",
-                "emailreiceversemails":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemails,'')]",
+                "emailreceiver":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiver,'')]",
+                "emailreiceversemail":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemail,'')]",
+                "existingActionGroupId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]",
                 "existingAGRG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(take(split(steps('Configuration').existingAG,'/'),5)))]",
                 "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",

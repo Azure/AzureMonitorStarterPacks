@@ -2,16 +2,7 @@ targetScope='managementGroup'
 
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-IIS2016-Server'
-@description('Name of the Action Group to be used or created.')
-param actionGroupName string = ''
-@description('Email receiver names to be used for the Action Group if being created.')
-param emailreceiver string = ''
-@description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemail string  = ''
-@description('If set to true, a new Action group will be created')
-param useExistingAG bool = false
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
+param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -129,21 +120,21 @@ var performanceCounters=[
 ]
 
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-module ag '../../../modules/actiongroups/ag.bicep' = {
-  name: 'ag-deployment'
-  params: {
-    actionGroupName: actionGroupName
-    existingAGRG: existingAGRG
-    emailreceiver: emailreceiver
-    emailreiceversemail: emailreiceversemail
-    useExistingAG: useExistingAG
-    newRGresourceGroup: resourceGroupName
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    location: location
-    Tags: Tags
-  }
-}
+// module ag '../../../modules/actiongroups/ag.bicep' = {
+//   name: 'ag-deployment'
+//   params: {
+//     actionGroupName: actionGroupName
+//     existingAGRG: existingAGRG
+//     emailreceiver: emailreceiver
+//     emailreiceversemail: emailreiceversemail
+//     useExistingAG: useExistingAG
+//     newRGresourceGroup: resourceGroupName
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     location: location
+//     Tags: Tags
+//   }
+// }
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
@@ -153,7 +144,7 @@ module Alerts './WinIIS2016Alerts.bicep' = {
   params: {
     location: location
     workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
+    AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
   }

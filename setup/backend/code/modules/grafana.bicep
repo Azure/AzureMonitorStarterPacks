@@ -3,6 +3,7 @@
 param grafanaName string
 param location string
 param Tags object
+param solutionTag string
 //param userObjectId string
 // param utcValue string = utcNow()
 // param lawresourceId string
@@ -46,7 +47,7 @@ module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignm
     resourcename: grafanaName
     roleDefinitionId: ReaderRoleId
     roleShortName: 'Reader'
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: Tags['${solutionTag}']
   }
 }
 module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -56,7 +57,7 @@ module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignm
     resourcename: grafanaName
     roleDefinitionId: LogAnalyticsContribuorRoleId
     roleShortName: 'Log Analytics Contributor'
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: Tags['${solutionTag}']
   }
 }
 module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -66,7 +67,7 @@ module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleass
     resourcename: grafanaName
     roleDefinitionId: MonitoringContributorRoleId
     roleShortName: 'Monitor Contributor Role'
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: Tags['${solutionTag}']
   }
 }
 

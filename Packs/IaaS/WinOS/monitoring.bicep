@@ -3,16 +3,7 @@ targetScope = 'managementGroup'
 param packtag string = 'WinOS'
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-Windows-OS'
-@description('Name of the Action Group to be used or created.')
-param actionGroupName string
-@description('Email receiver names to be used for the Action Group if being created.')
-param emailreceiver string = ''
-@description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemail string  = ''
-@description('If set to true, a new Action group will be created')
-param useExistingAG bool = false
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
+param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -36,22 +27,22 @@ var ruleshortname = 'VMI-OS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // Action Group
-module ag '../../../modules/actiongroups/ag.bicep' =  {
-  name: 'actiongroup'
-  params: {
-    actionGroupName: actionGroupName
-    existingAGRG: existingAGRG
-    emailreceiver: emailreceiver
-    emailreiceversemail: emailreiceversemail
-    useExistingAG: useExistingAG
-    newRGresourceGroup: resourceGroupName
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    location: location
-    Tags: Tags
-    //location: location defailt is global
-  }
-}
+// module ag '../../../modules/actiongroups/ag.bicep' =  {
+//   name: 'actiongroup'
+//   params: {
+//     actionGroupName: actionGroupName
+//     existingAGRG: existingAGRG
+//     emailreceiver: emailreceiver
+//     emailreiceversemail: emailreiceversemail
+//     useExistingAG: useExistingAG
+//     newRGresourceGroup: resourceGroupName
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     location: location
+//     Tags: Tags
+//     //location: location defailt is global
+//   }
+// }
 
 // // Alerts - Event viewer based alerts. Depend on the event viewer logs being enabled on the VMs events are being sent to the workspace via DCRs.
 // module eventAlerts 'eventAlerts.bicep' = {
@@ -92,7 +83,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
   params: {
     location: location
     workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
+    AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
   }

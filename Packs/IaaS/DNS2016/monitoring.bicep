@@ -27,6 +27,8 @@ param assignmentLevel string
 param solutionTag string
 param solutionVersion string
 param customerTags object
+param actionGroupResourceId string
+
 var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
 'solutionVersion': solutionVersion} : union({
   '${solutionTag}': packtag
@@ -180,21 +182,21 @@ var performanceCounters=[
 ]
 
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-module ag '../../../modules/actiongroups/ag.bicep' = {
-  name: 'deployAG-${packtag}'
-  params: {
-    actionGroupName: actionGroupName
-    existingAGRG: existingAGRG
-    emailreceiver: emailreceiver
-    emailreiceversemail: emailreiceversemail
-    useExistingAG: useExistingAG
-    newRGresourceGroup: resourceGroupName
-    Tags: Tags
-    subscriptionId: subscriptionId
-    location: location
-    solutionTag: Tags['MonitorStarterPacks']
-  }
-}
+// module ag '../../../modules/actiongroups/ag.bicep' = {
+//   name: 'deployAG-${packtag}'
+//   params: {
+//     actionGroupName: actionGroupName
+//     existingAGRG: existingAGRG
+//     emailreceiver: emailreceiver
+//     emailreiceversemail: emailreiceversemail
+//     useExistingAG: useExistingAG
+//     newRGresourceGroup: resourceGroupName
+//     Tags: Tags
+//     subscriptionId: subscriptionId
+//     location: location
+//     solutionTag: Tags['MonitorStarterPacks']
+//   }
+// }
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
@@ -204,7 +206,7 @@ module Alerts './WinDns2016Alerts.bicep' = {
   params: {
     location: location
     workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
+    AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
   }
@@ -230,7 +232,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
   params: {
     dcrId: dcrbasicvmMonitoring.outputs.dcrId
     packtag: packtag
-    solutionTag: Tags['MonitorStarterPacks']
+    solutionTag: solutionTag
     rulename: rulename
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
