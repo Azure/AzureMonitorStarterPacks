@@ -191,7 +191,7 @@ module ag '../../../modules/actiongroups/ag.bicep' = {
     Tags: Tags
     subscriptionId: subscriptionId
     location: location
-    solutionTag: Tags['solutionTag']
+    solutionTag: Tags['MonitorStarterPacks']
   }
 }
 
@@ -229,7 +229,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
   params: {
     dcrId: dcrbasicvmMonitoring.outputs.dcrId
     packtag: packtag
-    solutionTag: Tags['solutionTag']
+    solutionTag: Tags['MonitorStarterPacks']
     rulename: rulename
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId

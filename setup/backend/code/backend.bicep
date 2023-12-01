@@ -101,12 +101,12 @@ module workbook './modules/workbook.bicep' = {
 
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-  name: 'DCE-${Tags['solutionTag']}-${location}'
+  name: 'DCE-${Tags['MonitorStarterPacks']}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     Tags: Tags
-    dceName: 'DCE-${Tags['solutionTag']}-${location}'
+    dceName: 'DCE-${Tags['MonitorStarterPacks']}-${location}'
   }
 }
 
@@ -167,7 +167,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
   params: {
     resourcename: keyvault.outputs.kvResourceId
     principalId: logicapp.outputs.logicAppPrincipalId
-    solutionTag: Tags['solutionTag']
+    solutionTag: Tags['MonitorStarterPacks']
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }

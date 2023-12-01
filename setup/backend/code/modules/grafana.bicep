@@ -46,7 +46,7 @@ module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignm
     resourcename: grafanaName
     roleDefinitionId: ReaderRoleId
     roleShortName: 'Reader'
-    solutionTag: Tags['solutionTag']
+    solutionTag: Tags['MonitorStarterPacks']
   }
 }
 module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -56,7 +56,7 @@ module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignm
     resourcename: grafanaName
     roleDefinitionId: LogAnalyticsContribuorRoleId
     roleShortName: 'Log Analytics Contributor'
-    solutionTag: Tags['solutionTag']
+    solutionTag: Tags['MonitorStarterPacks']
   }
 }
 module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
@@ -66,7 +66,7 @@ module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleass
     resourcename: grafanaName
     roleDefinitionId: MonitoringContributorRoleId
     roleShortName: 'Monitor Contributor Role'
-    solutionTag: Tags['solutionTag']
+    solutionTag: Tags['MonitorStarterPacks']
   }
 }
 
