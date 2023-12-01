@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.8"
+      "version": "9.5.13"
     },
     {
       "type": "datasource",
@@ -83,6 +83,30 @@
         "x": 0,
         "y": 0
       },
+      "id": 11,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<sub>*Note: If you have multiple workspaces, and you are not seeing data in the visualisations below, please first select the workspace that you have used in the configuration of the Azure Monitor Starter Packs in the options above.*</sub>",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.5.13",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 20,
+        "x": 0,
+        "y": 2
+      },
       "id": 1,
       "options": {
         "code": {
@@ -93,7 +117,7 @@
         "content": "# NGINX Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "type": "text"
     },
     {
@@ -134,7 +158,7 @@
         "h": 8,
         "w": 5,
         "x": 0,
-        "y": 2
+        "y": 4
       },
       "id": 3,
       "options": {
@@ -149,7 +173,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -298,7 +322,7 @@
         "h": 8,
         "w": 5,
         "x": 5,
-        "y": 2
+        "y": 4
       },
       "id": 2,
       "options": {
@@ -314,7 +338,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -369,7 +393,7 @@
         "h": 8,
         "w": 5,
         "x": 10,
-        "y": 2
+        "y": 4
       },
       "id": 8,
       "options": {
@@ -443,7 +467,7 @@
         "h": 8,
         "w": 5,
         "x": 15,
-        "y": 2
+        "y": 4
       },
       "id": 9,
       "options": {
@@ -501,7 +525,7 @@
         "h": 2,
         "w": 20,
         "x": 0,
-        "y": 10
+        "y": 12
       },
       "id": 10,
       "options": {
@@ -513,7 +537,7 @@
         "content": "# Health and Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "type": "text"
     },
     {
@@ -595,7 +619,7 @@
         "h": 8,
         "w": 10,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "id": 4,
       "options": {
@@ -610,7 +634,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.8",
+      "pluginVersion": "9.5.13",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -695,7 +719,7 @@
         "h": 8,
         "w": 10,
         "x": 10,
-        "y": 12
+        "y": 14
       },
       "id": 5,
       "options": {
@@ -795,7 +819,7 @@
         "h": 8,
         "w": 10,
         "x": 0,
-        "y": 20
+        "y": 22
       },
       "id": 6,
       "options": {
@@ -897,7 +921,7 @@
         "h": 8,
         "w": 10,
         "x": 10,
-        "y": 20
+        "y": 22
       },
       "id": 7,
       "options": {
@@ -1053,12 +1077,13 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Azure Monitor Starter Pack / NGINX",
-  "uid": "AzMonStarPackNGINX",
-  "version": 12
+  "uid": "NGINXMonStarPackDash",
+  "version": 13,
+  "weekStart": ""
 }
