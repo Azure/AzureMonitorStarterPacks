@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "10087536865972441159"
+      "templateHash": "4115087300738492572"
     }
   },
   "parameters": {
@@ -1601,7 +1601,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12726717153140260455"
+              "templateHash": "11681060808180331308"
             }
           },
           "parameters": {
@@ -1712,7 +1712,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4676107955384357796"
+                      "templateHash": "6086069912241963200"
                     }
                   },
                   "parameters": {
@@ -1799,7 +1799,7 @@
                             "value": "[variables('$fxv#0')]"
                           }
                         ],
-                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite ', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
+                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]"
@@ -1897,7 +1897,7 @@
                         "hostNamesDisabled": false,
                         "containerSize": 1536,
                         "dailyMemoryTimeQuota": 0,
-                        "httpsOnly": false,
+                        "httpsOnly": true,
                         "redundancyMode": "None",
                         "storageAccountRequired": false,
                         "keyVaultReferenceIdentity": "SystemAssigned"
@@ -1917,7 +1917,7 @@
                         "FUNCTIONS_WORKER_RUNTIME": "powershell",
                         "FUNCTIONS_EXTENSION_VERSION": "~4",
                         "ResourceGroup": "[resourceGroup().name]",
-                        "SolutionTag": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]",
+                        "SolutionTag": "[parameters('solutionTag')]",
                         "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('functionname')), '2020-02-02-preview').InstrumentationKey]",
                         "APPLICATIONINSIGHTS_CONNECTION_STRING": "[format('InstrumentationKey={0}', reference(resourceId('Microsoft.Insights/components', parameters('functionname')), '2020-02-02-preview').InstrumentationKey)]",
                         "ApplicationInsightsAgent_EXTENSION_VERSION": "~2",

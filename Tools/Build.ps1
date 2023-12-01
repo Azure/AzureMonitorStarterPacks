@@ -63,8 +63,9 @@ Compress-Archive -Path './IIS/Azure Monitor Starter Pack _ IIS-1692341727216.jso
 Compress-Archive -Path './DNS2016/Azure Monitor Starter Pack _ DNS2016.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './Nginx/Azure Monitor Starter Pack _ NGINX-1692341707202.json' -DestinationPath $DestinationPath -Update
 
-Set-Location $currentFolder  
+Set-Location $currentFolder
 Set-Location 'setup/backend/Function/code'
 $DestinationPath='./backend.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
 compress-archive * $DestinationPath -Force
+Set-Location $currentFolder
