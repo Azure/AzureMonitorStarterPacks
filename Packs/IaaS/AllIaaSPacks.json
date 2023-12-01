@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "6997974959253884551"
+      "templateHash": "8350474172231365570"
     }
   },
   "parameters": {
@@ -163,7 +163,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8807129877517802004"
+              "templateHash": "12771250154290312558"
             }
           },
           "parameters": {
@@ -256,7 +256,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "ruleshortname": "VMI-OS",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
           },
@@ -2233,7 +2233,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12577485014409754770"
+              "templateHash": "11902785319658536736"
             }
           },
           "parameters": {
@@ -2329,7 +2329,7 @@
             }
           },
           "variables": {
-            "Tags": "[union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags'))]",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
             "ruleshortname": "VMI-LxOS",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
           },

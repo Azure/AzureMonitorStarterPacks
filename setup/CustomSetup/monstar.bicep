@@ -138,7 +138,7 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     location: location
     dceId: backend.outputs.dceId
     mgname: mgname
-    customerTags: Tags
+    customerTags: customerTags
     subscriptionId: subscriptionId
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
