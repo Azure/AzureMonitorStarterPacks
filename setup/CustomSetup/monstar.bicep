@@ -12,7 +12,7 @@ param existingLogAnalyticsWSId string = ''
 param deployAMApolicy bool
 //param currentUserIdObject string // This is to automatically assign permissions to Grafana.
 param functionName string
-param grafanaLocation string
+param grafanaLocation string = ''
 param grafanaName string =''
 param newGrafana bool
 param existingGrafanaResourceId string = ''
