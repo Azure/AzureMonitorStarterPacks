@@ -37,7 +37,7 @@ param customerTags object
 
 var solutionTag='MonitorStarterPacks'
 var solutionVersion='0.1'
-var Tags = (customerTags== null) ? {'${solutionTag}': 'BackendComponent'
+var Tags = (customerTags=={}) ? {'${solutionTag}': 'BackendComponent'
 'solutionVersion': solutionVersion} : union({
   '${solutionTag}': 'BackendComponent'
   'solutionVersion': solutionVersion

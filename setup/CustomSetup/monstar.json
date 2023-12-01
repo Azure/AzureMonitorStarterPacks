@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "2081273931185448460"
+      "templateHash": "18010434293912638999"
     }
   },
   "parameters": {
@@ -115,7 +115,7 @@
   "variables": {
     "solutionTag": "MonitorStarterPacks",
     "solutionVersion": "0.1",
-    "Tags": "[if(equals(parameters('customerTags'), null()), createObject(format('{0}', variables('solutionTag')), 'BackendComponent', 'solutionVersion', variables('solutionVersion')), union(createObject(format('{0}', variables('solutionTag')), 'BackendComponent', 'solutionVersion', variables('solutionVersion')), parameters('customerTags').All))]"
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', variables('solutionTag')), 'BackendComponent', 'solutionVersion', variables('solutionVersion')), union(createObject(format('{0}', variables('solutionTag')), 'BackendComponent', 'solutionVersion', variables('solutionVersion')), parameters('customerTags').All))]"
   },
   "resources": [
     {
@@ -417,7 +417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9478278558827820433"
+              "templateHash": "18183583695106410180"
             }
           },
           "parameters": {
@@ -811,7 +811,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4583237805662522026"
+                      "templateHash": "15316732305859316227"
                     }
                   },
                   "parameters": {
@@ -940,7 +940,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag]"
+                            "value": "[parameters('Tags').MonitorStarterPacks]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -1032,7 +1032,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag]"
+                            "value": "[parameters('Tags').MonitorStarterPacks]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -1236,8 +1236,7 @@
           },
           "grafanaName": {
             "value": "[parameters('grafanaName')]"
-          },
-          "lawresourceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1246,7 +1245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8804736010301511404"
+              "templateHash": "8473388183194675244"
             }
           },
           "parameters": {
@@ -1258,18 +1257,9 @@
             },
             "Tags": {
               "type": "object"
-            },
-            "utcValue": {
-              "type": "string",
-              "defaultValue": "[utcNow()]"
-            },
-            "lawresourceId": {
-              "type": "string"
             }
           },
           "variables": {
-            "lawResourceGroup": "[split(parameters('lawresourceId'), '/')[4]]",
-            "GrafanaAdminRoleId": "22926164-76b3-42b3-bc55-97df8dab3e41",
             "ReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
             "LogAnalyticsContribuorRoleId": "92aaf0da-9dab-42b6-94a3-d43ce8d16293",
             "MonitoringContributorRoleId": "749f88d5-cbae-40b8-bcfc-e573ddc772fa"
@@ -1313,7 +1303,7 @@
                     "value": "Reader"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags').solutionTag]"
+                    "value": "[parameters('Tags').MonitorStarterPacks]"
                   }
                 },
                 "template": {
@@ -1398,7 +1388,7 @@
                     "value": "Log Analytics Contributor"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags').solutionTag]"
+                    "value": "[parameters('Tags').MonitorStarterPacks]"
                   }
                 },
                 "template": {
@@ -1483,7 +1473,7 @@
                     "value": "Monitor Contributor Role"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags').solutionTag]"
+                    "value": "[parameters('Tags').MonitorStarterPacks]"
                   }
                 },
                 "template": {
@@ -1553,10 +1543,7 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]"
-      ]
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -1574,12 +1561,6 @@
           },
           "functionname": {
             "value": "[parameters('functionName')]"
-          },
-          "grafanalocation": {
-            "value": "[parameters('grafanaLocation')]"
-          },
-          "grafanaName": {
-            "value": "[parameters('grafanaName')]"
           },
           "lawresourceid": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
           "location": {
@@ -1608,7 +1589,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8697560817480583572"
+              "templateHash": "9209602924593724059"
             }
           },
           "parameters": {
@@ -1625,12 +1606,6 @@
               "type": "string"
             },
             "lawresourceid": {
-              "type": "string"
-            },
-            "grafanaName": {
-              "type": "string"
-            },
-            "grafanalocation": {
               "type": "string"
             },
             "appInsightsLocation": {
@@ -1719,7 +1694,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3742289879410813100"
+                      "templateHash": "12385801004525326558"
                     }
                   },
                   "parameters": {
@@ -1925,7 +1900,7 @@
                         "FUNCTIONS_WORKER_RUNTIME": "powershell",
                         "FUNCTIONS_EXTENSION_VERSION": "~4",
                         "ResourceGroup": "[resourceGroup().name]",
-                        "SolutionTag": "[parameters('Tags').solutionTag]",
+                        "SolutionTag": "[parameters('Tags').MonitorStarterPacks]",
                         "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('functionname')), '2020-02-02-preview').InstrumentationKey]",
                         "APPLICATIONINSIGHTS_CONNECTION_STRING": "[format('InstrumentationKey={0}', reference(resourceId('Microsoft.Insights/components', parameters('functionname')), '2020-02-02-preview').InstrumentationKey)]",
                         "ApplicationInsightsAgent_EXTENSION_VERSION": "~2",
@@ -2324,7 +2299,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCE-{0}-{1}', parameters('Tags').solutionTag, parameters('location'))]",
+              "name": "[format('DCE-{0}-{1}', parameters('Tags').MonitorStarterPacks, parameters('location'))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -2340,7 +2315,7 @@
                     "value": "[parameters('Tags')]"
                   },
                   "dceName": {
-                    "value": "[format('DCE-{0}-{1}', parameters('Tags').solutionTag, parameters('location'))]"
+                    "value": "[format('DCE-{0}-{1}', parameters('Tags').MonitorStarterPacks, parameters('location'))]"
                   }
                 },
                 "template": {
@@ -2430,7 +2405,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4583237805662522026"
+                      "templateHash": "15316732305859316227"
                     }
                   },
                   "parameters": {
@@ -2559,7 +2534,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag]"
+                            "value": "[parameters('Tags').MonitorStarterPacks]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -2651,7 +2626,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag]"
+                            "value": "[parameters('Tags').MonitorStarterPacks]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -2777,7 +2752,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4583237805662522026"
+                      "templateHash": "15316732305859316227"
                     }
                   },
                   "parameters": {
@@ -2906,7 +2881,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag]"
+                            "value": "[parameters('Tags').MonitorStarterPacks]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -2998,7 +2973,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags').solutionTag]"
+                            "value": "[parameters('Tags').MonitorStarterPacks]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -3213,7 +3188,7 @@
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'BackendLogicApp'), '2022-09-01').outputs.logicAppPrincipalId.value]"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags').solutionTag]"
+                    "value": "[parameters('Tags').MonitorStarterPacks]"
                   },
                   "roleDefinitionId": {
                     "value": "[variables('logicappRequiredRoleassignments')[copyIndex()]]"
@@ -3294,7 +3269,7 @@
             },
             "dceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DCE-{0}-{1}', parameters('Tags').solutionTag, parameters('location'))), '2022-09-01').outputs.dceId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DCE-{0}-{1}', parameters('Tags').MonitorStarterPacks, parameters('location'))), '2022-09-01').outputs.dceId.value]"
             }
           }
         }
@@ -3369,7 +3344,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1164936056644190210"
+              "templateHash": "11805759286381156491"
             }
           },
           "parameters": {
@@ -14565,7 +14540,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11265137834049653442"
+                      "templateHash": "10054872371367518387"
                     }
                   },
                   "parameters": {
@@ -14844,7 +14819,7 @@
                             "value": "[parameters('location')]"
                           },
                           "solutionTag": {
-                            "value": "[variables('Tags').solutionTag]"
+                            "value": "[variables('Tags').MonitorStarterPacks]"
                           }
                         },
                         "template": {
@@ -16389,7 +16364,7 @@
                             "value": "[parameters('packtag')]"
                           },
                           "solutionTag": {
-                            "value": "[variables('Tags').solutionTag]"
+                            "value": "[variables('Tags').MonitorStarterPacks]"
                           },
                           "rulename": {
                             "value": "[parameters('rulename')]"

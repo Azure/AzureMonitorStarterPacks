@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11265137834049653442"
+      "templateHash": "10054872371367518387"
     }
   },
   "parameters": {
@@ -284,7 +284,7 @@
             "value": "[parameters('location')]"
           },
           "solutionTag": {
-            "value": "[variables('Tags').solutionTag]"
+            "value": "[variables('Tags').MonitorStarterPacks]"
           }
         },
         "template": {
@@ -1829,7 +1829,7 @@
             "value": "[parameters('packtag')]"
           },
           "solutionTag": {
-            "value": "[variables('Tags').solutionTag]"
+            "value": "[variables('Tags').MonitorStarterPacks]"
           },
           "rulename": {
             "value": "[parameters('rulename')]"
