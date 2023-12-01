@@ -620,9 +620,9 @@
                                         "value": "swedencentral"
                                     }
                                 ],
-                                "required": true
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                             },
-                            "visible": true
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                         
                         }
 
