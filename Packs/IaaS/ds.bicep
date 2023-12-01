@@ -9,7 +9,7 @@ param solutionVersion string
 var grafanaName = split(grafanaResourceId, '/')[8]
 
 var tempfilename = '${fileName}.tmp'
-var Tags = (customerTags== null) ? {'${solutionTag}': solutionTag
+var Tags = (customerTags=={}) ? {'${solutionTag}': solutionTag
 'solutionVersion': solutionVersion} : union({
   '${solutionTag}': solutionTag
   'solutionVersion': solutionVersion
