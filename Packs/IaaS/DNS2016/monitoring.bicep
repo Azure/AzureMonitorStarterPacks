@@ -1,16 +1,6 @@
 targetScope='managementGroup'
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-DNS2016-Server'
-@description('Name of the Action Group to be used or created.')
-param actionGroupName string = ''
-@description('Email receiver names to be used for the Action Group if being created.')
-param emailreceiver string = ''
-@description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemail string  = ''
-@description('If set to true, a new Action group will be created')
-param useExistingAG bool = false
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')

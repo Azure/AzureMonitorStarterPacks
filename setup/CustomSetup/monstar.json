@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "14433804210657511483"
+      "templateHash": "10087536865972441159"
     }
   },
   "parameters": {
@@ -99,13 +99,6 @@
       "defaultValue": false,
       "metadata": {
         "description": "If set to true, a new Action group will be created"
-      }
-    },
-    "existingAGRG": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the existing resource group to be used for the Action Group if existing."
       }
     },
     "customerTags": {
@@ -3362,9 +3355,6 @@
           "emailreiceversemail": {
             "value": "[parameters('emailreiceversemail')]"
           },
-          "existingAGRG": {
-            "value": "[parameters('existingAGRG')]"
-          },
           "grafanaResourceId": "[if(parameters('newGrafana'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'azureManagedGrafana'), '2022-09-01').outputs.grafanaId.value), createObject('value', parameters('existingGrafanaResourceId')))]",
           "solutionTag": {
             "value": "[variables('solutionTag')]"
@@ -3383,10 +3373,25 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "10758272953491250491"
+              "templateHash": "15901568541578070690"
             }
           },
           "parameters": {
+            "mgname": {
+              "type": "string"
+            },
+            "subscriptionId": {
+              "type": "string"
+            },
+            "resourceGroupId": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "location for the deployment."
+              }
+            },
             "actionGroupName": {
               "type": "string",
               "defaultValue": "",
@@ -3414,19 +3419,6 @@
                 "description": "If set to true, a new Action group will be created"
               }
             },
-            "existingAGRG": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Name of the existing resource group to be used for the Action Group if existing."
-              }
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "location for the deployment."
-              }
-            },
             "workspaceId": {
               "type": "string",
               "metadata": {
@@ -3451,15 +3443,6 @@
                 "description": "Full resource ID of the user managed identity to be used for the deployment"
               }
             },
-            "mgname": {
-              "type": "string"
-            },
-            "subscriptionId": {
-              "type": "string"
-            },
-            "resourceGroupId": {
-              "type": "string"
-            },
             "assignmentLevel": {
               "type": "string"
             },
@@ -3480,7 +3463,7 @@
           },
           "resources": [
             {
-              "condition": "[parameters('useExistingAG')]",
+              "condition": "[not(parameters('useExistingAG'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "deployAG-new",
@@ -3504,12 +3487,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "solutionTag": {
-                    "value": "[parameters('solutionTag')]"
-                  },
-                  "actiongroupname": {
-                    "value": "[parameters('actionGroupName')]"
-                  },
                   "groupshortname": {
                     "value": "[parameters('actionGroupName')]"
                   }
@@ -3521,13 +3498,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12078785433656182442"
+                      "templateHash": "8845367747806037990"
                     }
                   },
                   "parameters": {
-                    "actiongroupname": {
-                      "type": "string"
-                    },
                     "location": {
                       "type": "string"
                     },
@@ -3538,9 +3512,6 @@
                       "type": "string"
                     },
                     "emailreiceversemail": {
-                      "type": "string"
-                    },
-                    "solutionTag": {
                       "type": "string"
                     },
                     "Tags": {
@@ -3620,9 +3591,7 @@
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('existingActionGroupResourceId')]"
-                  }
+                  "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -5402,7 +5371,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -5448,9 +5420,7 @@
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('existingActionGroupResourceId')]"
-                  }
+                  "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -7233,7 +7203,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -7279,9 +7252,7 @@
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('existingActionGroupResourceId')]"
-                  }
+                  "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -10427,7 +10398,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -10473,9 +10447,7 @@
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('existingActionGroupResourceId')]"
-                  }
+                  "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -13643,7 +13615,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -13656,9 +13631,6 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "actionGroupName": {
-                    "value": "[parameters('actionGroupName')]"
-                  },
                   "assignmentLevel": {
                     "value": "[parameters('assignmentLevel')]"
                   },
@@ -13683,30 +13655,16 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "useExistingAG": {
-                    "value": "[parameters('useExistingAG')]"
-                  },
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
-                  "emailreceiver": {
-                    "value": "[parameters('emailreceiver')]"
-                  },
-                  "emailreiceversemail": {
-                    "value": "[parameters('emailreiceversemail')]"
-                  },
-                  "existingAGRG": {
-                    "value": "[parameters('existingAGRG')]"
-                  },
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('existingActionGroupResourceId')]"
-                  }
+                  "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -13715,7 +13673,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10035442708286266829"
+                      "templateHash": "2114410730523550356"
                     }
                   },
                   "parameters": {
@@ -13724,41 +13682,6 @@
                       "defaultValue": "AMSP-DNS2016-Server",
                       "metadata": {
                         "description": "Name of the DCR rule to be created"
-                      }
-                    },
-                    "actionGroupName": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Name of the Action Group to be used or created."
-                      }
-                    },
-                    "emailreceiver": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Email receiver names to be used for the Action Group if being created."
-                      }
-                    },
-                    "emailreiceversemail": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Email addresses to be used for the Action Group if being created."
-                      }
-                    },
-                    "useExistingAG": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "If set to true, a new Action group will be created"
-                      }
-                    },
-                    "existingAGRG": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Name of the existing resource group to be used for the Action Group if existing."
                       }
                     },
                     "location": {
@@ -16219,7 +16142,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -16265,9 +16191,7 @@
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('existingActionGroupResourceId')]"
-                  }
+                  "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -18157,7 +18081,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('solutionTag'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",

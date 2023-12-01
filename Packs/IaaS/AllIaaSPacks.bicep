@@ -1,5 +1,10 @@
 targetScope = 'managementGroup'
 
+param mgname string // this the last part of the management group id
+param subscriptionId string
+param resourceGroupId string
+@description('location for the deployment.')
+param location string //= resourceGroup().location
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
@@ -8,10 +13,6 @@ param emailreceiver string = ''
 param emailreiceversemail string = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = '' // probably useless
-@description('location for the deployment.')
-param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
 param solutionTag string
@@ -20,9 +21,6 @@ param solutionVersion string
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param mgname string // this the last part of the management group id
-param subscriptionId string
-param resourceGroupId string
 param assignmentLevel string
 param grafanaResourceId string
 param customerTags object
@@ -37,7 +35,7 @@ var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
   'solutionVersion': solutionVersion
 },customerTags['All'])
 
-module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (useExistingAG) {
+module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
     name: 'deployAG-new'
     scope: resourceGroup(solutionTag, resourceGroupName)
     params: {
@@ -45,14 +43,15 @@ module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (useExistingA
       emailreiceversemail: emailreiceversemail
       Tags: Tags
       location: location
-      solutionTag: solutionTag
-      actiongroupname: actionGroupName
       groupshortname: actionGroupName
     }
   }
 
 module WinOSPack './WinOS/monitoring.bicep' = {
   name: 'WinOSPack'
+  dependsOn: [
+    !useExistingAG ? ag : null
+  ]
   params: {
     assignmentLevel: assignmentLevel
     dceId: dceId
@@ -65,7 +64,7 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
-    actionGroupResourceId: existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module LxOSPack './LxOS/monitoring.bicep' = {
@@ -82,7 +81,7 @@ module LxOSPack './LxOS/monitoring.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
-    actionGroupResourceId: existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module IIS './IIS/monitoring.bicep' = {
@@ -99,7 +98,7 @@ module IIS './IIS/monitoring.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
-    actionGroupResourceId: existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 
@@ -117,13 +116,12 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
-    actionGroupResourceId:existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module DNS2016 './DNS2016/monitoring.bicep' = {
   name: 'DNS2016-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -132,14 +130,10 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceiver: emailreceiver
-    emailreiceversemail: emailreiceversemail
-    existingAGRG: existingAGRG
     customerTags: customerTags
-    actionGroupResourceId: existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module PS2016 './PS2016/monitoring.bicep' = {
@@ -156,7 +150,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
-    actionGroupResourceId: existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module Nginx './Nginx/monitoring.bicep' = {

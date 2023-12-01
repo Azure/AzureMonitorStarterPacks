@@ -30,8 +30,6 @@ param emailreceiver string = ''
 param emailreiceversemail string
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool = false
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
 param customerTags object
 param existingActionGroupId string
 
@@ -150,7 +148,6 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
-    existingAGRG: existingAGRG
     grafanaResourceId: newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion

@@ -332,10 +332,9 @@
                 "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
                 "emailreceiver":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiver,'')]",
                 "emailreiceversemail":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemail,'')]",
-                "existingActionGroupId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]",
-                "existingAGRG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(take(split(steps('Configuration').existingAG,'/'),5)))]",
+                "existingActionGroupResourceId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]",
                 "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
-                "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]"
             },
