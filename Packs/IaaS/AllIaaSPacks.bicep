@@ -42,7 +42,7 @@ module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExisting
       emailreceiver: emailreceiver
       emailreiceversemail: emailreiceversemail
       Tags: Tags
-      location: location
+      location: 'global'
       groupshortname: actionGroupName
     }
   }
