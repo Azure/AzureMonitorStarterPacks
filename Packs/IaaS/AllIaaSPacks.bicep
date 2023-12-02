@@ -167,7 +167,7 @@ module Nginx './Nginx/monitoring.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
-    actionGroupResourceId: existingActionGroupResourceId
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 // Grafana upload and install

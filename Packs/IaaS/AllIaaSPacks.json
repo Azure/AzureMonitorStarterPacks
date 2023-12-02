@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "10000128634848548436"
+      "templateHash": "10166420990111166335"
     }
   },
   "parameters": {
@@ -130,7 +130,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8845367747806037990"
+              "templateHash": "15647963426889653897"
             }
           },
           "parameters": {
@@ -154,7 +154,7 @@
             {
               "type": "Microsoft.Insights/actionGroups",
               "apiVersion": "2023-01-01",
-              "name": "New-AG",
+              "name": "[parameters('groupshortname')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('Tags')]",
               "properties": {
@@ -173,7 +173,7 @@
           "outputs": {
             "agGroupId": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Insights/actionGroups', 'New-AG')]"
+              "value": "[resourceId('Microsoft.Insights/actionGroups', parameters('groupshortname'))]"
             }
           }
         }
@@ -14763,9 +14763,7 @@
           "customerTags": {
             "value": "[parameters('customerTags')]"
           },
-          "actionGroupResourceId": {
-            "value": "[parameters('existingActionGroupResourceId')]"
-          }
+          "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -16663,7 +16661,10 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
