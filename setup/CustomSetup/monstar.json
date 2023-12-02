@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "17106703051082809133"
+      "templateHash": "9041597817103433860"
     }
   },
   "parameters": {
@@ -1602,7 +1602,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9994088136911210603"
+              "templateHash": "11460453512913470962"
             }
           },
           "parameters": {
@@ -1713,7 +1713,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "2156658503435344410"
+                      "templateHash": "15432404351967646625"
                     }
                   },
                   "parameters": {
@@ -1800,7 +1800,7 @@
                             "value": "[variables('$fxv#0')]"
                           }
                         ],
-                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob delete -f {3} -c {4} -n {5} && az storage blob upload -f {6} -c {7} -n {8} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
+                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob delete -c {3} -n {4} && az storage blob upload -f {5} -c {6} -n {7} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]"
