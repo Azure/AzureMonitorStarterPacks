@@ -1,15 +1,18 @@
 targetScope='managementGroup'
-
+//Pack Specific parameters
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-Windows-PS2016'
+@description('The tag to be used for the solution.')
+param packtag string = 'PS2016'
+
+//Common parameters
 param actionGroupResourceId string
 @description('location for the deployment.')
-param location string //= resourceGroup().location
+param location string
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-param packtag string = 'PS2016'
-param solutionTag string = 'MonitorStarterPacks'
-param solutionVersion string = '0.1.0'
+param solutionTag string
+param solutionVersion string
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
@@ -19,12 +22,13 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
+
+//Variables
 var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
 'solutionVersion': solutionVersion} : union({
   '${solutionTag}': packtag
   'solutionVersion': solutionVersion
 },customerTags['All'])
-
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'PS2016'
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -51,35 +55,6 @@ var performanceCounters=[
   '\\Print Queue(_Total)\\Total Jobs Printed'
   '\\Print Queue(_Total)\\Total Pages Printed'
 ]
-// Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-// module ag '../../../modules/actiongroups/ag.bicep' = {
-//   name: 'ActionGroup'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
-
-// Alerts - the module below creates the alerts and associates them with the action group
-module Alerts './alerts.bicep' = {
-  name: 'Alerts-${packtag}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: location
-    workspaceId: workspaceId
-    AGId: actionGroupResourceId
-    packtag: packtag
-    Tags: Tags
-  }
-}
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   name: 'dcrPerformance-${packtag}'
@@ -96,6 +71,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     dceId: dceId
   }
 }
+// Policy setup - the module below creates the policy and the policy assignment
 module policysetup '../../../modules/policies/mg/policies.bicep' = {
   name: 'policysetup-${packtag}'
   params: {
@@ -111,4 +87,15 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     subscriptionId: subscriptionId
   }
 }
-
+// Alerts - the module below creates the alerts and associates them with the action group
+module Alerts './alerts.bicep' = {
+  name: 'Alerts-${packtag}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    location: location
+    workspaceId: workspaceId
+    AGId: actionGroupResourceId
+    packtag: packtag
+    Tags: Tags
+  }
+}

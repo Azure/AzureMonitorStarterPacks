@@ -37,7 +37,7 @@ var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
 
 module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
     name: 'deployAG-new'
-    scope: resourceGroup(solutionTag, resourceGroupName)
+    scope: resourceGroup(subscriptionId, resourceGroupName)
     params: {
       emailreceiver: emailreceiver
       emailreiceversemail: emailreiceversemail

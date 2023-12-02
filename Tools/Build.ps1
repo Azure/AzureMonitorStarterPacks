@@ -7,7 +7,9 @@
         }
 #>
 $currentFolder= Get-Location
-$mainMonstarPacksFiles = @"
+$mainMonstarPacksFiles = Get-Content -Path './Tools/build.json' | ConvertFrom-Json
+<#
+@"
     [
         {
             "Folder":"./setup/CustomSetup",
@@ -47,6 +49,7 @@ $mainMonstarPacksFiles = @"
         }
 ]
 "@ | ConvertFrom-Json
+#>
 foreach ($file in $mainMonstarPacksFiles) {
     Set-Location -Path $file.Folder
     bicep build $file.File
