@@ -31,7 +31,7 @@ param emailreiceversemail string
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool = false
 param customerTags object
-param existingActionGroupId string
+param existingActionGroupId string = ''
 
 
 var solutionTag='MonitorStarterPacks'
