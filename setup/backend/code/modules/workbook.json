@@ -167,7 +167,7 @@
                   "label": "Logic App",
                   "type": 5,
                   "isRequired": true,
-                  "query": "resources\n| where type == \"microsoft.logic/workflows\" \n| where isnotempty(tags.MonitorStarterPacks)\n| project Id=id, Name=name",
+                  "query": "resources\n| where type == \"microsoft.logic/workflows\" \n| where isnotempty(tags.MonitorStarterPacksComponents)\n| project Id=id, Name=name",
                   "crossComponentResources": [
                     "value::tenant"
                   ],
@@ -193,7 +193,7 @@
                   "type": 2,
                   "isRequired": true,
                   "isGlobal": true,
-                  "query": "resources\n| where type =~ \"microsoft.dashboard/grafana\"\n| where isnotempty(tags.monitorStarterPacks) or isnotempty(tags.MonitorStarterPacks)\n| project id, label=properties.endpoint",
+                  "query": "resources\n| where type =~ \"microsoft.dashboard/grafana\"\n| where isnotempty(tags.monitorStarterPacksComponents) or isnotempty(tags.MonitorStarterPacksComponents)\n| project id, label=properties.endpoint",
                   "crossComponentResources": [
                     "value::tenant"
                   ],
@@ -206,7 +206,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP6c64f9ed"
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP623923"
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -1030,7 +1030,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "vWan"
+                  "value": "Nginx"
                 }
               ],
               "style": "pills",

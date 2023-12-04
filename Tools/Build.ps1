@@ -55,7 +55,7 @@ foreach ($file in $mainMonstarPacksFiles) {
     bicep build $file.File
     Set-Location $currentFolder  
 }
-
+# Grafana Dashaboards
 Set-Location 'Packs/IaaS'
 $DestinationPath='./Grafana.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
@@ -65,10 +65,10 @@ Compress-Archive -Path './IIS2016/Azure Monitor Starter Pack _ IIS-1692341727216
 Compress-Archive -Path './IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './DNS2016/Azure Monitor Starter Pack _ DNS2016.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './Nginx/Azure Monitor Starter Pack _ NGINX-1692341707202.json' -DestinationPath $DestinationPath -Update
-
+# Function App code.
 Set-Location $currentFolder
-Set-Location 'setup/backend/Function/code'
+Set-Location 'setup/backend'
 $DestinationPath='./backend.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
-compress-archive * $DestinationPath -Force
+compress-archive * $DestinationPath -Force 
 Set-Location $currentFolder
