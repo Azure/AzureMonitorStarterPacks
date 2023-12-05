@@ -103,7 +103,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
     Tags: Tags
     location: grafanaLocation
     grafanaName: grafanaName
-    solutionTag: solutionTagComponents
+    solutionTag: solutionTag
     //userObjectId: currentUserIdObject
     //lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
   }
@@ -125,7 +125,7 @@ module backend '../backend/code/backend.bicep' = {
     Tags: Tags
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
-    solutionTag: solutionTag
+    solutionTag: solutionTagComponents
   }
 }
 
