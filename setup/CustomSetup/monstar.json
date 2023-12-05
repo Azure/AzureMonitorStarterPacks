@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "8419841934572467816"
+      "templateHash": "851145703912894363"
     }
   },
   "parameters": {
@@ -1593,7 +1593,7 @@
             "value": "[parameters('subscriptionId')]"
           },
           "solutionTag": {
-            "value": "[variables('solutionTagComponents')]"
+            "value": "[variables('solutionTag')]"
           }
         },
         "template": {
