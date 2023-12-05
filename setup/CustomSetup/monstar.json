@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "6530429848916677417"
+      "templateHash": "18282308103686812329"
     }
   },
   "parameters": {
@@ -416,7 +416,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "7260015001698754276"
+              "templateHash": "2796551102551530183"
             }
           },
           "parameters": {
@@ -813,7 +813,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11383812060742881140"
+                      "templateHash": "17030408063704970586"
                     }
                   },
                   "parameters": {
@@ -945,7 +945,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                            "value": "[parameters('solutionTag')]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -1037,7 +1037,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                            "value": "[parameters('solutionTag')]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -1253,7 +1253,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "6838818780841395586"
+              "templateHash": "7960615285778333794"
             }
           },
           "parameters": {
@@ -1314,7 +1314,7 @@
                     "value": "Reader"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                    "value": "[parameters('solutionTag')]"
                   }
                 },
                 "template": {
@@ -1399,7 +1399,7 @@
                     "value": "Log Analytics Contributor"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                    "value": "[parameters('solutionTag')]"
                   }
                 },
                 "template": {
@@ -1484,7 +1484,7 @@
                     "value": "Monitor Contributor Role"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                    "value": "[parameters('solutionTag')]"
                   }
                 },
                 "template": {
@@ -1603,7 +1603,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1413967731642358183"
+              "templateHash": "4311109207040126035"
             }
           },
           "parameters": {
@@ -2427,7 +2427,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11383812060742881140"
+                      "templateHash": "17030408063704970586"
                     }
                   },
                   "parameters": {
@@ -2559,7 +2559,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                            "value": "[parameters('solutionTag')]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -2651,7 +2651,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                            "value": "[parameters('solutionTag')]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -2780,7 +2780,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11383812060742881140"
+                      "templateHash": "17030408063704970586"
                     }
                   },
                   "parameters": {
@@ -2912,7 +2912,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                            "value": "[parameters('solutionTag')]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -3004,7 +3004,7 @@
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
-                            "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                            "value": "[parameters('solutionTag')]"
                           },
                           "roleDefinitionId": {
                             "value": "[variables('RGroleDefinitionIds')[copyIndex()]]"
@@ -3219,7 +3219,7 @@
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'BackendLogicApp'), '2022-09-01').outputs.logicAppPrincipalId.value]"
                   },
                   "solutionTag": {
-                    "value": "[parameters('Tags')[format('{0}', parameters('solutionTag'))]]"
+                    "value": "[parameters('solutionTag')]"
                   },
                   "roleDefinitionId": {
                     "value": "[variables('logicappRequiredRoleassignments')[copyIndex()]]"

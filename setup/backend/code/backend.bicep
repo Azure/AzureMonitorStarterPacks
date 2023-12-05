@@ -171,7 +171,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
   params: {
     resourcename: keyvault.outputs.kvResourceId
     principalId: logicapp.outputs.logicAppPrincipalId
-    solutionTag: Tags['${solutionTag}']
+    solutionTag: solutionTag
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
   }
