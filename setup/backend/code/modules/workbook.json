@@ -156,8 +156,6 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
                   ]
                 },
                 {
@@ -183,7 +181,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/MonitorStarterPacks-Backend"
+                  "value": ""
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -206,7 +204,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP623923"
+                  "value": ""
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -226,7 +224,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": ""
                 }
               ],
               "style": "above",
@@ -754,7 +752,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resourcegraph/resources",
-                        "value": null
+                        "value": "IIS"
                       }
                     ],
                     "style": "pills",
@@ -921,7 +919,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "WinOS"
                       }
                     ],
                     "style": "pills",
@@ -1030,7 +1028,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "Nginx"
+                  "value": "DNS2016"
                 }
               ],
               "style": "pills",
