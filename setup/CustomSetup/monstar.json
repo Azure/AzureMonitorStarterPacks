@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "17706388372352763540"
+      "templateHash": "16701717895493178991"
     }
   },
   "parameters": {
@@ -1607,7 +1607,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "16332715037527834580"
+              "templateHash": "1204505982507272355"
             }
           },
           "parameters": {
@@ -1718,7 +1718,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "1703716081698534730"
+                      "templateHash": "7298576905977556809"
                     }
                   },
                   "parameters": {
@@ -1805,7 +1805,7 @@
                             "value": "[variables('$fxv#0')]"
                           }
                         ],
-                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && if [ az storage blob exists -c {3} -n {4} ]; storage blob delete -c {5} -n {6};fi && az storage blob upload -f {7} -c {8} -n {9} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
+                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]"
@@ -2322,7 +2322,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCE-{0}-{1}', parameters('solutionTag'), parameters('location'))]",
+              "name": "[format('DCE-MonPacks-{0}', parameters('location'))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -2338,7 +2338,7 @@
                     "value": "[parameters('Tags')]"
                   },
                   "dceName": {
-                    "value": "[format('DCE-{0}-{1}', parameters('solutionTag'), parameters('location'))]"
+                    "value": "[format('DCE-MonPacks-{0}', parameters('location'))]"
                   }
                 },
                 "template": {
@@ -3304,7 +3304,7 @@
             },
             "dceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DCE-{0}-{1}', parameters('solutionTag'), parameters('location'))), '2022-09-01').outputs.dceId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DCE-MonPacks-{0}', parameters('location'))), '2022-09-01').outputs.dceId.value]"
             }
           }
         }
