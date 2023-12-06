@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16701717895493178991"
+      "templateHash": "2407555636068581797"
     }
   },
   "parameters": {
@@ -1607,7 +1607,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1204505982507272355"
+              "templateHash": "12650239753081844171"
             }
           },
           "parameters": {
@@ -1718,7 +1718,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "7298576905977556809"
+                      "templateHash": "8364995882716906022"
                     }
                   },
                   "parameters": {
@@ -1805,7 +1805,7 @@
                             "value": "[variables('$fxv#0')]"
                           }
                         ],
-                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
+                        "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites/config', parameters('functionname'), 'appsettings')]"
