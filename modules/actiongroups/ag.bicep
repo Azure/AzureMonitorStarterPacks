@@ -3,25 +3,27 @@ targetScope = 'managementGroup'
 param subscriptionId string
 param actionGroupName string
 //param location string= resourceGroup().location
-param emailreceivers array = []
-param emailreiceversemails array = []
+param emailreceiver string = ''
+param emailreiceversemail string = ''
 param useExistingAG bool 
 param existingAGRG string = ''
 param newRGresourceGroup string = ''
 param solutionTag string
+param Tags object
 param location string
-var deploymentName = 'ag-test'
+
 //new action group
 module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
-  name: deploymentName
+  name: 'ag-new'
   scope: resourceGroup(subscriptionId, newRGresourceGroup)
   params: {
     actiongroupname: actionGroupName
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
     groupshortname: actionGroupName
     location: 'global'
     solutionTag: solutionTag
+    Tags: Tags
   }
 }
 //existing action group

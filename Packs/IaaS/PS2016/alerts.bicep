@@ -1,12 +1,13 @@
+// Pack specific parameters
+param moduleprefix string = 'AMSP-Win-PS2016'
+// Common parameters
 param location string
 param workspaceId string
 param AGId string
 param packtag string
-param solutionTag string
-param solutionVersion string
-param moduleprefix string = 'AMSP-Win-PS2016'
-// Alert list
+param Tags object
 
+// Alert list
 var alertlist = [
   {
       alertRuleDescription: 'Ensure the server is accessible.'
@@ -16,7 +17,7 @@ var alertlist = [
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (83) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and (Source == \'Microsoft-Windows-PrintBRM\' or Source == \'PrintBrm\')'
     }
   {
@@ -27,7 +28,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (360) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -38,7 +39,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (701,702,703,704) and EventLog == \'Microsoft-Windows-PrintService/Operational!*\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -49,7 +50,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (364,365,367) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -60,7 +61,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (315) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -71,7 +72,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (371) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -82,7 +83,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (356) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -93,7 +94,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (513,514) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -104,7 +105,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (600,601) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -115,7 +116,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (515,516,517,518,519,520) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
   {
@@ -126,7 +127,7 @@ alertType: 'rows'
       autoMitigate: true
       evaluationFrequency: 'PT15M'
       windowSize: 'PT15M'
-alertType: 'rows'
+      alertType: 'rows'
       query: 'Event | where  EventID in (502,503,504,505,506,507,508,509,510,511,512) and EventLog == \'Microsoft-Windows-PrintService/Admin\' and Source == \'Microsoft-Windows-PrintService\''
     }
 ]
@@ -139,8 +140,7 @@ module alertsnew '../../../modules/alerts/alerts.bicep' = {
     location: location
     moduleprefix: moduleprefix
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     workspaceId: workspaceId
   }
 }

@@ -6,14 +6,12 @@ param roleDefinitionIds array
 param userIdentityName string
 param subscriptionId string
 param resourceGroupName string
+param Tags object
 
 resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: userIdentityName
   location: location
-  tags: {
-    '${solutionTag}': userIdentityName
-    '${solutionTag}-Version': solutionVersion
-  }
+  tags: Tags
 }
 
 module userIdentityRoleAssignments '../../../../../modules/rbac/mg/roleassignment.bicep' = [for (roledefinitionId, i) in roleDefinitionIds:  {

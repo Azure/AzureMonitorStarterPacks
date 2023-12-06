@@ -12,8 +12,7 @@ param tableName string
 param location string
 
 param lawResourceId string
-param solutionTag string
-param packtag string
+param Tags object
 
 // var tableNameToUse = 'CustomAzMA${tableName}_CL'
 // var streamName= 'Custom-${tableNameToUse}'
@@ -31,9 +30,7 @@ var lawFriendlyName = split(lawResourceId,'/')[8]
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: ruleName
   location: location
-  tags: {
-    '${solutionTag}': packtag
-  }
+  tags: Tags
   kind: 'Windows'
   properties: {
     dataCollectionEndpointId: endpointResourceId

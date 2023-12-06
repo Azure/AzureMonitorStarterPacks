@@ -2,8 +2,7 @@ param location string
 param workspaceId string
 param AGId string
 param packtag string
-param solutionTag string
-param solutionVersion string
+param Tags object
 
 var moduleprefix = 'AMSP-LxOS-Nginx'
 // Alert list
@@ -29,8 +28,7 @@ module alertsnew '../../../modules/alerts/alerts.bicep' = {
     location: location
     moduleprefix: moduleprefix
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     workspaceId: workspaceId
   }
 }

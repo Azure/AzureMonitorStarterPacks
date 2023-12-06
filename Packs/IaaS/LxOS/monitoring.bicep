@@ -3,16 +3,7 @@ targetScope = 'managementGroup'
 
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-VMI-Linux'
-@description('Name of the Action Group to be used or created.')
-param actionGroupName string = ''
-@description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
-@description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
-@description('If set to true, a new Action group will be created')
-param useExistingAG bool
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
+param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -28,27 +19,32 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-param grafanaName string
-
+param customerTags object
+var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
+'solutionVersion': solutionVersion} : union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'VMI-LxOS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // Action Group
-module ag '../../../modules/actiongroups/ag.bicep' =  {
-  name: actionGroupName
-  params: {
-    actionGroupName: actionGroupName
-    existingAGRG: existingAGRG
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    useExistingAG: useExistingAG
-    newRGresourceGroup: resourceGroupName
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    location: location
-  }
-}
+// module ag '../../../modules/actiongroups/ag.bicep' =  {
+//   name: 'New-AG'
+//   params: {
+//     actionGroupName: actionGroupName
+//     existingAGRG: existingAGRG
+//     emailreceiver: emailreceiver
+//     emailreiceversemail: emailreiceversemail
+//     useExistingAG: useExistingAG
+//     newRGresourceGroup: resourceGroupName
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     location: location
+//     Tags: Tags
+//   }
+// }
 // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
 module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
   name: 'vmInsightsDCR-${packtag}'
@@ -56,8 +52,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
   params: {
     location: location
     workspaceResourceId: workspaceId
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     ruleName: rulename
     dceId: dceId
   }
@@ -68,10 +63,9 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
   params: {
     location: location
     workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
+    AGId: actionGroupResourceId
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 module policysetup '../../../modules/policies/mg/policies.bicep' = {

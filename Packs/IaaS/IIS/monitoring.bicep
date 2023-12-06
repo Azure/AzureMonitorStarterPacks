@@ -2,16 +2,6 @@ targetScope='managementGroup'
 
 @description('Name of the DCR rule to be created')
 param rulename string = 'AMSP-IIS-Server'
-@description('Name of the Action Group to be used or created.')
-param actionGroupName string = ''
-@description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
-@description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
-@description('If set to true, a new Action group will be created')
-param useExistingAG bool
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -27,7 +17,14 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-param grafanaName string
+param customerTags object
+param actionGroupResourceId string
+
+var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
+'solutionVersion': solutionVersion} : union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS1'
@@ -104,20 +101,21 @@ var performanceCounters=[
 ]
 
 // Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-module ag '../../../modules/actiongroups/ag.bicep' = {
-  name: 'actionGroupName-deployment'
-  params: {
-    actionGroupName: actionGroupName
-    existingAGRG: existingAGRG
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    useExistingAG: useExistingAG
-    newRGresourceGroup: resourceGroupName
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    location: location
-  }
-}
+// module ag '../../../modules/actiongroups/ag.bicep' = {
+//   name: 'actionGroupName-deployment'
+//   params: {
+//     actionGroupName: actionGroupName
+//     existingAGRG: existingAGRG
+//     emailreceiver: emailreceiver
+//     emailreiceversemail: emailreiceversemail
+//     useExistingAG: useExistingAG
+//     newRGresourceGroup: resourceGroupName
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     location: location
+//     Tags: Tags
+//   }
+// }
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
@@ -127,10 +125,9 @@ module Alerts './WinIISAlerts.bicep' = {
   params: {
     location: location
     workspaceId: workspaceId
-    AGId: ag.outputs.actionGroupResourceId
+    AGId: actionGroupResourceId
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
@@ -145,8 +142,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     kind: kind
     xPathQueries: xPathQueries
     counterSpecifiers: performanceCounters
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     dceId: dceId
   }
 }
@@ -173,8 +169,7 @@ module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' =
     location: location
     ruleName: '${rulename}-IISLogs'
     lawResourceId: workspaceId
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     endpointResourceId: dceId
     tableName: 'IISLogs'
   }

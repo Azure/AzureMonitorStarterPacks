@@ -1,7 +1,6 @@
 param location string
 param workspaceResourceId string
-param solutionTag string
-param packtag string
+param Tags object
 param ruleName string
 param dceId string
 
@@ -12,9 +11,7 @@ var wsfriendlyname=split(workspaceResourceId, '/')[8]
 resource VMIRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   location: location
   name: '${ruleName}-VMI'
-  tags: {
-    '${solutionTag}': packtag
-  }
+  tags: Tags
   properties: {
     description: 'Data collection rule for VM Insights.'
     dataCollectionEndpointId: dceId

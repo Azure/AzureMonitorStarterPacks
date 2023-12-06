@@ -12,8 +12,10 @@ param existingLogAnalyticsWSId string = ''
 param deployAMApolicy bool
 //param currentUserIdObject string // This is to automatically assign permissions to Grafana.
 param functionName string
-param grafanaLocation string
-param grafanaName string
+param grafanaLocation string = ''
+param grafanaName string =''
+param newGrafana bool
+param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
@@ -23,17 +25,23 @@ param deployPacks bool = false
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool = false
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
+param customerTags object
+param existingActionGroupId string = ''
 
 
 var solutionTag='MonitorStarterPacks'
+var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
+var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
+'solutionVersion': solutionVersion} : union({
+  '${solutionTagComponents}': 'BackendComponent'
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
@@ -41,8 +49,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
   params: {
     resourceGroupName: resourceGroupName
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion    
+    Tags: Tags
   }
 }
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
@@ -53,8 +60,7 @@ module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (cr
   ]
   params: {
     location: location
-    solutionVersion: solutionVersion
-    solutionTag: solutionTag
+    Tags: Tags
     storageAccountName: storageAccountName
   }
 }
@@ -68,7 +74,7 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
   params: {
     location: location
     logAnalyticsWorkspaceName: newLogAnalyticsWSName
-    solutionTag: solutionTag
+    Tags: Tags
     createNewLogAnalyticsWS: createNewLogAnalyticsWS
   }
 }
@@ -83,9 +89,23 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
     assignmentLevel: assignmentLevel
     location: location
     resourceGroupName: resourceGroupName
-    solutionTag: solutionTag
+    solutionTag: solutionTagComponents
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
+    Tags: Tags
+  }
+}
+
+module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
+  name: 'azureManagedGrafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    Tags: Tags
+    location: grafanaLocation
+    grafanaName: grafanaName
+    solutionTag: solutionTag
+    //userObjectId: currentUserIdObject
+    //lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
   }
 }
 
@@ -98,16 +118,14 @@ module backend '../backend/code/backend.bicep' = {
     appInsightsLocation: location
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
-    grafanalocation: grafanaLocation
-    grafanaName: grafanaName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     location: location
     mgname: mgname
     resourceGroupName: resourceGroupName
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
+    solutionTag: solutionTagComponents
   }
 }
 
@@ -121,17 +139,18 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     location: location
     dceId: backend.outputs.dceId
     mgname: mgname
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    customerTags: customerTags
     subscriptionId: subscriptionId
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     workspaceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     actionGroupName: actionGroupName
     resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    emailreceiver: emailreceiver
+    emailreiceversemail: emailreiceversemail
+    grafanaResourceId: newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    existingActionGroupResourceId: existingActionGroupId
   }
 }

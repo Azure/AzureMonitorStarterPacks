@@ -14,8 +14,7 @@ param location string
 param filepatterns array
 param lawResourceId string
 
-param solutionTag string
-param packtag string
+param Tags object
 param facilityNames array
 param logLevels array
 param syslogDataSourceName string = 'sysLogsDataSource-1688419672'
@@ -41,9 +40,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
   dependsOn: [
     table
   ]
-  tags: {
-    '${solutionTag}': packtag
-  }
+  tags: Tags
   kind: 'Linux'
   properties: {
     dataSources: {

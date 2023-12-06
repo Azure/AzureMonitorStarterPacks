@@ -1,17 +1,18 @@
 targetScope = 'managementGroup'
 
+param mgname string // this the last part of the management group id
+param subscriptionId string
+param resourceGroupId string
+@description('location for the deployment.')
+param location string //= resourceGroup().location
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
-param emailreceivers array = []
+param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemails array = []
+param emailreiceversemail string = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
-@description('Name of the existing resource group to be used for the Action Group if existing.')
-param existingAGRG string = ''
-@description('location for the deployment.')
-param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
 param solutionTag string
@@ -20,18 +21,38 @@ param solutionVersion string
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param mgname string // this the last part of the management group id
-param subscriptionId string
-param resourceGroupId string
 param assignmentLevel string
-param grafanaName string
+param grafanaResourceId string
+param customerTags object
+param existingActionGroupResourceId string
+
+var solutionTagComponents='MonitorStarterPacksComponents'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
+var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
+'solutionVersion': solutionVersion} : union({
+  '${solutionTagComponents}': 'BackendComponent'
+  'solutionVersion': solutionVersion
+},customerTags['All'])
+
+module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
+    name: 'deployAG-new'
+    scope: resourceGroup(subscriptionId, resourceGroupName)
+    params: {
+      emailreceiver: emailreceiver
+      emailreiceversemail: emailreiceversemail
+      Tags: Tags
+      location: 'global'
+      groupshortname: actionGroupName
+    }
+  }
 
 module WinOSPack './WinOS/monitoring.bicep' = {
   name: 'WinOSPack'
+  dependsOn: [
+    !useExistingAG ? ag : null
+  ]
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -40,19 +61,15 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module LxOSPack './LxOS/monitoring.bicep' = {
   name: 'LxOSPack-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -61,19 +78,15 @@ module LxOSPack './LxOS/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module IIS './IIS/monitoring.bicep' = {
   name: 'IISPack-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -82,20 +95,16 @@ module IIS './IIS/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 
 module IIS2016 './IIS2016/monitoring.bicep' = {
   name: 'IIS2016-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -104,19 +113,15 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module DNS2016 './DNS2016/monitoring.bicep' = {
   name: 'DNS2016-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -125,19 +130,15 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module PS2016 './PS2016/monitoring.bicep' = {
   name: 'PS2016-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -146,19 +147,15 @@ module PS2016 './PS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 module Nginx './Nginx/monitoring.bicep' = {
   name: 'Nginx-deployment'
   params: {
-    actionGroupName: actionGroupName
     assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
@@ -167,13 +164,10 @@ module Nginx './Nginx/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    useExistingAG: useExistingAG
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    emailreceivers: emailreceivers
-    emailreiceversemails: emailreiceversemails
-    existingAGRG: existingAGRG
-    grafanaName: grafanaName
+    customerTags: customerTags
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
   }
 }
 // Grafana upload and install
@@ -182,11 +176,12 @@ module grafana 'ds.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     fileName: 'grafana.zip'
-    grafanaName: grafanaName
+    grafanaResourceId: grafanaResourceId
     location: location
     resourceGroupName: resourceGroupName
+    customerTags: customerTags
+    packsManagedIdentityResourceId: userManagedIdentityResourceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    packsManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }

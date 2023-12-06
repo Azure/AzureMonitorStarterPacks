@@ -62,6 +62,14 @@
                             }
                         },
                         {
+                            "name": "AzureManagedGrafanaApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
+                            }
+                        },
+                        {
                             "name": "LogAnalyticsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -478,6 +486,53 @@
                             "visible": "true"
                         },
                         {
+                            "name": "GrafanaStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Grafana",
+                            "toolTip": "This will be the Grafana Instance used for the MonStar Packs.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "NewGrafanaName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Name for the new Grafana environment.",
+                            "subLabel": "",
+                            "defaultValue": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                            "toolTip": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
+                                "regex": "",
+                                "validationMessage": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit."
+                            },
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
+                        },
+                        
+                        {
+                            "name": "ExistingGrafanaInstance",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Azure Managed Grafana",
+                            "toolTip": "Existing Azure Managed Grafana",
+                            "resourceType": "Microsoft.Dashboard/grafana",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
+                            },
+                            "infoMessages": [],
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
+                        },
+                        {
                             "name": "grafanaLocation",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Location for Azure Managed Grafana",
@@ -565,9 +620,9 @@
                                         "value": "swedencentral"
                                     }
                                 ],
-                                "required": true
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                             },
-                            "visible": true
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                         
                         }
 
@@ -649,9 +704,9 @@
                             "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
-                            "name": "emailreceivers",
+                            "name": "emailreceiver",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s)",
+                            "label": "Email Receiver (Display Name)",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
@@ -661,9 +716,9 @@
                             "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
-                            "name": "emailreceiversemails",
+                            "name": "emailreceiversemail",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s) email(s)",
+                            "label": "Email Receiver email",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
@@ -671,6 +726,19 @@
                                 "required": true
                             },
                             "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                        }
+                    ]
+                },
+                {
+                    "name": "tags",
+                    "label": "Tags",
+                    "elements": [
+                        {
+                            "name": "tagsByResource",
+                            "type": "Microsoft.Common.TagsByResource",
+                            "resources": [
+                                "All"
+                            ]
                         }
                     ]
                 }
@@ -686,7 +754,7 @@
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "deployPacks": "[steps('Packs').deployPacks]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
-                "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "grafanaName": "[steps('Configuration').NewGrafanaName]",
                 "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountStatus,'New')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
@@ -696,10 +764,14 @@
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
                 "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
-                "emailreceivers":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceivers,'')]",
-                "emailreiceversemails":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemails,'')]",
+                "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
+                "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
+                "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemail,'')]",
                 "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
-                "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]"
+                "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
+                "customerTags": "[steps('tags').tagsByResource]",
+                "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
+                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

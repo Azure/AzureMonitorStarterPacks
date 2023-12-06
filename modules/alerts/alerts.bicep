@@ -3,8 +3,7 @@ param location string
 param workspaceId string
 param AGId string
 param packtag string
-param solutionTag string
-param solutionVersion string
+param Tags object
 param moduleprefix string
 
 module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
@@ -22,8 +21,7 @@ module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
     scope: workspaceId
     query: alert.query
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     alertType: alert.alertType
     metricMeasureColumn: alert.alertType == 'Aggregated' ? alert.metricMeasureColumn : null
     operator: alert.alertType == 'Aggregated' ? alert.operator : null

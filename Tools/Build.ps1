@@ -7,7 +7,9 @@
         }
 #>
 $currentFolder= Get-Location
-$mainMonstarPacksFiles = @"
+$mainMonstarPacksFiles = Get-Content -Path './Tools/build.json' | ConvertFrom-Json
+<#
+@"
     [
         {
             "Folder":"./setup/CustomSetup",
@@ -47,23 +49,26 @@ $mainMonstarPacksFiles = @"
         }
 ]
 "@ | ConvertFrom-Json
+#>
 foreach ($file in $mainMonstarPacksFiles) {
     Set-Location -Path $file.Folder
     bicep build $file.File
     Set-Location $currentFolder  
 }
-
+# Grafana Dashaboards
 Set-Location 'Packs/IaaS'
 $DestinationPath='./Grafana.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
 Compress-Archive -Path './WinOS/Azure Monitor Start Pack - Windows Operating System-1692086853589.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './LxOS/Azure Monitor Start Pack _ Linux Operating System-1692092035812.json' -DestinationPath $DestinationPath -Update
+Compress-Archive -Path './IIS2016/Azure Monitor Starter Pack _ IIS-1692341727216.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './DNS2016/Azure Monitor Starter Pack _ DNS2016.json' -DestinationPath $DestinationPath -Update
 Compress-Archive -Path './Nginx/Azure Monitor Starter Pack _ NGINX-1692341707202.json' -DestinationPath $DestinationPath -Update
-
-Set-Location $currentFolder  
+# Function App code.
+Set-Location $currentFolder
 Set-Location 'setup/backend/Function/code'
-$DestinationPath='./backend.zip'
+$DestinationPath='../../backend.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
-compress-archive * $DestinationPath -Force
+compress-archive * $DestinationPath -Force 
+Set-Location $currentFolder

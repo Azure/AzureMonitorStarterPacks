@@ -18,6 +18,7 @@ param solutionVersion string
 param subscriptionId string
 param resourceGroupName string
 param assignmentLevel string
+param Tags object
 
 //var managementgroupname= split(managementGroupId, '/')[1]
 
@@ -81,13 +82,13 @@ module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep
   //scope: resourceGroup(subscriptionId,resourceGroupName)
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     roleDefinitionIds: roledefinitionIds
     userIdentityName: 'AMAUserManagedIdentity'
     mgname: managementGroup().name
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
+    solutionTag: solutionTag
   }
 }
 module userIdentityRoleAssignments '../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roledefinitionIds:  {

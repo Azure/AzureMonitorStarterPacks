@@ -1,13 +1,13 @@
 targetScope = 'managementGroup'
 param location string
-param solutionTag string
-param solutionVersion string
+param Tags object
 param roleDefinitionIds array
 param userIdentityName string
 param mgname string
 param subscriptionId string
 param resourceGroupName string
 param addRGRoleAssignments bool = false
+param solutionTag string
 var RGroleDefinitionIds=[
 
   //contributor roles
@@ -30,8 +30,7 @@ module userManagedIdentity './umidentityresource.bicep' = {
   scope: resourceGroup(subscriptionId,resourceGroupName)
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     userIdentityName: userIdentityName
   }
 }

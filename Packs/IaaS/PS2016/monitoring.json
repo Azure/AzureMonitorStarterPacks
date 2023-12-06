@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12634842291322969730"
+      "templateHash": "6844430797689252877"
     }
   },
   "parameters": {
@@ -16,39 +16,15 @@
         "description": "Name of the DCR rule to be created"
       }
     },
-    "actionGroupName": {
+    "packtag": {
       "type": "string",
+      "defaultValue": "PS2016",
       "metadata": {
-        "description": "Name of the Action Group to be used or created."
+        "description": "The tag to be used for the solution."
       }
     },
-    "emailreceivers": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Email receiver names to be used for the Action Group if being created."
-      }
-    },
-    "emailreiceversemails": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Email addresses to be used for the Action Group if being created."
-      }
-    },
-    "useExistingAG": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "If set to true, a new Action group will be created"
-      }
-    },
-    "existingAGRG": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the existing resource group to be used for the Action Group if existing."
-      }
+    "actionGroupResourceId": {
+      "type": "string"
     },
     "location": {
       "type": "string",
@@ -62,17 +38,11 @@
         "description": "Full resource ID of the log analytics workspace to be used for the deployment."
       }
     },
-    "packtag": {
-      "type": "string",
-      "defaultValue": "PS2016"
-    },
     "solutionTag": {
-      "type": "string",
-      "defaultValue": "MonitorStarterPacks"
+      "type": "string"
     },
     "solutionVersion": {
-      "type": "string",
-      "defaultValue": "0.1.0"
+      "type": "string"
     },
     "dceId": {
       "type": "string",
@@ -98,11 +68,12 @@
     "assignmentLevel": {
       "type": "string"
     },
-    "grafanaName": {
-      "type": "string"
+    "customerTags": {
+      "type": "object"
     }
   },
   "variables": {
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
     "ruleshortname": "PS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -128,996 +99,6 @@
     ]
   },
   "resources": [
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[parameters('actionGroupName')]",
-      "location": "[deployment().location]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "actionGroupName": {
-            "value": "[parameters('actionGroupName')]"
-          },
-          "existingAGRG": {
-            "value": "[parameters('existingAGRG')]"
-          },
-          "emailreceivers": {
-            "value": "[parameters('emailreceivers')]"
-          },
-          "emailreiceversemails": {
-            "value": "[parameters('emailreiceversemails')]"
-          },
-          "useExistingAG": {
-            "value": "[parameters('useExistingAG')]"
-          },
-          "newRGresourceGroup": {
-            "value": "[variables('resourceGroupName')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
-          },
-          "subscriptionId": {
-            "value": "[parameters('subscriptionId')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "1962184090603211748"
-            }
-          },
-          "parameters": {
-            "subscriptionId": {
-              "type": "string"
-            },
-            "actionGroupName": {
-              "type": "string"
-            },
-            "emailreceivers": {
-              "type": "array",
-              "defaultValue": []
-            },
-            "emailreiceversemails": {
-              "type": "array",
-              "defaultValue": []
-            },
-            "useExistingAG": {
-              "type": "bool"
-            },
-            "existingAGRG": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "newRGresourceGroup": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "solutionTag": {
-              "type": "string"
-            },
-            "location": {
-              "type": "string"
-            }
-          },
-          "variables": {
-            "deploymentName": "ag-test"
-          },
-          "resources": [
-            {
-              "condition": "[not(parameters('useExistingAG'))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[variables('deploymentName')]",
-              "subscriptionId": "[parameters('subscriptionId')]",
-              "resourceGroup": "[parameters('newRGresourceGroup')]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "actiongroupname": {
-                    "value": "[parameters('actionGroupName')]"
-                  },
-                  "emailreceivers": {
-                    "value": "[parameters('emailreceivers')]"
-                  },
-                  "emailreiceversemails": {
-                    "value": "[parameters('emailreiceversemails')]"
-                  },
-                  "groupshortname": {
-                    "value": "[parameters('actionGroupName')]"
-                  },
-                  "location": {
-                    "value": "global"
-                  },
-                  "solutionTag": {
-                    "value": "[parameters('solutionTag')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "2425853910946393933"
-                    }
-                  },
-                  "parameters": {
-                    "actiongroupname": {
-                      "type": "string"
-                    },
-                    "location": {
-                      "type": "string"
-                    },
-                    "groupshortname": {
-                      "type": "string"
-                    },
-                    "emailreceivers": {
-                      "type": "array"
-                    },
-                    "emailreiceversemails": {
-                      "type": "array"
-                    },
-                    "solutionTag": {
-                      "type": "string"
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Insights/actionGroups",
-                      "apiVersion": "2023-01-01",
-                      "name": "[parameters('actiongroupname')]",
-                      "location": "[parameters('location')]",
-                      "tags": {
-                        "[format('{0}', parameters('solutionTag'))]": "AG"
-                      },
-                      "properties": {
-                        "copy": [
-                          {
-                            "name": "emailReceivers",
-                            "count": "[length(range(0, length(parameters('emailreceivers'))))]",
-                            "input": {
-                              "name": "[parameters('emailreceivers')[range(0, length(parameters('emailreceivers')))[copyIndex('emailReceivers')]]]",
-                              "emailAddress": "[parameters('emailreiceversemails')[range(0, length(parameters('emailreceivers')))[copyIndex('emailReceivers')]]]",
-                              "useCommonAlertSchema": false
-                            }
-                          }
-                        ],
-                        "groupShortName": "[parameters('groupshortname')]",
-                        "enabled": true
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "agGroupId": {
-                      "type": "string",
-                      "value": "[resourceId('Microsoft.Insights/actionGroups', parameters('actiongroupname'))]"
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "outputs": {
-            "actionGroupResourceId": {
-              "type": "string",
-              "value": "[if(parameters('useExistingAG'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('existingAGRG')), 'Microsoft.Insights/actionGroups', parameters('actionGroupName')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('newRGresourceGroup')), 'Microsoft.Resources/deployments', variables('deploymentName')), '2022-09-01').outputs.agGroupId.value)]"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('Alerts-{0}', parameters('packtag'))]",
-      "subscriptionId": "[parameters('subscriptionId')]",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workspaceId": {
-            "value": "[parameters('workspaceId')]"
-          },
-          "AGId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', parameters('actionGroupName')), '2022-09-01').outputs.actionGroupResourceId.value]"
-          },
-          "packtag": {
-            "value": "[parameters('packtag')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
-          },
-          "solutionVersion": {
-            "value": "[parameters('solutionVersion')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "15949903005818308169"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            },
-            "workspaceId": {
-              "type": "string"
-            },
-            "AGId": {
-              "type": "string"
-            },
-            "packtag": {
-              "type": "string"
-            },
-            "solutionTag": {
-              "type": "string"
-            },
-            "solutionVersion": {
-              "type": "string"
-            },
-            "moduleprefix": {
-              "type": "string",
-              "defaultValue": "AMSP-Win-PS2016"
-            }
-          },
-          "variables": {
-            "alertlist": [
-              {
-                "alertRuleDescription": "Ensure the server is accessible.",
-                "alertRuleDisplayName": "Ensure the server is accessible.",
-                "alertRuleName": "AlertRule-PS-2016-1",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (83) and EventLog == 'Microsoft-Windows-PrintService/Admin' and (Source == 'Microsoft-Windows-PrintBRM' or Source == 'PrintBrm')"
-              },
-              {
-                "alertRuleDescription": "Manually install the color profile.",
-                "alertRuleDisplayName": "Manually install the color profile.",
-                "alertRuleName": "AlertRule-PS-2016-2",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (360) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Retry printing or restart the print server.",
-                "alertRuleDisplayName": "Retry printing or restart the print server.",
-                "alertRuleName": "AlertRule-PS-2016-3",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (701,702,703,704) and EventLog == 'Microsoft-Windows-PrintService/Operational!*' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Install the Printer Driver.",
-                "alertRuleDisplayName": "Install the Printer Driver.",
-                "alertRuleName": "AlertRule-PS-2016-4",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (364,365,367) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Restart the print spooler fix sharing problems and check Group Policy.",
-                "alertRuleDisplayName": "Restart the print spooler fix sharing problems and check Group Policy.",
-                "alertRuleName": "AlertRule-PS-2016-5",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (315) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Restart the print spooler and unshare the printer.",
-                "alertRuleDisplayName": "Restart the print spooler and unshare the printer.",
-                "alertRuleName": "AlertRule-PS-2016-6",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (371) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Update the printer driver.",
-                "alertRuleDisplayName": "Update the printer driver.",
-                "alertRuleName": "AlertRule-PS-2016-7",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (356) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Check Group Policy and network connectivity.",
-                "alertRuleDisplayName": "Check Group Policy and network connectivity.",
-                "alertRuleName": "AlertRule-PS-2016-8",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (513,514) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Try again or install an updated printer driver.",
-                "alertRuleDisplayName": "Try again or install an updated printer driver.",
-                "alertRuleName": "AlertRule-PS-2016-9",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (600,601) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Check network connectivity and Group Policy.",
-                "alertRuleDisplayName": "Check network connectivity and Group Policy.",
-                "alertRuleName": "AlertRule-PS-2016-10",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (515,516,517,518,519,520) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              },
-              {
-                "alertRuleDescription": "Check resource availability.",
-                "alertRuleDisplayName": "Check resource availability.",
-                "alertRuleName": "AlertRule-PS-2016-11",
-                "alertRuleSeverity": 2,
-                "autoMitigate": true,
-                "evaluationFrequency": "PT15M",
-                "windowSize": "PT15M",
-                "alertType": "rows",
-                "query": "Event | where  EventID in (502,503,504,505,506,507,508,509,510,511,512) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
-              }
-            ]
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Alerts', parameters('moduleprefix'))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "alertlist": {
-                    "value": "[variables('alertlist')]"
-                  },
-                  "AGId": {
-                    "value": "[parameters('AGId')]"
-                  },
-                  "location": {
-                    "value": "[parameters('location')]"
-                  },
-                  "moduleprefix": {
-                    "value": "[parameters('moduleprefix')]"
-                  },
-                  "packtag": {
-                    "value": "[parameters('packtag')]"
-                  },
-                  "solutionTag": {
-                    "value": "[parameters('solutionTag')]"
-                  },
-                  "solutionVersion": {
-                    "value": "[parameters('solutionVersion')]"
-                  },
-                  "workspaceId": {
-                    "value": "[parameters('workspaceId')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17921040337123514091"
-                    }
-                  },
-                  "parameters": {
-                    "alertlist": {
-                      "type": "array"
-                    },
-                    "location": {
-                      "type": "string"
-                    },
-                    "workspaceId": {
-                      "type": "string"
-                    },
-                    "AGId": {
-                      "type": "string"
-                    },
-                    "packtag": {
-                      "type": "string"
-                    },
-                    "solutionTag": {
-                      "type": "string"
-                    },
-                    "solutionVersion": {
-                      "type": "string"
-                    },
-                    "moduleprefix": {
-                      "type": "string"
-                    }
-                  },
-                  "resources": [
-                    {
-                      "copy": {
-                        "name": "Alerts",
-                        "count": "[length(parameters('alertlist'))]"
-                      },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-Alert-{1}', parameters('packtag'), copyIndex())]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "location": {
-                            "value": "[parameters('location')]"
-                          },
-                          "actionGroupResourceId": {
-                            "value": "[parameters('AGId')]"
-                          },
-                          "alertRuleDescription": {
-                            "value": "[parameters('alertlist')[copyIndex()].alertRuleDescription]"
-                          },
-                          "alertRuleDisplayName": {
-                            "value": "[format('{0}-{1}', parameters('moduleprefix'), parameters('alertlist')[copyIndex()].alertRuleDisplayName)]"
-                          },
-                          "alertRuleName": {
-                            "value": "[format('{0}-{1}', parameters('moduleprefix'), parameters('alertlist')[copyIndex()].alertRuleName)]"
-                          },
-                          "alertRuleSeverity": {
-                            "value": "[parameters('alertlist')[copyIndex()].alertRuleSeverity]"
-                          },
-                          "autoMitigate": {
-                            "value": "[parameters('alertlist')[copyIndex()].autoMitigate]"
-                          },
-                          "evaluationFrequency": {
-                            "value": "[parameters('alertlist')[copyIndex()].evaluationFrequency]"
-                          },
-                          "windowSize": {
-                            "value": "[parameters('alertlist')[copyIndex()].windowSize]"
-                          },
-                          "scope": {
-                            "value": "[parameters('workspaceId')]"
-                          },
-                          "query": {
-                            "value": "[parameters('alertlist')[copyIndex()].query]"
-                          },
-                          "packtag": {
-                            "value": "[parameters('packtag')]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
-                          },
-                          "solutionVersion": {
-                            "value": "[parameters('solutionVersion')]"
-                          },
-                          "alertType": {
-                            "value": "[parameters('alertlist')[copyIndex()].alertType]"
-                          },
-                          "metricMeasureColumn": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].metricMeasureColumn), createObject('value', null()))]",
-                          "operator": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].operator), createObject('value', null()))]",
-                          "threshold": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].threshold), createObject('value', null()))]"
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "982917926388079909"
-                            }
-                          },
-                          "parameters": {
-                            "alertType": {
-                              "type": "string",
-                              "allowedValues": [
-                                "rows",
-                                "Aggregated"
-                              ]
-                            },
-                            "alertRuleName": {
-                              "type": "string"
-                            },
-                            "alertRuleDisplayName": {
-                              "type": "string"
-                            },
-                            "alertRuleDescription": {
-                              "type": "string"
-                            },
-                            "scope": {
-                              "type": "string"
-                            },
-                            "actionGroupResourceId": {
-                              "type": "string"
-                            },
-                            "alertRuleSeverity": {
-                              "type": "int"
-                            },
-                            "location": {
-                              "type": "string"
-                            },
-                            "windowSize": {
-                              "type": "string",
-                              "defaultValue": "PT15M"
-                            },
-                            "evaluationFrequency": {
-                              "type": "string",
-                              "defaultValue": "PT15M"
-                            },
-                            "autoMitigate": {
-                              "type": "bool",
-                              "defaultValue": false
-                            },
-                            "query": {
-                              "type": "string"
-                            },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "solutionVersion": {
-                              "type": "string"
-                            },
-                            "threshold": {
-                              "type": "int",
-                              "defaultValue": 0
-                            },
-                            "metricMeasureColumn": {
-                              "type": "string",
-                              "defaultValue": ""
-                            },
-                            "operator": {
-                              "type": "string",
-                              "defaultValue": "GreaterThan",
-                              "allowedValues": [
-                                "GreaterThan",
-                                "GreaterThanOrEqual",
-                                "LessThan",
-                                "LessThanOrEqual",
-                                "Equal",
-                                "NotEqual"
-                              ]
-                            }
-                          },
-                          "resources": [
-                            {
-                              "condition": "[equals(parameters('alertType'), 'rows')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
-                              "name": "[format('rowAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
-                              "properties": {
-                                "expressionEvaluationOptions": {
-                                  "scope": "inner"
-                                },
-                                "mode": "Incremental",
-                                "parameters": {
-                                  "alertRuleName": {
-                                    "value": "[parameters('alertRuleName')]"
-                                  },
-                                  "alertRuleDisplayName": {
-                                    "value": "[parameters('alertRuleDisplayName')]"
-                                  },
-                                  "alertRuleDescription": {
-                                    "value": "[parameters('alertRuleDescription')]"
-                                  },
-                                  "scope": {
-                                    "value": "[parameters('scope')]"
-                                  },
-                                  "actionGroupResourceId": {
-                                    "value": "[parameters('actionGroupResourceId')]"
-                                  },
-                                  "alertRuleSeverity": {
-                                    "value": "[parameters('alertRuleSeverity')]"
-                                  },
-                                  "location": {
-                                    "value": "[parameters('location')]"
-                                  },
-                                  "windowSize": {
-                                    "value": "[parameters('windowSize')]"
-                                  },
-                                  "evaluationFrequency": {
-                                    "value": "[parameters('evaluationFrequency')]"
-                                  },
-                                  "autoMitigate": {
-                                    "value": "[parameters('autoMitigate')]"
-                                  },
-                                  "query": {
-                                    "value": "[parameters('query')]"
-                                  },
-                                  "packtag": {
-                                    "value": "[parameters('packtag')]"
-                                  },
-                                  "solutionTag": {
-                                    "value": "[parameters('solutionTag')]"
-                                  },
-                                  "solutionVersion": {
-                                    "value": "[parameters('solutionVersion')]"
-                                  }
-                                },
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "metadata": {
-                                    "_generator": {
-                                      "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "17294789744221740203"
-                                    }
-                                  },
-                                  "parameters": {
-                                    "alertRuleName": {
-                                      "type": "string"
-                                    },
-                                    "alertRuleDisplayName": {
-                                      "type": "string"
-                                    },
-                                    "alertRuleDescription": {
-                                      "type": "string"
-                                    },
-                                    "scope": {
-                                      "type": "string"
-                                    },
-                                    "actionGroupResourceId": {
-                                      "type": "string"
-                                    },
-                                    "alertRuleSeverity": {
-                                      "type": "int"
-                                    },
-                                    "location": {
-                                      "type": "string"
-                                    },
-                                    "windowSize": {
-                                      "type": "string",
-                                      "defaultValue": "PT15M"
-                                    },
-                                    "evaluationFrequency": {
-                                      "type": "string",
-                                      "defaultValue": "PT15M"
-                                    },
-                                    "autoMitigate": {
-                                      "type": "bool",
-                                      "defaultValue": false
-                                    },
-                                    "query": {
-                                      "type": "string"
-                                    },
-                                    "packtag": {
-                                      "type": "string"
-                                    },
-                                    "solutionTag": {
-                                      "type": "string"
-                                    },
-                                    "solutionVersion": {
-                                      "type": "string"
-                                    }
-                                  },
-                                  "resources": [
-                                    {
-                                      "type": "Microsoft.Insights/scheduledQueryRules",
-                                      "apiVersion": "2023-03-15-preview",
-                                      "name": "[parameters('alertRuleName')]",
-                                      "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                                        "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                                      },
-                                      "properties": {
-                                        "description": "[parameters('alertRuleDescription')]",
-                                        "ruleResolveConfiguration": {},
-                                        "displayName": "[parameters('alertRuleDisplayName')]",
-                                        "enabled": true,
-                                        "scopes": [
-                                          "[parameters('scope')]"
-                                        ],
-                                        "targetResourceTypes": [
-                                          "Microsoft.OperationalInsights/workspaces"
-                                        ],
-                                        "windowSize": "[parameters('windowSize')]",
-                                        "evaluationFrequency": "[parameters('evaluationFrequency')]",
-                                        "severity": "[parameters('alertRuleSeverity')]",
-                                        "criteria": {
-                                          "allOf": [
-                                            {
-                                              "query": "[parameters('query')]",
-                                              "timeAggregation": "Count",
-                                              "dimensions": [
-                                                {
-                                                  "name": "Computer",
-                                                  "operator": "Include",
-                                                  "values": [
-                                                    "*"
-                                                  ]
-                                                }
-                                              ],
-                                              "resourceIdColumn": "_ResourceId",
-                                              "operator": "GreaterThan",
-                                              "threshold": 0,
-                                              "failingPeriods": {
-                                                "numberOfEvaluationPeriods": 1,
-                                                "minFailingPeriodsToAlert": 1
-                                              }
-                                            }
-                                          ]
-                                        },
-                                        "autoMitigate": "[parameters('autoMitigate')]",
-                                        "actions": {
-                                          "actionGroups": [
-                                            "[parameters('actionGroupResourceId')]"
-                                          ],
-                                          "customProperties": {}
-                                        }
-                                      }
-                                    }
-                                  ]
-                                }
-                              }
-                            },
-                            {
-                              "condition": "[equals(parameters('alertType'), 'Aggregated')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
-                              "name": "[format('AggregateAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
-                              "properties": {
-                                "expressionEvaluationOptions": {
-                                  "scope": "inner"
-                                },
-                                "mode": "Incremental",
-                                "parameters": {
-                                  "alertRuleName": {
-                                    "value": "[parameters('alertRuleName')]"
-                                  },
-                                  "alertRuleDisplayName": {
-                                    "value": "[parameters('alertRuleDisplayName')]"
-                                  },
-                                  "alertRuleDescription": {
-                                    "value": "[parameters('alertRuleDescription')]"
-                                  },
-                                  "scope": {
-                                    "value": "[parameters('scope')]"
-                                  },
-                                  "actionGroupResourceId": {
-                                    "value": "[parameters('actionGroupResourceId')]"
-                                  },
-                                  "alertRuleSeverity": {
-                                    "value": "[parameters('alertRuleSeverity')]"
-                                  },
-                                  "location": {
-                                    "value": "[parameters('location')]"
-                                  },
-                                  "windowSize": {
-                                    "value": "[parameters('windowSize')]"
-                                  },
-                                  "evaluationFrequency": {
-                                    "value": "[parameters('evaluationFrequency')]"
-                                  },
-                                  "autoMitigate": {
-                                    "value": "[parameters('autoMitigate')]"
-                                  },
-                                  "query": {
-                                    "value": "[parameters('query')]"
-                                  },
-                                  "packtag": {
-                                    "value": "[parameters('packtag')]"
-                                  },
-                                  "solutionTag": {
-                                    "value": "[parameters('solutionTag')]"
-                                  },
-                                  "solutionVersion": {
-                                    "value": "[parameters('solutionVersion')]"
-                                  },
-                                  "threshold": {
-                                    "value": "[parameters('threshold')]"
-                                  },
-                                  "metricMeasureColumn": {
-                                    "value": "[parameters('metricMeasureColumn')]"
-                                  },
-                                  "operator": {
-                                    "value": "[parameters('operator')]"
-                                  }
-                                },
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "metadata": {
-                                    "_generator": {
-                                      "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "17705228431369681648"
-                                    }
-                                  },
-                                  "parameters": {
-                                    "alertRuleName": {
-                                      "type": "string"
-                                    },
-                                    "alertRuleDisplayName": {
-                                      "type": "string"
-                                    },
-                                    "alertRuleDescription": {
-                                      "type": "string"
-                                    },
-                                    "scope": {
-                                      "type": "string"
-                                    },
-                                    "actionGroupResourceId": {
-                                      "type": "string"
-                                    },
-                                    "alertRuleSeverity": {
-                                      "type": "int"
-                                    },
-                                    "location": {
-                                      "type": "string"
-                                    },
-                                    "windowSize": {
-                                      "type": "string",
-                                      "defaultValue": "PT15M"
-                                    },
-                                    "evaluationFrequency": {
-                                      "type": "string",
-                                      "defaultValue": "PT15M"
-                                    },
-                                    "autoMitigate": {
-                                      "type": "bool",
-                                      "defaultValue": false
-                                    },
-                                    "query": {
-                                      "type": "string"
-                                    },
-                                    "packtag": {
-                                      "type": "string"
-                                    },
-                                    "solutionTag": {
-                                      "type": "string"
-                                    },
-                                    "solutionVersion": {
-                                      "type": "string"
-                                    },
-                                    "threshold": {
-                                      "type": "int"
-                                    },
-                                    "metricMeasureColumn": {
-                                      "type": "string"
-                                    },
-                                    "operator": {
-                                      "type": "string",
-                                      "allowedValues": [
-                                        "GreaterThan",
-                                        "GreaterThanOrEqual",
-                                        "LessThan",
-                                        "LessThanOrEqual",
-                                        "Equal",
-                                        "NotEqual"
-                                      ]
-                                    }
-                                  },
-                                  "resources": [
-                                    {
-                                      "type": "Microsoft.Insights/scheduledQueryRules",
-                                      "apiVersion": "2023-03-15-preview",
-                                      "name": "[parameters('alertRuleName')]",
-                                      "location": "[parameters('location')]",
-                                      "tags": {
-                                        "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                                        "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                                      },
-                                      "properties": {
-                                        "description": "[parameters('alertRuleDescription')]",
-                                        "ruleResolveConfiguration": {},
-                                        "displayName": "[parameters('alertRuleDisplayName')]",
-                                        "enabled": true,
-                                        "scopes": [
-                                          "[parameters('scope')]"
-                                        ],
-                                        "targetResourceTypes": [
-                                          "Microsoft.OperationalInsights/workspaces"
-                                        ],
-                                        "windowSize": "[parameters('windowSize')]",
-                                        "evaluationFrequency": "[parameters('evaluationFrequency')]",
-                                        "severity": "[parameters('alertRuleSeverity')]",
-                                        "criteria": {
-                                          "allOf": [
-                                            {
-                                              "query": "[parameters('query')]",
-                                              "timeAggregation": "Average",
-                                              "metricMeasureColumn": "[parameters('metricMeasureColumn')]",
-                                              "dimensions": [
-                                                {
-                                                  "name": "Computer",
-                                                  "operator": "Include",
-                                                  "values": [
-                                                    "*"
-                                                  ]
-                                                }
-                                              ],
-                                              "resourceIdColumn": "_ResourceId",
-                                              "operator": "[parameters('operator')]",
-                                              "threshold": "[parameters('threshold')]",
-                                              "failingPeriods": {
-                                                "numberOfEvaluationPeriods": 1,
-                                                "minFailingPeriodsToAlert": 1
-                                              }
-                                            }
-                                          ]
-                                        },
-                                        "autoMitigate": "[parameters('autoMitigate')]",
-                                        "actions": {
-                                          "actionGroups": [
-                                            "[parameters('actionGroupResourceId')]"
-                                          ],
-                                          "customProperties": {}
-                                        }
-                                      }
-                                    }
-                                  ]
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', parameters('actionGroupName'))]"
-      ]
-    },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1151,11 +132,8 @@
           "counterSpecifiers": {
             "value": "[variables('performanceCounters')]"
           },
-          "packtag": {
-            "value": "[parameters('packtag')]"
-          },
-          "solutionTag": {
-            "value": "[parameters('solutionTag')]"
+          "Tags": {
+            "value": "[variables('Tags')]"
           },
           "dceId": {
             "value": "[parameters('dceId')]"
@@ -1168,7 +146,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1587489619762012162"
+              "templateHash": "15586190674869500289"
             }
           },
           "parameters": {
@@ -1201,11 +179,8 @@
               "type": "int",
               "defaultValue": 300
             },
-            "packtag": {
-              "type": "string"
-            },
-            "solutionTag": {
-              "type": "string"
+            "Tags": {
+              "type": "object"
             },
             "dceId": {
               "type": "string"
@@ -1217,9 +192,7 @@
               "apiVersion": "2022-06-01",
               "name": "[parameters('rulename')]",
               "location": "[parameters('location')]",
-              "tags": {
-                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
-              },
+              "tags": "[parameters('Tags')]",
               "kind": "[parameters('kind')]",
               "properties": {
                 "dataCollectionEndpointId": "[parameters('dceId')]",
@@ -2159,6 +1132,758 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('dcrPerformance-{0}', parameters('packtag')))]"
       ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('Alerts-{0}', parameters('packtag'))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspaceId": {
+            "value": "[parameters('workspaceId')]"
+          },
+          "AGId": {
+            "value": "[parameters('actionGroupResourceId')]"
+          },
+          "packtag": {
+            "value": "[parameters('packtag')]"
+          },
+          "Tags": {
+            "value": "[variables('Tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "1280429823884943158"
+            }
+          },
+          "parameters": {
+            "moduleprefix": {
+              "type": "string",
+              "defaultValue": "AMSP-Win-PS2016"
+            },
+            "location": {
+              "type": "string"
+            },
+            "workspaceId": {
+              "type": "string"
+            },
+            "AGId": {
+              "type": "string"
+            },
+            "packtag": {
+              "type": "string"
+            },
+            "Tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "alertlist": [
+              {
+                "alertRuleDescription": "Ensure the server is accessible.",
+                "alertRuleDisplayName": "Ensure the server is accessible.",
+                "alertRuleName": "AlertRule-PS-2016-1",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (83) and EventLog == 'Microsoft-Windows-PrintService/Admin' and (Source == 'Microsoft-Windows-PrintBRM' or Source == 'PrintBrm')"
+              },
+              {
+                "alertRuleDescription": "Manually install the color profile.",
+                "alertRuleDisplayName": "Manually install the color profile.",
+                "alertRuleName": "AlertRule-PS-2016-2",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (360) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Retry printing or restart the print server.",
+                "alertRuleDisplayName": "Retry printing or restart the print server.",
+                "alertRuleName": "AlertRule-PS-2016-3",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (701,702,703,704) and EventLog == 'Microsoft-Windows-PrintService/Operational!*' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Install the Printer Driver.",
+                "alertRuleDisplayName": "Install the Printer Driver.",
+                "alertRuleName": "AlertRule-PS-2016-4",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (364,365,367) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Restart the print spooler fix sharing problems and check Group Policy.",
+                "alertRuleDisplayName": "Restart the print spooler fix sharing problems and check Group Policy.",
+                "alertRuleName": "AlertRule-PS-2016-5",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (315) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Restart the print spooler and unshare the printer.",
+                "alertRuleDisplayName": "Restart the print spooler and unshare the printer.",
+                "alertRuleName": "AlertRule-PS-2016-6",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (371) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Update the printer driver.",
+                "alertRuleDisplayName": "Update the printer driver.",
+                "alertRuleName": "AlertRule-PS-2016-7",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (356) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Check Group Policy and network connectivity.",
+                "alertRuleDisplayName": "Check Group Policy and network connectivity.",
+                "alertRuleName": "AlertRule-PS-2016-8",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (513,514) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Try again or install an updated printer driver.",
+                "alertRuleDisplayName": "Try again or install an updated printer driver.",
+                "alertRuleName": "AlertRule-PS-2016-9",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (600,601) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Check network connectivity and Group Policy.",
+                "alertRuleDisplayName": "Check network connectivity and Group Policy.",
+                "alertRuleName": "AlertRule-PS-2016-10",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (515,516,517,518,519,520) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              },
+              {
+                "alertRuleDescription": "Check resource availability.",
+                "alertRuleDisplayName": "Check resource availability.",
+                "alertRuleName": "AlertRule-PS-2016-11",
+                "alertRuleSeverity": 2,
+                "autoMitigate": true,
+                "evaluationFrequency": "PT15M",
+                "windowSize": "PT15M",
+                "alertType": "rows",
+                "query": "Event | where  EventID in (502,503,504,505,506,507,508,509,510,511,512) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Alerts', parameters('moduleprefix'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "alertlist": {
+                    "value": "[variables('alertlist')]"
+                  },
+                  "AGId": {
+                    "value": "[parameters('AGId')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "moduleprefix": {
+                    "value": "[parameters('moduleprefix')]"
+                  },
+                  "packtag": {
+                    "value": "[parameters('packtag')]"
+                  },
+                  "Tags": {
+                    "value": "[parameters('Tags')]"
+                  },
+                  "workspaceId": {
+                    "value": "[parameters('workspaceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.20.4.51522",
+                      "templateHash": "75933667383542312"
+                    }
+                  },
+                  "parameters": {
+                    "alertlist": {
+                      "type": "array"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "workspaceId": {
+                      "type": "string"
+                    },
+                    "AGId": {
+                      "type": "string"
+                    },
+                    "packtag": {
+                      "type": "string"
+                    },
+                    "Tags": {
+                      "type": "object"
+                    },
+                    "moduleprefix": {
+                      "type": "string"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "Alerts",
+                        "count": "[length(parameters('alertlist'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-Alert-{1}', parameters('packtag'), copyIndex())]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "actionGroupResourceId": {
+                            "value": "[parameters('AGId')]"
+                          },
+                          "alertRuleDescription": {
+                            "value": "[parameters('alertlist')[copyIndex()].alertRuleDescription]"
+                          },
+                          "alertRuleDisplayName": {
+                            "value": "[format('{0}-{1}', parameters('moduleprefix'), parameters('alertlist')[copyIndex()].alertRuleDisplayName)]"
+                          },
+                          "alertRuleName": {
+                            "value": "[format('{0}-{1}', parameters('moduleprefix'), parameters('alertlist')[copyIndex()].alertRuleName)]"
+                          },
+                          "alertRuleSeverity": {
+                            "value": "[parameters('alertlist')[copyIndex()].alertRuleSeverity]"
+                          },
+                          "autoMitigate": {
+                            "value": "[parameters('alertlist')[copyIndex()].autoMitigate]"
+                          },
+                          "evaluationFrequency": {
+                            "value": "[parameters('alertlist')[copyIndex()].evaluationFrequency]"
+                          },
+                          "windowSize": {
+                            "value": "[parameters('alertlist')[copyIndex()].windowSize]"
+                          },
+                          "scope": {
+                            "value": "[parameters('workspaceId')]"
+                          },
+                          "query": {
+                            "value": "[parameters('alertlist')[copyIndex()].query]"
+                          },
+                          "packtag": {
+                            "value": "[parameters('packtag')]"
+                          },
+                          "Tags": {
+                            "value": "[parameters('Tags')]"
+                          },
+                          "alertType": {
+                            "value": "[parameters('alertlist')[copyIndex()].alertType]"
+                          },
+                          "metricMeasureColumn": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].metricMeasureColumn), createObject('value', null()))]",
+                          "operator": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].operator), createObject('value', null()))]",
+                          "threshold": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].threshold), createObject('value', null()))]"
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "1955376536405090411"
+                            }
+                          },
+                          "parameters": {
+                            "alertType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "rows",
+                                "Aggregated"
+                              ]
+                            },
+                            "alertRuleName": {
+                              "type": "string"
+                            },
+                            "alertRuleDisplayName": {
+                              "type": "string"
+                            },
+                            "alertRuleDescription": {
+                              "type": "string"
+                            },
+                            "scope": {
+                              "type": "string"
+                            },
+                            "actionGroupResourceId": {
+                              "type": "string"
+                            },
+                            "alertRuleSeverity": {
+                              "type": "int"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "windowSize": {
+                              "type": "string",
+                              "defaultValue": "PT15M"
+                            },
+                            "evaluationFrequency": {
+                              "type": "string",
+                              "defaultValue": "PT15M"
+                            },
+                            "autoMitigate": {
+                              "type": "bool",
+                              "defaultValue": false
+                            },
+                            "query": {
+                              "type": "string"
+                            },
+                            "packtag": {
+                              "type": "string"
+                            },
+                            "Tags": {
+                              "type": "object"
+                            },
+                            "threshold": {
+                              "type": "int",
+                              "defaultValue": 0
+                            },
+                            "metricMeasureColumn": {
+                              "type": "string",
+                              "defaultValue": ""
+                            },
+                            "operator": {
+                              "type": "string",
+                              "defaultValue": "GreaterThan",
+                              "allowedValues": [
+                                "GreaterThan",
+                                "GreaterThanOrEqual",
+                                "LessThan",
+                                "LessThanOrEqual",
+                                "Equal",
+                                "NotEqual"
+                              ]
+                            }
+                          },
+                          "resources": [
+                            {
+                              "condition": "[equals(parameters('alertType'), 'rows')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('rowAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "alertRuleName": {
+                                    "value": "[parameters('alertRuleName')]"
+                                  },
+                                  "alertRuleDisplayName": {
+                                    "value": "[parameters('alertRuleDisplayName')]"
+                                  },
+                                  "alertRuleDescription": {
+                                    "value": "[parameters('alertRuleDescription')]"
+                                  },
+                                  "scope": {
+                                    "value": "[parameters('scope')]"
+                                  },
+                                  "actionGroupResourceId": {
+                                    "value": "[parameters('actionGroupResourceId')]"
+                                  },
+                                  "alertRuleSeverity": {
+                                    "value": "[parameters('alertRuleSeverity')]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "windowSize": {
+                                    "value": "[parameters('windowSize')]"
+                                  },
+                                  "evaluationFrequency": {
+                                    "value": "[parameters('evaluationFrequency')]"
+                                  },
+                                  "autoMitigate": {
+                                    "value": "[parameters('autoMitigate')]"
+                                  },
+                                  "query": {
+                                    "value": "[parameters('query')]"
+                                  },
+                                  "packtag": {
+                                    "value": "[parameters('packtag')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "5611522469594456278"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "alertRuleName": {
+                                      "type": "string"
+                                    },
+                                    "alertRuleDisplayName": {
+                                      "type": "string"
+                                    },
+                                    "alertRuleDescription": {
+                                      "type": "string"
+                                    },
+                                    "scope": {
+                                      "type": "string"
+                                    },
+                                    "actionGroupResourceId": {
+                                      "type": "string"
+                                    },
+                                    "alertRuleSeverity": {
+                                      "type": "int"
+                                    },
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "windowSize": {
+                                      "type": "string",
+                                      "defaultValue": "PT15M"
+                                    },
+                                    "evaluationFrequency": {
+                                      "type": "string",
+                                      "defaultValue": "PT15M"
+                                    },
+                                    "autoMitigate": {
+                                      "type": "bool",
+                                      "defaultValue": false
+                                    },
+                                    "query": {
+                                      "type": "string"
+                                    },
+                                    "packtag": {
+                                      "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
+                                    }
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Insights/scheduledQueryRules",
+                                      "apiVersion": "2023-03-15-preview",
+                                      "name": "[parameters('alertRuleName')]",
+                                      "location": "[parameters('location')]",
+                                      "tags": "[parameters('Tags')]",
+                                      "properties": {
+                                        "description": "[parameters('alertRuleDescription')]",
+                                        "ruleResolveConfiguration": {},
+                                        "displayName": "[parameters('alertRuleDisplayName')]",
+                                        "enabled": true,
+                                        "scopes": [
+                                          "[parameters('scope')]"
+                                        ],
+                                        "targetResourceTypes": [
+                                          "Microsoft.OperationalInsights/workspaces"
+                                        ],
+                                        "windowSize": "[parameters('windowSize')]",
+                                        "evaluationFrequency": "[parameters('evaluationFrequency')]",
+                                        "severity": "[parameters('alertRuleSeverity')]",
+                                        "criteria": {
+                                          "allOf": [
+                                            {
+                                              "query": "[parameters('query')]",
+                                              "timeAggregation": "Count",
+                                              "dimensions": [
+                                                {
+                                                  "name": "Computer",
+                                                  "operator": "Include",
+                                                  "values": [
+                                                    "*"
+                                                  ]
+                                                }
+                                              ],
+                                              "resourceIdColumn": "_ResourceId",
+                                              "operator": "GreaterThan",
+                                              "threshold": 0,
+                                              "failingPeriods": {
+                                                "numberOfEvaluationPeriods": 1,
+                                                "minFailingPeriodsToAlert": 1
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "autoMitigate": "[parameters('autoMitigate')]",
+                                        "actions": {
+                                          "actionGroups": [
+                                            "[parameters('actionGroupResourceId')]"
+                                          ],
+                                          "customProperties": {}
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "condition": "[equals(parameters('alertType'), 'Aggregated')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('AggregateAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "alertRuleName": {
+                                    "value": "[parameters('alertRuleName')]"
+                                  },
+                                  "alertRuleDisplayName": {
+                                    "value": "[parameters('alertRuleDisplayName')]"
+                                  },
+                                  "alertRuleDescription": {
+                                    "value": "[parameters('alertRuleDescription')]"
+                                  },
+                                  "scope": {
+                                    "value": "[parameters('scope')]"
+                                  },
+                                  "actionGroupResourceId": {
+                                    "value": "[parameters('actionGroupResourceId')]"
+                                  },
+                                  "alertRuleSeverity": {
+                                    "value": "[parameters('alertRuleSeverity')]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "windowSize": {
+                                    "value": "[parameters('windowSize')]"
+                                  },
+                                  "evaluationFrequency": {
+                                    "value": "[parameters('evaluationFrequency')]"
+                                  },
+                                  "autoMitigate": {
+                                    "value": "[parameters('autoMitigate')]"
+                                  },
+                                  "query": {
+                                    "value": "[parameters('query')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[parameters('Tags')]"
+                                  },
+                                  "threshold": {
+                                    "value": "[parameters('threshold')]"
+                                  },
+                                  "metricMeasureColumn": {
+                                    "value": "[parameters('metricMeasureColumn')]"
+                                  },
+                                  "operator": {
+                                    "value": "[parameters('operator')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "1486731342993087831"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "alertRuleName": {
+                                      "type": "string"
+                                    },
+                                    "alertRuleDisplayName": {
+                                      "type": "string"
+                                    },
+                                    "alertRuleDescription": {
+                                      "type": "string"
+                                    },
+                                    "scope": {
+                                      "type": "string"
+                                    },
+                                    "actionGroupResourceId": {
+                                      "type": "string"
+                                    },
+                                    "alertRuleSeverity": {
+                                      "type": "int"
+                                    },
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "windowSize": {
+                                      "type": "string",
+                                      "defaultValue": "PT15M"
+                                    },
+                                    "evaluationFrequency": {
+                                      "type": "string",
+                                      "defaultValue": "PT15M"
+                                    },
+                                    "autoMitigate": {
+                                      "type": "bool",
+                                      "defaultValue": false
+                                    },
+                                    "query": {
+                                      "type": "string"
+                                    },
+                                    "threshold": {
+                                      "type": "int"
+                                    },
+                                    "metricMeasureColumn": {
+                                      "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
+                                    },
+                                    "operator": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "GreaterThan",
+                                        "GreaterThanOrEqual",
+                                        "LessThan",
+                                        "LessThanOrEqual",
+                                        "Equal",
+                                        "NotEqual"
+                                      ]
+                                    }
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Insights/scheduledQueryRules",
+                                      "apiVersion": "2023-03-15-preview",
+                                      "name": "[parameters('alertRuleName')]",
+                                      "location": "[parameters('location')]",
+                                      "tags": "[parameters('Tags')]",
+                                      "properties": {
+                                        "description": "[parameters('alertRuleDescription')]",
+                                        "ruleResolveConfiguration": {},
+                                        "displayName": "[parameters('alertRuleDisplayName')]",
+                                        "enabled": true,
+                                        "scopes": [
+                                          "[parameters('scope')]"
+                                        ],
+                                        "targetResourceTypes": [
+                                          "Microsoft.OperationalInsights/workspaces"
+                                        ],
+                                        "windowSize": "[parameters('windowSize')]",
+                                        "evaluationFrequency": "[parameters('evaluationFrequency')]",
+                                        "severity": "[parameters('alertRuleSeverity')]",
+                                        "criteria": {
+                                          "allOf": [
+                                            {
+                                              "query": "[parameters('query')]",
+                                              "timeAggregation": "Average",
+                                              "metricMeasureColumn": "[parameters('metricMeasureColumn')]",
+                                              "dimensions": [
+                                                {
+                                                  "name": "Computer",
+                                                  "operator": "Include",
+                                                  "values": [
+                                                    "*"
+                                                  ]
+                                                }
+                                              ],
+                                              "resourceIdColumn": "_ResourceId",
+                                              "operator": "[parameters('operator')]",
+                                              "threshold": "[parameters('threshold')]",
+                                              "failingPeriods": {
+                                                "numberOfEvaluationPeriods": 1,
+                                                "minFailingPeriodsToAlert": 1
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "autoMitigate": "[parameters('autoMitigate')]",
+                                        "actions": {
+                                          "actionGroups": [
+                                            "[parameters('actionGroupResourceId')]"
+                                          ],
+                                          "customProperties": {}
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
     }
   ]
 }

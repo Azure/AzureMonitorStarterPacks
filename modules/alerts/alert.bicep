@@ -16,8 +16,7 @@ param autoMitigate bool = false
 param query string
 //param starterPackName string
 param packtag string
-param solutionTag string
-param solutionVersion string
+param Tags object
 
 param threshold int = 0
 param metricMeasureColumn string = ''
@@ -48,8 +47,7 @@ module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
     query: query
     //starterPackName: starterPackName
     packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
   }
 }
 
@@ -68,9 +66,8 @@ module aggregateAlert './scheduledqueryruleAggregate.bicep' = if (alertType == '
     autoMitigate: autoMitigate
     query: query
     //starterPackName: starterPackName
-    packtag: packtag
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    //packtag: packtag
+    Tags: Tags
     threshold: threshold
     metricMeasureColumn: metricMeasureColumn
     operator: operator

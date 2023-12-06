@@ -5,18 +5,16 @@ param functionname string
 //param currentUserIdObject string
 param location string
 param storageAccountName string
+param solutionTag string
 //param kvname string
 param lawresourceid string
-param grafanaName string
-param grafanalocation string
 param appInsightsLocation string
 //param packageUri string = 'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/discovery.zip'
 @description('UTC timestamp used to create distinct deployment scripts for each deployment')
 //param utcValue string = utcNow()
 //param filename string = 'discovery.zip'
 //param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
-param solutionTag string
-param solutionVersion string
+param Tags object
 param subscriptionId string
 param resourceGroupName string
 param mgname string
@@ -70,12 +68,12 @@ module backendFunction 'modules/function.bicep' = {
     functionname: functionname
     lawresourceid: lawresourceid
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     storageAccountName: storageAccountName
     userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
     packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+    solutionTag: solutionTag
   }
 }
 
@@ -88,8 +86,7 @@ module logicapp './modules/logicapp.bicep' = {
   params: {
     functioname: functionname
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     keyvaultid: keyvault.outputs.kvResourceId
     subscriptionId: subscriptionId
   }
@@ -100,21 +97,7 @@ module workbook './modules/workbook.bicep' = {
   params: {
     lawresourceid: lawresourceid
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-  }
-}
-
-module amg 'modules/grafana.bicep' = {
-  name: 'azureManagedGrafana'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    location: grafanalocation
-    grafanaName: grafanaName
-    //userObjectId: currentUserIdObject
-    lawresourceId: lawresourceid
+    Tags: Tags
   }
 }
 
@@ -124,8 +107,7 @@ module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bice
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
-    packtag: 'dceMainRegion'
-    solutionTag: solutionTag
+    Tags: Tags
     dceName: 'DCE-${solutionTag}-${location}'
   }
 }
@@ -135,14 +117,14 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'packsUserManagedIdentity'
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     roleDefinitionIds: packPolicyRoleDefinitionIds
     userIdentityName: 'packsUserManagedIdentity'
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
     addRGRoleAssignments: true
+    solutionTag: solutionTag
   }
 }
 
@@ -157,13 +139,13 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'functionUserManagedIdentity'
   params: {
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     roleDefinitionIds: backendFunctionRoleDefinitionIds//,array('${customRemdiationRole.outputs.roleDefId}'))
     userIdentityName: 'functionUserManagedIdentity'
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
+    solutionTag: solutionTag
   }
 }
 
@@ -177,8 +159,7 @@ module keyvault 'modules/keyvault.bicep' = {
   params: {
     kvName: 'amspkv-${split(functionname,'-')[1]}'
     location: location
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    Tags: Tags
     functionName: functionname
   }
 }
