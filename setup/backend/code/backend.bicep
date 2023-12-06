@@ -103,12 +103,12 @@ module workbook './modules/workbook.bicep' = {
 
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-  name: 'DCE-${solutionTag}-${location}'
+  name: 'DCE-MonPacks-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     Tags: Tags
-    dceName: 'DCE-${solutionTag}-${location}'
+    dceName: 'DCE-MonPacks-${location}'
   }
 }
 
