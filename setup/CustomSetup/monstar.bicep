@@ -98,6 +98,10 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
 
 module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
   name: 'azureManagedGrafana'
+  dependsOn: [
+    resourgeGroup
+    logAnalytics
+  ]
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     Tags: Tags
@@ -110,7 +114,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
 }
 
 module backend '../backend/code/backend.bicep' = {
-  name: 'backend'
+  name: 'MonitoringPacks-backend'
   dependsOn: [
     resourgeGroup
   ]
