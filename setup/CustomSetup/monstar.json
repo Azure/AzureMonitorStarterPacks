@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "18282308103686812329"
+      "templateHash": "15593051363965584196"
     }
   },
   "parameters": {
@@ -1243,7 +1243,7 @@
             "value": "[parameters('grafanaName')]"
           },
           "solutionTag": {
-            "value": "[variables('solutionTagComponents')]"
+            "value": "[variables('solutionTag')]"
           }
         },
         "template": {
@@ -1593,7 +1593,7 @@
             "value": "[parameters('subscriptionId')]"
           },
           "solutionTag": {
-            "value": "[variables('solutionTag')]"
+            "value": "[variables('solutionTagComponents')]"
           }
         },
         "template": {
