@@ -11,4 +11,5 @@
     'Az.Monitor' = '4.5.0'
     'Az.PolicyInsights' = '1.6.2'
     'Az.ConnectedMachine' = '0.5.2'
+    'Az.Compute' = '6.2.0'
 }
