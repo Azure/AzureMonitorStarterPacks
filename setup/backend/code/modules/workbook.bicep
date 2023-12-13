@@ -8,7 +8,7 @@ resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
   location: location
   tags: Tags
   kind: 'shared'
-  name: guid('monstar')
+  name: 'Azure Monitor Starter Packs'
   properties:{
     displayName: 'Azure Monitor Starter Packs'
     serializedData: wbConfig

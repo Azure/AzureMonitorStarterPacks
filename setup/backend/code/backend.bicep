@@ -101,6 +101,16 @@ module workbook './modules/workbook.bicep' = {
   }
 }
 
+module extendedWorkbook './modules/extendedworkbook.bicep' = {
+  name: 'workbook2deployment'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    lawresourceid: lawresourceid
+    location: location
+    Tags: Tags
+  }
+}
+
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
   name: 'DCE-MonPacks-${location}'
