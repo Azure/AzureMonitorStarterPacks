@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "56059762174490722"
+      "templateHash": "1415529676948287221"
     }
   },
   "parameters": {
@@ -1616,7 +1616,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "10134870201643810657"
+              "templateHash": "18163969087478339942"
             }
           },
           "parameters": {
@@ -2292,7 +2292,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "7994033388370050088"
+                      "templateHash": "9013734631272102193"
                     }
                   },
                   "parameters": {
@@ -2313,7 +2313,7 @@
                     {
                       "type": "Microsoft.Insights/workbooks",
                       "apiVersion": "2022-04-01",
-                      "name": "Azure Monitor Starter Packs",
+                      "name": "[guid('Azure Monitor Starter Packs')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('Tags')]",
                       "kind": "shared",
@@ -2357,7 +2357,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3224194201239046493"
+                      "templateHash": "5513179996170885424"
                     }
                   },
                   "parameters": {
@@ -2378,7 +2378,7 @@
                     {
                       "type": "Microsoft.Insights/workbooks",
                       "apiVersion": "2022-04-01",
-                      "name": "Azure Monitor Starter Packs Extended",
+                      "name": "[guid('Azure Monitor Starter Packs Extended')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('Tags')]",
                       "kind": "shared",
