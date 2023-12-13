@@ -177,8 +177,7 @@ var wbConfig = '''
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                    "value::all"
                   ]
                 },
                 {
@@ -204,7 +203,7 @@ var wbConfig = '''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/MonitorStarterPacks-Backend"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -227,7 +226,7 @@ var wbConfig = '''
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP623924"
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -942,7 +941,7 @@ var wbConfig = '''
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "WinOS"
                       }
                     ],
                     "style": "pills",
@@ -1078,7 +1077,7 @@ var wbConfig = '''
                   "content": {
                     "version": "KqlParameterItem/1.0",
                     "crossComponentResources": [
-                      "{Workspace}"
+                      "value::tenant"
                     ],
                     "parameters": [
                       {
@@ -1088,9 +1087,9 @@ var wbConfig = '''
                         "label": "Add/Remove",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
-                          "{Workspace}"
+                          "value::tenant"
                         ],
                         "typeSettings": {
                           "additionalResourceOptions": [],
@@ -1100,13 +1099,13 @@ var wbConfig = '''
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources",
+                        "resourceType": "microsoft.resources/tenants",
                         "value": null
                       }
                     ],
                     "style": "pills",
                     "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources"
+                    "resourceType": "microsoft.resources/tenants"
                   },
                   "customWidth": "25",
                   "conditionalVisibility": {
@@ -1251,7 +1250,7 @@ var wbConfig = '''
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
+                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -2768,10 +2767,11 @@ var wbConfig = '''
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
-}'''
+}
+'''
 resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
   location: location
   tags: Tags

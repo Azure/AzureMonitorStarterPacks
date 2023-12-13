@@ -133,7 +133,7 @@ module backend '../backend/code/backend.bicep' = {
     Tags: Tags
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
-    solutionTag: solutionTagComponents
+    solutionTag: solutionTag
   }
 }
 
