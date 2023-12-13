@@ -105,9 +105,9 @@ if ($resources) {
                         if ($TagValue -eq 'All') { # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings. 
                             #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
                             #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
-                            
-                            #$tag.Remove($tagName)
-                            Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Delete
+                            $tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
+                            $tag.Remove($tagName)
+                            Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
                         }
                         else {
                             if ($tag.$tagName.Split(',') -notcontains $TagValue) {

@@ -7,7 +7,7 @@
         }
 #>
 $currentFolder= Get-Location
-$mainMonstarPacksFiles = Get-Content -Path './Tools/build.json' | ConvertFrom-Json
+$mainMonstarPacksFiles = Get-Content -Path './tools/build.json' | ConvertFrom-Json
 <#
 @"
     [
