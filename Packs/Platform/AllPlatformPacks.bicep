@@ -26,6 +26,7 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
+param customerTags object 
 
 module KVAlerts './KeyVault/monitoring.bicep' = {
   name: 'KVAlerts'
@@ -42,6 +43,7 @@ module KVAlerts './KeyVault/monitoring.bicep' = {
     packtag: 'KeyVault'
     grafanaName: grafanaName
     dceId: dceId
+    customerTags: customerTags
     
   }
 }
@@ -59,6 +61,7 @@ module vWan './Network/vWan/monitoring.bicep' = {
     workspaceId: workspaceId
     packtag: 'vWan'
     solutionVersion: solutionVersion
+    customerTags: customerTags
   }
 }
 module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
@@ -77,5 +80,6 @@ module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
     solutionVersion: solutionVersion
     dceId: dceId
     grafanaName: grafanaName
+    customerTags: customerTags
   }
 }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "1415529676948287221"
+      "templateHash": "13819927411652551192"
     }
   },
   "parameters": {
@@ -109,13 +109,16 @@
       "type": "bool"
     },
     "deployIaaSPacks": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     },
     "deployPaaSPacks": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     },
     "deployPlatformPacks": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     }
   },
   "variables": {
@@ -1616,7 +1619,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "18163969087478339942"
+              "templateHash": "8574743363928566139"
             }
           },
           "parameters": {
@@ -2357,7 +2360,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "5513179996170885424"
+                      "templateHash": "11012739640753404655"
                     }
                   },
                   "parameters": {
@@ -2378,12 +2381,12 @@
                     {
                       "type": "Microsoft.Insights/workbooks",
                       "apiVersion": "2022-04-01",
-                      "name": "[guid('Azure Monitor Starter Packs Extended')]",
+                      "name": "[guid('Azure Monitor Starter Packs PaaS')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('Tags')]",
                       "kind": "shared",
                       "properties": {
-                        "displayName": "Azure Monitor Starter Packs",
+                        "displayName": "Azure Monitor Starter Packs Extended",
                         "serializedData": "[variables('wbConfig')]",
                         "category": "workbook",
                         "sourceId": "[parameters('lawresourceid')]"
@@ -3462,7 +3465,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "18256256810898670321"
+              "templateHash": "14410899240632978856"
             }
           },
           "parameters": {
@@ -20406,6 +20409,9 @@
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
+                  },
+                  "customerTags": {
+                    "value": "[parameters('customerTags')]"
                   }
                 },
                 "template": {
@@ -20415,7 +20421,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4038645593820827092"
+                      "templateHash": "4456324804082138202"
                     }
                   },
                   "parameters": {
@@ -20466,6 +20472,9 @@
                     },
                     "grafanaName": {
                       "type": "string"
+                    },
+                    "customerTags": {
+                      "type": "object"
                     }
                   },
                   "resources": [
@@ -20515,6 +20524,9 @@
                           },
                           "dceId": {
                             "value": "[parameters('dceId')]"
+                          },
+                          "customerTags": {
+                            "value": "[parameters('customerTags')]"
                           }
                         },
                         "template": {
@@ -20524,7 +20536,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "13791156985805969760"
+                              "templateHash": "3321157461168061360"
                             }
                           },
                           "parameters": {
@@ -20588,9 +20600,13 @@
                             },
                             "grafanaName": {
                               "type": "string"
+                            },
+                            "customerTags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
+                            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                             "resourceType": "Microsoft.KeyVault/vaults"
                           },
@@ -23100,6 +23116,9 @@
                           },
                           "solutionVersion": {
                             "value": "[parameters('solutionVersion')]"
+                          },
+                          "customerTags": {
+                            "value": "[parameters('customerTags')]"
                           }
                         },
                         "template": {
@@ -23109,7 +23128,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "2659445950228861323"
+                              "templateHash": "5818757259785381590"
                             }
                           },
                           "parameters": {
@@ -23145,6 +23164,9 @@
                             },
                             "solutionVersion": {
                               "type": "string"
+                            },
+                            "customerTags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
@@ -23152,6 +23174,7 @@
                               "Microsoft.Network/vpngateways",
                               "Microsoft.Network/expressRouteGateways"
                             ],
+                            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                           },
                           "resources": [
@@ -29798,6 +29821,9 @@
                           },
                           "grafanaName": {
                             "value": "[parameters('grafanaName')]"
+                          },
+                          "customerTags": {
+                            "value": "[parameters('customerTags')]"
                           }
                         },
                         "template": {
@@ -29807,7 +29833,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "18329039242558931729"
+                              "templateHash": "2606008530629564747"
                             }
                           },
                           "parameters": {
@@ -29871,9 +29897,13 @@
                             },
                             "grafanaName": {
                               "type": "string"
+                            },
+                            "customerTags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
+                            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
                             "resourceType": "Microsoft.Network/loadBalancers",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                           },

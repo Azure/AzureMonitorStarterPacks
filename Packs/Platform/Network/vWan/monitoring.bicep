@@ -15,7 +15,12 @@ param mgname string
 param assignmentLevel string
 param resourceGroupId string
 param solutionVersion string
-
+param customerTags object 
+var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
+'solutionVersion': solutionVersion} : union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 //var resourceShortType = split(resourceType, '/')[1]
 
 var resourceGroupName = split(resourceGroupId, '/')[4]

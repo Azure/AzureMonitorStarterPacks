@@ -106,5 +106,6 @@ module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatform
     mgname: mgname
     resourceGroupId: resourceGroupId
     subscriptionId: subscriptionId
+    customerTags: customerTags
   }
 }

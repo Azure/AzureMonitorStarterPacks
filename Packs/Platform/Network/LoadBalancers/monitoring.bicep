@@ -20,6 +20,12 @@ param mgname string
 param assignmentLevel string
 param resourceGroupId string
 param grafanaName string
+param customerTags object 
+var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
+'solutionVersion': solutionVersion} : union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 var resourceType = 'Microsoft.Network/loadBalancers'
 //var resourceShortType = split(resourceType, '/')[1]
 

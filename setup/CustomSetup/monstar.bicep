@@ -33,9 +33,9 @@ param customerTags object
 param existingActionGroupId string = ''
 
 param deployAllPacks bool
-param deployIaaSPacks bool
-param deployPaaSPacks bool
-param deployPlatformPacks bool
+param deployIaaSPacks bool = false
+param deployPaaSPacks bool = false
+param deployPlatformPacks bool = false
 
 var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
 var solutionTag='MonitorStarterPacks'

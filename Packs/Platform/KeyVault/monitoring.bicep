@@ -22,7 +22,12 @@ param assignmentLevel string
 param resourceGroupId string
 param grafanaName string
 //param solutionVersion string
-
+param customerTags object 
+var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
+'solutionVersion': solutionVersion} : union({
+  '${solutionTag}': packtag
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var resourceType = 'Microsoft.KeyVault/vaults'
