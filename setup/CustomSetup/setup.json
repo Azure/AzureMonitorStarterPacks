@@ -46,30 +46,6 @@
                             }
                         },
                         {
-                            "name": "ActionGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
-                            }
-                        },
-                        {
-                            "name": "grafanaLocationsAPI",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]"
-                            }
-                        },
-                        {
-                            "name": "AzureManagedGrafanaApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
-                            }
-                        },
-                        {
                             "name": "LogAnalyticsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -78,13 +54,29 @@
                             }
                         },
                         {
-                            "name": "StorageAccountsApi",
+                            "name": "ActionGroupsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]"
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
                             }
                         },
+                        {
+                            "name": "dataCollectionEndpointAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/dataCollectionEndpoints?api-version=2022-06-01')]"
+                            }
+                        },
+                        {
+                            "name": "userManagedIdentitiesAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities?api-version=2023-01-31')]"
+                            }
+                        },                      
                         {
                             "name": "subscriptionId",
                             "type": "Microsoft.Common.DropDown",
@@ -152,43 +144,9 @@
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
                         },
                         {
-                            "name": "storageAccountStatus",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Use New or Existing Storage Account",
-                            "toolTip": "This will be the Storage Account for the Solution",
-                            "defaultValue": "Existing",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": "New"
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": "Existing"
-                                    }
-                                ],
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
-                            "name": "storageAccountNameNew",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Name for the new Storage Account. Must be unique globally!",
-                            "defaultValue": "amonsterpacksxxxx",
-                            "toolTip": "Use only allowed characters. Change xxxx to randon characters",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z]{1,30}$",
-                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
-                            },
-                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'New')]"
-                        },
-                        {
-                            "name": "existingStorageAccount",
+                            "name": "dataCollectionEndpointId",
                             "type": "Microsoft.Common.DropDown",
-                            "label": "Existing Storage Account",
+                            "label": "Select data collection endpoint.",
                             "multiselect": false,
                             "defaultValue": "",
                             "toolTip": "Storage Account to support solution",
@@ -196,46 +154,26 @@
                             "filterPlaceholder": "Filter Storage Account...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('Configuration').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
-                            },
-                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'Existing')]"
-                        },
-
-                        {
-                            "name": "LAWStatus",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Use New or Existing Log Analytics Workspace",
-                            "toolTip": "This will be the log analytics workspace from which data will be read and stored.",
-                            "defaultValue": "Existing",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": "New"
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": "Existing"
-                                    }
-                                ],
+                                "allowedValues": "[map(steps('Configuration').dataCollectionEndpointAPI.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
                             "visible": true
                         },
                         {
-                            "name": "LogAnalyticsWorkspaceResourceNew",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Log Analytics Workspace Name for MonStar Packs",
-                            "subLabel": "",
-                            "defaultValue": "Monster-LA",
-                            "toolTip": "Log Analytics Workspace Name for MonStar Packs.",
+                            "name": "userManagedIdentitiesId",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Select user managed identity for Packs.",
+                            "multiselect": false,
+                            "defaultValue": "packsUserManagedIdentity",
+                            "toolTip": "Select User Managed identity for the pack.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Storage Account...",
+                            "defaultDescription": "A value for selection",
                             "constraints": {
-                                "required": "[equals(steps('Configuration').LAWStatus, 'New')]",
-                                "regex": "",
-                                "validationMessage": ""
+                                "allowedValues": "[map(steps('Configuration').userManagedIdentitiesAPI.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
                             },
-                            "visible": "[equals(steps('Configuration').LAWStatus, 'New')]"
+                            "visible": true
                         },
                         {
                             "name": "LogAnalyticsWorkspaceResource",
@@ -244,10 +182,10 @@
                             "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "constraints": {
-                                "required": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
+                                "required": true
                             },
                             "infoMessages": [],
-                            "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
+                            "visible": true
                         },
                         {
                             "name": "assignmentLevel",
@@ -269,363 +207,7 @@
                                 "required": true
                             },
                             "visible": true
-                        },
-                        {
-                            "name": "deployAMAPolicy",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy AMA Policy Intiative",
-                            "toolTip": "The AMA Initiative will be applied at the selected scope and will take care of installing the AMA agent to servers, VMs and VMSS.",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
-                            }
-                        },
-                        {
-                            "name": "AppInsightsLocation",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Location for App Insights",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "The location to deploy the Function app insights",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Location...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label":  "East US",
-                                        "value":  "eastus"
-                                    },
-                                    {
-                                        "label":  "South Central US",
-                                        "value":  "southcentralus"
-                                    },
-                                    {
-                                        "label":  "North Europe",
-                                        "value":  "northeurope"
-                                    },
-                                    {
-                                        "label":  "West Europe",
-                                        "value":  "westeurope"
-                                    },
-                                    {
-                                        "label":  "Southeast Asia",
-                                        "value":  "southeastasia"
-                                    },
-                                    {
-                                        "label":  "West US 2",
-                                        "value":  "westus2"
-                                    },
-                                    {
-                                        "label":  "UK South",
-                                        "value":  "uksouth"
-                                    },
-                                    {
-                                        "label":  "Canada Central",
-                                        "value":  "canadacentral"
-                                    },
-                                    {
-                                        "label":  "Central India",
-                                        "value":  "centralindia"
-                                    },
-                                    {
-                                        "label":  "Japan East",
-                                        "value":  "japaneast"
-                                    },
-                                    {
-                                        "label":  "Australia East",
-                                        "value":  "australiaeast"
-                                    },
-                                    {
-                                        "label":  "Korea Central",
-                                        "value":  "koreacentral"
-                                    },
-                                    {
-                                        "label":  "France Central",
-                                        "value":  "francecentral"
-                                    },
-                                    {
-                                        "label":  "Central US",
-                                        "value":  "centralus"
-                                    },
-                                    {
-                                        "label":  "East US 2",
-                                        "value":  "eastus2"
-                                    },
-                                    {
-                                        "label":  "East Asia",
-                                        "value":  "eastasia"
-                                    },
-                                    {
-                                        "label":  "West US",
-                                        "value":  "westus"
-                                    },
-                                    {
-                                        "label":  "South Africa North",
-                                        "value":  "southafricanorth"
-                                    },
-                                    {
-                                        "label":  "North Central US",
-                                        "value":  "northcentralus"
-                                    },
-                                    {
-                                        "label":  "Brazil South",
-                                        "value":  "brazilsouth"
-                                    },
-                                    {
-                                        "label":  "Switzerland North",
-                                        "value":  "switzerlandnorth"
-                                    },
-                                    {
-                                        "label":  "Norway East",
-                                        "value":  "norwayeast"
-                                    },
-                                    {
-                                        "label":  "Norway West",
-                                        "value":  "norwaywest"
-                                    },
-                                    {
-                                        "label":  "Australia Southeast",
-                                        "value":  "australiasoutheast"
-                                    },
-                                    {
-                                        "label":  "Australia Central 2",
-                                        "value":  "australiacentral2"
-                                    },
-                                    {
-                                        "label":  "Germany West Central",
-                                        "value":  "germanywestcentral"
-                                    },
-                                    {
-                                        "label":  "Switzerland West",
-                                        "value":  "switzerlandwest"
-                                    },
-                                    {
-                                        "label":  "UAE Central",
-                                        "value":  "uaecentral"
-                                    },
-                                    {
-                                        "label":  "UK West",
-                                        "value":  "ukwest"
-                                    },
-                                    {
-                                        "label":  "Japan West",
-                                        "value":  "japanwest"
-                                    },
-                                    {
-                                        "label":  "Brazil Southeast",
-                                        "value":  "brazilsoutheast"
-                                    },
-                                    {
-                                        "label":  "UAE North",
-                                        "value":  "uaenorth"
-                                    },
-                                    {
-                                        "label":  "Australia Central",
-                                        "value":  "australiacentral"
-                                    },
-                                    {
-                                        "label":  "France South",
-                                        "value":  "francesouth"
-                                    },
-                                    {
-                                        "label":  "South India",
-                                        "value":  "southindia"
-                                    },
-                                    {
-                                        "label":  "West US 3",
-                                        "value":  "westus3"
-                                    },
-                                    {
-                                        "label":  "Korea South",
-                                        "value":  "koreasouth"
-                                    },
-                                    {
-                                        "label":  "Sweden Central",
-                                        "value":  "swedencentral"
-                                    },
-                                    {
-                                        "label":  "Canada East",
-                                        "value":  "canadaeast"
-                                    },
-                                    {
-                                        "label":  "Jio India Central",
-                                        "value":  "jioindiacentral"
-                                    },
-                                    {
-                                        "label":  "Jio India West",
-                                        "value":  "jioindiawest"
-                                    },
-                                    {
-                                        "label":  "Qatar Central",
-                                        "value":  "qatarcentral"
-                                    },
-                                    {
-                                        "label":  "South Africa West",
-                                        "value":  "southafricawest"
-                                    },
-                                    {
-                                        "label":  "Germany North",
-                                        "value":  "germanynorth"
-                                    },
-                                    {
-                                        "label":  "Poland Central",
-                                        "value":  "polandcentral"
-                                    },
-                                    {
-                                        "label":  "Israel Central",
-                                        "value":  "israelcentral"
-                                    },
-                                    {
-                                        "label":  "Italy North",
-                                        "value":  "italynorth"
-                                    }                                
-                                ]
-                            },
-                            "visible": "true"
-                        },
-                        {
-                            "name": "GrafanaStatus",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Use New or Existing Grafana",
-                            "toolTip": "This will be the Grafana Instance used for the MonStar Packs.",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": "New"
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": "Existing"
-                                    }
-                                ],
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
-                            "name": "NewGrafanaName",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Name for the new Grafana environment.",
-                            "subLabel": "",
-                            "defaultValue": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                            "toolTip": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit.",
-                            "constraints": {
-                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
-                                "regex": "",
-                                "validationMessage": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit."
-                            },
-                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                        },
-                        
-                        {
-                            "name": "ExistingGrafanaInstance",
-                            "type": "Microsoft.Solutions.ResourceSelector",
-                            "label": "Azure Managed Grafana",
-                            "toolTip": "Existing Azure Managed Grafana",
-                            "resourceType": "Microsoft.Dashboard/grafana",
-                            "constraints": {
-                                "required": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
-                            },
-                            "infoMessages": [],
-                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
-                        },
-                        {
-                            "name": "grafanaLocation",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Location for Azure Managed Grafana",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Location for Azure Managed Grafana",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Location...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "East US",
-                                        "value": "eastus"
-                                    },
-                                    {
-                                        "label": "East US 2",
-                                        "value": "eastus2"
-                                    },
-                                    {
-                                        "label": "South Central US",
-                                        "value": "southcentralus"
-                                    },
-                                    {
-                                        "label": "West Central US",
-                                        "value": "westcentralus"
-                                    },
-                                    {
-                                        "label": "West US",
-                                        "value": "westus"
-                                    },
-                                    {
-                                        "label": "West US 2",
-                                        "value": "westus2"
-                                    },
-                                    {
-                                        "label": "West US 3",
-                                        "value": "westus3"
-                                    },
-                                    {
-                                        "label": "Canada Central",
-                                        "value": "canadacentral"
-                                    },
-                                    {
-                                        "label": "Central US",
-                                        "value": "centralus"
-                                    },
-                                    {
-                                        "label": "East US 2 EUAP",
-                                        "value": "eastus2euap"
-                                    },
-                                    {
-                                        "label": "Central US EUAP",
-                                        "value": "centraluseuap"
-                                    },
-                                    {
-                                        "label": "Australia East",
-                                        "value": "australiaeast"
-                                    },
-                                    {
-                                        "label": "UK South",
-                                        "value": "uksouth"
-                                    },
-                                    {
-                                        "label": "North Europe",
-                                        "value": "northeurope"
-                                    },
-                                    {
-                                        "label": "West Europe",
-                                        "value": "westeurope"
-                                    },
-
-                                     {
-                                        "label": "Central India",
-                                        "value": "centralindia"
-                                    },
-
-                                    {
-                                        "label": "Southeast Asia",
-                                        "value": "southeastasia"
-                                    },
-                                    
-                                    {
-                                        "label": "Sweden Central",
-                                        "value": "swedencentral"
-                                    }
-                                ],
-                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                            },
-                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                        
-                        }
-
+                        }                     
                     ]
                 },
                 {
@@ -633,7 +215,15 @@
                     "label": "Packs",
                     "elements": [
                         {
-                            "name": "deployPacks",
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
+                        {
+                            "name": "deployAllPacks",
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Deploy All Packs",
                             "toolTip": "Select to deploy all packs.",
@@ -642,6 +232,42 @@
                                 "required": false,
                                 "validationMessage": "Select to deploy the available packs to the selected environment."
                             }
+                        },
+                        {
+                            "name": "deployIaaSPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All IaaS Packs",
+                            "toolTip": "Select to deploy all packs.",
+                            "defaultValue": true,
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the available IaaS packs to the selected environment."
+                            },
+                            "visible": "[equals(steps('Packs').deployAllPacks, false)]"
+                        },
+                        {
+                            "name": "deployPaaSPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All PaaS Packs",
+                            "toolTip": "Select to deploy all PaaS packs like Storage, OpenAI, etc.",
+                            "defaultValue": true,
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
+                            },
+                            "visible": "[equals(steps('Packs').deployAllPacks, false)]"
+                        },
+                        {
+                            "name": "deployPlatformPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All Platform Packs",
+                            "toolTip": "Select to deploy all platform packs, like KeyVault, Network, etc.",
+                            "defaultValue": true,
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the available platform packs to the selected environment."
+                            },
+                            "visible": "[equals(steps('Packs').deployAllPacks, false)]"
                         },
                         {
                             "name":"packsText",
@@ -673,7 +299,7 @@
                                 ],
                                 "required": true
                             },
-                            "visible": "[equals(steps('Packs').deployPacks, true)]"
+                            "visible": "[or(equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployAllPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true))]"
                         },
                         {
                             "name": "existingAG",
@@ -686,10 +312,10 @@
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "allowedValues": "[map(steps('Packs').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployAllPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
                         },
                         {
                             "name": "NewActionGroupName",
@@ -701,44 +327,31 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployAllPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
-                            "name": "emailreceiver",
+                            "name": "emailreceivers",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver (Display Name)",
+                            "label": "Email Receiver(s)",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployAllPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
-                            "name": "emailreceiversemail",
+                            "name": "emailreceiversemails",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver email",
+                            "label": "Email Receiver(s) email(s)",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(equals(steps('Packs').deployPacks, true),equals(steps('Packs').ActionGroupStatus, 'New'))]"
-                        }
-                    ]
-                },
-                {
-                    "name": "tags",
-                    "label": "Tags",
-                    "elements": [
-                        {
-                            "name": "tagsByResource",
-                            "type": "Microsoft.Common.TagsByResource",
-                            "resources": [
-                                "All"
-                            ]
+                            "visible": "[and(or(equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployAllPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         }
                     ]
                 }
@@ -748,30 +361,24 @@
             "parameters": {
                 "mgname": "[steps('basics').resourceScope.managementGroup.name]",
                 "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
-                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "resourceGroupId": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, steps('Configuration').resourceGroupNameExisting)]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
-                "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
-                "deployPacks": "[steps('Packs').deployPacks]",
-                "grafanaLocation": "[steps('Configuration').grafanaLocation]",
-                "grafanaName": "[steps('Configuration').NewGrafanaName]",
-                "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
-                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountStatus,'New')]",
-                "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
-                "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
-                "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
-                "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
-                "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
+                "workspaceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "solutionTag":"MonitorStarterPacks",
+                "solutionVersion":"1.0.0",
+                "dceId":"[steps('Configuration').dataCollectionEndpointId]",
+                "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
-                "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
-                "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
-                "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemail,'')]",
+                "emailreceivers":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceivers,'')]",
+                "emailreiceversemails":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiversemails,'')]",
                 "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
                 "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
-                "customerTags": "[steps('tags').tagsByResource]",
-                "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
-                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]"
+                "grafanaName": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "deployAllIaaSPacks": "[steps('Packs').deployIaaSPacks]",
+                "deployAllPaaSPacks": "[steps('Packs').deployPaaSPacks]",
+                "deployAllPlatformPacks": "[steps('Packs').deployPlatformPacks]",
+                "deployAllPacks": "[steps('Packs').deployAllPacks]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

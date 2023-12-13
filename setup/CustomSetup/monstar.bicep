@@ -21,7 +21,6 @@ param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 
 // Packs` stuff
-param deployPacks bool = false
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
@@ -32,8 +31,12 @@ param emailreiceversemail string
 param useExistingAG bool = false
 param customerTags object
 param existingActionGroupId string = ''
+param deployAllPacks bool
+param deployIaaSPacks bool
+param deployPaaSPacks bool
+param deployPlatformPacks bool
 
-
+var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
@@ -133,7 +136,7 @@ module backend '../backend/code/backend.bicep' = {
   }
 }
 
-module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
+module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
   name: 'DeployAllPacks'
   dependsOn: [
     backend
@@ -156,5 +159,8 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     existingActionGroupResourceId: existingActionGroupId
+    deployIaaSPacks: deployIaaSPacks
+    deployPaaSPacks: deployPaaSPacks
+    deployPlatformPacks: deployPlatformPacks
   }
 }
