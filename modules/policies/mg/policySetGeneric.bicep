@@ -22,6 +22,7 @@ param assignmentLevel string
 param location string
 param userManagedIdentityResourceId string
 param subscriptionId string
+param packtag string
 
 resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' = {
   name: initiativeName
@@ -31,7 +32,7 @@ resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' 
     metadata: {
       category: category
       version: version
-      '${solutionTag}': 'Policy Set'
+      '${solutionTag}': packtag
     }
     parameters: {}
     policyDefinitions:  policyDefinitions

@@ -2784,7 +2784,6 @@ var wbConfig = '''
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
-}
 '''
 resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
   location: location

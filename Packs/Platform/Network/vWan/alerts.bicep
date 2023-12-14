@@ -223,6 +223,7 @@ module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
       assignmentLevel: assignmentLevel
       location: location
       subscriptionId: subscriptionId
+      packtag: packTag
       userManagedIdentityResourceId: userManagedIdentityResourceId
       policyDefinitions: [
           {
