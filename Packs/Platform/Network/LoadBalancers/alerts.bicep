@@ -50,7 +50,6 @@ module ALBDipPathAvail '../../../../modules/alerts/PaaS/metricAlertStaticThresho
         initiativeMember: true
     }
 }
-
 module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ALBUsedSNATPortsAlert'
     params: {
