@@ -160,8 +160,8 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     existingActionGroupResourceId: existingActionGroupId
-    deployIaaSPacks: deployIaaSPacks
-    deployPaaSPacks: deployPaaSPacks
-    deployPlatformPacks: deployPlatformPacks
+    deployIaaSPacks: deployIaaSPacks || deployAllPacks
+    deployPaaSPacks: deployPaaSPacks || deployAllPacks
+    deployPlatformPacks: deployPlatformPacks || deployAllPacks
   }
 }

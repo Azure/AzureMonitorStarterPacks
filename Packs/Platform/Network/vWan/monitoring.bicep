@@ -73,9 +73,8 @@ module policyassignment '../../../../modules/policies/mg/policiesDiag.bicep' = [
   }
 }]
 
-
 module vWanAlerts 'alerts.bicep' = {
-  name: 'Keyvault-Alerts'
+  name: 'vWan-Alerts'
   params: {
     packTag: packtag
     policyLocation: location

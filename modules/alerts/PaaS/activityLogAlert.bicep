@@ -149,11 +149,11 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                               allOf: [
                                                   {
                                                       field: 'microsoft.insights/activityLogAlerts/condition.allOf[*].field'
-                                                      equals: 'operationName'
+                                                      equals: operationName
                                                   }
                                                   {
                                                       field: 'microsoft.insights/activityLogAlerts/condition.allOf[*].equals'
-                                                      equals: 'Microsoft.KeyVault/vaults/delete'
+                                                      equals: '${resourceType}/${operationName}'
                                                   }
                                               ]
                                           }
@@ -239,6 +239,12 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                 actionGroupResourceId: {
                                                     type: 'string'
                                                 }
+                                                resourceType: {
+                                                    type: 'string'
+                                                }
+                                                operationName: {
+                                                    type: 'string'
+                                                }
                                               }
                                               variables: {}
                                               resources: [
@@ -264,7 +270,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                                   }
                                                                   {
                                                                       field: 'operationName'
-                                                                      equals: 'Microsoft.KeyVault/vaults/delete'
+                                                                      equals: '[concat(parameters(\'resourceType\'),\'/\',parameters(\'operationName\'))]'
                                                                   }
                                                                   {
                                                                       field: 'status'
@@ -293,50 +299,62 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                               ]
                                           }
                                           parameters: {
-                                              enabled: {
-                                                  value: '[parameters(\'enabled\')]'
-                                              }
-                                              alertResourceGroupName: {
-                                                  value: '[parameters(\'alertResourceGroupName\')]'
-                                              }
-                                              alertDescription: {
-                                                  value: '[parameters(\'alertDescription\')]'
-                                              }
-                                              solutionTag: {
-                                                    value: '[parameters(\'solutionTag\')]'
-                                              }
-                                              packTag: {
-                                                    value: '[parameters(\'packTag\')]'
-                                              }
-                                              actionGroupResourceId: {
-                                                  value: '[parameters(\'actionGroupResourceId\')]'
-                                              }
+                                            enabled: {
+                                                value: '[parameters(\'enabled\')]'
+                                            }
+                                            alertResourceGroupName: {
+                                                value: '[parameters(\'alertResourceGroupName\')]'
+                                            }
+                                            alertDescription: {
+                                                value: '[parameters(\'alertDescription\')]'
+                                            }
+                                            solutionTag: {
+                                                value: '[parameters(\'solutionTag\')]'
+                                            }
+                                            packTag: {
+                                                value: '[parameters(\'packTag\')]'
+                                            }
+                                            actionGroupResourceId: {
+                                                value: '[parameters(\'actionGroupResourceId\')]'
+                                            }
+                                            resourceType: {
+                                                value: '[parameters(\'resourceType\')]'
+                                            }
+                                            operationName: {
+                                                value: '[parameters(\'operationName\')]'
+                                            }
                                           }
                                       }
                                   }
                               ]
                           }
                           parameters: {
-                              enabled: {
-                                  value: '[parameters(\'enabled\')]'
-                              }
-                              alertResourceGroupName: {
-                                  value: '[parameters(\'alertResourceGroupName\')]'
-                              }
-                              alertResourceGroupTags: {
-                                  value: '[parameters(\'alertResourceGroupTags\')]'
-                              }
-                              alertDescription: {
-                                  value: '[parameters(\'alertDescription\')]'
-                              }
-                              solutionTag: {
-                                value: '[parameters(\'tagName\')]'
+                            enabled: {
+                                value: '[parameters(\'enabled\')]'
+                            }
+                            alertResourceGroupName: {
+                                value: '[parameters(\'alertResourceGroupName\')]'
+                            }
+                            alertResourceGroupTags: {
+                                value: '[parameters(\'alertResourceGroupTags\')]'
+                            }
+                            alertDescription: {
+                                value: '[parameters(\'alertDescription\')]'
+                            }
+                            solutionTag: {
+                            value: '[parameters(\'tagName\')]'
                             }
                             packTag: {
                                 value: '[parameters(\'tagValue\')]'
                             }
                             actionGroupResourceId: {
                                 value: '[parameters(\'actionGroupResourceId\')]'
+                            }
+                            operationName: {
+                                value: '[parameters(\'operationName\')]'
+                            }
+                            resourceType: {
+                                value: '[parameters(\'resourceType\')]'
                             }
                           }
                       }

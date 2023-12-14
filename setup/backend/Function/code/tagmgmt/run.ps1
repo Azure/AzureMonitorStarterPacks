@@ -5,7 +5,6 @@ param($Request, $TriggerMetadata)
 
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
-
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
 $action = $Request.Body.Action
@@ -107,7 +106,13 @@ if ($resources) {
                             #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
                             $tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
                             $tag.Remove($tagName)
-                            Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
+                            if ($tag.count -ne 0) {
+                                Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
+                            }
+                            else {
+                                $tagToRemove=@{"$($TagName)"="$($tag.$tagValue)"}
+                                Update-AzTag -ResourceId $resource.Resource -Tag $tagToRemove -Operation Delete
+                            }
                         }
                         else {
                             if ($tag.$tagName.Split(',') -notcontains $TagValue) {
