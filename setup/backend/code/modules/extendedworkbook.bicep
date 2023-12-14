@@ -177,7 +177,8 @@ var wbConfig = '''
                     "durationMs": 86400000
                   },
                   "value": [
-                    "value::all"
+                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
+                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
                   ]
                 },
                 {
@@ -774,7 +775,7 @@ var wbConfig = '''
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resourcegraph/resources",
-                        "value": null
+                        "value": "PS2016"
                       }
                     ],
                     "style": "pills",
@@ -941,7 +942,7 @@ var wbConfig = '''
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "WinOS"
+                        "value": "LxOS"
                       }
                     ],
                     "style": "pills",
@@ -1083,7 +1084,7 @@ var wbConfig = '''
                       {
                         "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
                         "version": "KqlParameterItem/1.0",
-                        "name": "PackTagsLeft",
+                        "name": "PackTagsLeftPlatform",
                         "label": "Add/Remove",
                         "type": 2,
                         "isGlobal": true,
@@ -1100,7 +1101,7 @@ var wbConfig = '''
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "ALB"
                       }
                     ],
                     "style": "pills",
@@ -1124,7 +1125,7 @@ var wbConfig = '''
                         "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                         "cellValue": "",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Remove Monitoring for {PackTagsLeft} Pack ",
+                        "linkLabel": "Remove Monitoring for {PackTagsLeftPlatform} Pack ",
                         "preText": "",
                         "style": "primary",
                         "linkIsContextBlade": true,
@@ -1137,27 +1138,27 @@ var wbConfig = '''
                               "value": "removeTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"{PackTagsLeftPlatform}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack \n\nServers:\n\n{taggedVMs}",
+                          "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftPlatform} Pack \n\nServers:\n\n{taggedPlatform}",
                           "runLabel": "Confirm"
                         }
                       },
                       {
                         "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Add Monitoring for {PackTagsLeft} Pack",
+                        "linkLabel": "Add Monitoring for {PackTagsLeftPlatform} Pack",
                         "style": "primary",
                         "linkIsContextBlade": true,
                         "armActionContext": {
                           "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                           "headers": [],
                           "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"{PackTagsLeftPlatform}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Add Monitoring",
-                          "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeft} Pack ",
+                          "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeftPlatform} Pack ",
                           "actionName": "AddMonitoringPack",
                           "runLabel": "Confirm"
                         }
@@ -1172,10 +1173,10 @@ var wbConfig = '''
                           "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                           "headers": [],
                           "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"All\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"All\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove All Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeft} Pack ",
+                          "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeftPlatform} Pack ",
                           "actionName": "RemoveAllMonitoring",
                           "runLabel": "Confirm"
                         }
@@ -1246,7 +1247,7 @@ var wbConfig = '''
                       {
                         "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
                         "version": "KqlParameterItem/1.0",
-                        "name": "PackTags",
+                        "name": "PackTagsPlatform",
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
@@ -1263,7 +1264,7 @@ var wbConfig = '''
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "vWan"
                       }
                     ],
                     "style": "pills",
@@ -1286,7 +1287,7 @@ var wbConfig = '''
                       {
                         "id": "91fb0fed-0e4f-41ce-9024-98a3cc4432a7",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Enable Monitoring for {PackTags} Pack",
+                        "linkLabel": "Enable Monitoring for {PackTagsPlatform} Pack",
                         "preText": "",
                         "style": "primary",
                         "linkIsContextBlade": true,
@@ -1299,10 +1300,10 @@ var wbConfig = '''
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{platformtotag}],\n    \"Pack\": \"{PackTagsPlatform}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
-                          "description": "# This will enable the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} to the server.",
+                          "description": "# This will enable the pack for the following servers:\n{platformtotag}\n\nby adding the {PackTagsPlatform} to the server.",
                           "actionName": "EnableMonitoring",
                           "runLabel": "Confirm"
                         }
@@ -2306,8 +2307,20 @@ var wbConfig = '''
                     }
                   }
                 ],
-                "filter": true
-              }
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "policyName",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "policyName",
+                  "sortOrder": 1
+                }
+              ]
             },
             "customWidth": "75",
             "conditionalVisibility": {
@@ -2770,6 +2783,7 @@ var wbConfig = '''
     "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
 }
 '''
 resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {

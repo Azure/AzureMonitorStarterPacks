@@ -39,66 +39,82 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
           initiativeMember: initiativeMember
       }
       parameters: {
-          tagName: {
-              type: 'String'
-              metadata: {
-                displayName: 'Tag name'
-                description: 'A tag to apply the association conditionally.'
-              }
-              defaultValue: solutionTag
-          }
-          tagValue: {
-              type: 'String'
-              metadata: {
-                displayName: 'Tag Value'
-                description: 'A tag to apply the association conditionally.'
-              }
-              defaultValue: packTag
-          }
-          alertDescription: {
-              type: 'String'
-              metadata: {
-                  displayName: 'Description'
-                  description: 'Description for the alert'
-              }
-              defaultValue: alertDescription
-          }
-          enabled: {
-              type: 'String'
-              metadata: {
-                  displayName: 'Alert State'
-                  description: 'Alert state for the alert'
-              }
-              allowedValues: [
-                  'true'
-                  'false'
-              ]
-              defaultValue: parAlertState
-          }
-          alertResourceGroupName: {
-              type: 'String'
-              metadata: {
-                  displayName: 'Resource Group Name'
-                  description: 'Resource group the alert is placed in'
-              }
-              defaultValue: parResourceGroupName
-          }
-          alertResourceGroupTags: {
-              type: 'Object'
-              metadata: {
-                  displayName: 'Resource Group Tags'
-                  description: 'Tags on the Resource group the alert is placed in'
-              }
-              defaultValue: parResourceGroupTags
-          }
-          actionGroupResourceId: {
-                type: 'String'
-                metadata: {
-                    displayName: 'Action Group Resource Id'
-                    description: 'Resource Id of the action group to be used for the alert'
-                }
-                defaultValue: AGId
-          }
+        tagName: {
+            type: 'String'
+            metadata: {
+            displayName: 'Tag name'
+            description: 'A tag to apply the association conditionally.'
+            }
+            defaultValue: solutionTag
+        }
+        tagValue: {
+            type: 'String'
+            metadata: {
+            displayName: 'Tag Value'
+            description: 'A tag to apply the association conditionally.'
+            }
+            defaultValue: packTag
+        }
+        alertDescription: {
+            type: 'String'
+            metadata: {
+                displayName: 'Description'
+                description: 'Description for the alert'
+            }
+            defaultValue: alertDescription
+        }
+        enabled: {
+            type: 'String'
+            metadata: {
+                displayName: 'Alert State'
+                description: 'Alert state for the alert'
+            }
+            allowedValues: [
+                'true'
+                'false'
+            ]
+            defaultValue: parAlertState
+        }
+        alertResourceGroupName: {
+            type: 'String'
+            metadata: {
+                displayName: 'Resource Group Name'
+                description: 'Resource group the alert is placed in'
+            }
+            defaultValue: parResourceGroupName
+        }
+        alertResourceGroupTags: {
+            type: 'Object'
+            metadata: {
+                displayName: 'Resource Group Tags'
+                description: 'Tags on the Resource group the alert is placed in'
+            }
+            defaultValue: parResourceGroupTags
+        }
+        actionGroupResourceId: {
+            type: 'String'
+            metadata: {
+                displayName: 'Action Group Resource Id'
+                description: 'Resource Id of the action group to be used for the alert'
+            }
+            defaultValue: AGId
+        }
+        resourceType: {
+            type: 'String'
+            metadata: {
+                displayName: 'Resource Type'
+                description: 'Resource Type for the alert'
+            }
+            defaultValue: resourceType
+        }
+        operationName: {
+            type: 'String'
+            metadata: {
+                displayName: 'Operation Name'
+                description: 'Operation Name for the alert'
+            }
+            defaultValue: operationName
+        }
       }
       policyRule: {
           if: {
