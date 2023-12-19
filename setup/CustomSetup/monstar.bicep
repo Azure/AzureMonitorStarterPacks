@@ -56,6 +56,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
     Tags: Tags
   }
 }
+
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
   name:'newstorage-deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -65,6 +66,13 @@ module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (cr
   params: {
     location: location
     Tags: Tags
+    storageAccountName: storageAccountName
+  }
+}
+module existingStorageAccount '../backend/code/modules/mg/storageAccountBlobs.bicep' = if (!createNewStorageAccount) {
+  name:'existingstorage-deployment'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
     storageAccountName: storageAccountName
   }
 }
