@@ -18,7 +18,7 @@ param (
 Write-Output "Installing/Loading Azure Resource Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
-        install-module az.resourcegraph -AllowPrerelease -Force
+        install-module az.resourcegraph
         import-module az.ResourceGraph #-Force
     }
     catch {
