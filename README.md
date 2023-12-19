@@ -44,11 +44,16 @@ In order for the current user to have access to the Grafana environment, the use
 
 ## Removing the solution
 
-In order to remove the solution, you can run the following script. The script will remove all the resources created by the solution.
+
+In order to remove the solution, you can run the following script in this [link](https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1). The script will remove all the resources created by the solution.
+
+- Open the Azure CLI with PowerShell:
 
 ```powershell
-./setup/cleanup/cleanup.ps1 -RG <Resource Group Name> -RemoveAll
+wget https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1
+./cleanup.ps1 -RG <Resource Group Name> -RemoveAll
 ```
+
 
 Alternatively, you can select to remove specific components of the solution by using the following parameters:
 
