@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4560112150042991750"
+      "templateHash": "14487140947030877272"
     }
   },
   "parameters": {
@@ -16591,7 +16591,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "16312892925549629925"
+              "templateHash": "2949158896563549567"
             }
           },
           "parameters": {
@@ -16630,7 +16630,7 @@
             {
               "type": "Microsoft.Resources/deploymentScripts",
               "apiVersion": "2020-10-01",
-              "name": "deployscript-MonstarPacks",
+              "name": "deployscript-Grafana",
               "tags": "[variables('Tags')]",
               "location": "[parameters('location')]",
               "identity": {

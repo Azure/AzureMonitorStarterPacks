@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7566991816044971161"
+      "templateHash": "2011042353542325041"
     }
   },
   "parameters": {
@@ -1372,7 +1372,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9848802265375491264"
+              "templateHash": "274404352600974831"
             }
           },
           "parameters": {
@@ -1536,7 +1536,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "16794021645619354813"
+                      "templateHash": "4257073896824275926"
                     }
                   },
                   "parameters": {
@@ -1694,7 +1694,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4893551750372724406"
+                              "templateHash": "18094614325983991470"
                             }
                           },
                           "parameters": {
@@ -1735,7 +1735,7 @@
                             {
                               "type": "Microsoft.Resources/deploymentScripts",
                               "apiVersion": "2020-10-01",
-                              "name": "deployscript-MonstarPacks",
+                              "name": "deployscript-windiscover",
                               "tags": "[parameters('tags')]",
                               "location": "[parameters('location')]",
                               "kind": "AzureCLI",
@@ -3092,7 +3092,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "16232238253610459986"
+                      "templateHash": "15233605582712166604"
                     }
                   },
                   "parameters": {
@@ -3257,7 +3257,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4893551750372724406"
+                              "templateHash": "11543592902621685290"
                             }
                           },
                           "parameters": {
@@ -3298,7 +3298,7 @@
                             {
                               "type": "Microsoft.Resources/deploymentScripts",
                               "apiVersion": "2020-10-01",
-                              "name": "deployscript-MonstarPacks",
+                              "name": "deployscript-LinuxDiscovery",
                               "tags": "[parameters('tags')]",
                               "location": "[parameters('location')]",
                               "kind": "AzureCLI",
@@ -4989,7 +4989,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4772919189818902986"
+              "templateHash": "547242889636321303"
             }
           },
           "parameters": {
@@ -5100,7 +5100,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15082556428016053"
+                      "templateHash": "3091593574112218492"
                     }
                   },
                   "parameters": {
@@ -5165,7 +5165,7 @@
                     {
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
-                      "name": "deployscript-MonstarPacks",
+                      "name": "deployscript-MonstarPacksFunction",
                       "tags": "[parameters('Tags')]",
                       "location": "[parameters('location')]",
                       "kind": "AzureCLI",
@@ -5326,7 +5326,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Web/sites', parameters('functionname'))]",
-                        "[resourceId('Microsoft.Resources/deploymentScripts', 'deployscript-MonstarPacks')]"
+                        "[resourceId('Microsoft.Resources/deploymentScripts', 'deployscript-MonstarPacksFunction')]"
                       ]
                     },
                     {
@@ -6835,7 +6835,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "15696073488604308519"
+              "templateHash": "2449376837421938253"
             }
           },
           "parameters": {
@@ -7075,7 +7075,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4560112150042991750"
+                      "templateHash": "14487140947030877272"
                     }
                   },
                   "parameters": {
@@ -23661,7 +23661,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "16312892925549629925"
+                              "templateHash": "2949158896563549567"
                             }
                           },
                           "parameters": {
@@ -23700,7 +23700,7 @@
                             {
                               "type": "Microsoft.Resources/deploymentScripts",
                               "apiVersion": "2020-10-01",
-                              "name": "deployscript-MonstarPacks",
+                              "name": "deployscript-Grafana",
                               "tags": "[variables('Tags')]",
                               "location": "[parameters('location')]",
                               "identity": {

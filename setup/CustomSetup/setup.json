@@ -279,6 +279,15 @@
                                 "required": false,
                                 "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
                             }
+                        },                        {
+                            "name": "infoBoxAMA",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('Configuration').deployAMAPolicy, true)]",
+                            "options": {
+                                "icon": "None",
+                                "text": "When Enabled, a custom Initiative will be installed to the selected Management Group or Subscription. The Initiative will install the AMA agent on all supported resources.",
+                                "uri": "https://www.microsoft.com"
+                            }
                         },
                         {
                             "name": "deployDiscovery",
@@ -288,6 +297,16 @@
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the Discovery featues to the selected Management Group or Subscription."
+                            }
+                        },
+                        {
+                            "name": "infoBoxDiscovery",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('Configuration').deployDiscovery, true)]",
+                            "options": {
+                                "icon": "None",
+                                "text": "When discovery is enabled, machines tagged with WinOS or LxOS will receive an extra extension (VM Application) that will generate application discovery data.",
+                                "uri": "https://www.microsoft.com"
                             }
                         },
                         {

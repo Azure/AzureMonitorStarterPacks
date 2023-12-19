@@ -29,7 +29,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existin
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-MonstarPacks'
+  name: 'deployscript-MonstarPacksFunction'
   dependsOn: [
     azfunctionsiteconfig
   ]

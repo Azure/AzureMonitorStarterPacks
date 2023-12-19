@@ -49,7 +49,7 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
 // }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-MonstarPacks'
+  name: 'deployscript-LinuxDiscovery'
   tags: tags
   location: location
   kind: 'AzureCLI'

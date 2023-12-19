@@ -15,7 +15,7 @@ var Tags = (customerTags=={}) ? {'${solutionTag}': solutionTag
   'solutionVersion': solutionVersion
 },customerTags['All'])
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-MonstarPacks'
+  name: 'deployscript-Grafana'
   tags: Tags
   location: location
   identity: {
