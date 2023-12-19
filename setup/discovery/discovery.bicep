@@ -27,6 +27,9 @@ module gallery './modules/aig.bicep' = {
 
 module WindowsDiscovery './Windows/discovery.bicep' = {
   name: 'WindowsDiscovery'
+  dependsOn: [
+    gallery
+  ]
   params: {
     location: location
     solutionTag: solutionTag
@@ -46,6 +49,9 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
 }
 module LinuxDiscovery 'Linux/discovery.bicep' = {
   name: 'LinuxDiscovery'
+  dependsOn: [
+    gallery
+  ]
   params: {
     location: location
     solutionTag: solutionTag

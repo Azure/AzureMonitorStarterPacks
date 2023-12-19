@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "storageAccountName": {
+            "value": "mpstor1fehsecorp"
+        },
+        "sasExpiry": {
+            "value": "2023-12-19T21:28:31Z"
+        },
+        "filename": {
+            "value": "discovery.zip"
+        },
+        "containerName": {
+            "value": "discovery"
+        },
+        "tags": {
+            "value": {"MonitorStarterPacksComponents":"BackendComponent","solutionVersion":"0.1"}
+        }
+    }
+}

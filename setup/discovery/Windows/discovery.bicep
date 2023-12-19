@@ -2,7 +2,6 @@ targetScope = 'managementGroup'
 
 param location string 
 param solutionTag string
-param solutionVersion string
 param subscriptionId string
 param resourceGroupName string
 param storageAccountname string
