@@ -128,8 +128,6 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     storageAccountname: storageAccountName
     tableName: 'Discovery'
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
-    pathToPackageLinux: 'https://${storageAccountName}.blob.core.windows.net/discovery/discoveryLinux.zip'
-    pathToPackageWindows: 'https://${storageAccountName}.blob.core.windows.net/discovery/discoveryWindows.zip'
     Tags: Tags
   }
 }

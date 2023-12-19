@@ -33,7 +33,6 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
   params: {
     location: location
     solutionTag: solutionTag
-    solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     resourceGroupName: resourceGroupName
     storageAccountname: storageAccountname

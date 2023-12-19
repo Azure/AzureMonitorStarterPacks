@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "5895330215666963884"
+      "templateHash": "7566991816044971161"
     }
   },
   "parameters": {
@@ -1361,12 +1361,6 @@
           "userManagedIdentityResourceId": {
             "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', 'MonitoringPacks-backend'), '2022-09-01').outputs.packsUserManagedResourceId.value]"
           },
-          "pathToPackageLinux": {
-            "value": "[format('https://{0}.blob.core.windows.net/discovery/discoveryLinux.zip', parameters('storageAccountName'))]"
-          },
-          "pathToPackageWindows": {
-            "value": "[format('https://{0}.blob.core.windows.net/discovery/discoveryWindows.zip', parameters('storageAccountName'))]"
-          },
           "Tags": {
             "value": "[variables('Tags')]"
           }
@@ -1378,7 +1372,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "5488563477744758583"
+              "templateHash": "9848802265375491264"
             }
           },
           "parameters": {
@@ -1420,14 +1414,6 @@
             },
             "dceId": {
               "type": "string"
-            },
-            "pathToPackageWindows": {
-              "type": "string",
-              "defaultValue": "https://github.com/FehseCorp/AzureMonitorStarterPacks/raw/imagegallery/setup/Discovery/Windows/discover.zip"
-            },
-            "pathToPackageLinux": {
-              "type": "string",
-              "defaultValue": "https://github.com/FehseCorp/AzureMonitorStarterPacks/raw/imagegallery/setup/Discovery/Linux/discover.tar"
             },
             "Tags": {
               "type": "object"
@@ -1509,9 +1495,6 @@
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
                   },
-                  "solutionVersion": {
-                    "value": "[parameters('solutionVersion')]"
-                  },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
@@ -1542,8 +1525,8 @@
                   "dceId": {
                     "value": "[parameters('dceId')]"
                   },
-                  "pathToPackage": {
-                    "value": "[parameters('pathToPackageWindows')]"
+                  "tags": {
+                    "value": "[parameters('Tags')]"
                   }
                 },
                 "template": {
@@ -1553,7 +1536,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9485175699995148989"
+                      "templateHash": "16794021645619354813"
                     }
                   },
                   "parameters": {
@@ -1561,9 +1544,6 @@
                       "type": "string"
                     },
                     "solutionTag": {
-                      "type": "string"
-                    },
-                    "solutionVersion": {
                       "type": "string"
                     },
                     "subscriptionId": {
@@ -1596,9 +1576,8 @@
                     "dceId": {
                       "type": "string"
                     },
-                    "pathToPackage": {
-                      "type": "string",
-                      "defaultValue": "https://github.com/FehseCorp/AzureMonitorStarterPacks/raw/imagegallery/setup/Discovery/Windows/discover.zip"
+                    "tags": {
+                      "type": "object"
                     }
                   },
                   "variables": {
@@ -1695,8 +1674,8 @@
                           "containerName": {
                             "value": "discovery"
                           },
-                          "fileURL": {
-                            "value": "[parameters('pathToPackage')]"
+                          "filename": {
+                            "value": "discover.zip"
                           },
                           "storageAccountName": {
                             "value": "[parameters('storageAccountname')]"
@@ -1704,14 +1683,8 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
-                          },
-                          "solutionVersion": {
-                            "value": "[parameters('solutionVersion')]"
-                          },
-                          "resourceName": {
-                            "value": "deployscript-MonstarPacksDiscoveryWin"
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -1721,16 +1694,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "13701998327236044090"
+                              "templateHash": "4893551750372724406"
                             }
                           },
                           "parameters": {
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "solutionVersion": {
-                              "type": "string"
-                            },
                             "location": {
                               "type": "string"
                             },
@@ -1741,18 +1708,19 @@
                               "type": "string",
                               "defaultValue": "[dateTimeAdd(utcNow(), 'PT2H')]"
                             },
-                            "fileURL": {
+                            "filename": {
                               "type": "string"
                             },
                             "containerName": {
                               "type": "string"
                             },
-                            "resourceName": {
-                              "type": "string"
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
-                            "filename": "[split(parameters('fileURL'), '/')[sub(length(split(parameters('fileURL'), '/')), 1)]]",
+                            "$fxv#0": "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",
+                            "discoveryContainerName": "discovery",
                             "tempfilename": "download.tmp",
                             "sasConfig": {
                               "signedResourceTypes": "sco",
@@ -1767,15 +1735,12 @@
                             {
                               "type": "Microsoft.Resources/deploymentScripts",
                               "apiVersion": "2020-10-01",
-                              "name": "[parameters('resourceName')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
-                                "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                              },
+                              "name": "deployscript-MonstarPacks",
+                              "tags": "[parameters('tags')]",
                               "location": "[parameters('location')]",
                               "kind": "AzureCLI",
                               "properties": {
-                                "azCliVersion": "2.26.1",
+                                "azCliVersion": "2.42.0",
                                 "timeout": "PT5M",
                                 "retentionInterval": "PT1H",
                                 "environmentVariables": [
@@ -1789,17 +1754,17 @@
                                   },
                                   {
                                     "name": "CONTENT",
-                                    "value": "[parameters('fileURL')]"
+                                    "value": "[variables('$fxv#0')]"
                                   }
                                 ],
-                                "scriptContent": "[format('wget $CONTENT && az storage blob upload -f {0} -c {1} -n {2} ', variables('filename'), parameters('containerName'), variables('filename'))]"
+                                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                               }
                             }
                           ],
                           "outputs": {
                             "fileURL": {
                               "type": "string",
-                              "value": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), variables('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
+                              "value": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
                             }
                           }
                         }
@@ -3061,7 +3026,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'gallery')]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -3113,8 +3081,8 @@
                   "dceId": {
                     "value": "[parameters('dceId')]"
                   },
-                  "pathToPackage": {
-                    "value": "[parameters('pathToPackageLinux')]"
+                  "tags": {
+                    "value": "[parameters('Tags')]"
                   }
                 },
                 "template": {
@@ -3124,7 +3092,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13340642984613763651"
+                      "templateHash": "16232238253610459986"
                     }
                   },
                   "parameters": {
@@ -3170,6 +3138,9 @@
                     "pathToPackage": {
                       "type": "string",
                       "defaultValue": "https://github.com/FehseCorp/AzureMonitorStarterPacks/raw/imagegallery/setup/Discovery/Linux/discover.tar"
+                    },
+                    "tags": {
+                      "type": "object"
                     }
                   },
                   "variables": {
@@ -3266,23 +3237,17 @@
                           "containerName": {
                             "value": "discovery"
                           },
-                          "fileURL": {
-                            "value": "[parameters('pathToPackage')]"
-                          },
                           "storageAccountName": {
                             "value": "[parameters('storageAccountname')]"
                           },
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
+                          "filename": {
+                            "value": "discover.tar"
                           },
-                          "solutionVersion": {
-                            "value": "[parameters('solutionVersion')]"
-                          },
-                          "resourceName": {
-                            "value": "deployscript-MonstarPacksDiscoveryLinux"
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -3292,16 +3257,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "13701998327236044090"
+                              "templateHash": "4893551750372724406"
                             }
                           },
                           "parameters": {
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "solutionVersion": {
-                              "type": "string"
-                            },
                             "location": {
                               "type": "string"
                             },
@@ -3312,18 +3271,19 @@
                               "type": "string",
                               "defaultValue": "[dateTimeAdd(utcNow(), 'PT2H')]"
                             },
-                            "fileURL": {
+                            "filename": {
                               "type": "string"
                             },
                             "containerName": {
                               "type": "string"
                             },
-                            "resourceName": {
-                              "type": "string"
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "variables": {
-                            "filename": "[split(parameters('fileURL'), '/')[sub(length(split(parameters('fileURL'), '/')), 1)]]",
+                            "$fxv#0": "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",
+                            "discoveryContainerName": "discovery",
                             "tempfilename": "download.tmp",
                             "sasConfig": {
                               "signedResourceTypes": "sco",
@@ -3338,15 +3298,12 @@
                             {
                               "type": "Microsoft.Resources/deploymentScripts",
                               "apiVersion": "2020-10-01",
-                              "name": "[parameters('resourceName')]",
-                              "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "deploymentScript",
-                                "[format('{0}-Version', parameters('solutionTag'))]": "[parameters('solutionVersion')]"
-                              },
+                              "name": "deployscript-MonstarPacks",
+                              "tags": "[parameters('tags')]",
                               "location": "[parameters('location')]",
                               "kind": "AzureCLI",
                               "properties": {
-                                "azCliVersion": "2.26.1",
+                                "azCliVersion": "2.42.0",
                                 "timeout": "PT5M",
                                 "retentionInterval": "PT1H",
                                 "environmentVariables": [
@@ -3360,17 +3317,17 @@
                                   },
                                   {
                                     "name": "CONTENT",
-                                    "value": "[parameters('fileURL')]"
+                                    "value": "[variables('$fxv#0')]"
                                   }
                                 ],
-                                "scriptContent": "[format('wget $CONTENT && az storage blob upload -f {0} -c {1} -n {2} ', variables('filename'), parameters('containerName'), variables('filename'))]"
+                                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                               }
                             }
                           ],
                           "outputs": {
                             "fileURL": {
                               "type": "string",
-                              "value": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), variables('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
+                              "value": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
                             }
                           }
                         }
@@ -4632,7 +4589,10 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'gallery')]"
+              ]
             }
           ]
         }
