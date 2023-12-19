@@ -71,4 +71,10 @@ Set-Location 'setup/backend/Function/code'
 $DestinationPath='../../backend.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
 compress-archive * $DestinationPath -Force 
+# Discovery code
+Set-Location $currentFolder
+Set-Location ./setup/discovery/Linux/client
+tar -cvf ../discover.tar *
+Set-Location ../../Windows/client
+Compress-Archive -Path ./* -DestinationPath ../discover.zip -Update
 Set-Location $currentFolder

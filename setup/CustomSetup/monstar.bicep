@@ -36,6 +36,7 @@ param deployAllPacks bool
 param deployIaaSPacks bool = false
 param deployPaaSPacks bool = false
 param deployPlatformPacks bool = false
+param deployDiscovery bool = false
 
 var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
 var solutionTag='MonitorStarterPacks'
@@ -104,6 +105,31 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
     solutionTag: solutionTagComponents
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
+    Tags: Tags
+  }
+}
+
+module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
+  name: 'DeployDiscovery'
+  dependsOn: [
+    backend
+  ]
+  params: {
+    assignmentLevel: assignmentLevel
+    location: location
+    resourceGroupName: resourceGroupName
+    solutionTag: solutionTagComponents
+    solutionVersion: solutionVersion
+    subscriptionId: subscriptionId
+    dceId: backend.outputs.dceId
+    imageGalleryName: 'MonitoringPacks'
+    lawResourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
+    mgname: mgname
+    storageAccountname: storageAccountName
+    tableName: 'Discovery'
+    userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
+    pathToPackageLinux: 'https://${storageAccountName}.blob.core.windows.net/discovery/discoveryLinux.zip'
+    pathToPackageWindows: 'https://${storageAccountName}.blob.core.windows.net/discovery/discoveryWindows.zip'
     Tags: Tags
   }
 }

@@ -281,6 +281,16 @@
                             }
                         },
                         {
+                            "name": "deployDiscovery",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy Discovery features.",
+                            "toolTip": "The Discovery features will discovery applications and roles on OS targetted machines.",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the Discovery featues to the selected Management Group or Subscription."
+                            }
+                        },
+                        {
                             "name": "AppInsightsLocation",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Location for App Insights",
@@ -810,7 +820,8 @@
                 "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
-                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]"
+                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
+                "deployDiscovery": "[steps('Configuration').deployDiscovery]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
