@@ -373,9 +373,9 @@
                 "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
-                "deployPlatformPacks": "[steps('Packs').deployPlatformPacks]",
-                "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
-                "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]"
+                "deployPlatformPacks": "[steps('Configuration').deployPlatformPacks]",
+                "deployIaaSPacks": "[steps('Configuration').deployIaaSPacks]",
+                "deployPaaSPacks": "[steps('Configuration').deployPaaSPacks]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
