@@ -91,7 +91,7 @@
                             "label": "Deploy All IaaS Packs",
                             "toolTip": "Select to deploy all IaaS packs.",
                             "defaultValue": false,
-							"visible": "[equals(steps('Packs').deployPacks, false)]",
+							"visible": true,
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the available IaaS packs to the selected environment."
@@ -107,7 +107,7 @@
                                 "required": false,
                                 "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
                             },
-							"visible": "[equals(steps('Packs').deployPacks, false)]"
+							"visible": true
                         },
                         {
                             "name": "deployPlatformPacks",
@@ -115,7 +115,7 @@
                             "label": "Deploy All Platform Packs",
                             "toolTip": "Select to deploy all Platform packs.",
                             "defaultValue": false,
-							"visible": "[equals(steps('Packs').deployPacks, false)]",
+							"visible": true,
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the available Platform packs to the selected environment."
