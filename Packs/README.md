@@ -2,7 +2,7 @@
 
 The recommended experience to deploy the packs is by using the provided interface. You can also use ARM and Bicep Templates. See section below.
 
-To deploy all IaaS packs, click the icon below:
+To deploy only packs, click the icon below:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FsvcMonitoring%2FPacks%2FAllPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FsvcMonitoring%2FPacks%2FCustomSetup%2Fsetup.json)
 ## Windows OS (WinOS)

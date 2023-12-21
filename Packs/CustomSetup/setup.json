@@ -373,7 +373,7 @@
                 "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
-                "deployAllPacks": "[steps('Packs').deployPacks]",
+                "deployPlatformPacks": "[steps('Packs').deployPlatformPacks]",
                 "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
                 "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]"
             },
