@@ -4,6 +4,10 @@
         "File":"monstar.bicep"
     },
     {
+        "Folder":"./Packs",
+        "File":"AllPacks.bicep"
+    },
+    {
         "Folder":"./Packs/IaaS",
         "File":"AllIaaSPacks.bicep"
     },

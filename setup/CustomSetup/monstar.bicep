@@ -118,7 +118,7 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     assignmentLevel: assignmentLevel
     location: location
     resourceGroupName: resourceGroupName
-    solutionTag: solutionTagComponents
+    solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     dceId: backend.outputs.dceId

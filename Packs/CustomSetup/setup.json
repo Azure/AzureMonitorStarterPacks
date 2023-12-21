@@ -84,7 +84,43 @@
                                 "method": "GET",
                                 "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities?api-version=2023-01-31')]"
                             }
-                        },                      
+                        },
+                        {
+                            "name": "deployIaaSPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All IaaS Packs",
+                            "toolTip": "Select to deploy all IaaS packs.",
+                            "defaultValue": false,
+							"visible": "[equals(steps('Packs').deployPacks, false)]",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the available IaaS packs to the selected environment."
+                            }
+                        },                        
+                        {
+                            "name": "deployPaaSPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All PaaS Packs",
+                            "toolTip": "Select to deploy all PaaS packs.",
+                            "defaultValue": false,
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
+                            },
+							"visible": "[equals(steps('Packs').deployPacks, false)]"
+                        },
+                        {
+                            "name": "deployPlatformPacks",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy All Platform Packs",
+                            "toolTip": "Select to deploy all Platform packs.",
+                            "defaultValue": false,
+							"visible": "[equals(steps('Packs').deployPacks, false)]",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the available Platform packs to the selected environment."
+                            }
+                        },
                         {
                             "name": "subscriptionId",
                             "type": "Microsoft.Common.DropDown",
@@ -336,7 +372,10 @@
                 "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "customerTags": "[steps('tags').tagsByResource]",
-                "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]"
+                "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
+                "deployAllPacks": "[steps('Packs').deployPacks]",
+                "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
+                "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
