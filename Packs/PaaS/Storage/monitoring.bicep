@@ -23,11 +23,13 @@ param resourceGroupId string
 param grafanaName string
 //param solutionVersion string
 param customerTags object 
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
+var tempTags ={
   '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  MonitoringPackType: 'PaaS'
+  solutionVersion: solutionVersion
+}
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags['All'])
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var resourceType = 'Microsoft.Storage/storageaccounts'

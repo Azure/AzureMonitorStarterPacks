@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11163668191355775506"
+      "templateHash": "13539627308366536058"
     }
   },
   "parameters": {
@@ -67,7 +67,12 @@
     }
   },
   "variables": {
-    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+    "tempTags": {
+      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+      "MonitoringPackType": "IaaS",
+      "solutionVersion": "[parameters('solutionVersion')]"
+    },
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
     "ruleshortname": "VMI-OS",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
   },

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16858840065520074133"
+      "templateHash": "12239015737350675638"
     }
   },
   "parameters": {
@@ -245,7 +245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "14487140947030877272"
+              "templateHash": "9597593355851264922"
             }
           },
           "parameters": {
@@ -304,7 +304,7 @@
           "variables": {
             "solutionTagComponents": "MonitorStarterPacksComponents",
             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
-            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]"
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'MonitoringPackType', 'IaaS', 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'solutionVersion', parameters('solutionVersion'), 'MonitoringPackType', 'IaaS'), parameters('customerTags').All))]"
           },
           "resources": [
             {
@@ -362,7 +362,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11163668191355775506"
+                      "templateHash": "13539627308366536058"
                     }
                   },
                   "parameters": {
@@ -424,7 +424,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "ruleshortname": "VMI-OS",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                   },
@@ -2190,7 +2195,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3525498024429584226"
+                      "templateHash": "18165690541588829035"
                     }
                   },
                   "parameters": {
@@ -2255,7 +2260,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "ruleshortname": "VMI-LxOS",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                   },
@@ -4021,7 +4031,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13974476155752907156"
+                      "templateHash": "6249676087572449934"
                     }
                   },
                   "parameters": {
@@ -4086,7 +4096,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                     "ruleshortname": "IIS1",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -7215,7 +7230,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12312357570981963690"
+                      "templateHash": "9095339064875188723"
                     }
                   },
                   "parameters": {
@@ -7282,7 +7297,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                     "ruleshortname": "IIS2016",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -10431,7 +10451,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "2114410730523550356"
+                      "templateHash": "13889548344931579264"
                     }
                   },
                   "parameters": {
@@ -10496,7 +10516,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                     "ruleshortname": "DNS2016",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -12957,7 +12982,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "6844430797689252877"
+                      "templateHash": "15481136742547090579"
                     }
                   },
                   "parameters": {
@@ -13025,7 +13050,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                     "ruleshortname": "PS2016",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -14896,7 +14926,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13748505759492596150"
+                      "templateHash": "11534667102268109795"
                     }
                   },
                   "parameters": {
@@ -14961,7 +14991,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "ruleshortname": "Nginx",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "facilityNames": [
@@ -16961,7 +16996,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11497050002098563814"
+              "templateHash": "840412156381390869"
             }
           },
           "parameters": {
@@ -17016,6 +17051,10 @@
             "customerTags": {
               "type": "object"
             }
+          },
+          "variables": {
+            "solutionTagComponents": "MonitorStarterPacksComponents",
+            "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]"
           },
           "resources": [
             {
@@ -17076,7 +17115,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "5819295420454513635"
+                      "templateHash": "1070368487301426092"
                     }
                   },
                   "parameters": {
@@ -17146,7 +17185,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "PaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "resourceType": "Microsoft.Storage/storageaccounts"
                   },
@@ -17200,7 +17244,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "7267794854288500266"
+                              "templateHash": "4486001214319469716"
                             }
                           },
                           "parameters": {
@@ -17330,7 +17374,7 @@
                                     "value": "LessThan"
                                   },
                                   "initiativeMember": {
-                                    "value": true
+                                    "value": false
                                   }
                                 },
                                 "template": {
@@ -18428,7 +18472,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "3620964212553471949"
+              "templateHash": "13982929903781505262"
             }
           },
           "parameters": {
@@ -18543,7 +18587,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15711988754534467159"
+                      "templateHash": "10405786597927480712"
                     }
                   },
                   "parameters": {
@@ -18613,7 +18657,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "Platform",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "resourceType": "Microsoft.KeyVault/vaults"
                   },
@@ -21175,7 +21224,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10350456467129318481"
+                      "templateHash": "4989986855344530058"
                     }
                   },
                   "parameters": {
@@ -21221,7 +21270,12 @@
                       "Microsoft.Network/vpngateways",
                       "Microsoft.Network/expressRouteGateways"
                     ],
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "Platform",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                   },
                   "resources": [
@@ -27886,7 +27940,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15926445245210764680"
+                      "templateHash": "5988988273804968439"
                     }
                   },
                   "parameters": {
@@ -27956,7 +28010,12 @@
                     }
                   },
                   "variables": {
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "Platform",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceType": "Microsoft.Network/loadBalancers",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                   },

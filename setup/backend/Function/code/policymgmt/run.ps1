@@ -15,7 +15,16 @@ $action=$Request.Body.Action
 # Interact with query parameters or the body of the request.
 switch ($action) {
     'Remediate' {
-        $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null} 
+        "Into selected Remediate action."
+        "Policy List provided? Let's see..."
+        $Request.Body.Policies
+        $policylist=$Request.Body.Policies | ConvertFrom-Json
+        if ($policylist -eq $null) {
+            $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null}
+        }
+        else {
+            Get-AzPolicyDefinition | Where-Object {($_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null) -and $_.ResourceId -in $policylist.policyId} 
+        }
         foreach ($pol in $pols) {
             $compliance=(get-AzPolicystate | where-object {$_.PolicyDefinitionName -eq $pol.Name}).ComplianceState
             if ($compliance -eq "NonCompliant") {

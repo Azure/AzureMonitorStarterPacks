@@ -29,10 +29,13 @@ param actionGroupResourceId string
 var solutionTagComponents='MonitorStarterPacksComponents'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
-var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
-'solutionVersion': solutionVersion} : union({
+var Tags = (customerTags=={}) ? {
+  '${solutionTagComponents}': 'BackendComponent'
+  'MonitoringPackType': 'IaaS'
+  'solutionVersion': solutionVersion} : union({
   '${solutionTagComponents}': 'BackendComponent'
   'solutionVersion': solutionVersion
+  'MonitoringPackType': 'IaaS'
 },customerTags['All'])
 
 // module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {

@@ -28,6 +28,14 @@ param assignmentLevel string
 param grafanaName string
 param customerTags object 
 
+var solutionTagComponents='MonitorStarterPacksComponents'
+
+var Tags = (customerTags=={}) ? {
+  '${solutionTagComponents}': 'BackendComponent'
+  'solutionVersion': solutionVersion} : union({
+  '${solutionTagComponents}': 'BackendComponent'
+  'solutionVersion': solutionVersion
+},customerTags['All'])
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {

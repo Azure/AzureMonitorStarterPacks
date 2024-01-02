@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "13748505759492596150"
+      "templateHash": "11534667102268109795"
     }
   },
   "parameters": {
@@ -70,7 +70,12 @@
     }
   },
   "variables": {
-    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+    "tempTags": {
+      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+      "MonitoringPackType": "IaaS",
+      "solutionVersion": "[parameters('solutionVersion')]"
+    },
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
     "ruleshortname": "Nginx",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
     "facilityNames": [

@@ -45,7 +45,7 @@ module StorageAvailabilityAlert '../../../modules/alerts/PaaS/metricAlertStaticT
         AGId: AGId
         metricName: 'Availability'
         operator: 'LessThan'
-        initiativeMember: true
+        initiativeMember: false // if true, the alert won't be assigned individually.
     }
 }
 

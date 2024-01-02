@@ -20,11 +20,13 @@ param assignmentLevel string
 param customerTags object
 param actionGroupResourceId string
 
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
+var tempTags ={
   '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion
+}
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags['All'])
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS1'
