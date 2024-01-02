@@ -58,6 +58,46 @@ else {
     "Skipping AMA policy set removal. Use -RemoveAMAPolicySet to remove them."
 }
 
+if ($RemoveDiscovery -or $RemoveAll) {
+    "Removing discovery components."
+    "Removing DCRs and associations."
+    $query=@'
+    insightsresources
+    | where type == "microsoft.insights/datacollectionruleassociations"
+    | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]
+    | where isnotnull(properties.dataCollectionRuleId)
+    | project rulename=split(properties.dataCollectionRuleId,"/")[8],resourceName=split(resourceId,"/")[8],resourceId, ruleId=properties.dataCollectionRuleId, name
+    | where ruleId =~
+'@
+    # Remove DCRs and associations
+    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tags.MonitorStarterPacksComponents -ne $null} -ErrorAction SilentlyContinue
+    foreach ($DCR in $DCRs)
+    {
+        $searchQuery=$query + "'$($DCR.Id)'"
+        $dcras=Search-AzGraph -Query $searchQuery -UseTenantScope
+        foreach ($dcra in $dcras) {
+            "Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
+            Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.resourceId -AssociationName $dcra.name
+        }
+        Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
+    }
+    # uninstall VM Apps
+    # find the gallery
+    Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
+        $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
+        foreach ($ga in $galleryApps) {
+            Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
+            remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
+        }
+    }
+    # find vm applications
+    # find vms with those applications
+    # cycle through vms and remove applications
+    # remove application versions
+    # remove application
+    
+    # Remove Gallery?
+}
 #region Packs
 # Remove policy assignments and policies
 if ($RemovePacks -or $RemoveAll) {
@@ -71,7 +111,6 @@ if ($RemovePacks -or $RemoveAll) {
     #     "Removing packs with tag $RemoveTag."
     #     $pols=$pols | where-object {$_.properties.Metadata.MonitorStarterPacks -eq $RemoveTag}
     # }
-
     foreach ($pack in $packs) {
         "Removing pack $pack."
         foreach ($pol in ($pols | Where-Object {$_.properties.Metadata.MonitorStarterPacks -eq $pack}) ) {

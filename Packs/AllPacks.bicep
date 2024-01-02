@@ -70,25 +70,25 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
   }
 }
 
-// module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
-//   name: 'deployPaaSPacks'
-//   params: {
-//     // Tags: Tags
-//     location: location
-//     workspaceId: workspaceId
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     dceId: dceId
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     assignmentLevel: assignmentLevel
-//     grafanaResourceId: grafanaResourceId
-//     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
-//     customerTags: customerTags
-//     mgname: mgname
-//     resourceGroupId: resourceGroupId
-//     subscriptionId: subscriptionId
-//   }
-// }
+module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
+  name: 'deployPaaSPacks'
+  params: {
+    // Tags: Tags
+    location: location
+    workspaceId: workspaceId
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    dceId: dceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    assignmentLevel: assignmentLevel
+    grafanaName: 'grafana'
+    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
+    customerTags: customerTags
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    subscriptionId: subscriptionId
+  }
+}
 
 module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatformPacks) {
   name: 'deployPlatformPacks'

@@ -16,8 +16,8 @@ else {
 
 $features=Get-WindowsFeature| Where-Object {$_.InstallState -eq 'Installed'} | Select-Object Name, DisplayName, FeatureType, Depth #| foreach { "$runTime $($_.Name),$($_.DisplayName),$($_.FeatureType),$($_.Depth)" }
 if ($features.count -gt 0) {
-    # Runtime,Name, Caption, Vendor, Type, Platform
-    $features | ForEach-Object { "$runTime,$($_.Name),$($_.Caption),Microsoft,$($_.FeatureType),Windows" } | Out-File "$discoveryFolder\installedFeatures.csv" -Append -Encoding utf8
+    # Runtime,Type, OS, Name,Caption, Vendor, FeatureType
+    $features | ForEach-Object { "$runTime,Role, Windows,$($_.Name),$($_.Caption),Microsoft,$($_.FeatureType)" } | Out-File "$discoveryFolder\installedFeatures.csv" -Append -Encoding utf8
 }
 else {
     "$runTime : No featues found." | out-file DiscoverLog.txt -Append
@@ -26,7 +26,8 @@ else {
 #$features | ConvertTo-Json | Out-File "$discoveryFolder\installedFeatures.json"
 $apps=Get-WmiObject -Class Win32_Product | Select-Object Name, Vendor, Caption 
 if ($apps.count -gt 0) {
-    $apps | ForEach-Object {"$runTime,$($_.Name),$($_.Caption),$($_.Vendor),Application,Linux"} | Out-File "$discoveryFolder\installedAppsWMI.csv" -Append -Encoding utf8
+    # Runtime,Type, OS, Name,Caption, Vendor
+    $apps | ForEach-Object {"$runTime,Application,Windows,$($_.Name),$($_.Caption),$($_.Vendor)"} | Out-File "$discoveryFolder\installedAppsWMI.csv" -Append -Encoding utf8
 }
 else {
     "$runTime : No apps found." | out-file DiscoverLog.txt -Append
