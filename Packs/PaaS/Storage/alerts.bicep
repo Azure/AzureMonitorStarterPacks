@@ -46,6 +46,7 @@ module StorageAvailabilityAlert '../../../modules/alerts/PaaS/metricAlertStaticT
         metricName: 'Availability'
         operator: 'LessThan'
         initiativeMember: false // if true, the alert won't be assigned individually.
+        packtype: 'PaaS'
     }
 }
 

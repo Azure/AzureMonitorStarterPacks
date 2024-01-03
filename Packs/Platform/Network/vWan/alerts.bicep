@@ -85,7 +85,7 @@ module vWanPacketEgressDropCountAlert '../../../../modules/alerts/PaaS/metricAle
       metricName: 'TunnelEgressPacketDropCount'
       operator: 'GreaterThan'
       initiativeMember: true
-      
+      packtype: 'Platform'
   }
 }
 
@@ -117,6 +117,7 @@ module vWanTunnelIngressBytes '../../../../modules/alerts/PaaS/metricAlertStatic
       metricName: 'tunnelingressbytes'
       operator: 'LessThan'
       initiativeMember: true
+      packtype: 'Platform'
   }
 }
 
@@ -148,6 +149,7 @@ module TunnelEgressBytes '../../../../modules/alerts/PaaS/metricAlertStaticThres
       metricName: 'tunnelegressbytes'
       operator: 'LessThan'
       initiativeMember: true
+      packtype: 'Platform'
   }
 }
 module TunnelAverageBandwidthAlert '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -178,6 +180,7 @@ module TunnelAverageBandwidthAlert '../../../../modules/alerts/PaaS/metricAlertS
       metricName: 'tunnelaveragebandwidth'
       operator: 'LessThan'
       initiativeMember: true
+      packtype: 'Platform'
   }
 }
 module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -208,6 +211,7 @@ module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold
       metricName: 'bgppeerstatus'
       operator: 'LessThan'
       initiativeMember: true
+      packtype: 'Platform'
   }
 }
 

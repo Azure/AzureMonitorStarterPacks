@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12239015737350675638"
+      "templateHash": "14892428820837582553"
     }
   },
   "parameters": {
@@ -16996,7 +16996,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "840412156381390869"
+              "templateHash": "13309145526925131350"
             }
           },
           "parameters": {
@@ -17115,7 +17115,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "1070368487301426092"
+                      "templateHash": "4912537255677519860"
                     }
                   },
                   "parameters": {
@@ -17244,7 +17244,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4486001214319469716"
+                              "templateHash": "16466932799997375635"
                             }
                           },
                           "parameters": {
@@ -17375,6 +17375,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": false
+                                  },
+                                  "packtype": {
+                                    "value": "PaaS"
                                   }
                                 },
                                 "template": {
@@ -17384,7 +17387,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -17447,6 +17450,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -17540,6 +17551,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -18472,7 +18484,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "13982929903781505262"
+              "templateHash": "3744801400040632801"
             }
           },
           "parameters": {
@@ -18587,7 +18599,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10405786597927480712"
+                      "templateHash": "16626767601056649445"
                     }
                   },
                   "parameters": {
@@ -18722,7 +18734,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "12107564064861730649"
+                              "templateHash": "10412510349475683705"
                             }
                           },
                           "parameters": {
@@ -18844,6 +18856,9 @@
                                   },
                                   "operationName": {
                                     "value": "delete"
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -18853,7 +18868,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6500698479976133428"
+                                      "templateHash": "11954899364974137586"
                                     }
                                   },
                                   "parameters": {
@@ -18916,6 +18931,14 @@
                                     },
                                     "initiativeMember": {
                                       "type": "bool"
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
+                                      ]
                                     }
                                   },
                                   "variables": {
@@ -18949,8 +18972,9 @@
                                             "value": {
                                               "version": "1.0.0",
                                               "Category": "ActivityLog",
-                                              "source": "https://github.com/Azure/ALZ-Monitor/",
+                                              "source": "https://azure.github.io/azure-monitor-baseline-alerts/services/",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -19811,6 +19835,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -19820,7 +19847,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -19883,6 +19910,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -19976,6 +20011,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -21224,7 +21260,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4989986855344530058"
+                      "templateHash": "236689557332295256"
                     }
                   },
                   "parameters": {
@@ -21858,7 +21894,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "10754907632594381927"
+                              "templateHash": "12514656404613372633"
                             }
                           },
                           "parameters": {
@@ -22029,6 +22065,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -22038,7 +22077,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "9965243594162581673"
+                                      "templateHash": "7528767799563269757"
                                     }
                                   },
                                   "parameters": {
@@ -22106,6 +22145,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -22195,6 +22242,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -23183,6 +23231,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -23192,7 +23243,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -23255,6 +23306,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -23348,6 +23407,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -24293,6 +24353,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -24302,7 +24365,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -24365,6 +24428,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -24458,6 +24529,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -25403,6 +25475,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -25412,7 +25487,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -25475,6 +25550,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -25568,6 +25651,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -26513,6 +26597,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -26522,7 +26609,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -26585,6 +26672,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -26678,6 +26773,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -27940,7 +28036,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "5988988273804968439"
+                      "templateHash": "6028346188130658762"
                     }
                   },
                   "parameters": {
@@ -28075,7 +28171,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "13339811249305488394"
+                              "templateHash": "10571234444994650191"
                             }
                           },
                           "parameters": {
@@ -28218,6 +28314,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -28227,7 +28326,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -28290,6 +28389,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -28383,6 +28490,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -29328,6 +29436,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -29337,7 +29448,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -29400,6 +29511,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -29493,6 +29612,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -30438,6 +30558,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -30447,7 +30570,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -30510,6 +30633,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -30603,6 +30734,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },
@@ -31548,6 +31680,9 @@
                                   },
                                   "initiativeMember": {
                                     "value": true
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -31557,7 +31692,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "6063666027420487405"
+                                      "templateHash": "453254689165108562"
                                     }
                                   },
                                   "parameters": {
@@ -31620,6 +31755,14 @@
                                       "type": "array",
                                       "defaultValue": [
                                         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                      ]
+                                    },
+                                    "packtype": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "IaaS",
+                                        "PaaS",
+                                        "Platform"
                                       ]
                                     },
                                     "parAlertSeverity": {
@@ -31713,6 +31856,7 @@
                                               "Category": "Monitoring",
                                               "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                              "MonitoringPackType": "[parameters('packtype')]",
                                               "initiativeMember": "[parameters('initiativeMember')]"
                                             }
                                           },

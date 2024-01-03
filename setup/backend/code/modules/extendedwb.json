@@ -1097,14 +1097,6 @@
         "title": "Platform Services",
         "items": [
           {
-            "type": 1,
-            "content": {
-              "json": "When Monitoring is first enabled, the Azure Monitoring Agent will also be installed to the selected servers.",
-              "style": "info"
-            },
-            "name": "text - 3"
-          },
-          {
             "type": 12,
             "content": {
               "version": "NotebookGroup/1.0",
@@ -1413,14 +1405,6 @@
         "groupType": "editable",
         "title": "PaaS Services",
         "items": [
-          {
-            "type": 1,
-            "content": {
-              "json": "When Monitoring is first enabled, the Azure Monitoring Agent will also be installed to the selected servers.",
-              "style": "info"
-            },
-            "name": "text - 3"
-          },
           {
             "type": 12,
             "content": {

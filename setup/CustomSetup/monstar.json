@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "18341066295048713670"
+      "templateHash": "12086346726511957814"
     }
   },
   "parameters": {
@@ -4989,7 +4989,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11774837718676272318"
+              "templateHash": "9100082799178941511"
             }
           },
           "parameters": {
@@ -5100,7 +5100,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11989314163798615814"
+                      "templateHash": "6030876058979208713"
                     }
                   },
                   "parameters": {
@@ -5148,7 +5148,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "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",
+                    "$fxv#0": "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",
                     "discoveryContainerName": "discovery",
                     "tempfilename": "[format('{0}.tmp', parameters('filename'))]",
                     "sasConfig": {
@@ -5730,7 +5730,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13611034506894973581"
+                      "templateHash": "17288256630123401269"
                     }
                   },
                   "parameters": {
@@ -6844,14 +6844,6 @@
                             "title": "Platform Services",
                             "items": [
                               {
-                                "type": 1,
-                                "content": {
-                                  "json": "When Monitoring is first enabled, the Azure Monitoring Agent will also be installed to the selected servers.",
-                                  "style": "info"
-                                },
-                                "name": "text - 3"
-                              },
-                              {
                                 "type": 12,
                                 "content": {
                                   "version": "NotebookGroup/1.0",
@@ -7149,6 +7141,315 @@
                             "value": "platform"
                           },
                           "name": "PlatFormMgmt",
+                          "styleSettings": {
+                            "showBorder": true
+                          }
+                        },
+                        {
+                          "type": 12,
+                          "content": {
+                            "version": "NotebookGroup/1.0",
+                            "groupType": "editable",
+                            "title": "PaaS Services",
+                            "items": [
+                              {
+                                "type": 12,
+                                "content": {
+                                  "version": "NotebookGroup/1.0",
+                                  "groupType": "editable",
+                                  "items": [
+                                    {
+                                      "type": 3,
+                                      "content": {
+                                        "version": "KqlItem/1.0",
+                                        "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts'\n) \n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, name, subscriptionId, location, resourceGroup, type\n| sort by type asc",
+                                        "size": 0,
+                                        "title": "Monitored PaaS",
+                                        "exportMultipleValues": true,
+                                        "exportedParameters": [
+                                          {
+                                            "fieldName": "",
+                                            "parameterName": "taggedPaaS",
+                                            "parameterType": 5,
+                                            "quote": ""
+                                          }
+                                        ],
+                                        "queryType": 1,
+                                        "resourceType": "microsoft.resourcegraph/resources",
+                                        "crossComponentResources": [
+                                          "{Subscriptions}"
+                                        ],
+                                        "visualization": "table",
+                                        "gridSettings": {
+                                          "filter": true
+                                        },
+                                        "sortBy": []
+                                      },
+                                      "name": "Monitored PaaS",
+                                      "styleSettings": {
+                                        "margin": "400",
+                                        "padding": "400",
+                                        "showBorder": true
+                                      }
+                                    },
+                                    {
+                                      "type": 9,
+                                      "content": {
+                                        "version": "KqlParameterItem/1.0",
+                                        "crossComponentResources": [
+                                          "value::tenant"
+                                        ],
+                                        "parameters": [
+                                          {
+                                            "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
+                                            "version": "KqlParameterItem/1.0",
+                                            "name": "PackTagsLeftPaaS",
+                                            "label": "Add/Remove",
+                                            "type": 2,
+                                            "isGlobal": true,
+                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                                            "crossComponentResources": [
+                                              "value::tenant"
+                                            ],
+                                            "typeSettings": {
+                                              "additionalResourceOptions": [],
+                                              "showDefault": false
+                                            },
+                                            "timeContext": {
+                                              "durationMs": 86400000
+                                            },
+                                            "queryType": 1,
+                                            "resourceType": "microsoft.resources/tenants",
+                                            "value": null
+                                          }
+                                        ],
+                                        "style": "pills",
+                                        "queryType": 1,
+                                        "resourceType": "microsoft.resources/tenants"
+                                      },
+                                      "customWidth": "25",
+                                      "conditionalVisibility": {
+                                        "parameterName": "taggedPaaS",
+                                        "comparison": "isNotEqualTo"
+                                      },
+                                      "name": "parametersPaaSLeft"
+                                    },
+                                    {
+                                      "type": 11,
+                                      "content": {
+                                        "version": "LinkItem/1.0",
+                                        "style": "paragraph",
+                                        "links": [
+                                          {
+                                            "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
+                                            "cellValue": "",
+                                            "linkTarget": "ArmAction",
+                                            "linkLabel": "Remove Monitoring for {PackTagsLeftPaaS} Pack ",
+                                            "preText": "",
+                                            "style": "primary",
+                                            "linkIsContextBlade": true,
+                                            "armActionContext": {
+                                              "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                              "headers": [],
+                                              "params": [
+                                                {
+                                                  "key": "action",
+                                                  "value": "removeTag"
+                                                }
+                                              ],
+                                              "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PackTagsLeftPaaS}\"\n  }\n}",
+                                              "httpMethod": "POST",
+                                              "title": "Remove Monitoring",
+                                              "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftPaaS} Pack \n\nServers:\n\n{taggedPaaS}",
+                                              "runLabel": "Confirm"
+                                            }
+                                          },
+                                          {
+                                            "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
+                                            "linkTarget": "ArmAction",
+                                            "linkLabel": "Add Monitoring for {PackTagsLeftPaaS} Pack",
+                                            "style": "primary",
+                                            "linkIsContextBlade": true,
+                                            "armActionContext": {
+                                              "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                              "headers": [],
+                                              "params": [],
+                                              "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PackTagsLeftPaaS}\"\n  }\n}",
+                                              "httpMethod": "POST",
+                                              "title": "Add Monitoring",
+                                              "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeftPaaS} Pack ",
+                                              "actionName": "AddMonitoringPack",
+                                              "runLabel": "Confirm"
+                                            }
+                                          },
+                                          {
+                                            "id": "3b1af630-47ab-43e9-a5b2-d2f2e21880d0",
+                                            "linkTarget": "ArmAction",
+                                            "linkLabel": "Remove All Monitoring for Service",
+                                            "style": "primary",
+                                            "linkIsContextBlade": true,
+                                            "armActionContext": {
+                                              "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                              "headers": [],
+                                              "params": [],
+                                              "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"All\"\n  }\n}",
+                                              "httpMethod": "POST",
+                                              "title": "Remove All Monitoring",
+                                              "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeftPaaS} Pack ",
+                                              "actionName": "RemoveAllMonitoring",
+                                              "runLabel": "Confirm"
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "customWidth": "75",
+                                      "conditionalVisibility": {
+                                        "parameterName": "taggedPaaS",
+                                        "comparison": "isNotEqualTo"
+                                      },
+                                      "name": "actionsPaaSLeft"
+                                    }
+                                  ],
+                                  "exportParameters": true
+                                },
+                                "customWidth": "50",
+                                "name": "TaggedGroupPaaS"
+                              },
+                              {
+                                "type": 12,
+                                "content": {
+                                  "version": "NotebookGroup/1.0",
+                                  "groupType": "editable",
+                                  "items": [
+                                    {
+                                      "type": 3,
+                                      "content": {
+                                        "version": "KqlItem/1.0",
+                                        "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, name, subscriptionId, location, resourceGroup, type",
+                                        "size": 0,
+                                        "title": "Non-monitored PaaS",
+                                        "exportMultipleValues": true,
+                                        "exportedParameters": [
+                                          {
+                                            "fieldName": "",
+                                            "parameterName": "paastotag",
+                                            "parameterType": 1,
+                                            "quote": ""
+                                          }
+                                        ],
+                                        "queryType": 1,
+                                        "resourceType": "microsoft.resourcegraph/resources",
+                                        "crossComponentResources": [
+                                          "{Subscriptions}"
+                                        ],
+                                        "visualization": "table",
+                                        "gridSettings": {
+                                          "filter": true
+                                        },
+                                        "sortBy": []
+                                      },
+                                      "name": "Non Monitores PaaS",
+                                      "styleSettings": {
+                                        "margin": "400",
+                                        "padding": "400",
+                                        "showBorder": true
+                                      }
+                                    },
+                                    {
+                                      "type": 9,
+                                      "content": {
+                                        "version": "KqlParameterItem/1.0",
+                                        "crossComponentResources": [
+                                          "value::tenant"
+                                        ],
+                                        "parameters": [
+                                          {
+                                            "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
+                                            "version": "KqlParameterItem/1.0",
+                                            "name": "PackTagsPaaS",
+                                            "label": "Select Pack to Enable",
+                                            "type": 2,
+                                            "isGlobal": true,
+                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                                            "crossComponentResources": [
+                                              "value::tenant"
+                                            ],
+                                            "typeSettings": {
+                                              "additionalResourceOptions": [],
+                                              "showDefault": false
+                                            },
+                                            "timeContext": {
+                                              "durationMs": 86400000
+                                            },
+                                            "queryType": 1,
+                                            "resourceType": "microsoft.resources/tenants",
+                                            "value": null
+                                          }
+                                        ],
+                                        "style": "pills",
+                                        "queryType": 1,
+                                        "resourceType": "microsoft.resources/tenants"
+                                      },
+                                      "customWidth": "50",
+                                      "conditionalVisibility": {
+                                        "parameterName": "paastotag",
+                                        "comparison": "isNotEqualTo"
+                                      },
+                                      "name": "parameters - paas - right"
+                                    },
+                                    {
+                                      "type": 11,
+                                      "content": {
+                                        "version": "LinkItem/1.0",
+                                        "style": "paragraph",
+                                        "links": [
+                                          {
+                                            "id": "91fb0fed-0e4f-41ce-9024-98a3cc4432a7",
+                                            "linkTarget": "ArmAction",
+                                            "linkLabel": "Enable Monitoring for {PackTagsPaaS} Pack",
+                                            "preText": "",
+                                            "style": "primary",
+                                            "linkIsContextBlade": true,
+                                            "armActionContext": {
+                                              "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                              "headers": [],
+                                              "params": [
+                                                {
+                                                  "key": "action",
+                                                  "value": "addTag"
+                                                }
+                                              ],
+                                              "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\"\n  }\n}",
+                                              "httpMethod": "POST",
+                                              "title": "Enable Monitoring Packs",
+                                              "description": "# This will enable the pack for the following servers:\n{paastotag}\n\nby adding the {PackTagsPaaS} to the resource.",
+                                              "actionName": "EnableMonitoring",
+                                              "runLabel": "Confirm"
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "customWidth": "50",
+                                      "conditionalVisibility": {
+                                        "parameterName": "paastotag",
+                                        "comparison": "isNotEqualTo"
+                                      },
+                                      "name": "platformenableparameters"
+                                    }
+                                  ],
+                                  "exportParameters": true
+                                },
+                                "customWidth": "50",
+                                "name": "NonTaggedGroup"
+                              }
+                            ]
+                          },
+                          "conditionalVisibility": {
+                            "parameterName": "tabSelection",
+                            "comparison": "isEqualTo",
+                            "value": "paas"
+                          },
+                          "name": "PaaSMgmt",
                           "styleSettings": {
                             "showBorder": true
                           }
@@ -8084,10 +8385,12 @@
                                   "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyId=id, policyName=name, pack=tostring(properties.metadata.MonitorStarterPacks)) on policyName\n| project policyId, policyName, complianceState=tostring(complianceState), pack,type='Policy'\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and isnotempty(properties.metadata.MonitorStarterPacks)\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project policyId=policySetDefinitionId, policyName=name,complianceState,pack='N/A', type='Set')",
                                   "size": 0,
                                   "title": "Assignment Status (Compliance)",
+                                  "exportMultipleValues": true,
                                   "exportedParameters": [
                                     {
-                                      "parameterName": "policiesToRemediate",
-                                      "parameterType": 5
+                                      "parameterName": "policyToRemediate",
+                                      "parameterType": 1,
+                                      "quote": ""
                                     }
                                   ],
                                   "queryType": 1,
@@ -8095,12 +8398,15 @@
                                   "crossComponentResources": [
                                     "value::tenant"
                                   ],
+                                  "visualization": "table",
                                   "gridSettings": {
                                     "formatters": [
                                       {
                                         "columnMatch": "complianceState",
                                         "formatter": 18,
                                         "formatOptions": {
+                                          "linkTarget": "ArmAction",
+                                          "linkIsContextBlade": true,
                                           "thresholdsOptions": "icons",
                                           "thresholdsGrid": [
                                             {
@@ -8121,7 +8427,21 @@
                                               "representation": "warning",
                                               "text": "{0}{1}"
                                             }
-                                          ]
+                                          ],
+                                          "armActionContext": {
+                                            "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                            "headers": [],
+                                            "params": [],
+                                            "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": {policyToRemediate}\n  }\n}",
+                                            "httpMethod": "POST",
+                                            "title": "Remediate a policy",
+                                            "description": "# Remediate\n\n{policyToRemediate}\n",
+                                            "actionName": "Remediatepolicies",
+                                            "runLabel": "Remediate"
+                                          }
+                                        },
+                                        "tooltipFormat": {
+                                          "tooltip": "Click To Remediate"
                                         }
                                       }
                                     ],
@@ -8146,7 +8466,7 @@
                                   "comparison": "isEqualTo",
                                   "value": "policystatus"
                                 },
-                                "name": "query - 8",
+                                "name": "policylist",
                                 "styleSettings": {
                                   "showBorder": true
                                 }
@@ -8166,7 +8486,7 @@
                                           {
                                             "id": "b3bb5a4d-0f95-4e9a-8634-9cb027f860aa",
                                             "linkTarget": "ArmAction",
-                                            "linkLabel": "Remediate (all policies)",
+                                            "linkLabel": "Remediate (selected)",
                                             "preText": "",
                                             "style": "primary",
                                             "linkIsContextBlade": true,
@@ -8174,10 +8494,10 @@
                                               "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                                               "headers": [],
                                               "params": [],
-                                              "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\"\n  }\n}",
+                                              "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": [{policyToRemediate}]\n  }\n}",
                                               "httpMethod": "POST",
-                                              "title": "Rmediate policies",
-                                              "description": "# Please confirm remediation\n\nThis button will trigger a global policy remeadiation. \n\nThe backend script will go through the policies and initiatives, finding the ones that are not compliant, and will trigger remediation. \n\nIt is not restricted to the ones in this screen.",
+                                              "title": "Remediate policies",
+                                              "description": "# Please confirm remediation\n\nThis button will trigger a remediation action against the selected policies.\n\n{policyToRemediate}",
                                               "actionName": "Remediate",
                                               "runLabel": "Confirm"
                                             }
@@ -8736,6 +9056,67 @@
                                 },
                                 "customWidth": "25",
                                 "name": "ComplianceButtons - Copy"
+                              },
+                              {
+                                "type": 9,
+                                "content": {
+                                  "version": "KqlParameterItem/1.0",
+                                  "parameters": [
+                                    {
+                                      "id": "079a4550-40c9-44cd-a223-40097e453659",
+                                      "version": "KqlParameterItem/1.0",
+                                      "name": "Computers",
+                                      "type": 2,
+                                      "query": "let maxtimestamp=CustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| summarize maxtimestamp=max(todatetime(timestamp));\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| where timestamp == toscalar (maxtimestamp)\n| summarize by tostring(Computer)\n\n",
+                                      "typeSettings": {
+                                        "additionalResourceOptions": []
+                                      },
+                                      "timeContext": {
+                                        "durationMs": 86400000
+                                      },
+                                      "queryType": 0,
+                                      "resourceType": "microsoft.operationalinsights/workspaces",
+                                      "value": "dc1"
+                                    }
+                                  ],
+                                  "style": "above",
+                                  "queryType": 0,
+                                  "resourceType": "microsoft.operationalinsights/workspaces"
+                                },
+                                "name": "parameters - 20"
+                              },
+                              {
+                                "type": 3,
+                                "content": {
+                                  "version": "KqlItem/1.0",
+                                  "query": "let maxtimestamp=CustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| summarize maxtimestamp=max(todatetime(timestamp));\nlet windowsApps = datatable(Tag:string, Name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\"\n];\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| where timestamp == toscalar (maxtimestamp)\n| parse rest1 with type \",\" Platform \",\" Name \",\" othertype \",\" Vendor \",\" subtype\n| project Computer,type,Name,Platform,othertype,Vendor\n| join (windowsApps) on Name\n| project-away Name1,othertype\n",
+                                  "size": 0,
+                                  "title": "Discovered Applications",
+                                  "timeContext": {
+                                    "durationMs": 86400000
+                                  },
+                                  "queryType": 0,
+                                  "resourceType": "microsoft.operationalinsights/workspaces",
+                                  "crossComponentResources": [
+                                    "{Workspace}"
+                                  ],
+                                  "gridSettings": {
+                                    "formatters": [
+                                      {
+                                        "columnMatch": "Tag",
+                                        "formatter": 7,
+                                        "formatOptions": {
+                                          "linkTarget": "ArmAction",
+                                          "linkIsContextBlade": true
+                                        },
+                                        "tooltipFormat": {
+                                          "tooltip": "Click to Enable monitoring"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "name": "discoveryQuery"
                               }
                             ]
                           },
@@ -9842,7 +10223,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12239015737350675638"
+              "templateHash": "14892428820837582553"
             }
           },
           "parameters": {
@@ -26833,7 +27214,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "840412156381390869"
+                      "templateHash": "13309145526925131350"
                     }
                   },
                   "parameters": {
@@ -26952,7 +27333,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1070368487301426092"
+                              "templateHash": "4912537255677519860"
                             }
                           },
                           "parameters": {
@@ -27081,7 +27462,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "4486001214319469716"
+                                      "templateHash": "16466932799997375635"
                                     }
                                   },
                                   "parameters": {
@@ -27212,6 +27593,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": false
+                                          },
+                                          "packtype": {
+                                            "value": "PaaS"
                                           }
                                         },
                                         "template": {
@@ -27221,7 +27605,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -27284,6 +27668,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -27377,6 +27769,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -28309,7 +28702,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13982929903781505262"
+                      "templateHash": "3744801400040632801"
                     }
                   },
                   "parameters": {
@@ -28424,7 +28817,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "10405786597927480712"
+                              "templateHash": "16626767601056649445"
                             }
                           },
                           "parameters": {
@@ -28559,7 +28952,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "12107564064861730649"
+                                      "templateHash": "10412510349475683705"
                                     }
                                   },
                                   "parameters": {
@@ -28681,6 +29074,9 @@
                                           },
                                           "operationName": {
                                             "value": "delete"
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -28690,7 +29086,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6500698479976133428"
+                                              "templateHash": "11954899364974137586"
                                             }
                                           },
                                           "parameters": {
@@ -28753,6 +29149,14 @@
                                             },
                                             "initiativeMember": {
                                               "type": "bool"
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
+                                              ]
                                             }
                                           },
                                           "variables": {
@@ -28786,8 +29190,9 @@
                                                     "value": {
                                                       "version": "1.0.0",
                                                       "Category": "ActivityLog",
-                                                      "source": "https://github.com/Azure/ALZ-Monitor/",
+                                                      "source": "https://azure.github.io/azure-monitor-baseline-alerts/services/",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -29648,6 +30053,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -29657,7 +30065,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -29720,6 +30128,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -29813,6 +30229,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -31061,7 +31478,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4989986855344530058"
+                              "templateHash": "236689557332295256"
                             }
                           },
                           "parameters": {
@@ -31695,7 +32112,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "10754907632594381927"
+                                      "templateHash": "12514656404613372633"
                                     }
                                   },
                                   "parameters": {
@@ -31866,6 +32283,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -31875,7 +32295,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "9965243594162581673"
+                                              "templateHash": "7528767799563269757"
                                             }
                                           },
                                           "parameters": {
@@ -31943,6 +32363,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -32032,6 +32460,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -33020,6 +33449,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -33029,7 +33461,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -33092,6 +33524,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -33185,6 +33625,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -34130,6 +34571,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -34139,7 +34583,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -34202,6 +34646,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -34295,6 +34747,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -35240,6 +35693,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -35249,7 +35705,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -35312,6 +35768,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -35405,6 +35869,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -36350,6 +36815,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -36359,7 +36827,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -36422,6 +36890,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -36515,6 +36991,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -37777,7 +38254,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "5988988273804968439"
+                              "templateHash": "6028346188130658762"
                             }
                           },
                           "parameters": {
@@ -37912,7 +38389,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "13339811249305488394"
+                                      "templateHash": "10571234444994650191"
                                     }
                                   },
                                   "parameters": {
@@ -38055,6 +38532,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -38064,7 +38544,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -38127,6 +38607,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -38220,6 +38708,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -39165,6 +39654,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -39174,7 +39666,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -39237,6 +39729,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -39330,6 +39830,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -40275,6 +40776,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -40284,7 +40788,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -40347,6 +40851,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -40440,6 +40952,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },
@@ -41385,6 +41898,9 @@
                                           },
                                           "initiativeMember": {
                                             "value": true
+                                          },
+                                          "packtype": {
+                                            "value": "Platform"
                                           }
                                         },
                                         "template": {
@@ -41394,7 +41910,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "6063666027420487405"
+                                              "templateHash": "453254689165108562"
                                             }
                                           },
                                           "parameters": {
@@ -41457,6 +41973,14 @@
                                               "type": "array",
                                               "defaultValue": [
                                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                                              ]
+                                            },
+                                            "packtype": {
+                                              "type": "string",
+                                              "allowedValues": [
+                                                "IaaS",
+                                                "PaaS",
+                                                "Platform"
                                               ]
                                             },
                                             "parAlertSeverity": {
@@ -41550,6 +42074,7 @@
                                                       "Category": "Monitoring",
                                                       "source": "https://github.com/Azure/AzureMonitorStarterPacks",
                                                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packTag')]",
+                                                      "MonitoringPackType": "[parameters('packtype')]",
                                                       "initiativeMember": "[parameters('initiativeMember')]"
                                                     }
                                                   },

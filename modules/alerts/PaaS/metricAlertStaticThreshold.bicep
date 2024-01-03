@@ -28,6 +28,12 @@ param policyLocation string
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
 ]
+@allowed([
+    'IaaS'
+    'PaaS'
+    'Platform'
+])
+param packtype string
 
 @allowed([
     '0'
@@ -85,6 +91,7 @@ module metricAlert '../../alz/deploy.bicep' = {
             Category: 'Monitoring'
             source: 'https://github.com/Azure/AzureMonitorStarterPacks'
             '${solutionTag}': packTag
+            MonitoringPackType: packtype
             initiativeMember: initiativeMember
         }
         parameters: {

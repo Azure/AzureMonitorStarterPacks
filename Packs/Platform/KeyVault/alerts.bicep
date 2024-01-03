@@ -41,6 +41,7 @@ module ActivityLogKeyVaultDeleteAlert '../../../modules/alerts/PaaS/activityLogA
         AGId: AGId
         initiativeMember: true
         operationName: 'delete'
+        packtype: 'Platform'
     }
 }
 module KeyVaultLatencyAlert '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -71,6 +72,7 @@ module KeyVaultLatencyAlert '../../../modules/alerts/PaaS/metricAlertStaticThres
         metricName: 'ServiceApiLatency'
         operator: 'GreaterThan'
         initiativeMember: true
+        packtype: 'Platform'
     }
 }
 module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {

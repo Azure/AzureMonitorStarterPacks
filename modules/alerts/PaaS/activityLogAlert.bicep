@@ -23,6 +23,12 @@ param AGId string
 param initiativeMember bool
 
 var parAlertState = 'true'
+@allowed([
+    'IaaS'
+    'PaaS'
+    'Platform'
+])
+param packtype string
 
 module ActivityLogAlert '../../alz/deploy.bicep' = {
   name: guid(alertname)
@@ -34,8 +40,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
       metadata: {
           version: '1.0.0'
           Category: 'ActivityLog'
-          source: 'https://github.com/Azure/ALZ-Monitor/'
+          source: 'https://azure.github.io/azure-monitor-baseline-alerts/services/'
           '${solutionTag}': packTag
+          MonitoringPackType: packtype
           initiativeMember: initiativeMember
       }
       parameters: {

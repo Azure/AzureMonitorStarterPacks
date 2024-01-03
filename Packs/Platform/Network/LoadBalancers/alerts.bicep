@@ -48,6 +48,7 @@ module ALBDipPathAvail '../../../../modules/alerts/PaaS/metricAlertStaticThresho
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
+        packtype: 'Platform'
     }
 }
 module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -78,6 +79,7 @@ module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThresh
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
+        packtype: 'Platform'
     }
 }
 module ALBGlobalBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -108,6 +110,7 @@ module ALBGlobalBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticT
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
+        packtype: 'Platform'
     }
 }
 module ALBBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -138,6 +141,7 @@ module ALBBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThresho
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
+        packtype: 'Platform'
     }
 }
 module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
