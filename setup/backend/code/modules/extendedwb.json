@@ -766,7 +766,7 @@
                         "label": "Add/Remove",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=='IaaS'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
                         "crossComponentResources": [
                           "{Workspace}"
                         ],
@@ -933,7 +933,7 @@
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
+                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=='IaaS'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -1151,7 +1151,7 @@
                         "label": "Add/Remove",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='Platform'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -1164,7 +1164,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "ALB"
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1314,7 +1314,7 @@
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='Platform'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -1327,7 +1327,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "vWan"
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1460,7 +1460,7 @@
                         "label": "Add/Remove",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='PaaS'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -1623,7 +1623,7 @@
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
-                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                        "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='PaaS'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
                         ],

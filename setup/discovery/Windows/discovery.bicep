@@ -78,6 +78,7 @@ module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
     roledefinitionIds: [
       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
     ]
+    packtype: 'Discovery'
   }
 }
 module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
@@ -140,6 +141,7 @@ module windiscoveryDCR '../modules/discoveryrule.bicep' = {
     solutionTag: solutionTag
     tableName: tableNameToUse
     packtag: 'windiscovery'
+    packtype: 'Discovery'
   }
 }
 

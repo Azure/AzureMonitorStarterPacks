@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12086346726511957814"
+      "templateHash": "15648894866047357367"
     }
   },
   "parameters": {
@@ -1372,7 +1372,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "186227901500445151"
+              "templateHash": "8114807973427333273"
             }
           },
           "parameters": {
@@ -1536,7 +1536,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15617747412523607744"
+                      "templateHash": "4203264420943611010"
                     }
                   },
                   "parameters": {
@@ -1920,6 +1920,9 @@
                             "value": [
                               "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
                             ]
+                          },
+                          "packtype": {
+                            "value": "Discovery"
                           }
                         },
                         "template": {
@@ -1929,7 +1932,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "11917825643590976530"
+                              "templateHash": "14528133095756415505"
                             }
                           },
                           "parameters": {
@@ -1949,6 +1952,9 @@
                               "type": "string"
                             },
                             "solutionTag": {
+                              "type": "string"
+                            },
+                            "packtype": {
                               "type": "string"
                             },
                             "roledefinitionIds": {
@@ -1972,7 +1978,8 @@
                                 "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
                                 "metadata": {
                                   "category": "Monitoring",
-                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                  "MonitoringPackType": "[parameters('packtype')]"
                                 },
                                 "policyType": "Custom",
                                 "mode": "Indexed",
@@ -2396,6 +2403,9 @@
                           },
                           "packtag": {
                             "value": "windiscovery"
+                          },
+                          "packtype": {
+                            "value": "Discovery"
                           }
                         },
                         "template": {
@@ -2405,7 +2415,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4787740352104285889"
+                              "templateHash": "10014994990107653839"
                             }
                           },
                           "parameters": {
@@ -2434,6 +2444,9 @@
                             "OS": {
                               "type": "string"
                             },
+                            "packtype": {
+                              "type": "string"
+                            },
                             "endpointResourceId": {
                               "type": "string",
                               "metadata": {
@@ -2453,7 +2466,8 @@
                               "name": "[format('AMSP-Disc-{0}', parameters('OS'))]",
                               "location": "[parameters('location')]",
                               "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                "MonitoringPackType": "[parameters('packtype')]"
                               },
                               "kind": "[parameters('kind')]",
                               "properties": {
@@ -3092,7 +3106,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13016124031030905603"
+                      "templateHash": "11565917861396621294"
                     }
                   },
                   "parameters": {
@@ -3483,6 +3497,9 @@
                             "value": [
                               "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
                             ]
+                          },
+                          "packtype": {
+                            "value": "Discovery"
                           }
                         },
                         "template": {
@@ -3492,7 +3509,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "11917825643590976530"
+                              "templateHash": "14528133095756415505"
                             }
                           },
                           "parameters": {
@@ -3512,6 +3529,9 @@
                               "type": "string"
                             },
                             "solutionTag": {
+                              "type": "string"
+                            },
+                            "packtype": {
                               "type": "string"
                             },
                             "roledefinitionIds": {
@@ -3535,7 +3555,8 @@
                                 "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
                                 "metadata": {
                                   "category": "Monitoring",
-                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                  "MonitoringPackType": "[parameters('packtype')]"
                                 },
                                 "policyType": "Custom",
                                 "mode": "Indexed",
@@ -3959,6 +3980,9 @@
                           },
                           "packtag": {
                             "value": "linuxdiscovery"
+                          },
+                          "packtype": {
+                            "value": "Discovery"
                           }
                         },
                         "template": {
@@ -3968,7 +3992,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4787740352104285889"
+                              "templateHash": "10014994990107653839"
                             }
                           },
                           "parameters": {
@@ -3997,6 +4021,9 @@
                             "OS": {
                               "type": "string"
                             },
+                            "packtype": {
+                              "type": "string"
+                            },
                             "endpointResourceId": {
                               "type": "string",
                               "metadata": {
@@ -4016,7 +4043,8 @@
                               "name": "[format('AMSP-Disc-{0}', parameters('OS'))]",
                               "location": "[parameters('location')]",
                               "tags": {
-                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                "MonitoringPackType": "[parameters('packtype')]"
                               },
                               "kind": "[parameters('kind')]",
                               "properties": {
@@ -4989,7 +5017,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9100082799178941511"
+              "templateHash": "17701445899606505598"
             }
           },
           "parameters": {
@@ -5730,7 +5758,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17288256630123401269"
+                      "templateHash": "17396833744928309555"
                     }
                   },
                   "parameters": {
@@ -6513,7 +6541,7 @@
                                             "label": "Add/Remove",
                                             "type": 2,
                                             "isGlobal": true,
-                                            "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs\n",
+                                            "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=='IaaS'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
                                             "crossComponentResources": [
                                               "{Workspace}"
                                             ],
@@ -6680,7 +6708,7 @@
                                             "label": "Select Pack to Enable",
                                             "type": 2,
                                             "isGlobal": true,
-                                            "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
+                                            "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=='IaaS'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
                                             "crossComponentResources": [
                                               "value::tenant"
                                             ],
@@ -6898,7 +6926,7 @@
                                             "label": "Add/Remove",
                                             "type": 2,
                                             "isGlobal": true,
-                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='Platform'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                                             "crossComponentResources": [
                                               "value::tenant"
                                             ],
@@ -6911,7 +6939,7 @@
                                             },
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
-                                            "value": "ALB"
+                                            "value": null
                                           }
                                         ],
                                         "style": "pills",
@@ -7061,7 +7089,7 @@
                                             "label": "Select Pack to Enable",
                                             "type": 2,
                                             "isGlobal": true,
-                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='Platform'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                                             "crossComponentResources": [
                                               "value::tenant"
                                             ],
@@ -7074,7 +7102,7 @@
                                             },
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
-                                            "value": "vWan"
+                                            "value": null
                                           }
                                         ],
                                         "style": "pills",
@@ -7207,7 +7235,7 @@
                                             "label": "Add/Remove",
                                             "type": 2,
                                             "isGlobal": true,
-                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='PaaS'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                                             "crossComponentResources": [
                                               "value::tenant"
                                             ],
@@ -7370,7 +7398,7 @@
                                             "label": "Select Pack to Enable",
                                             "type": 2,
                                             "isGlobal": true,
-                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
+                                            "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='PaaS'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                                             "crossComponentResources": [
                                               "value::tenant"
                                             ],

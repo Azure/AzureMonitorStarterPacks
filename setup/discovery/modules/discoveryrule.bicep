@@ -6,6 +6,7 @@ param packtag string = 'discovery'
 param kind string
 param filepatterns array
 param OS string
+param packtype string
 @description('Specifies the resource id of the data collection endpoint.')
 param endpointResourceId string
 
@@ -18,6 +19,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
   location: location
   tags: {
     '${solutionTag}': packtag
+    MonitoringPackType: packtype
   }
   kind: kind
   properties: {
