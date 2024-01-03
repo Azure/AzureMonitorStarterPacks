@@ -9,6 +9,7 @@ param userManagedIdentityResourceId string
 param mgname string
 param assignmentLevel string = 'managementGroup'
 param subscriptionId string
+param packtype string
 
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -28,6 +29,7 @@ module policyVM '../modules/associacionpolicyVM.bicep' = {
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
+    packtype: 'Discovery'
   }
 }
 module vmassignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {

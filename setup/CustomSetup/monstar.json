@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "15648894866047357367"
+      "templateHash": "2992492669069266435"
     }
   },
   "parameters": {
@@ -1372,7 +1372,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8114807973427333273"
+              "templateHash": "9367919122392458376"
             }
           },
           "parameters": {
@@ -1536,7 +1536,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4203264420943611010"
+                      "templateHash": "4713769087954331981"
                     }
                   },
                   "parameters": {
@@ -2582,6 +2582,9 @@
                           },
                           "subscriptionId": {
                             "value": "[parameters('subscriptionId')]"
+                          },
+                          "packtype": {
+                            "value": "Discovery"
                           }
                         },
                         "template": {
@@ -2591,7 +2594,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1086629482222906173"
+                              "templateHash": "10986984060960096891"
                             }
                           },
                           "parameters": {
@@ -2624,6 +2627,9 @@
                               "defaultValue": "managementGroup"
                             },
                             "subscriptionId": {
+                              "type": "string"
+                            },
+                            "packtype": {
                               "type": "string"
                             }
                           },
@@ -2667,6 +2673,9 @@
                                   },
                                   "roledefinitionIds": {
                                     "value": "[variables('roledefinitionIds')]"
+                                  },
+                                  "packtype": {
+                                    "value": "Discovery"
                                   }
                                 },
                                 "template": {
@@ -2676,7 +2685,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "7060261485268467714"
+                                      "templateHash": "6542040609382835659"
                                     }
                                   },
                                   "parameters": {
@@ -2693,6 +2702,9 @@
                                       "type": "string"
                                     },
                                     "packtag": {
+                                      "type": "string"
+                                    },
+                                    "packtype": {
                                       "type": "string"
                                     },
                                     "solutionTag": {
@@ -2716,7 +2728,8 @@
                                         "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
                                         "metadata": {
                                           "category": "Monitoring",
-                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                          "MonitoringPackType": "[parameters('packtype')]"
                                         },
                                         "policyType": "Custom",
                                         "mode": "Indexed",
@@ -3106,7 +3119,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11565917861396621294"
+                      "templateHash": "7268119555799568251"
                     }
                   },
                   "parameters": {
@@ -4159,6 +4172,9 @@
                           },
                           "subscriptionId": {
                             "value": "[parameters('subscriptionId')]"
+                          },
+                          "packtype": {
+                            "value": "Discovery"
                           }
                         },
                         "template": {
@@ -4168,7 +4184,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1086629482222906173"
+                              "templateHash": "10986984060960096891"
                             }
                           },
                           "parameters": {
@@ -4201,6 +4217,9 @@
                               "defaultValue": "managementGroup"
                             },
                             "subscriptionId": {
+                              "type": "string"
+                            },
+                            "packtype": {
                               "type": "string"
                             }
                           },
@@ -4244,6 +4263,9 @@
                                   },
                                   "roledefinitionIds": {
                                     "value": "[variables('roledefinitionIds')]"
+                                  },
+                                  "packtype": {
+                                    "value": "Discovery"
                                   }
                                 },
                                 "template": {
@@ -4253,7 +4275,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "7060261485268467714"
+                                      "templateHash": "6542040609382835659"
                                     }
                                   },
                                   "parameters": {
@@ -4270,6 +4292,9 @@
                                       "type": "string"
                                     },
                                     "packtag": {
+                                      "type": "string"
+                                    },
+                                    "packtype": {
                                       "type": "string"
                                     },
                                     "solutionTag": {
@@ -4293,7 +4318,8 @@
                                         "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
                                         "metadata": {
                                           "category": "Monitoring",
-                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                          "MonitoringPackType": "[parameters('packtype')]"
                                         },
                                         "policyType": "Custom",
                                         "mode": "Indexed",

@@ -4,6 +4,7 @@ param policyName string
 param policyDisplayName string
 param policyDescription string
 param packtag string
+param packtype string
 param solutionTag string
 param roledefinitionIds array =[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -19,6 +20,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
+      MonitoringPackType: packtype
     }
     policyType: 'Custom'
     mode: 'Indexed'

@@ -159,5 +159,6 @@ module policysetup '../modules/policies.bicep' = {
     ruleshortname: ruleshortname
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    packtype: 'Discovery'
   }
 }
