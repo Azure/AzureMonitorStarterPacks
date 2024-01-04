@@ -39,7 +39,7 @@ module linuxdiscoveryapp '../modules/aigapp.bicep' = {
   }
 }
 
-module upload '../modules/uploadDS.bicep' = {
+module uploadLinux './uploadDSLinux.bicep' = {
   name: 'upload-discoverylinux'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -48,7 +48,6 @@ module upload '../modules/uploadDS.bicep' = {
     location: location
     filename: 'discover.tar'
     tags: tags
-
   }
 }
 
@@ -61,10 +60,10 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
   params: {
     aigname: imageGalleryName
     appName: appName
-    appVersionName: '1.0.1'
+    appVersionName: '1.0.2'
     location: location
     targetRegion: location
-    mediaLink: upload.outputs.fileURL
+    mediaLink: uploadLinux.outputs.fileURL
     installCommands: 'tar -xvf ${appName} && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
   }
