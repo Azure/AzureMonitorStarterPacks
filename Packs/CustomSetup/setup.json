@@ -335,7 +335,31 @@
                             },
                             "infoMessages": [],
                             "visible": true
-                        }                   
+                        },
+                        {
+                            "name": "ExistingApplicationGallery",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Application Gallery",
+                            "toolTip": "Existing Application Gallery",
+                            "resourceType": "Microsoft.Compute/galleries",
+                            "constraints": {
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "ExistingStorageAccount",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Storage Account",
+                            "toolTip": "Existing Storage Account",
+                            "resourceType": "Microsoft.Storage/storageAccounts",
+                            "constraints": {
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }    
                     ]
                 },
                 {
@@ -359,7 +383,6 @@
                 "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
                 "resourceGroupId": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, steps('Configuration').resourceGroupNameExisting)]",
                 "location": "[steps('basics').resourceScope.location.name]",
-
                 "workspaceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "solutionTag":"MonitorStarterPacks",
                 "solutionVersion":"1.0.0",
@@ -373,9 +396,11 @@
                 "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
-                "deployPlatformPacks": "[steps('Configuration').deployPlatformPacks]",
                 "deployIaaSPacks": "[steps('Configuration').deployIaaSPacks]",
-                "deployPaaSPacks": "[steps('Configuration').deployPaaSPacks]"
+                "deployPaaSPacks": "[steps('Configuration').deployPaaSPacks]",
+				"deployPlatformPacks": "[steps('Configuration').deployPlatformPacks]",
+                "imagaGalleryName": "[steps('Configuration').ExistingApplicationGallery.name]",
+				"storageAccountName": "[steps('Configuration').ExistingStorageAccount.name]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

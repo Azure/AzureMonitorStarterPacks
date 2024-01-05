@@ -44,7 +44,6 @@ module KVAlerts './KeyVault/monitoring.bicep' = {
     grafanaName: grafanaName
     dceId: dceId
     customerTags: customerTags
-    
   }
 }
 module vWan './Network/vWan/monitoring.bicep' = {
