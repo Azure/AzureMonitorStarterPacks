@@ -77,4 +77,9 @@ Set-Location ./setup/discovery/Linux/client
 tar -cvf ../discover.tar *
 Set-Location ../../Windows/client
 Compress-Archive -Path ./* -DestinationPath ../discover.zip -Update
+# ADDS Code
 Set-Location $currentFolder
+Set-Location ./Packs/IaaS/ADDS/client
+Compress-Archive -Path ./* -DestinationPath ../addscollection.zip -Update
+Set-Location $currentFolder
+

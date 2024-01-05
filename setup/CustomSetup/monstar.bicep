@@ -195,5 +195,7 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     deployIaaSPacks: deployIaaSPacks || deployAllPacks
     deployPaaSPacks: deployPaaSPacks || deployAllPacks
     deployPlatformPacks: deployPlatformPacks || deployAllPacks
+    storageAccountName: storageAccountName
+    imagaGalleryName: discovery.outputs.galleryName
   }
 }

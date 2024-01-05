@@ -68,3 +68,4 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     tags: Tags
   }
 }
+output galleryName string = gallery.name

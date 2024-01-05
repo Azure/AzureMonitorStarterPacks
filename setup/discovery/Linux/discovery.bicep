@@ -64,7 +64,7 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     location: location
     targetRegion: location
     mediaLink: uploadLinux.outputs.fileURL
-    installCommands: 'tar -xvf ${appName} && ./install.sh'
+    installCommands: 'tar -xvf ${appName} && chmod +x ./install.sh && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
   }
 }

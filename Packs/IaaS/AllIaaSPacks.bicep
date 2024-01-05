@@ -25,6 +25,8 @@ param assignmentLevel string
 param grafanaResourceId string
 param customerTags object
 param actionGroupResourceId string
+param storageAccountName string
+param imagaGalleryName string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
 
@@ -49,6 +51,26 @@ var Tags = (customerTags=={}) ? {
 //       groupshortname: actionGroupName
 //     }
 //   }
+module ADDS './ADDS/monitoring.bicep' = {
+  name: 'ADDSPack'
+  params: {
+    assignmentLevel: assignmentLevel
+    dceId: dceId
+    location: location
+    mgname: mgname
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    imageGalleryName: imagaGalleryName
+    resourceGroupId: resourceGroupId
+    storageAccountname: storageAccountName
+    tableName: 'addsmonitoring'
+    tags: Tags
+    actionGroupResourceId: actionGroupResourceId
+    customerTags: customerTags
+    workspaceId: workspaceId
+  }
+}
 
 module WinOSPack './WinOS/monitoring.bicep' = {
   name: 'WinOSPack'
@@ -67,6 +89,7 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     actionGroupResourceId: actionGroupResourceId
   }
 }
+
 module LxOSPack './LxOS/monitoring.bicep' = {
   name: 'LxOSPack-deployment'
   params: {

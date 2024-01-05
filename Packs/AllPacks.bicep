@@ -28,7 +28,9 @@ param existingActionGroupResourceId string
 param deployIaaSPacks bool
 param deployPaaSPacks bool
 param deployPlatformPacks bool
-
+param storageAccountName string
+@secure()
+param imagaGalleryName string
 var solutionTagComponents='MonitorStarterPacksComponents'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -67,6 +69,8 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     mgname: mgname
     resourceGroupId: resourceGroupId
     subscriptionId: subscriptionId
+    storageAccountName: storageAccountName
+    imagaGalleryName: imagaGalleryName
   }
 }
 

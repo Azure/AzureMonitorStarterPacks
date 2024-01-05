@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "14892428820837582553"
+      "templateHash": "4734039291944877899"
     }
   },
   "parameters": {
@@ -95,6 +95,12 @@
     },
     "deployPlatformPacks": {
       "type": "bool"
+    },
+    "storageAccountName": {
+      "type": "string"
+    },
+    "imagaGalleryName": {
+      "type": "securestring"
     }
   },
   "variables": {
@@ -236,6 +242,12 @@
           },
           "subscriptionId": {
             "value": "[parameters('subscriptionId')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "imagaGalleryName": {
+            "value": "[parameters('imagaGalleryName')]"
           }
         },
         "template": {
@@ -245,7 +257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9597593355851264922"
+              "templateHash": "12966093889174141253"
             }
           },
           "parameters": {
@@ -299,6 +311,12 @@
             },
             "actionGroupResourceId": {
               "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            },
+            "imagaGalleryName": {
+              "type": "string"
             }
           },
           "variables": {
@@ -307,6 +325,1632 @@
             "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'MonitoringPackType', 'IaaS', 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', variables('solutionTagComponents')), 'BackendComponent', 'solutionVersion', parameters('solutionVersion'), 'MonitoringPackType', 'IaaS'), parameters('customerTags').All))]"
           },
           "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "ADDSPack",
+              "location": "[deployment().location]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "assignmentLevel": {
+                    "value": "[parameters('assignmentLevel')]"
+                  },
+                  "dceId": {
+                    "value": "[parameters('dceId')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "mgname": {
+                    "value": "[parameters('mgname')]"
+                  },
+                  "solutionTag": {
+                    "value": "[parameters('solutionTag')]"
+                  },
+                  "subscriptionId": {
+                    "value": "[parameters('subscriptionId')]"
+                  },
+                  "userManagedIdentityResourceId": {
+                    "value": "[parameters('userManagedIdentityResourceId')]"
+                  },
+                  "imageGalleryName": {
+                    "value": "[parameters('imagaGalleryName')]"
+                  },
+                  "resourceGroupId": {
+                    "value": "[parameters('resourceGroupId')]"
+                  },
+                  "storageAccountname": {
+                    "value": "[parameters('storageAccountName')]"
+                  },
+                  "tableName": {
+                    "value": "addsmonitoring"
+                  },
+                  "tags": {
+                    "value": "[variables('Tags')]"
+                  },
+                  "actionGroupResourceId": {
+                    "value": "[parameters('actionGroupResourceId')]"
+                  },
+                  "customerTags": {
+                    "value": "[parameters('customerTags')]"
+                  },
+                  "workspaceId": {
+                    "value": "[parameters('workspaceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.20.4.51522",
+                      "templateHash": "7512075941060477530"
+                    }
+                  },
+                  "parameters": {
+                    "rulename": {
+                      "type": "string",
+                      "defaultValue": "AMSP-IIS2016-Server",
+                      "metadata": {
+                        "description": "Name of the DCR rule to be created"
+                      }
+                    },
+                    "actionGroupResourceId": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "location for the deployment."
+                      }
+                    },
+                    "workspaceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Full resource ID of the log analytics workspace to be used for the deployment."
+                      }
+                    },
+                    "packtag": {
+                      "type": "string",
+                      "defaultValue": "IIS2016"
+                    },
+                    "solutionTag": {
+                      "type": "string",
+                      "defaultValue": "MonitorStarterPacks"
+                    },
+                    "solutionVersion": {
+                      "type": "string",
+                      "defaultValue": "0.1.0"
+                    },
+                    "dceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
+                      }
+                    },
+                    "userManagedIdentityResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Full resource ID of the user managed identity to be used for the deployment"
+                      }
+                    },
+                    "mgname": {
+                      "type": "string"
+                    },
+                    "subscriptionId": {
+                      "type": "string"
+                    },
+                    "resourceGroupId": {
+                      "type": "string"
+                    },
+                    "assignmentLevel": {
+                      "type": "string"
+                    },
+                    "customerTags": {
+                      "type": "object"
+                    },
+                    "storageAccountname": {
+                      "type": "string"
+                    },
+                    "imageGalleryName": {
+                      "type": "string"
+                    },
+                    "tableName": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "object"
+                    }
+                  },
+                  "variables": {
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
+                    "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
+                    "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
+                    "kind": "Windows",
+                    "ruleshortname": "addscollection",
+                    "appName": "addscollection",
+                    "appDescription": "AD DS Collection",
+                    "OS": "Windows",
+                    "tableNameToUse": "[format('Custom{0}_CL', parameters('tableName'))]",
+                    "lawFriendlyName": "[split(parameters('workspaceId'), '/')[8]]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "addscollectionapp",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "resourceGroup": "[variables('resourceGroupName')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "aigname": {
+                            "value": "[parameters('imageGalleryName')]"
+                          },
+                          "appDescription": {
+                            "value": "[variables('appDescription')]"
+                          },
+                          "appName": {
+                            "value": "[variables('appName')]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "osType": {
+                            "value": "[variables('OS')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "9342682896621983311"
+                            }
+                          },
+                          "parameters": {
+                            "location": {
+                              "type": "string"
+                            },
+                            "aigname": {
+                              "type": "string"
+                            },
+                            "osType": {
+                              "type": "string"
+                            },
+                            "appDescription": {
+                              "type": "string"
+                            },
+                            "appName": {
+                              "type": "string"
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/galleries/applications",
+                              "apiVersion": "2022-03-03",
+                              "name": "[format('{0}/{1}', parameters('aigname'), parameters('appName'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "supportedOSType": "[parameters('osType')]",
+                                "description": "[parameters('appDescription')]"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "upload-addscollectionapp",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "resourceGroup": "[variables('resourceGroupName')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "containerName": {
+                            "value": "applications"
+                          },
+                          "filename": {
+                            "value": "addscollection.zip"
+                          },
+                          "storageAccountName": {
+                            "value": "[parameters('storageAccountname')]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "10597228499302456409"
+                            }
+                          },
+                          "parameters": {
+                            "location": {
+                              "type": "string"
+                            },
+                            "storageAccountName": {
+                              "type": "string"
+                            },
+                            "sasExpiry": {
+                              "type": "string",
+                              "defaultValue": "[dateTimeAdd(utcNow(), 'PT2H')]"
+                            },
+                            "filename": {
+                              "type": "string"
+                            },
+                            "containerName": {
+                              "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
+                            }
+                          },
+                          "variables": {
+                            "$fxv#0": "UEsDBBQAAAAIAPV9JFhjVxWhrwIAAGIIAAANAAAAYWRjb2xsZWN0LnBzMeVVUU/bMBB+z684mTw0E8nYnqZIfYiasiIaQAvShAhCIb62VpO4sp2OwvjvO6ekGi1MCG0S0vJQOXe+7/t897nZg7Nc5RUaVDDDcgEcdaHEwghZO65q6nNRYX+Kxue5QfAPpapyA0wyZ6/Xhb3ASG2UqKc9tqLHTxKfcxiNwqoKtWae47iVrIWRds9ElhxVnxVh9l3UXP7Q0V2jMIviOCXUDemL8EnC+WhEqGICvXaXMFjBDgX4Q6Wkigp7GEhFibUpVwNZG1E36HlwDw7QwzpKCOF0Hhyui/NSYc5XgLdCG83gJ8jG+BNCgVjoQi5RjeU0MLcG/GixwJo7D+BgqRHud2AHhEWsU3hUtqs1rzno5mb9pgMGryG0NNWci+cA2+TeOstc/oiwWp8uK+VUsz9voV/mPDhuFCdI3S+I3Irps4hvAkGhlzQz+IpGg5khFI1S1GaYKETQi7xAoN7bDMHPgSuxRHolC80If10TxUBywII7LoEe0uIbTo9xBX1go+NxEmbpRXo+TLLBGt7OUMkyRZOlqJaiQJ2dnMdptjGzzpjj6rPczAiw3yN9/hGZ5EzJBSqzAt+mYIvNP6FiYHFu8puc5tip0rCg3cwLXkw57lKWop7I9qrQuiEgP7anHaOxl2sj5vLgytlYYz+KHyW0e2nO89Q2bd/tdYhB27OyRfHC3xOpuCPlVS5qmrq3nbGBS7qrs6swVLKp+QuFH5+EP3w6ONj/7FFxp9c6/5SMaEWSS7Z9lm37g3XupOtXF5Jb1zdm8sX5CzbhXftbrxAguWN4cT0+HUTj6yQajI5Ohm+wSpxGsJmsPSd7Hz7ckWUd+IzWN3uPwDqs/9N/mihBTtpYbbgOuDDv6I/otQawim331t/Mo/Zr2HF6wRjrqZk9HbwwXY2dW7f+F23/BVBLAwQUAAAACAAagiRY1yvX29wDAABeDgAAFgAAAGFkZHNjb2xsZWN0aW9udGFzay54bWydV9tO20AQnedK/Yco7+QCtLQoDQoBSiQKiATx4pc0NiEiN9mGkH582zNn14lvSQyybK937jNnZ9f//jbkRN5kImMpyat44ksgI5nJVH5IWepSkRreJVCmMsC8C+pUhqTeS08uZA9cX/F1Ik35LJ+kgdk+tDxv1LhPjcbqFFSdf5IQ11yOpYorgK0nyE6oqYL3CDM+tAS4H8FZoTcT8C7okYuvBahVaK/hOsSohnGVsiHeofWqbP0s4WrIHawMwRGA7oMjtL52cD9itOY1/Gfk8TC/T/0HjL+Op371MKohhjrsH4P2HX5+IaWGr0PIV2Makppb8oL5J9j0QVOvh+Cc4xpj3Gf+PWh2MP4DXh9ffcQ9YfyqOakhqf0ekXYw68D+iPmd2eosKRvR15mpviM3WnOfHg9txdP225AfE0UuRn6KP8ltJLqsmI/nKWy9rCSXO3K/z6diQGPYpiVr8xz0vvympy44NO4XjFVTmpbnsUGtCxnlOoUVrXaerTWalsiWZjRkJl6ZpyZiibCST89arxa2r7xF66G8m2vbkFvSFJsjIFV1Zmuf5Slh5HLdxzFbzo3rHhrVbodZ77Lme1hV+v5msRvnyGq4Y92vwKOI1+xdMh7NlWK7xayOQInqa9CflkrnMBtXMm/bc6N48dj1TEfN5u0X6xhSWr3qsFuGq14QwMKM3WHAGnegZcpMenKNe0Ev3qsl3e90/avvY3bY9XrqoAfcQMcpO4NB54j6kuvmYxqSXqjMDP6rxE+MTMaKWH+fZLojRz5f0mMXK0G5TceNunjcWjGJbGwmHw9E5DQHj014b/DjpbraNpmkHYNnjXyMOms+rom/BRHzXMDqRzQkfdAVqvPbkZ+s+Q13HCN3zn6VX+E8vrxe4Fn0a/biMtloN3OmO0GxuOKI6iY0n9mzTja6YhJJKx/dxRrsiy4uRVQ6H0naLmxtzupmzqTOB8g9Y76H6I1UWlceRzoTb6APuMeYs0sP7wnmrvjWk2ET/a8nRzg3XNoMFZHJ2+FmfIbsokexHSA+H98fNqNFkTJY2Q8w0+ZI+8cbnrt2znXkeWugzZPzGj1tnJccZDN+jnbg3ZL4V5wdIDtpjlu+tbt12YMUpw46gPlncLAiI3qwolfov2dPIEkvsn62IDtElBNiLmSG9tBzZsyr/geMiJySnb3CPcQdfU9j56a+zeer5c9WOb4Llnh2mvOPISD/xcpWOTdfrdWZ3MH4DFeXJ3WXJ+0xZQf8b5mDuw4tZnVnI8zm4cH2V4MT3U99q21mT7JFPTKrZpe2dHfLYsn4Hkdo9O9XXf39NeU/UEsDBBQAAAAIACeBJFgTckI9OwEAAMUBAAALAAAAaW5zdGFsbC5wczFFkLFOwzAURfdI+Ycnt0MzOIi1EkPUtBMCRIrEkMWyX1Orjh3ZTpu08GUMfBK/gJuE4sGy9N69vuf+fH3PYGWReQQhHTdHtD3sjBJo42i+GR4PhC/Lk9TCnFx2bi2WWZ4XJI7kDhaLCj2VHmuY3wxG2XgDXVtrbMa9NBoKqVB71a+M9lK3mCRwgTiCcMjctnora4QlPB/SSc1UCCd6wE467wh8gGk93QUbyKfvHk2V+s4DzZoGtYijzzhC5RAuo3F9ENLCxDJMZ+uuYVrQzPK9PCKk5V/09CybOOKm6YEJbpRC7tPG3f/LX7EKSdDSgu9RtArFlrkD0PdawdAFD2iBEdI7JoSbPAK7D2tpF7ZGBOet1FUC9Cp/YgGbZDnkBaxuCriOCNCNsRyBvrnQR9G7a9eD6oX5PZCS/AJQSwECFAMUAAAACAD1fSRYY1cVoa8CAABiCAAADQAAAAAAAAAAAAAApIEAAAAAYWRjb2xsZWN0LnBzMVBLAQIUAxQAAAAIABqCJFjXK9fb3AMAAF4OAAAWAAAAAAAAAAAAAACkgdoCAABhZGRzY29sbGVjdGlvbnRhc2sueG1sUEsBAhQDFAAAAAgAJ4EkWBNyQj07AQAAxQEAAAsAAAAAAAAAAAAAAKSB6gYAAGluc3RhbGwucHMxUEsFBgAAAAADAAMAuAAAAE4IAAAAAA==",
+                            "discoveryContainerName": "applications",
+                            "tempfilename": "download.tmp",
+                            "sasConfig": {
+                              "signedResourceTypes": "sco",
+                              "signedPermission": "r",
+                              "signedServices": "b",
+                              "signedExpiry": "[parameters('sasExpiry')]",
+                              "signedProtocol": "https",
+                              "keyToSign": "key2"
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Resources/deploymentScripts",
+                              "apiVersion": "2020-10-01",
+                              "name": "deployscript-addappdiscovery",
+                              "tags": "[parameters('tags')]",
+                              "location": "[parameters('location')]",
+                              "kind": "AzureCLI",
+                              "properties": {
+                                "azCliVersion": "2.42.0",
+                                "timeout": "PT5M",
+                                "retentionInterval": "PT1H",
+                                "environmentVariables": [
+                                  {
+                                    "name": "AZURE_STORAGE_ACCOUNT",
+                                    "value": "[parameters('storageAccountName')]"
+                                  },
+                                  {
+                                    "name": "AZURE_STORAGE_KEY",
+                                    "secureValue": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]"
+                                  },
+                                  {
+                                    "name": "CONTENT",
+                                    "value": "[variables('$fxv#0')]"
+                                  }
+                                ],
+                                "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "fileURL": {
+                              "type": "string",
+                              "value": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "addscollectionappversion",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "resourceGroup": "[variables('resourceGroupName')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "aigname": {
+                            "value": "[parameters('imageGalleryName')]"
+                          },
+                          "appName": {
+                            "value": "[variables('appName')]"
+                          },
+                          "appVersionName": {
+                            "value": "1.0.0"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "targetRegion": {
+                            "value": "[parameters('location')]"
+                          },
+                          "mediaLink": {
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'upload-addscollectionapp'), '2022-09-01').outputs.fileURL.value]"
+                          },
+                          "installCommands": {
+                            "value": "powershell -command \"ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1\""
+                          },
+                          "removeCommands": {
+                            "value": "Unregister-ScheduledTask -TaskName \"AD DS Collection Task\" \"\\\""
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "2989618728269898268"
+                            }
+                          },
+                          "parameters": {
+                            "aigname": {
+                              "type": "string"
+                            },
+                            "appName": {
+                              "type": "string"
+                            },
+                            "appVersionName": {
+                              "type": "string"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "targetRegion": {
+                              "type": "string"
+                            },
+                            "mediaLink": {
+                              "type": "string"
+                            },
+                            "installCommands": {
+                              "type": "string"
+                            },
+                            "removeCommands": {
+                              "type": "string"
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/galleries/applications/versions",
+                              "apiVersion": "2022-03-03",
+                              "name": "[format('{0}/{1}/{2}', parameters('aigname'), parameters('appName'), parameters('appVersionName'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "publishingProfile": {
+                                  "source": {
+                                    "mediaLink": "[parameters('mediaLink')]"
+                                  },
+                                  "manageActions": {
+                                    "install": "[parameters('installCommands')]",
+                                    "remove": "[parameters('removeCommands')]"
+                                  },
+                                  "settings": {},
+                                  "enableHealthCheck": false,
+                                  "targetRegions": [
+                                    {
+                                      "name": "[parameters('targetRegion')]",
+                                      "regionalReplicaCount": 1,
+                                      "storageAccountType": "Standard_LRS"
+                                    }
+                                  ],
+                                  "replicaCount": 1,
+                                  "excludeFromLatest": false,
+                                  "storageAccountType": "Standard_LRS"
+                                }
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "appVersionId": {
+                              "type": "string",
+                              "value": "[resourceId('Microsoft.Compute/galleries/applications/versions', parameters('aigname'), parameters('appName'), parameters('appVersionName'))]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionapp')]",
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'upload-addscollectionapp')]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('applicationPolicy-{0}', variables('appName'))]",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "packtag": {
+                            "value": "ADDS"
+                          },
+                          "policyDescription": {
+                            "value": "[format('Install {0} to {1} VMs', variables('appName'), variables('OS'))]"
+                          },
+                          "policyName": {
+                            "value": "[format('Install {0}', variables('appName'))]"
+                          },
+                          "policyDisplayName": {
+                            "value": "[format('Install {0} to {1} VMs', variables('appName'), variables('OS'))]"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "vmapplicationResourceId": {
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionappversion'), '2022-09-01').outputs.appVersionId.value]"
+                          },
+                          "roledefinitionIds": {
+                            "value": [
+                              "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+                            ]
+                          },
+                          "packtype": {
+                            "value": "IaaS"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "14528133095756415505"
+                            }
+                          },
+                          "parameters": {
+                            "vmapplicationResourceId": {
+                              "type": "string"
+                            },
+                            "policyName": {
+                              "type": "string"
+                            },
+                            "policyDisplayName": {
+                              "type": "string"
+                            },
+                            "policyDescription": {
+                              "type": "string"
+                            },
+                            "packtag": {
+                              "type": "string"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "packtype": {
+                              "type": "string"
+                            },
+                            "roledefinitionIds": {
+                              "type": "array",
+                              "defaultValue": [
+                                "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                                "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+                              ]
+                            }
+                          },
+                          "variables": {
+                            "vmApplicationName": "[split(parameters('vmapplicationResourceId'), '/')[10]]"
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/policyDefinitions",
+                              "apiVersion": "2021-06-01",
+                              "name": "[parameters('policyName')]",
+                              "properties": {
+                                "description": "[parameters('policyDescription')]",
+                                "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
+                                "metadata": {
+                                  "category": "Monitoring",
+                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                  "MonitoringPackType": "[parameters('packtype')]"
+                                },
+                                "policyType": "Custom",
+                                "mode": "Indexed",
+                                "parameters": {
+                                  "tagName": {
+                                    "type": "String",
+                                    "metadata": {
+                                      "displayName": "Tag name",
+                                      "description": "A tag to apply the association conditionally."
+                                    },
+                                    "defaultValue": "[parameters('solutionTag')]"
+                                  },
+                                  "tagValue": {
+                                    "type": "String",
+                                    "metadata": {
+                                      "displayName": "Tag value",
+                                      "description": "The value of the tag."
+                                    },
+                                    "defaultValue": "[parameters('packtag')]"
+                                  },
+                                  "effect": {
+                                    "type": "String",
+                                    "metadata": {
+                                      "displayName": "Effect",
+                                      "description": "Enable or disable the execution of the policy"
+                                    },
+                                    "allowedValues": [
+                                      "DeployIfNotExists",
+                                      "Disabled"
+                                    ],
+                                    "defaultValue": "DeployIfNotExists"
+                                  },
+                                  "vmapplicationId": {
+                                    "type": "String",
+                                    "metadata": {
+                                      "displayName": "applicationId",
+                                      "description": "the VM application ID to assign to the VM"
+                                    },
+                                    "defaultValue": "[parameters('vmapplicationResourceId')]"
+                                  }
+                                },
+                                "policyRule": {
+                                  "if": {
+                                    "allOf": [
+                                      {
+                                        "field": "[[concat('tags[', parameters('tagName'), ']')]",
+                                        "contains": "[[parameters('tagValue')]"
+                                      },
+                                      {
+                                        "field": "type",
+                                        "equals": "Microsoft.Compute/virtualMachines"
+                                      }
+                                    ]
+                                  },
+                                  "then": {
+                                    "effect": "[[parameters('effect')]",
+                                    "details": {
+                                      "type": "Microsoft.Compute/virtualMachines",
+                                      "name": "[[field('name')]",
+                                      "existenceCondition": {
+                                        "allOf": [
+                                          {
+                                            "count": {
+                                              "field": "Microsoft.Compute/virtualMachines/applicationProfile.galleryApplications[*]",
+                                              "where": {
+                                                "field": "Microsoft.Compute/virtualMachines/applicationProfile.galleryApplications[*].packageReferenceId",
+                                                "equals": "[[parameters('vmapplicationId')]"
+                                              }
+                                            },
+                                            "greater": 0
+                                          }
+                                        ]
+                                      },
+                                      "roleDefinitionIds": "[parameters('roledefinitionIds')]",
+                                      "deployment": {
+                                        "properties": {
+                                          "mode": "incremental",
+                                          "template": {
+                                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+                                            "contentVersion": "1.0.0.0",
+                                            "parameters": {
+                                              "vmName": {
+                                                "type": "string"
+                                              },
+                                              "location": {
+                                                "type": "string"
+                                              },
+                                              "vmapplicationId": {
+                                                "type": "string"
+                                              }
+                                            },
+                                            "variables": {
+                                              "vmApplicationName": "[variables('vmApplicationName')]"
+                                            },
+                                            "resources": [
+                                              {
+                                                "apiVersion": "2021-07-01",
+                                                "type": "Microsoft.Compute/virtualMachines/VMapplications",
+                                                "name": "[[concat(parameters('vmName'), '/',variables('vmApplicationName'))]",
+                                                "location": "[[parameters('location')]",
+                                                "properties": {
+                                                  "packageReferenceId": "[[parameters('vmapplicationId')]"
+                                                }
+                                              }
+                                            ]
+                                          },
+                                          "parameters": {
+                                            "vmName": {
+                                              "value": "[[field('name')]"
+                                            },
+                                            "location": {
+                                              "value": "[[field('location')]"
+                                            },
+                                            "vmapplicationId": {
+                                              "value": "[[parameters('vmapplicationId')]"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "policyId": {
+                              "type": "string",
+                              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', parameters('policyName'))]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionappversion')]"
+                      ]
+                    },
+                    {
+                      "condition": "[equals(parameters('assignmentLevel'), 'managementGroup')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('Assignment-{0}', variables('ruleshortname'))]",
+                      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "policyDefinitionId": {
+                            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('applicationPolicy-{0}', variables('appName'))), '2022-09-01').outputs.policyId.value]"
+                          },
+                          "assignmentName": {
+                            "value": "[format('{0}-application', variables('ruleshortname'))]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "userManagedIdentityResourceId": {
+                            "value": "[parameters('userManagedIdentityResourceId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "18204016525654709950"
+                            }
+                          },
+                          "parameters": {
+                            "policyDefinitionId": {
+                              "type": "string"
+                            },
+                            "assignmentName": {
+                              "type": "string"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "userManagedIdentityResourceId": {
+                              "type": "string"
+                            }
+                          },
+                          "variables": {
+                            "loc2": "[trim(parameters('location'))]"
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/policyAssignments",
+                              "apiVersion": "2022-06-01",
+                              "name": "[parameters('assignmentName')]",
+                              "identity": {
+                                "type": "UserAssigned",
+                                "userAssignedIdentities": {
+                                  "[format('{0}', parameters('userManagedIdentityResourceId'))]": {}
+                                }
+                              },
+                              "location": "[variables('loc2')]",
+                              "properties": {
+                                "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                                "displayName": "[parameters('assignmentName')]",
+                                "enforcementMode": "Default",
+                                "metadata": {
+                                  "createdBy": "[parameters('solutionTag')]"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('applicationPolicy-{0}', variables('appName')))]"
+                      ]
+                    },
+                    {
+                      "condition": "[not(equals(parameters('assignmentLevel'), 'managementGroup'))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('AssignSub-{0}', variables('ruleshortname'))]",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "policyDefinitionId": {
+                            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('applicationPolicy-{0}', variables('appName'))), '2022-09-01').outputs.policyId.value]"
+                          },
+                          "assignmentName": {
+                            "value": "[format('{0}-application', variables('ruleshortname'))]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "userManagedIdentityResourceId": {
+                            "value": "[parameters('userManagedIdentityResourceId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "15632908880880169790"
+                            }
+                          },
+                          "parameters": {
+                            "policyDefinitionId": {
+                              "type": "string"
+                            },
+                            "assignmentName": {
+                              "type": "string"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "userManagedIdentityResourceId": {
+                              "type": "string"
+                            }
+                          },
+                          "variables": {
+                            "loc2": "[trim(parameters('location'))]"
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/policyAssignments",
+                              "apiVersion": "2022-06-01",
+                              "name": "[parameters('assignmentName')]",
+                              "identity": {
+                                "type": "UserAssigned",
+                                "userAssignedIdentities": {
+                                  "[format('{0}', parameters('userManagedIdentityResourceId'))]": {}
+                                }
+                              },
+                              "location": "[variables('loc2')]",
+                              "properties": {
+                                "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                                "displayName": "[parameters('assignmentName')]",
+                                "enforcementMode": "Default",
+                                "metadata": {
+                                  "createdBy": "[parameters('solutionTag')]"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('applicationPolicy-{0}', variables('appName')))]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[variables('tableNameToUse')]",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "resourceGroup": "[variables('resourceGroupName')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "parentname": {
+                            "value": "[variables('lawFriendlyName')]"
+                          },
+                          "tableName": {
+                            "value": "[variables('tableNameToUse')]"
+                          },
+                          "retentionDays": {
+                            "value": 31
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "8927710276797462866"
+                            }
+                          },
+                          "parameters": {
+                            "parentname": {
+                              "type": "string"
+                            },
+                            "tableName": {
+                              "type": "string"
+                            },
+                            "retentionDays": {
+                              "type": "int",
+                              "defaultValue": 31
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.OperationalInsights/workspaces/tables",
+                              "apiVersion": "2022-10-01",
+                              "name": "[format('{0}/{1}', parameters('parentname'), parameters('tableName'))]",
+                              "properties": {
+                                "totalRetentionInDays": "[parameters('retentionDays')]",
+                                "plan": "Analytics",
+                                "schema": {
+                                  "name": "[parameters('tableName')]",
+                                  "columns": [
+                                    {
+                                      "name": "TimeGenerated",
+                                      "type": "datetime"
+                                    },
+                                    {
+                                      "name": "RawData",
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "retentionInDays": "[parameters('retentionDays')]"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "addscollectionDCR",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "resourceGroup": "[variables('resourceGroupName')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "endpointResourceId": {
+                            "value": "[parameters('dceId')]"
+                          },
+                          "filepatterns": {
+                            "value": [
+                              "C:\\WindowsAzure\\ADDS\\*.csv"
+                            ]
+                          },
+                          "kind": {
+                            "value": "Windows"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "lawResourceId": {
+                            "value": "[parameters('workspaceId')]"
+                          },
+                          "OS": {
+                            "value": "Windows"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "tableName": {
+                            "value": "[variables('tableNameToUse')]"
+                          },
+                          "packtag": {
+                            "value": "ADDS"
+                          },
+                          "packtype": {
+                            "value": "IaaS"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "10014994990107653839"
+                            }
+                          },
+                          "parameters": {
+                            "location": {
+                              "type": "string"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "lawResourceId": {
+                              "type": "string"
+                            },
+                            "tableName": {
+                              "type": "string"
+                            },
+                            "packtag": {
+                              "type": "string",
+                              "defaultValue": "discovery"
+                            },
+                            "kind": {
+                              "type": "string"
+                            },
+                            "filepatterns": {
+                              "type": "array"
+                            },
+                            "OS": {
+                              "type": "string"
+                            },
+                            "packtype": {
+                              "type": "string"
+                            },
+                            "endpointResourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Specifies the resource id of the data collection endpoint."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "tableNameToUse": "[parameters('tableName')]",
+                            "streamName": "[format('Custom-{0}', variables('tableNameToUse'))]",
+                            "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]"
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Insights/dataCollectionRules",
+                              "apiVersion": "2022-06-01",
+                              "name": "[format('AMSP-Disc-{0}', parameters('OS'))]",
+                              "location": "[parameters('location')]",
+                              "tags": {
+                                "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                "MonitoringPackType": "[parameters('packtype')]"
+                              },
+                              "kind": "[parameters('kind')]",
+                              "properties": {
+                                "dataSources": {
+                                  "logFiles": [
+                                    {
+                                      "streams": [
+                                        "[variables('streamName')]"
+                                      ],
+                                      "filePatterns": "[parameters('filepatterns')]",
+                                      "format": "text",
+                                      "settings": {
+                                        "text": {
+                                          "recordStartTimestampFormat": "ISO 8601"
+                                        }
+                                      },
+                                      "name": "[variables('tableNameToUse')]"
+                                    }
+                                  ]
+                                },
+                                "destinations": {
+                                  "logAnalytics": [
+                                    {
+                                      "workspaceResourceId": "[parameters('lawResourceId')]",
+                                      "name": "[variables('lawFriendlyName')]"
+                                    }
+                                  ]
+                                },
+                                "dataFlows": [
+                                  {
+                                    "streams": [
+                                      "[variables('streamName')]"
+                                    ],
+                                    "destinations": [
+                                      "[variables('lawFriendlyName')]"
+                                    ],
+                                    "transformKql": "source",
+                                    "outputStream": "[variables('streamName')]"
+                                  }
+                                ],
+                                "dataCollectionEndpointId": "[parameters('endpointResourceId')]",
+                                "streamDeclarations": {
+                                  "[format('{0}', variables('streamName'))]": {
+                                    "columns": [
+                                      {
+                                        "name": "TimeGenerated",
+                                        "type": "datetime"
+                                      },
+                                      {
+                                        "name": "RawData",
+                                        "type": "string"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "ruleId": {
+                              "type": "string",
+                              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', format('AMSP-Disc-{0}', parameters('OS')))]"
+                            },
+                            "ruleName": {
+                              "type": "string",
+                              "value": "[format('AMSP-Disc-{0}', parameters('OS'))]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', variables('tableNameToUse'))]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "policysetup-windoscovery",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "dcrId": {
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionDCR'), '2022-09-01').outputs.ruleId.value]"
+                          },
+                          "packtag": {
+                            "value": "ADDS"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "rulename": {
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionDCR'), '2022-09-01').outputs.ruleName.value]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "userManagedIdentityResourceId": {
+                            "value": "[parameters('userManagedIdentityResourceId')]"
+                          },
+                          "mgname": {
+                            "value": "[parameters('mgname')]"
+                          },
+                          "ruleshortname": {
+                            "value": "[variables('ruleshortname')]"
+                          },
+                          "assignmentLevel": {
+                            "value": "[parameters('assignmentLevel')]"
+                          },
+                          "subscriptionId": {
+                            "value": "[parameters('subscriptionId')]"
+                          },
+                          "packtype": {
+                            "value": "IaaS"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "10986984060960096891"
+                            }
+                          },
+                          "parameters": {
+                            "packtag": {
+                              "type": "string"
+                            },
+                            "dcrId": {
+                              "type": "string"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "rulename": {
+                              "type": "string"
+                            },
+                            "ruleshortname": {
+                              "type": "string"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "userManagedIdentityResourceId": {
+                              "type": "string"
+                            },
+                            "mgname": {
+                              "type": "string"
+                            },
+                            "assignmentLevel": {
+                              "type": "string",
+                              "defaultValue": "managementGroup"
+                            },
+                            "subscriptionId": {
+                              "type": "string"
+                            },
+                            "packtype": {
+                              "type": "string"
+                            }
+                          },
+                          "variables": {
+                            "roledefinitionIds": [
+                              "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                              "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+                            ],
+                            "dcrName": "[split(parameters('dcrId'), '/')[8]]"
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                              "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
+                              "location": "[deployment().location]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "packtag": {
+                                    "value": "[parameters('packtag')]"
+                                  },
+                                  "policyDescription": {
+                                    "value": "[format('Policy to associate the {0} DCR with the VMs tagged with {1} tag.', parameters('rulename'), parameters('packtag'))]"
+                                  },
+                                  "policyDisplayName": {
+                                    "value": "[format('Associate the {0} DCR with the VMs tagged with {1} tag.', parameters('rulename'), parameters('packtag'))]"
+                                  },
+                                  "policyName": {
+                                    "value": "[format('Associate-{0}-{1}-vms', parameters('rulename'), parameters('packtag'))]"
+                                  },
+                                  "DCRId": {
+                                    "value": "[parameters('dcrId')]"
+                                  },
+                                  "solutionTag": {
+                                    "value": "[parameters('solutionTag')]"
+                                  },
+                                  "roledefinitionIds": {
+                                    "value": "[variables('roledefinitionIds')]"
+                                  },
+                                  "packtype": {
+                                    "value": "Discovery"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "6542040609382835659"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "DCRId": {
+                                      "type": "string"
+                                    },
+                                    "policyName": {
+                                      "type": "string"
+                                    },
+                                    "policyDisplayName": {
+                                      "type": "string"
+                                    },
+                                    "policyDescription": {
+                                      "type": "string"
+                                    },
+                                    "packtag": {
+                                      "type": "string"
+                                    },
+                                    "packtype": {
+                                      "type": "string"
+                                    },
+                                    "solutionTag": {
+                                      "type": "string"
+                                    },
+                                    "roledefinitionIds": {
+                                      "type": "array",
+                                      "defaultValue": [
+                                        "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                                        "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+                                      ]
+                                    }
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Authorization/policyDefinitions",
+                                      "apiVersion": "2021-06-01",
+                                      "name": "[parameters('policyName')]",
+                                      "properties": {
+                                        "description": "[parameters('policyDescription')]",
+                                        "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
+                                        "metadata": {
+                                          "category": "Monitoring",
+                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                          "MonitoringPackType": "[parameters('packtype')]"
+                                        },
+                                        "policyType": "Custom",
+                                        "mode": "Indexed",
+                                        "parameters": {
+                                          "tagName": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Tag name",
+                                              "description": "A tag to apply the association conditionally."
+                                            },
+                                            "defaultValue": "[parameters('solutionTag')]"
+                                          },
+                                          "tagValue": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Tag value",
+                                              "description": "The value of the tag."
+                                            },
+                                            "defaultValue": "[parameters('packtag')]"
+                                          },
+                                          "effect": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Effect",
+                                              "description": "Enable or disable the execution of the policy"
+                                            },
+                                            "allowedValues": [
+                                              "DeployIfNotExists",
+                                              "Disabled"
+                                            ],
+                                            "defaultValue": "DeployIfNotExists"
+                                          },
+                                          "DCRid": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "DCRId",
+                                              "description": "The value of the DCRId."
+                                            },
+                                            "defaultValue": "[parameters('DCRId')]"
+                                          }
+                                        },
+                                        "policyRule": {
+                                          "if": {
+                                            "allOf": [
+                                              {
+                                                "field": "[[concat('tags[', parameters('tagName'), ']')]",
+                                                "contains": "[[parameters('tagValue')]"
+                                              },
+                                              {
+                                                "field": "type",
+                                                "equals": "Microsoft.Compute/virtualMachines"
+                                              }
+                                            ]
+                                          },
+                                          "then": {
+                                            "effect": "[[parameters('effect')]",
+                                            "details": {
+                                              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+                                              "name": "[format('MonStar-{0}-{1}', parameters('packtag'), split(parameters('DCRId'), '/')[8])]",
+                                              "roleDefinitionIds": "[parameters('roledefinitionIds')]",
+                                              "deployment": {
+                                                "properties": {
+                                                  "mode": "incremental",
+                                                  "template": {
+                                                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                                    "contentVersion": "1.0.0.0",
+                                                    "parameters": {
+                                                      "resourceGroup": {
+                                                        "type": "string"
+                                                      },
+                                                      "vmName": {
+                                                        "type": "string"
+                                                      },
+                                                      "DCRId2": {
+                                                        "type": "string"
+                                                      },
+                                                      "packTag": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "variables": {
+                                                      "locationLongNameToShortMap": {
+                                                        "canadacentral": "CCA",
+                                                        "canadaeast": "CCA",
+                                                        "centralus": "CUS",
+                                                        "eastus2euap": "eus2p",
+                                                        "eastus": "EUS",
+                                                        "eastus2": "EUS2",
+                                                        "southcentralus": "SCUS",
+                                                        "westcentralus": "WCUS",
+                                                        "westus": "WUS",
+                                                        "westus2": "WUS2"
+                                                      },
+                                                      "DCRName": "[[split(parameters('DCRId2'),'/')[8]]",
+                                                      "subscriptionId": "[[subscription().subscriptionId]",
+                                                      "dcraName": "[[concat(parameters('vmName'),'/Microsoft.Insights/MonStar-',parameters('packTag'),'-',split(parameters('DCRId2'),'/')[8])]"
+                                                    },
+                                                    "resources": [
+                                                      {
+                                                        "type": "Microsoft.Compute/virtualMachines/providers/dataCollectionRuleAssociations",
+                                                        "name": "[[variables('dcraName')]",
+                                                        "apiVersion": "2021-04-01",
+                                                        "properties": {
+                                                          "description": "Association of data collection rule for Azure Monitor Starter Packs for VMs",
+                                                          "dataCollectionRuleId": "[[parameters('DCRId2')]"
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "parameters": {
+                                                    "resourceGroup": {
+                                                      "value": "[[resourceGroup().name]"
+                                                    },
+                                                    "vmName": {
+                                                      "value": "[[field('name')]"
+                                                    },
+                                                    "DCRId2": {
+                                                      "value": "[[parameters('DCRId')]"
+                                                    },
+                                                    "packTag": {
+                                                      "value": "[[parameters('tagValue')]"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "outputs": {
+                                    "policyId": {
+                                      "type": "string",
+                                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', parameters('policyName'))]"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "condition": "[equals(parameters('assignmentLevel'), 'managementGroup')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('Assignment-{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]",
+                              "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
+                              "location": "[deployment().location]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "policyDefinitionId": {
+                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                  },
+                                  "assignmentName": {
+                                    "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "solutionTag": {
+                                    "value": "[parameters('solutionTag')]"
+                                  },
+                                  "userManagedIdentityResourceId": {
+                                    "value": "[parameters('userManagedIdentityResourceId')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "18204016525654709950"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "policyDefinitionId": {
+                                      "type": "string"
+                                    },
+                                    "assignmentName": {
+                                      "type": "string"
+                                    },
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "solutionTag": {
+                                      "type": "string"
+                                    },
+                                    "userManagedIdentityResourceId": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "variables": {
+                                    "loc2": "[trim(parameters('location'))]"
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Authorization/policyAssignments",
+                                      "apiVersion": "2022-06-01",
+                                      "name": "[parameters('assignmentName')]",
+                                      "identity": {
+                                        "type": "UserAssigned",
+                                        "userAssignedIdentities": {
+                                          "[format('{0}', parameters('userManagedIdentityResourceId'))]": {}
+                                        }
+                                      },
+                                      "location": "[variables('loc2')]",
+                                      "properties": {
+                                        "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                                        "displayName": "[parameters('assignmentName')]",
+                                        "enforcementMode": "Default",
+                                        "metadata": {
+                                          "createdBy": "[parameters('solutionTag')]"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "dependsOn": [
+                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                              ]
+                            },
+                            {
+                              "condition": "[not(equals(parameters('assignmentLevel'), 'managementGroup'))]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('AssignSub-{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]",
+                              "subscriptionId": "[parameters('subscriptionId')]",
+                              "location": "[deployment().location]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "policyDefinitionId": {
+                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                  },
+                                  "assignmentName": {
+                                    "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "solutionTag": {
+                                    "value": "[parameters('solutionTag')]"
+                                  },
+                                  "userManagedIdentityResourceId": {
+                                    "value": "[parameters('userManagedIdentityResourceId')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "15632908880880169790"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "policyDefinitionId": {
+                                      "type": "string"
+                                    },
+                                    "assignmentName": {
+                                      "type": "string"
+                                    },
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "solutionTag": {
+                                      "type": "string"
+                                    },
+                                    "userManagedIdentityResourceId": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "variables": {
+                                    "loc2": "[trim(parameters('location'))]"
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Authorization/policyAssignments",
+                                      "apiVersion": "2022-06-01",
+                                      "name": "[parameters('assignmentName')]",
+                                      "identity": {
+                                        "type": "UserAssigned",
+                                        "userAssignedIdentities": {
+                                          "[format('{0}', parameters('userManagedIdentityResourceId'))]": {}
+                                        }
+                                      },
+                                      "location": "[variables('loc2')]",
+                                      "properties": {
+                                        "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                                        "displayName": "[parameters('assignmentName')]",
+                                        "enforcementMode": "Default",
+                                        "metadata": {
+                                          "createdBy": "[parameters('solutionTag')]"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "dependsOn": [
+                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionDCR')]"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
