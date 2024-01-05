@@ -2,13 +2,13 @@ targetScope = 'managementGroup'
 
 
 @description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-IIS2016-Server'
+param rulename string = 'AMSP-ADDS-Server'
+param packtag string = 'ADDS'
 param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-param packtag string = 'ADDS'
 param solutionTag string = 'MonitorStarterPacks'
 param solutionVersion string = '0.1.0'
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')

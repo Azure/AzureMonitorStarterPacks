@@ -2,7 +2,7 @@ param location string
 param solutionTag string
 param lawResourceId string
 param tableName string
-param packtag string = 'discovery'
+param packtag string
 param kind string
 param filepatterns array
 param OS string
@@ -15,7 +15,7 @@ var streamName= 'Custom-${tableNameToUse}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
-  name: 'AMSP-Disc-${OS}'
+  name: 'AMSP-FileColl-${packtype}-${OS}'
   location: location
   tags: {
     '${solutionTag}': packtag

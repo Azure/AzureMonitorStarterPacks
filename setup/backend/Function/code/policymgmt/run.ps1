@@ -18,8 +18,8 @@ switch ($action) {
         "Into selected Remediate action."
         "Policy List provided? Let's see..."
         $Request.Body.Policies
-        $policylist=$Request.Body.Policies | ConvertFrom-Json
-        if ($policylist -eq $null) {
+        $policylist=$Request.Body.Policies
+        if ($null -eq $policylist) {
             $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null}
         }
         else {

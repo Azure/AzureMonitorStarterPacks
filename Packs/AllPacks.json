@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "13644750095357688727"
+      "templateHash": "18337953933635917440"
     }
   },
   "parameters": {
@@ -257,7 +257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "6536583976304401527"
+              "templateHash": "11904226227105068468"
             }
           },
           "parameters": {
@@ -389,16 +389,20 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11989407507097822580"
+                      "templateHash": "11497092845213221777"
                     }
                   },
                   "parameters": {
                     "rulename": {
                       "type": "string",
-                      "defaultValue": "AMSP-IIS2016-Server",
+                      "defaultValue": "AMSP-ADDS-Server",
                       "metadata": {
                         "description": "Name of the DCR rule to be created"
                       }
+                    },
+                    "packtag": {
+                      "type": "string",
+                      "defaultValue": "ADDS"
                     },
                     "actionGroupResourceId": {
                       "type": "string"
@@ -414,10 +418,6 @@
                       "metadata": {
                         "description": "Full resource ID of the log analytics workspace to be used for the deployment."
                       }
-                    },
-                    "packtag": {
-                      "type": "string",
-                      "defaultValue": "ADDS"
                     },
                     "solutionTag": {
                       "type": "string",
@@ -2349,7 +2349,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "10014994990107653839"
+                              "templateHash": "3546123484041713947"
                             }
                           },
                           "parameters": {
@@ -2366,8 +2366,7 @@
                               "type": "string"
                             },
                             "packtag": {
-                              "type": "string",
-                              "defaultValue": "discovery"
+                              "type": "string"
                             },
                             "kind": {
                               "type": "string"
@@ -2397,7 +2396,7 @@
                             {
                               "type": "Microsoft.Insights/dataCollectionRules",
                               "apiVersion": "2022-06-01",
-                              "name": "[format('AMSP-Disc-{0}', parameters('OS'))]",
+                              "name": "[format('AMSP-FileColl-{0}-{1}', parameters('packtype'), parameters('OS'))]",
                               "location": "[parameters('location')]",
                               "tags": {
                                 "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
@@ -2463,11 +2462,11 @@
                           "outputs": {
                             "ruleId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', format('AMSP-Disc-{0}', parameters('OS')))]"
+                              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', format('AMSP-FileColl-{0}-{1}', parameters('packtype'), parameters('OS')))]"
                             },
                             "ruleName": {
                               "type": "string",
-                              "value": "[format('AMSP-Disc-{0}', parameters('OS'))]"
+                              "value": "[format('AMSP-FileColl-{0}-{1}', parameters('packtype'), parameters('OS'))]"
                             }
                           }
                         }

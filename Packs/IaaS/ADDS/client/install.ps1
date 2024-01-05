@@ -1,6 +1,5 @@
-﻿# Create discovery folder
-$Folder="c:\windowsAzure\ADDS"
-if ((get-item $discoveryFolderFolder -ErrorAction SilentlyContinue)) { 
+﻿$Folder="c:\windowsAzure\ADDS"
+if ((get-item $Folder -ErrorAction SilentlyContinue)) { 
     "$runTime : Ok.Folder already exists" | out-file DiscoverLog.txt -Append
 }
 else {
