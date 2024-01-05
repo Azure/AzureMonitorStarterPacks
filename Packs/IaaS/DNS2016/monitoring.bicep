@@ -25,7 +25,7 @@ var tempTags ={
   solutionVersion: solutionVersion
 }
 // if the customer has provided tags, then use them, otherwise use the default tags
-var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags['All'])
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'DNS2016'

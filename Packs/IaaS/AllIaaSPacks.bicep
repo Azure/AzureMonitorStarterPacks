@@ -33,12 +33,12 @@ var solutionTagComponents='MonitorStarterPacksComponents'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var Tags = (customerTags=={}) ? {
   '${solutionTagComponents}': 'BackendComponent'
-  'MonitoringPackType': 'IaaS'
-  'solutionVersion': solutionVersion} : union({
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion} : union({
   '${solutionTagComponents}': 'BackendComponent'
-  'solutionVersion': solutionVersion
-  'MonitoringPackType': 'IaaS'
-},customerTags['All'])
+  solutionVersion: solutionVersion
+  MonitoringPackType: 'IaaS'
+},customerTags.All)
 
 // module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
 //     name: 'deployAG-new'

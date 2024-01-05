@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "9095339064875188723"
+      "templateHash": "5911120729266619776"
     }
   },
   "parameters": {
@@ -1145,7 +1145,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "15586190674869500289"
+              "templateHash": "10387281639106552930"
             }
           },
           "parameters": {
@@ -1205,7 +1205,7 @@
                   ]
                 },
                 "dataSources": {
-                  "windowsEventLogs": "[if(empty(parameters('xPathQueries')), json('null'), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
+                  "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
                   "performanceCounters": [
                     {
                       "streams": [

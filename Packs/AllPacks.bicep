@@ -35,10 +35,10 @@ var solutionTagComponents='MonitorStarterPacksComponents'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
-'solutionVersion': solutionVersion} : union({
+solutionVersion: solutionVersion} : union({
   '${solutionTagComponents}': 'BackendComponent'
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  solutionVersion: solutionVersion
+},customerTags.All)
 
 module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
   name: 'deployAG-new'

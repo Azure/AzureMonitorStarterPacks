@@ -32,10 +32,10 @@ var solutionTagComponents='MonitorStarterPacksComponents'
 
 var Tags = (customerTags=={}) ? {
   '${solutionTagComponents}': 'BackendComponent'
-  'solutionVersion': solutionVersion} : union({
+  solutionVersion: solutionVersion} : union({
   '${solutionTagComponents}': 'BackendComponent'
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  solutionVersion: solutionVersion
+},customerTags.All)
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {

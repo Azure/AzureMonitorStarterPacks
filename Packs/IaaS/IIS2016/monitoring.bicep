@@ -26,7 +26,7 @@ var tempTags ={
   solutionVersion: solutionVersion
 }
 // if the customer has provided tags, then use them, otherwise use the default tags
-var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags['All'])
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'IIS2016'
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -120,25 +120,6 @@ var performanceCounters=[
   '\\SMTP Server(SMTP 1)\\Outbound Connections Current'
   '\\SMTP Server(SMTP 1)\\Total Messages Submitted'
 ]
-
-// Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-// module ag '../../../modules/actiongroups/ag.bicep' = {
-//   name: 'ag-deployment'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
-
-// Alerts - the module below creates the alerts and associates them with the action group
 
 module Alerts './WinIIS2016Alerts.bicep' = {
   name: 'Alerts-${packtag}'

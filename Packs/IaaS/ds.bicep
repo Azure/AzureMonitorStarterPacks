@@ -10,10 +10,10 @@ var grafanaName = split(grafanaResourceId, '/')[8]
 
 var tempfilename = '${fileName}.tmp'
 var Tags = (customerTags=={}) ? {'${solutionTag}': solutionTag
-'solutionVersion': solutionVersion} : union({
+solutionVersion: solutionVersion} : union({
   '${solutionTag}': solutionTag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  solutionVersion: solutionVersion
+},customerTags.All)
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-Grafana'
   tags: Tags
