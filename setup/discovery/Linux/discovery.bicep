@@ -20,7 +20,7 @@ var ruleshortname = 'LinuxDiscovery'
 var appName = 'LxDiscovery'
 var appDescription = 'Linux Workload discovery'
 var OS = 'Linux'
-
+var appVersionName = '1.0.5'
 //var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var tableNameToUse = 'Custom${tableName}_CL'
@@ -60,7 +60,7 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
   params: {
     aigname: imageGalleryName
     appName: appName
-    appVersionName: '1.0.2'
+    appVersionName: appVersionName
     location: location
     targetRegion: location
     mediaLink: uploadLinux.outputs.fileURL

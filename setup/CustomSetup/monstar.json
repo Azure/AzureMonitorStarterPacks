@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "8687793979419756012"
+      "templateHash": "7373053096662330324"
     }
   },
   "parameters": {
@@ -1388,7 +1388,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "7674331074046293180"
+              "templateHash": "1560587661788689063"
             }
           },
           "parameters": {
@@ -3135,7 +3135,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10181086313710513714"
+                      "templateHash": "12571469754184653252"
                     }
                   },
                   "parameters": {
@@ -3191,6 +3191,7 @@
                     "appName": "LxDiscovery",
                     "appDescription": "Linux Workload discovery",
                     "OS": "Linux",
+                    "appVersionName": "1.0.5",
                     "tableNameToUse": "[format('Custom{0}_CL', parameters('tableName'))]",
                     "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]"
                   },
@@ -3395,7 +3396,7 @@
                             "value": "[variables('appName')]"
                           },
                           "appVersionName": {
-                            "value": "1.0.2"
+                            "value": "[variables('appVersionName')]"
                           },
                           "location": {
                             "value": "[parameters('location')]"
