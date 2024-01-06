@@ -23,7 +23,7 @@ switch ($action) {
             $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null}
         }
         else {
-            Get-AzPolicyDefinition | Where-Object {($_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null) -and $_.ResourceId -in $policylist.policyId} 
+            $pols=Get-AzPolicyDefinition | Where-Object {($_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null) -and $_.ResourceId -in $policylist.policyId} 
         }
         foreach ($pol in $pols) {
             $compliance=(get-AzPolicystate | where-object {$_.PolicyDefinitionName -eq $pol.Name}).ComplianceState

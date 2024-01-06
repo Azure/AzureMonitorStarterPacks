@@ -779,7 +779,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resourcegraph/resources",
-                        "value": null
+                        "value": "WinOS"
                       }
                     ],
                     "style": "pills",
@@ -946,7 +946,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "WinOS"
                       }
                     ],
                     "style": "pills",
@@ -1106,7 +1106,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, name, subscriptionId, location, resourceGroup, type\n| sort by type asc",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored Services",
                     "exportMultipleValues": true,
@@ -1269,7 +1269,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, name, subscriptionId, location, resourceGroup, type",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id,type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1",
                     "size": 0,
                     "title": "Non-monitored Services",
                     "exportMultipleValues": true,
@@ -1415,7 +1415,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts'\n) \n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, name, subscriptionId, location, resourceGroup, type\n| sort by type asc",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools'\n) \n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored PaaS",
                     "exportMultipleValues": true,
@@ -1578,7 +1578,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, name, subscriptionId, location, resourceGroup, type",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored PaaS",
                     "exportMultipleValues": true,
@@ -1740,7 +1740,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "IIS"
+                  "value": "Storage"
                 }
               ],
               "style": "pills",
@@ -2685,10 +2685,10 @@
                         "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                         "headers": [],
                         "params": [],
-                        "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": {policyToRemediate}\n  }\n}",
+                        "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": [{policyToRemediate}]\n  }\n}",
                         "httpMethod": "POST",
                         "title": "Remediate a policy",
-                        "description": "# Remediate\n\n{policyToRemediate}\n",
+                        "description": "# Remediate\n\nPolicies:\n\n[{policyToRemediate}]\n",
                         "actionName": "Remediatepolicies",
                         "runLabel": "Remediate"
                       }
@@ -3175,12 +3175,46 @@
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
         "title": "Auto Discovery",
+        "loadType": "always",
         "items": [
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacksComponents) | project policyId=id, policyName=name, pack=tostring(properties.metadata.MonitorStarterPacksComponents)) on policyName\n| project Name=policyName, State=tostring(complianceState), pack,type='Policy',policyId\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and isnotempty(properties.metadata.MonitorStarterPacksComponents)\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project Name=name,State=complianceState,pack='N/A', type='Set',policyId=policySetDefinitionId)",
+              "query": "let windowsApps = datatable(Tag:string, name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\",\n   \"IIS\", \"Web-Server\",\n   \"STSVC\", \"Storage-Services\",\n   \"Nginx\", \"nginx-core\"\n];\nCustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project Computer,type,name,platform,othertype,vendor\n| join kind=inner (windowsApps) on name\n| project-away name1,othertype",
+              "size": 0,
+              "title": "Discovered Applications",
+              "timeContext": {
+                "durationMs": 172800000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Tag",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "ArmAction",
+                      "linkIsContextBlade": true
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Click to Enable monitoring"
+                    }
+                  }
+                ]
+              }
+            },
+            "name": "discoveryQuery"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName),complianceState=properties.complianceState\n| join \n    (policyresources | where type == \"microsoft.authorization/policydefinitions\" and properties.metadata.MonitoringPackType == 'Discovery'  \n        | project policyId=id, policyName=name) \n        on policyName\n| project Name=policyName, State=tostring(complianceState), type='Policy',policyId\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and properties.metadata.MonitoringPackType=='Discovery'\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project Name=name,State=complianceState, type='Set',policyId=policySetDefinitionId)",
               "size": 0,
               "title": "Assignment Status (Compliance) - Discovery",
               "exportedParameters": [
@@ -3318,18 +3352,20 @@
                 {
                   "id": "079a4550-40c9-44cd-a223-40097e453659",
                   "version": "KqlParameterItem/1.0",
-                  "name": "Computers",
+                  "name": "Computer",
                   "type": 2,
-                  "query": "let maxtimestamp=CustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| summarize maxtimestamp=max(todatetime(timestamp));\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| where timestamp == toscalar (maxtimestamp)\n| summarize by tostring(Computer)\n\n",
+                  "query": "\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)\n\n",
                   "typeSettings": {
-                    "additionalResourceOptions": []
+                    "additionalResourceOptions": [],
+                    "showDefault": false
                   },
                   "timeContext": {
                     "durationMs": 86400000
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "dc1"
+                  "value": null,
+                  "label": "Select Server"
                 }
               ],
               "style": "above",
@@ -3342,9 +3378,9 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let maxtimestamp=CustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| summarize maxtimestamp=max(todatetime(timestamp));\nlet windowsApps = datatable(Tag:string, Name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\"\n];\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| where timestamp == toscalar (maxtimestamp)\n| parse rest1 with type \",\" Platform \",\" Name \",\" othertype \",\" Vendor \",\" subtype\n| project Computer,type,Name,Platform,othertype,Vendor\n| join (windowsApps) on Name\n| project-away Name1,othertype\n",
+              "query": "CustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n//| where Computer == 'server2'\n| project Computer,type,name,platform,othertype,vendor\n| where Computer == '{Computer}'",
               "size": 0,
-              "title": "Discovered Applications",
+              "title": "All Discovery Data",
               "timeContext": {
                 "durationMs": 86400000
               },
@@ -3354,22 +3390,11 @@
                 "{Workspace}"
               ],
               "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "Tag",
-                    "formatter": 7,
-                    "formatOptions": {
-                      "linkTarget": "ArmAction",
-                      "linkIsContextBlade": true
-                    },
-                    "tooltipFormat": {
-                      "tooltip": "Click to Enable monitoring"
-                    }
-                  }
-                ]
+                "rowLimit": 1000,
+                "filter": true
               }
             },
-            "name": "discoveryQuery"
+            "name": "query - discovery - all"
           }
         ]
       },
@@ -3382,7 +3407,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

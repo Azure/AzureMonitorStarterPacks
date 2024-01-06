@@ -218,7 +218,7 @@ module addscollectionDCR '../../../setup/discovery/modules/discoveryrule.bicep' 
 
 // Policy to assign DCR to all Windows VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
 module policysetup '../../../setup/discovery/modules/policies.bicep' = {
-  name: 'policysetup-windoscovery'
+  name: 'policysetup-application-${packtag}'
   params: {
     dcrId: addscollectionDCR.outputs.ruleId
     packtag: 'ADDS'

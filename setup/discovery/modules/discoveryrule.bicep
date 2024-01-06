@@ -15,7 +15,7 @@ var streamName= 'Custom-${tableNameToUse}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
-  name: 'AMSP-FileColl-${packtype}-${OS}'
+  name: 'AMSP-FileColl-${packtag}-${OS}'
   location: location
   tags: {
     '${solutionTag}': packtag
