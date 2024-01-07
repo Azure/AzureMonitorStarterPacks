@@ -29,7 +29,7 @@ module policyVM '../modules/associacionpolicyVM.bicep' = {
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
-    packtype: 'Discovery'
+    packtype: packtype
   }
 }
 module vmassignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {

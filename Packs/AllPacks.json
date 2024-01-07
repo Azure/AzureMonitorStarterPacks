@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16699092046205182996"
+      "templateHash": "6704741348847591587"
     }
   },
   "parameters": {
@@ -257,7 +257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "14630253518528686166"
+              "templateHash": "8341611359811988100"
             }
           },
           "parameters": {
@@ -389,7 +389,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "15781740735629711258"
+                      "templateHash": "9884959983734074729"
                     }
                   },
                   "parameters": {
@@ -1628,7 +1628,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "11184585350080748474"
+                              "templateHash": "13853556037145015188"
                             }
                           },
                           "parameters": {
@@ -1653,7 +1653,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "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",
+                            "$fxv#0": "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",
                             "discoveryContainerName": "applications",
                             "tempfilename": "download.tmp",
                             "sasConfig": {
@@ -2527,7 +2527,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "10986984060960096891"
+                              "templateHash": "3695795105301994214"
                             }
                           },
                           "parameters": {
@@ -2608,7 +2608,7 @@
                                     "value": "[variables('roledefinitionIds')]"
                                   },
                                   "packtype": {
-                                    "value": "Discovery"
+                                    "value": "[parameters('packtype')]"
                                   }
                                 },
                                 "template": {
