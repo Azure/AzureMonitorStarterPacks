@@ -1,3 +1,7 @@
+# adcollect.ps1
+# This script collects ADDS metrics and writes them to a file
+# The file is then collected by the Azure Monitor agent and sent to Azure Monitor
+
 # Parameter help description
 $runTime=get-date -Format "o"
 #(get-date).tostring("yyyy-MM-dd HH:mm:ss")
@@ -40,4 +44,22 @@ $volinfo=get-volume -DriveLetter $sPathLog[0]
 $tags=@"
 {"vm.azm.ms/mountId":"$($volinfo.driveletter):","vm.azm.ms/logFilePath":"$sPathLog"}
 "@
-"$runTime,ADDitFileSize,$fileSize,$tags,$sPathLog" | Out-File "$monitoringfolder\$ADMetricLogfile" -Append -Encoding utf8
+"$runTime,ADDitFileSize,$fileSize,$tags" | Out-File "$monitoringfolder\$ADMetricLogfile" -Append -Encoding utf8
+# Gets L&F items
+$oRoot = [adsi]"LDAP://rootdse"
+$strDNSDomain=$oRoot.defaultNamingContext
+$Provider = "ADsDSOObject"
+$oCmdText = "Select Name From 'LDAP://CN=LostAndFound,$strDNSDomain'"
+
+$oConnection = New-Object -comobject "ADODB.Connection"
+$oConnection.Provider=$Provider
+$oConnection.Open("Active Directory Provider")
+$oCommand = New-Object -comobject "ADODB.Command"
+$oCommand.CommandText=$oCmdText
+$oCommand.ActiveConnection=$oConnection
+$RecordCount=($oCommand.Execute()).RecordCount
+
+$tags=@"
+{"vm.azm.ms/ADLFDomain":"$strDNSDomain"}
+"@
+"$runTime,ADDSLFObjCount,$RecordCount,$tags" | Out-File "$monitoringfolder\$ADMetricLogfile" -Append -Encoding utf8
