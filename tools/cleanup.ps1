@@ -10,6 +10,8 @@ param (
     [Parameter(Mandatory=$false)]
     [switch]$RemoveMainSolution,
     [Parameter(Mandatory=$false)]
+    [switch]$RemoveDiscovery,
+    [Parameter(Mandatory=$false)]
     [switch]$confirmEachPack
 )
 # Check login
@@ -25,6 +27,12 @@ if ($null -eq (get-module Az.ResourceGraph)) {
         Write-Error "Unable to install az.resourcegraph module. Please make sure you have the proper permissions to install modules."
         return
     }
+}
+# Test if resource group exists
+Write-Output "Checking if resource group $RG exists."
+if ($null -eq (Get-AzResourceGroup -Name $RG -ErrorAction SilentlyContinue)) {
+    Write-Error "Resource group $RG does not exist."
+    return
 }
 # Add deployment cleanup. Deployments may conflict if previous deployment to the same resource group failed or done to another region.
 
