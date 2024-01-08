@@ -19,6 +19,7 @@ param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
+param appInsightsLocation string
 
 // Packs` stuff
 param deployPacks bool = false
@@ -119,7 +120,7 @@ module backend '../backend/code/backend.bicep' = {
     resourgeGroup
   ]
   params: {
-    appInsightsLocation: location
+    appInsightsLocation: appInsightsLocation
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
