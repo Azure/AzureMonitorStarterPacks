@@ -771,6 +771,7 @@
                 "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
+                "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]",
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]"
             },
             "kind": "ManagementGroup",
