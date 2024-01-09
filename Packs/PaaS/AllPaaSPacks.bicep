@@ -27,15 +27,16 @@ param resourceGroupId string
 param assignmentLevel string
 param grafanaName string
 param customerTags object 
+param instanceName string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
-
-var Tags = (customerTags=={}) ? {
-  '${solutionTagComponents}': 'BackendComponent'
-  solutionVersion: solutionVersion} : union({
+var tempTags= {
   '${solutionTagComponents}': 'BackendComponent'
   solutionVersion: solutionVersion
-},customerTags.All)
+  instanceName: instanceName
+}
+//var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {

@@ -31,14 +31,16 @@ param deployPlatformPacks bool
 param storageAccountName string
 @secure()
 param imagaGalleryName string
+param instanceName string
 var solutionTagComponents='MonitorStarterPacksComponents'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
-var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
-solutionVersion: solutionVersion} : union({
+var tempTags= {
   '${solutionTagComponents}': 'BackendComponent'
   solutionVersion: solutionVersion
-},customerTags.All)
+  instanceName: instanceName
+}
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
   name: 'deployAG-new'
@@ -71,6 +73,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     subscriptionId: subscriptionId
     storageAccountName: storageAccountName
     imagaGalleryName: imagaGalleryName
+    instanceName: instanceName
   }
 }
 
@@ -91,6 +94,7 @@ module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
     mgname: mgname
     resourceGroupId: resourceGroupId
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 

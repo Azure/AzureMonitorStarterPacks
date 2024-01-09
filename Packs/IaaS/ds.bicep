@@ -6,13 +6,17 @@ param packsManagedIdentityResourceId string
 param customerTags object
 param solutionTag string
 param solutionVersion string
+param instanceName string
 var grafanaName = split(grafanaResourceId, '/')[8]
 
 var tempfilename = '${fileName}.tmp'
+
 var Tags = (customerTags=={}) ? {'${solutionTag}': solutionTag
-solutionVersion: solutionVersion} : union({
+solutionVersion: solutionVersion
+} : union({
   '${solutionTag}': solutionTag
   solutionVersion: solutionVersion
+  instanceName: instanceName
 },customerTags.All)
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-Grafana'

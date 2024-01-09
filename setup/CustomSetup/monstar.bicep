@@ -19,6 +19,7 @@ param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
+param instanceName string = 'DFT'
 
 // Packs` stuff
 @description('Name of the Action Group to be used or created.')
@@ -46,7 +47,9 @@ var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
 solutionVersion: solutionVersion} : union({
   '${solutionTagComponents}': 'BackendComponent'
   solutionVersion: solutionVersion
+  instanceName: instanceName
 },customerTags.All)
+var ImageGalleryName = concat(instanceName,'-MonitoringPacks')
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
@@ -166,6 +169,7 @@ module backend '../backend/code/backend.bicep' = {
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
     solutionTag: solutionTag
+    imageGalleryName: ImageGalleryName
   }
 }
 
@@ -196,6 +200,7 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     deployPaaSPacks: deployPaaSPacks || deployAllPacks
     deployPlatformPacks: deployPlatformPacks || deployAllPacks
     storageAccountName: storageAccountName
-    imagaGalleryName: discovery.outputs.galleryName
+    imagaGalleryName: ImageGalleryName
+    instanceName: instanceName
   }
 }

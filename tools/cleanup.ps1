@@ -91,13 +91,13 @@ if ($RemoveDiscovery -or $RemoveAll) {
     }
     # uninstall VM Apps
     # find the gallery
-    Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
-        $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
-        foreach ($ga in $galleryApps) {
-            Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
-            remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
-        }
-    }
+    # Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
+    #     $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
+    #     foreach ($ga in $galleryApps) {
+    #         Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
+    #         remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
+    #     }
+    # }
     # find vm applications
     # find vms with those applications
     # cycle through vms and remove applications

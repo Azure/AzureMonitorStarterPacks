@@ -27,18 +27,18 @@ param customerTags object
 param actionGroupResourceId string
 param storageAccountName string
 param imagaGalleryName string
+param instanceName string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
-
-var resourceGroupName = split(resourceGroupId, '/')[4]
-var Tags = (customerTags=={}) ? {
-  '${solutionTagComponents}': 'BackendComponent'
-  MonitoringPackType: 'IaaS'
-  solutionVersion: solutionVersion} : union({
+var tempTags= {
   '${solutionTagComponents}': 'BackendComponent'
   solutionVersion: solutionVersion
+  instanceName: instanceName
   MonitoringPackType: 'IaaS'
-},customerTags.All)
+}
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+var resourceGroupName = split(resourceGroupId, '/')[4]
+
 
 // module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
 //     name: 'deployAG-new'
@@ -105,6 +105,7 @@ module LxOSPack './LxOS/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 module IIS './IIS/monitoring.bicep' = {
@@ -206,5 +207,6 @@ module grafana 'ds.bicep' = {
     packsManagedIdentityResourceId: userManagedIdentityResourceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
+    instanceName: instanceName
   }
 }

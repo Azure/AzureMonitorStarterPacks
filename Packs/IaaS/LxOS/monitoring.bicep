@@ -20,10 +20,12 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
+param instanceName string
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'
   solutionVersion: solutionVersion
+  instanceName: instanceName
 }
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)

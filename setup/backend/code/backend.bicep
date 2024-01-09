@@ -18,6 +18,7 @@ param Tags object
 param subscriptionId string
 param resourceGroupName string
 param mgname string
+param imageGalleryName string
 
 var packPolicyRoleDefinitionIds=[
   '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
@@ -57,6 +58,15 @@ var logicappRequiredRoleassignments = [
 //   signedProtocol: 'https'
 //   keyToSign: 'key2'
 // }
+module gallery './modules/aig.bicep' = {
+  name: 'gallery'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    galleryname: imageGalleryName
+    location: location
+    tags: Tags
+  }
+}
 
 // Module below implements function, storage account, and app insights
 module backendFunction 'modules/function.bicep' = {

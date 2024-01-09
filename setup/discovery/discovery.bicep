@@ -15,21 +15,8 @@ param assignmentLevel string
 param dceId string
 param Tags object
 
-module gallery './modules/aig.bicep' = {
-  name: 'gallery'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    galleryname: imageGalleryName
-    location: location
-    tags: Tags
-  }
-}
-
 module WindowsDiscovery './Windows/discovery.bicep' = {
   name: 'WindowsDiscovery'
-  dependsOn: [
-    gallery
-  ]
   params: {
     location: location
     solutionTag: solutionTag
@@ -49,7 +36,6 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
 module LinuxDiscovery 'Linux/discovery.bicep' = {
   name: 'LinuxDiscovery'
   dependsOn: [
-    gallery
   ]
   params: {
     location: location
@@ -68,4 +54,4 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     tags: Tags
   }
 }
-output galleryName string = gallery.name
+
