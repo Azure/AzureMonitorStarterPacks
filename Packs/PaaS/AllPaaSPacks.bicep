@@ -29,12 +29,12 @@ param grafanaName string
 param customerTags object 
 param instanceName string
 
-var solutionTagComponents='MonitorStarterPacksComponents'
-var tempTags= {
-  '${solutionTagComponents}': 'BackendComponent'
-  solutionVersion: solutionVersion
-  instanceName: instanceName
-}
+//var solutionTagComponents='MonitorStarterPacksComponents'
+// var tempTags= {
+//   '${solutionTagComponents}': 'BackendComponent'
+//   solutionVersion: solutionVersion
+//   instanceName: instanceName
+// }
 //var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 module Storage './Storage/monitoring.bicep' = {
@@ -55,3 +55,22 @@ module Storage './Storage/monitoring.bicep' = {
     customerTags: customerTags
   }
 }
+module OpenAI './OpenAI/monitoring.bicep' = {
+  name: 'OpenAIAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    location: location
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    workspaceId: workspaceId
+    packtag: 'Storage'
+    grafanaName: grafanaName
+    dceId: dceId
+    customerTags: customerTags
+  }
+}
+

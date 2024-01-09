@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "18165690541588829035"
+      "templateHash": "771684716283612112"
     }
   },
   "parameters": {
@@ -67,13 +67,17 @@
     },
     "customerTags": {
       "type": "object"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
-      "solutionVersion": "[parameters('solutionVersion')]"
+      "solutionVersion": "[parameters('solutionVersion')]",
+      "instanceName": "[parameters('instanceName')]"
     },
     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
     "ruleshortname": "VMI-LxOS",
