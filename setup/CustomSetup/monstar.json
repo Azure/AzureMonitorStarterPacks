@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "6348769209733858898"
+      "templateHash": "4083557905197838516"
     }
   },
   "parameters": {
@@ -1399,7 +1399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12154806611244483415"
+              "templateHash": "13255206269630645839"
             }
           },
           "parameters": {
@@ -1449,7 +1449,83 @@
               "type": "string"
             }
           },
+          "variables": {
+            "tableNameToUse": "[format('Custom{0}_CL', parameters('tableName'))]",
+            "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]"
+          },
           "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[variables('tableNameToUse')]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[parameters('resourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "parentname": {
+                    "value": "[variables('lawFriendlyName')]"
+                  },
+                  "tableName": {
+                    "value": "[variables('tableNameToUse')]"
+                  },
+                  "retentionDays": {
+                    "value": 31
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.20.4.51522",
+                      "templateHash": "8927710276797462866"
+                    }
+                  },
+                  "parameters": {
+                    "parentname": {
+                      "type": "string"
+                    },
+                    "tableName": {
+                      "type": "string"
+                    },
+                    "retentionDays": {
+                      "type": "int",
+                      "defaultValue": 31
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.OperationalInsights/workspaces/tables",
+                      "apiVersion": "2022-10-01",
+                      "name": "[format('{0}/{1}', parameters('parentname'), parameters('tableName'))]",
+                      "properties": {
+                        "totalRetentionInDays": "[parameters('retentionDays')]",
+                        "plan": "Analytics",
+                        "schema": {
+                          "name": "[parameters('tableName')]",
+                          "columns": [
+                            {
+                              "name": "TimeGenerated",
+                              "type": "datetime"
+                            },
+                            {
+                              "name": "RawData",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "retentionInDays": "[parameters('retentionDays')]"
+                      }
+                    }
+                  ]
+                }
+              }
+            },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1482,8 +1558,8 @@
                   "lawResourceId": {
                     "value": "[parameters('lawResourceId')]"
                   },
-                  "tableName": {
-                    "value": "[parameters('tableName')]"
+                  "tableNameToUse": {
+                    "value": "[variables('tableNameToUse')]"
                   },
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
@@ -1511,7 +1587,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "5937037078135356648"
+                      "templateHash": "7039150962680646616"
                     }
                   },
                   "parameters": {
@@ -1536,9 +1612,6 @@
                     "lawResourceId": {
                       "type": "string"
                     },
-                    "tableName": {
-                      "type": "string"
-                    },
                     "userManagedIdentityResourceId": {
                       "type": "string"
                     },
@@ -1556,6 +1629,9 @@
                     },
                     "instanceName": {
                       "type": "string"
+                    },
+                    "tableNameToUse": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -1563,9 +1639,7 @@
                     "appName": "[format('{0}-windiscovery', parameters('instanceName'))]",
                     "appDescription": "Windows Workload discovery",
                     "OS": "Windows",
-                    "appVersionName": "1.0.5",
-                    "tableNameToUse": "[format('Custom{0}_CL', parameters('tableName'))]",
-                    "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]"
+                    "appVersionName": "1.0.5"
                   },
                   "resources": [
                     {
@@ -2273,78 +2347,6 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[variables('tableNameToUse')]",
-                      "subscriptionId": "[parameters('subscriptionId')]",
-                      "resourceGroup": "[parameters('resourceGroupName')]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "parentname": {
-                            "value": "[variables('lawFriendlyName')]"
-                          },
-                          "tableName": {
-                            "value": "[variables('tableNameToUse')]"
-                          },
-                          "retentionDays": {
-                            "value": 31
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "8927710276797462866"
-                            }
-                          },
-                          "parameters": {
-                            "parentname": {
-                              "type": "string"
-                            },
-                            "tableName": {
-                              "type": "string"
-                            },
-                            "retentionDays": {
-                              "type": "int",
-                              "defaultValue": 31
-                            }
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.OperationalInsights/workspaces/tables",
-                              "apiVersion": "2022-10-01",
-                              "name": "[format('{0}/{1}', parameters('parentname'), parameters('tableName'))]",
-                              "properties": {
-                                "totalRetentionInDays": "[parameters('retentionDays')]",
-                                "plan": "Analytics",
-                                "schema": {
-                                  "name": "[parameters('tableName')]",
-                                  "columns": [
-                                    {
-                                      "name": "TimeGenerated",
-                                      "type": "datetime"
-                                    },
-                                    {
-                                      "name": "RawData",
-                                      "type": "string"
-                                    }
-                                  ]
-                                },
-                                "retentionInDays": "[parameters('retentionDays')]"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    {
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
                       "name": "[format('amp-{0}-DCR-{1}Discovery', parameters('instanceName'), variables('OS'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -2378,7 +2380,7 @@
                             "value": "[parameters('solutionTag')]"
                           },
                           "tableName": {
-                            "value": "[variables('tableNameToUse')]"
+                            "value": "[parameters('tableNameToUse')]"
                           },
                           "packtag": {
                             "value": "windiscovery"
@@ -2515,10 +2517,7 @@
                             }
                           }
                         }
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', variables('tableNameToUse'))]"
-                      ]
+                      }
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
@@ -3074,8 +3073,8 @@
                   "lawResourceId": {
                     "value": "[parameters('lawResourceId')]"
                   },
-                  "tableName": {
-                    "value": "[parameters('tableName')]"
+                  "tableNameToUse": {
+                    "value": "[variables('tableNameToUse')]"
                   },
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
@@ -3103,7 +3102,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13042609495988990018"
+                      "templateHash": "16565608202170190991"
                     }
                   },
                   "parameters": {
@@ -3131,7 +3130,7 @@
                     "lawResourceId": {
                       "type": "string"
                     },
-                    "tableName": {
+                    "tableNameToUse": {
                       "type": "string"
                     },
                     "userManagedIdentityResourceId": {
@@ -3158,9 +3157,7 @@
                     "appName": "[format('{0}-LxDiscovery', parameters('instanceName'))]",
                     "appDescription": "Linux Workload discovery",
                     "OS": "Linux",
-                    "appVersionName": "1.0.5",
-                    "tableNameToUse": "[format('Custom{0}_CL', parameters('tableName'))]",
-                    "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]"
+                    "appVersionName": "1.0.5"
                   },
                   "resources": [
                     {
@@ -3868,78 +3865,6 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[variables('tableNameToUse')]",
-                      "subscriptionId": "[parameters('subscriptionId')]",
-                      "resourceGroup": "[parameters('resourceGroupName')]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "parentname": {
-                            "value": "[variables('lawFriendlyName')]"
-                          },
-                          "tableName": {
-                            "value": "[variables('tableNameToUse')]"
-                          },
-                          "retentionDays": {
-                            "value": 31
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "8927710276797462866"
-                            }
-                          },
-                          "parameters": {
-                            "parentname": {
-                              "type": "string"
-                            },
-                            "tableName": {
-                              "type": "string"
-                            },
-                            "retentionDays": {
-                              "type": "int",
-                              "defaultValue": 31
-                            }
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.OperationalInsights/workspaces/tables",
-                              "apiVersion": "2022-10-01",
-                              "name": "[format('{0}/{1}', parameters('parentname'), parameters('tableName'))]",
-                              "properties": {
-                                "totalRetentionInDays": "[parameters('retentionDays')]",
-                                "plan": "Analytics",
-                                "schema": {
-                                  "name": "[parameters('tableName')]",
-                                  "columns": [
-                                    {
-                                      "name": "TimeGenerated",
-                                      "type": "datetime"
-                                    },
-                                    {
-                                      "name": "RawData",
-                                      "type": "string"
-                                    }
-                                  ]
-                                },
-                                "retentionInDays": "[parameters('retentionDays')]"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    {
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
                       "name": "LinuxDiscoveryDCR",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -3973,7 +3898,7 @@
                             "value": "[parameters('solutionTag')]"
                           },
                           "tableName": {
-                            "value": "[variables('tableNameToUse')]"
+                            "value": "[parameters('tableNameToUse')]"
                           },
                           "packtag": {
                             "value": "linuxdiscovery"
@@ -4110,10 +4035,7 @@
                             }
                           }
                         }
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', variables('tableNameToUse'))]"
-                      ]
+                      }
                     },
                     {
                       "type": "Microsoft.Resources/deployments",

@@ -15,6 +15,19 @@ param assignmentLevel string
 param dceId string
 param Tags object
 param instanceName string
+// Table to receive the data
+var tableNameToUse = 'Custom${tableName}_CL'
+var lawFriendlyName = split(lawResourceId,'/')[8]
+
+module table '../../modules/LAW/table.bicep' = {
+  name: tableNameToUse
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    parentname: lawFriendlyName
+    tableName: tableNameToUse
+    retentionDays: 31
+  }
+}
 
 module WindowsDiscovery './Windows/discovery.bicep' = {
   name: 'WindowsDiscovery-${instanceName}'
@@ -26,7 +39,7 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     storageAccountname: storageAccountname
     imageGalleryName: imageGalleryName
     lawResourceId: lawResourceId
-    tableName: tableName
+    tableNameToUse: tableNameToUse
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
     assignmentLevel: assignmentLevel
@@ -48,7 +61,7 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     storageAccountname: storageAccountname
     imageGalleryName: imageGalleryName
     lawResourceId: lawResourceId
-    tableName: tableName
+    tableNameToUse: tableNameToUse
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
     assignmentLevel: assignmentLevel

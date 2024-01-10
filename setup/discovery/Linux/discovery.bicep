@@ -8,7 +8,7 @@ param resourceGroupName string
 param storageAccountname string
 param imageGalleryName string
 param lawResourceId string
-param tableName string
+param tableNameToUse string
 param userManagedIdentityResourceId string
 param mgname string
 param assignmentLevel string
@@ -23,8 +23,8 @@ var OS = 'Linux'
 var appVersionName = '1.0.5'
 //var resourceGroupName = split(resourceGroupId, '/')[4]
 
-var tableNameToUse = 'Custom${tableName}_CL'
-var lawFriendlyName = split(lawResourceId,'/')[8]
+// var tableNameToUse = 'Custom${tableName}_CL'
+// var lawFriendlyName = split(lawResourceId,'/')[8]
 
 // VM Application to collect the data - this would be ideally an extension
 module linuxdiscoveryapp '../modules/aigapp.bicep' = {
@@ -113,21 +113,18 @@ module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel !=
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-// Table to receive the data
-module table '../../../modules/LAW/table.bicep' = {
-  name: tableNameToUse
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    parentname: lawFriendlyName
-    tableName: tableNameToUse
-    retentionDays: 31
-  }
-}
+// // Table to receive the data
+// module table '../../../modules/LAW/table.bicep' = {
+//   name: tableNameToUse
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     parentname: lawFriendlyName
+//     tableName: tableNameToUse
+//     retentionDays: 31
+//   }
+// }
 // DCR to collect the data
 module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
-  dependsOn: [
-    table
-  ]
   name: 'LinuxDiscoveryDCR'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
