@@ -14,6 +14,7 @@ var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 param apiManagementKey string= base64(newGuid())
 param solutionTag string
+param instanceName string
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -29,7 +30,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existin
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-MonstarPacksFunction'
+  name: 'deployscript-Function-${instanceName}'
   dependsOn: [
     azfunctionsiteconfig
   ]
@@ -84,7 +85,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
 }
 resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
-  name: functionname
+  name: '${functionname}-${instanceName}-site'
   location: location
   kind: 'functionapp'
   tags: Tags

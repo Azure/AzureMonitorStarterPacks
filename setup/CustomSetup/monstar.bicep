@@ -11,7 +11,7 @@ param createNewLogAnalyticsWS bool
 param existingLogAnalyticsWSId string = ''
 param deployAMApolicy bool
 //param currentUserIdObject string // This is to automatically assign permissions to Grafana.
-param functionName string
+//param functionName string
 param grafanaLocation string = ''
 param grafanaName string = ''
 param newGrafana bool
@@ -19,7 +19,7 @@ param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
-param instanceName string = 'DFT'
+param instanceName string
 
 // Packs` stuff
 @description('Name of the Action Group to be used or created.')
@@ -43,13 +43,13 @@ var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deploy
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
-var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
-solutionVersion: solutionVersion} : union({
-  '${solutionTagComponents}': 'BackendComponent'
-  solutionVersion: solutionVersion
-  instanceName: instanceName
-},customerTags.All)
-var ImageGalleryName = concat(instanceName,'-MonitoringPacks')
+var tempTags={'${solutionTagComponents}': 'BackendComponent'
+solutionVersion: solutionVersion
+instanceName: instanceName}
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+var functionName = 'AMP-${instanceName}-Function'
+var logicAppName = 'AMP-${instanceName}-LogicApp'
+var ImageGalleryName = 'AMP-${instanceName}-Gallery'
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
@@ -113,7 +113,7 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
 }
 
 module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
-  name: 'DeployDiscovery'
+  name: 'DeployDiscovery-${instanceName}'
   dependsOn: [
     backend
   ]
@@ -125,18 +125,19 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     dceId: backend.outputs.dceId
-    imageGalleryName: 'MonitoringPacks'
+    imageGalleryName: ImageGalleryName
     lawResourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     mgname: mgname
     storageAccountname: storageAccountName
     tableName: 'Discovery'
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     Tags: Tags
+    instanceName: instanceName
   }
 }
 
 module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
-  name: 'azureManagedGrafana'
+  name: 'azureManagedGrafana-${instanceName}'
   dependsOn: [
     resourgeGroup
     logAnalytics
@@ -153,7 +154,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
 }
 
 module backend '../backend/code/backend.bicep' = {
-  name: 'MonitoringPacks-backend'
+  name: 'MonitoringPacks-backend-${instanceName}'
   dependsOn: [
     resourgeGroup
   ]
@@ -170,6 +171,8 @@ module backend '../backend/code/backend.bicep' = {
     subscriptionId: subscriptionId
     solutionTag: solutionTag
     imageGalleryName: ImageGalleryName
+    logicappname: logicAppName
+    instanceName: instanceName
   }
 }
 

@@ -3,6 +3,7 @@ param Tags object
 param location string
 param keyvaultid string
 param subscriptionId string
+param logicAppName string
 
 var keyVaultName = split(keyvaultid, '/')[8]
 
@@ -10,7 +11,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functioname
 }
 resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
-  name: 'MonitorStarterPacks-Backend'
+  name: logicAppName
   // dependsOn: [
   //   logicappConnection
   // ]

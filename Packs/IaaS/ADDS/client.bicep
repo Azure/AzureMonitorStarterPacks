@@ -1,35 +1,40 @@
+//Client is a vm application used to collect data from a VM (VM only, not Arc servers.)
 targetScope = 'managementGroup'
 
-param location string 
-param solutionTag string
-param solutionVersion string
+@description('Name of the DCR rule to be created')
+param packtag string = 'ADDS'
+@description('location for the deployment.')
+param location string //= resourceGroup().location
+@description('Full resource ID of the log analytics workspace to be used for the deployment.')
+param workspaceId string
+param solutionTag string 
+@description('Full resource ID of the data collection endpoint to be used for the deployment.')
+param dceId string
+@description('Full resource ID of the user managed identity to be used for the deployment')
+param userManagedIdentityResourceId string
+param mgname string // this the last part of the management group id
 param subscriptionId string
-param resourceGroupName string
+param resourceGroupId string
+param assignmentLevel string
+
 param storageAccountname string
 param imageGalleryName string
-param lawResourceId string
 param tableName string
-param userManagedIdentityResourceId string
-param mgname string
-param assignmentLevel string
-param dceId string
 param tags object
 param instanceName string
-//var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'amp${instanceName}lxdisc'
-var appName = '${instanceName}-LxDiscovery'
-var appDescription = 'Linux Workload discovery'
-var OS = 'Linux'
-var appVersionName = '1.0.5'
-//var resourceGroupName = split(resourceGroupId, '/')[4]
+param ruleshortname string
+param appName string
+param appDescription string
+param OS string
+var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var tableNameToUse = 'Custom${tableName}_CL'
-var lawFriendlyName = split(lawResourceId,'/')[8]
+var lawFriendlyName = split(workspaceId,'/')[8]
 
 // VM Application to collect the data - this would be ideally an extension
-module linuxdiscoveryapp '../modules/aigapp.bicep' = {
+module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
-  name: 'amp-${instanceName}-Discovery-${OS}'
+  name: 'addscollectionapp'
   params: {
     aigname: imageGalleryName
     appDescription: appDescription
@@ -38,52 +43,51 @@ module linuxdiscoveryapp '../modules/aigapp.bicep' = {
     osType: OS
   }
 }
-
-module uploadLinux './uploadDSLinux.bicep' = {
-  name: 'upload-discovery-${OS}'
+module upload 'uploadDSADDS.bicep' = {
+  name: 'upload-addscollectionapp'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
-    containerName: 'discovery'
-    filename: 'discover.tar'
+    containerName: 'applications'
+    filename: 'addscollection.zip'
     storageAccountName: storageAccountname
     location: location
     tags: tags
   }
 }
 
-module linuxDiscovery '../modules/aigappversion.bicep' = {
-  name: 'amp-${instanceName}-Discovery-${OS}'
+module addscollectionappversion '../../../setup/discovery/modules/aigappversion.bicep' = {
+  name: 'addscollectionappversion'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
-    linuxdiscoveryapp
+    addscollectionapp
   ]
   params: {
     aigname: imageGalleryName
     appName: appName
-    appVersionName: appVersionName
+    appVersionName: '1.0.0'
     location: location
     targetRegion: location
-    mediaLink: uploadLinux.outputs.fileURL
-    installCommands: 'tar -xvf ${appName} && chmod +x ./install.sh && ./install.sh'
-    removeCommands: '/opt/microsoft/discovery/uninstall.sh'
+    mediaLink: upload.outputs.fileURL
+    installCommands: 'powershell -command "ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1"'
+    removeCommands: 'Unregister-ScheduledTask -TaskName "AD DS Collection Task" "\\"'
   }
 }
-module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
+module applicationPolicy '../../../setup/discovery/modules/vmapplicationpolicy.bicep' = {
   name: 'applicationPolicy-${appName}'
   params: {
-    packtag: 'LxOS'
+    packtag: 'ADDS'
     policyDescription: 'Install ${appName} to ${OS} VMs'
     policyName: 'Install ${appName}'
     policyDisplayName: 'Install ${appName} to ${OS} VMs'
     solutionTag: solutionTag
-    vmapplicationResourceId: linuxDiscovery.outputs.appVersionId
+    vmapplicationResourceId: addscollectionappversion.outputs.appVersionId
     roledefinitionIds: [
       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
     ]
-    packtype: 'Discovery'
+    packtype: 'IaaS'
   }
 }
-module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
+module vmapplicationAssignment '../../../setup/discovery/modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
   dependsOn: [
     applicationPolicy
   ]
@@ -98,7 +102,7 @@ module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLeve
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module vmassignmentsub '../../../setup/discovery/modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
   dependsOn: [
     applicationPolicy
   ]
@@ -124,43 +128,44 @@ module table '../../../modules/LAW/table.bicep' = {
   }
 }
 // DCR to collect the data
-module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
+module addscollectionDCR '../../../setup/discovery/modules/discoveryrule.bicep' = {
   dependsOn: [
     table
   ]
-  name: 'LinuxDiscoveryDCR'
+  name: 'addscollectionDCR'
+
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     endpointResourceId: dceId
     filepatterns: [
-      '/opt/microsoft/discovery/*.csv'
+      'C:\\WindowsAzure\\ADDS\\*.csv'
     ]
-    kind: 'Linux'
+    kind: 'Windows'
     location: location
-    lawResourceId: lawResourceId
-    OS: 'Linux'
+    lawResourceId: workspaceId
+    OS: 'Windows'
     solutionTag: solutionTag
     tableName: tableNameToUse
-    packtag: 'linuxdiscovery'
-    packtype: 'Discovery'
+    packtag: 'ADDS'
+    packtype: 'IaaS'
   }
 }
 
-// Policy to assign DCR to all Linux VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
-module policysetup '../modules/policies.bicep' = {
-  name: 'policysetup-linuxdiscovery'
+// Policy to assign DCR to all Windows VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
+module policysetup '../../../setup/discovery/modules/policies.bicep' = {
+  name: 'policysetup-application-${packtag}'
   params: {
-    dcrId: LinuxDiscoveryDCR.outputs.ruleId
-    packtag: 'LxOS'
+    dcrId: addscollectionDCR.outputs.ruleId
+    packtag: 'ADDS'
     solutionTag: solutionTag
-    rulename: LinuxDiscoveryDCR.outputs.ruleName
+    rulename: addscollectionDCR.outputs.ruleName
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
     ruleshortname: ruleshortname
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
-    packtype: 'Discovery'
+    packtype: 'IaaS'
     instanceName: instanceName
   }
 }

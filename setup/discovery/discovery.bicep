@@ -14,9 +14,10 @@ param mgname string
 param assignmentLevel string
 param dceId string
 param Tags object
+param instanceName string
 
 module WindowsDiscovery './Windows/discovery.bicep' = {
-  name: 'WindowsDiscovery'
+  name: 'WindowsDiscovery-${instanceName}'
   params: {
     location: location
     solutionTag: solutionTag
@@ -31,10 +32,11 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     assignmentLevel: assignmentLevel
     dceId: dceId
     tags: Tags
+    instanceName: instanceName
   }
 }
 module LinuxDiscovery 'Linux/discovery.bicep' = {
-  name: 'LinuxDiscovery'
+  name: 'LinuxDiscovery-${instanceName}'
   dependsOn: [
   ]
   params: {
@@ -52,6 +54,7 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     assignmentLevel: assignmentLevel
     dceId: dceId
     tags: Tags
+    instanceName: instanceName
   }
 }
 

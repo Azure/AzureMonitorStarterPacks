@@ -13,13 +13,14 @@ param mgname string
 param assignmentLevel string
 param dceId string
 param tags object
+param instanceName string
 
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'WindowsDiscovery'
-var appName = 'windiscovery'
+var ruleshortname = 'amp${instanceName}windisc'
+var appName = '${instanceName}-windiscovery'
 var appDescription = 'Windows Workload discovery'
 var OS = 'Windows'
-
+var appVersionName = '1.0.5'
 //var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var tableNameToUse = 'Custom${tableName}_CL'
@@ -28,7 +29,7 @@ var lawFriendlyName = split(lawResourceId,'/')[8]
 // VM Application to collect the data - this would be ideally an extension
 module windowsDiscoveryApp '../modules/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
-  name: 'windiscovery'
+  name: 'amp-${instanceName}-Discovery-${OS}'
   params: {
     aigname: imageGalleryName
     appDescription: appDescription
@@ -38,7 +39,7 @@ module windowsDiscoveryApp '../modules/aigapp.bicep' = {
   }
 }
 module upload 'uploadDSWindows.bicep' = {
-  name: 'upload-discoverywindows'
+  name: 'upload-discovery-${OS}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     containerName: 'discovery'
@@ -50,7 +51,7 @@ module upload 'uploadDSWindows.bicep' = {
 }
 
 module windiscovery '../modules/aigappversion.bicep' = {
-  name: 'WindowsDiscovery'
+  name: 'amp-${instanceName}-Discovery-${OS}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     windowsDiscoveryApp
@@ -58,7 +59,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
   params: {
     aigname: imageGalleryName
     appName: appName
-    appVersionName: '1.0.1'
+    appVersionName: appVersionName
     location: location
     targetRegion: location
     mediaLink: upload.outputs.fileURL
@@ -126,7 +127,7 @@ module windiscoveryDCR '../modules/discoveryrule.bicep' = {
   dependsOn: [
     table
   ]
-  name: 'windiscoveryDCR'
+  name: 'amp-${instanceName}-DCR-${OS}Discovery'
 
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -160,5 +161,6 @@ module policysetup '../modules/policies.bicep' = {
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
     packtype: 'Discovery'
+    instanceName: instanceName
   }
 }

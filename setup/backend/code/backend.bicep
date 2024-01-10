@@ -2,6 +2,8 @@ targetScope = 'managementGroup'
 
 @description('The name for the function app that you wish to create')
 param functionname string
+param logicappname string
+param instanceName string
 //param currentUserIdObject string
 param location string
 param storageAccountName string
@@ -59,7 +61,7 @@ var logicappRequiredRoleassignments = [
 //   keyToSign: 'key2'
 // }
 module gallery './modules/aig.bicep' = {
-  name: 'gallery'
+  name: imageGalleryName
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     galleryname: imageGalleryName
@@ -70,7 +72,7 @@ module gallery './modules/aig.bicep' = {
 
 // Module below implements function, storage account, and app insights
 module backendFunction 'modules/function.bicep' = {
-  name: 'backendFunction'
+  name: functionname
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     functionUserManagedIdentity
@@ -86,17 +88,19 @@ module backendFunction 'modules/function.bicep' = {
     userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
     packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
     solutionTag: solutionTag
+    instanceName: instanceName
   }
 }
 
 module logicapp './modules/logicapp.bicep' = {
-  name: 'BackendLogicApp'
+  name: logicappname
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     backendFunction
   ]
   params: {
     functioname: functionname
+    logicAppName: logicappname
     location: location
     Tags: Tags
     keyvaultid: keyvault.outputs.kvResourceId
@@ -125,23 +129,23 @@ module extendedWorkbook './modules/extendedworkbook.bicep' = {
 
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
-  name: 'DCE-MonPacks-${location}'
+  name: 'AMP-${instanceName}-DCE-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     Tags: Tags
-    dceName: 'DCE-MonPacks-${location}'
+    dceName: 'AMP-${instanceName}-DCE-${location}'
   }
 }
 
 // This module creates a user managed identity for the packs to use.
 module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'packsUserManagedIdentity'
+  name: 'AMP-${instanceName}-UMI-Packs'
   params: {
     location: location
     Tags: Tags
     roleDefinitionIds: packPolicyRoleDefinitionIds
-    userIdentityName: 'packsUserManagedIdentity'
+    userIdentityName: 'AMP-${instanceName}-UMI-Packs'
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
@@ -158,12 +162,12 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
 // }
 
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'functionUserManagedIdentity'
+  name: 'AMP-${instanceName}-UMI-Function'
   params: {
     location: location
     Tags: Tags
     roleDefinitionIds: backendFunctionRoleDefinitionIds//,array('${customRemdiationRole.outputs.roleDefId}'))
-    userIdentityName: 'functionUserManagedIdentity'
+    userIdentityName: 'AMP-${instanceName}-UMI-Function'
     mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
@@ -173,13 +177,13 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
 
 //Add keyvault
 module keyvault 'modules/keyvault.bicep' = {
-  name: 'monstarkeyvault'
+  name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
   dependsOn: [
     backendFunction
   ]
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
-    kvName: 'amspkv-${split(functionname,'-')[1]}'
+    kvName: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
     location: location
     Tags: Tags
     functionName: functionname

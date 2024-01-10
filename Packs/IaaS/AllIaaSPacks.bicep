@@ -69,6 +69,7 @@ module ADDS './ADDS/monitoring.bicep' = {
     actionGroupResourceId: actionGroupResourceId
     customerTags: customerTags
     workspaceId: workspaceId
+    instanceName: instanceName
   }
 }
 

@@ -10,6 +10,7 @@ param mgname string
 param assignmentLevel string = 'managementGroup'
 param subscriptionId string
 param packtype string
+param instanceName string
 
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -19,7 +20,7 @@ var roledefinitionIds=[
 var dcrName = split (dcrId,'/')[8]
 
 module policyVM '../modules/associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM-${packtag}-${dcrName}'
+  name: 'associationpolicyVM-${instanceName}-${packtag}-${dcrName}'
   scope: managementGroup(mgname)
   params: {
     packtag: packtag
@@ -36,7 +37,7 @@ module vmassignment '../modules/assignment.bicep' = if(assignmentLevel == 'manag
   dependsOn: [
     policyVM
   ]
-  name: 'Assignment-${packtag}-${ruleshortname}-vm'
+  name: '${instanceName}-${packtag}-${ruleshortname}-vm'
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
@@ -51,11 +52,11 @@ module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel !=
   dependsOn: [
     policyVM
   ]
-  name: 'AssignSub-${packtag}-${ruleshortname}-vm'
+  name: '${instanceName}-${packtag}-${ruleshortname}-vm'
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: '${packtag}-${ruleshortname}-vm'
+    assignmentName: '${instanceName}-${packtag}-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
