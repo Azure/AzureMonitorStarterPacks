@@ -152,6 +152,20 @@
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
                         },
                         {
+                            "name": "instanceName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Instance Name for the Monitoring Packs Implementation",
+                            "subLabel": "",
+                            "defaultValue": "def",
+                            "toolTip": "Name of the Monitoring Pack instance.",
+                            "constraints": {
+								"required": true,
+                    			"regex": "^[a-z0-9]{1,4}$",
+                    			"validationMessage": "Only alphanumeric lowercase characters are allowed, and the value must be 1-4 characters long."
+                            },
+                            "visible": true
+                        },
+                        {
                             "name": "storageAccountStatus",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Use New or Existing Storage Account",
@@ -840,7 +854,8 @@
                 "customerTags": "[steps('tags').tagsByResource]",
                 "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
-                "deployDiscovery": "[steps('Configuration').deployDiscovery]"
+                "deployDiscovery": "[steps('Configuration').deployDiscovery]",
+				"instanceName":  "[steps('Configuration').instanceName]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
