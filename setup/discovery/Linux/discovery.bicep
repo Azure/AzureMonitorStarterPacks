@@ -53,7 +53,7 @@ module uploadLinux './uploadDSLinux.bicep' = {
 }
 
 module linuxDiscovery '../modules/aigappversion.bicep' = {
-  name: 'amp-${instanceName}-Discovery-${OS}'
+  name: 'amp-${instanceName}-Discovery-${OS}-App'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     linuxdiscoveryapp

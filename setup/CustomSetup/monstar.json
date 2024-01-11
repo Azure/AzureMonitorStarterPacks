@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "5423143010541055636"
+      "templateHash": "3329399358097525267"
     }
   },
   "parameters": {
@@ -1399,7 +1399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "327748190088259151"
+              "templateHash": "16377713745978823066"
             }
           },
           "parameters": {
@@ -1587,7 +1587,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "18136014869712289492"
+                      "templateHash": "16102460253612567315"
                     }
                   },
                   "parameters": {
@@ -1833,7 +1833,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS'))]",
+                      "name": "[format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -1981,7 +1981,7 @@
                             "value": "[parameters('solutionTag')]"
                           },
                           "vmapplicationResourceId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS'))), '2022-09-01').outputs.appVersionId.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))), '2022-09-01').outputs.appVersionId.value]"
                           },
                           "roledefinitionIds": {
                             "value": [
@@ -2181,7 +2181,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS')))]"
                       ]
                     },
                     {
@@ -3116,7 +3116,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17557935784768794995"
+                      "templateHash": "11278203515832776593"
                     }
                   },
                   "parameters": {
@@ -3365,7 +3365,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS'))]",
+                      "name": "[format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -3513,7 +3513,7 @@
                             "value": "[parameters('solutionTag')]"
                           },
                           "vmapplicationResourceId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS'))), '2022-09-01').outputs.appVersionId.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))), '2022-09-01').outputs.appVersionId.value]"
                           },
                           "roledefinitionIds": {
                             "value": [
@@ -3713,7 +3713,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS')))]"
                       ]
                     },
                     {

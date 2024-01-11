@@ -51,7 +51,7 @@ module upload 'uploadDSWindows.bicep' = {
 }
 
 module windiscovery '../modules/aigappversion.bicep' = {
-  name: 'amp-${instanceName}-Discovery-${OS}'
+  name: 'amp-${instanceName}-Discovery-${OS}-App'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     windowsDiscoveryApp
