@@ -85,7 +85,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
 }
 resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
-  name: '${functionname}-${instanceName}-site'
+  name: '${functionname}'
   location: location
   kind: 'functionapp'
   tags: Tags

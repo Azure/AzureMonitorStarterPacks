@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16130488380850935457"
+      "templateHash": "3318705211221018622"
     }
   },
   "parameters": {
@@ -4988,7 +4988,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11691613276696790024"
+              "templateHash": "6234235015199090885"
             }
           },
           "parameters": {
@@ -5170,7 +5170,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "7869276854708105126"
+                      "templateHash": "14936526120239907470"
                     }
                   },
                   "parameters": {
@@ -5263,7 +5263,7 @@
                         "scriptContent": "[format('echo \"$CONTENT\" > {0} && cat {1} | base64 -d > {2} && az storage blob upload -f {3} -c {4} -n {5} --overwrite true', variables('tempfilename'), variables('tempfilename'), parameters('filename'), parameters('filename'), variables('discoveryContainerName'), parameters('filename'))]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites/config', format('{0}-{1}-site', parameters('functionname'), parameters('instanceName')), 'appsettings')]"
+                        "[resourceId('Microsoft.Web/sites/config', format('{0}', parameters('functionname')), 'appsettings')]"
                       ]
                     },
                     {
@@ -5296,7 +5296,7 @@
                     {
                       "type": "Microsoft.Web/sites",
                       "apiVersion": "2021-03-01",
-                      "name": "[format('{0}-{1}-site', parameters('functionname'), parameters('instanceName'))]",
+                      "name": "[format('{0}', parameters('functionname'))]",
                       "location": "[parameters('location')]",
                       "kind": "functionapp",
                       "tags": "[parameters('Tags')]",
@@ -5370,7 +5370,7 @@
                     {
                       "type": "Microsoft.Web/sites/config",
                       "apiVersion": "2021-03-01",
-                      "name": "[format('{0}/{1}', format('{0}-{1}-site', parameters('functionname'), parameters('instanceName')), 'appsettings')]",
+                      "name": "[format('{0}/{1}', format('{0}', parameters('functionname')), 'appsettings')]",
                       "properties": {
                         "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('storageAccountName'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value, environment().suffixes.storage)]",
                         "AzureWebJobsStorage": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('storageAccountName'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value, environment().suffixes.storage)]",
@@ -5387,18 +5387,18 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Insights/components', parameters('functionname'))]",
-                        "[resourceId('Microsoft.Web/sites', format('{0}-{1}-site', parameters('functionname'), parameters('instanceName')))]"
+                        "[resourceId('Microsoft.Web/sites', format('{0}', parameters('functionname')))]"
                       ]
                     },
                     {
                       "type": "Microsoft.Web/sites/extensions",
                       "apiVersion": "2021-02-01",
-                      "name": "[format('{0}/{1}', format('{0}-{1}-site', parameters('functionname'), parameters('instanceName')), 'MSDeploy')]",
+                      "name": "[format('{0}/{1}', format('{0}', parameters('functionname')), 'MSDeploy')]",
                       "properties": {
                         "packageUri": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, variables('discoveryContainerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', format('{0}-{1}-site', parameters('functionname'), parameters('instanceName')))]",
+                        "[resourceId('Microsoft.Web/sites', format('{0}', parameters('functionname')))]",
                         "[resourceId('Microsoft.Resources/deploymentScripts', format('deployscript-Function-{0}', parameters('instanceName')))]"
                       ]
                     },
@@ -5426,7 +5426,7 @@
                         "value": "[parameters('apiManagementKey')]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites/config', format('{0}-{1}-site', parameters('functionname'), parameters('instanceName')), 'appsettings')]"
+                        "[resourceId('Microsoft.Web/sites/config', format('{0}', parameters('functionname')), 'appsettings')]"
                       ]
                     }
                   ]
