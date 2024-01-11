@@ -20,7 +20,7 @@ var roledefinitionIds=[
 var dcrName = split (dcrId,'/')[8]
 
 module policyVM '../modules/associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM-${instanceName}-${packtag}-${dcrName}'
+  name: 'AssocPolVM-${dcrName}'
   scope: managementGroup(mgname)
   params: {
     packtag: packtag

@@ -12,7 +12,7 @@ var roledefinitionIds=[
 var dcrName = split (dcrId,'/')[8]
 
 module policyVM './associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM-${packtag}-${dcrName}'
+  name: 'AssocPolVM-${dcrName}'
   scope: subscription()
   params: {
     packtag: packtag
@@ -25,7 +25,7 @@ module policyVM './associacionpolicyVM.bicep' = {
   }
 }
 module policyARC './associacionpolicyARC.bicep' = {
-  name: 'associationpolicyARC-${packtag}-${dcrName}'
+  name: 'AssocPolARC-${dcrName}'
   scope: subscription()
   params: {
     packtag: packtag

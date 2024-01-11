@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7939113881654851476"
+      "templateHash": "11383234182078474939"
     }
   },
   "parameters": {
@@ -1399,7 +1399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8954022201090005603"
+              "templateHash": "14289865448686087521"
             }
           },
           "parameters": {
@@ -1587,7 +1587,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3123925783846577796"
+                      "templateHash": "11349443729190802323"
                     }
                   },
                   "parameters": {
@@ -2594,7 +2594,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "14091341730586965810"
+                              "templateHash": "3031207433156868824"
                             }
                           },
                           "parameters": {
@@ -2647,7 +2647,7 @@
                             {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "[format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))]",
+                              "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -2887,7 +2887,7 @@
                                 "mode": "Incremental",
                                 "parameters": {
                                   "policyDefinitionId": {
-                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                   },
                                   "assignmentName": {
                                     "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -2957,7 +2957,7 @@
                                 }
                               },
                               "dependsOn": [
-                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName')))]"
+                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                               ]
                             },
                             {
@@ -2974,7 +2974,7 @@
                                 "mode": "Incremental",
                                 "parameters": {
                                   "policyDefinitionId": {
-                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                   },
                                   "assignmentName": {
                                     "value": "[format('{0}-{1}-{2}-vm', parameters('instanceName'), parameters('packtag'), parameters('ruleshortname'))]"
@@ -3044,7 +3044,7 @@
                                 }
                               },
                               "dependsOn": [
-                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName')))]"
+                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                               ]
                             }
                           ]
@@ -3122,7 +3122,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13781461940419547948"
+                      "templateHash": "3294063274767337709"
                     }
                   },
                   "parameters": {
@@ -4132,7 +4132,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "14091341730586965810"
+                              "templateHash": "3031207433156868824"
                             }
                           },
                           "parameters": {
@@ -4185,7 +4185,7 @@
                             {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "[format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))]",
+                              "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -4425,7 +4425,7 @@
                                 "mode": "Incremental",
                                 "parameters": {
                                   "policyDefinitionId": {
-                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                   },
                                   "assignmentName": {
                                     "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -4495,7 +4495,7 @@
                                 }
                               },
                               "dependsOn": [
-                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName')))]"
+                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                               ]
                             },
                             {
@@ -4512,7 +4512,7 @@
                                 "mode": "Incremental",
                                 "parameters": {
                                   "policyDefinitionId": {
-                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                   },
                                   "assignmentName": {
                                     "value": "[format('{0}-{1}-{2}-vm', parameters('instanceName'), parameters('packtag'), parameters('ruleshortname'))]"
@@ -4582,7 +4582,7 @@
                                 }
                               },
                               "dependsOn": [
-                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName')))]"
+                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                               ]
                             }
                           ]
@@ -10429,7 +10429,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "13550277304969099969"
+              "templateHash": "11119641686578603615"
             }
           },
           "parameters": {
@@ -10692,7 +10692,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "8284675097753571541"
+                      "templateHash": "2468826951432725992"
                     }
                   },
                   "parameters": {
@@ -10836,7 +10836,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "13787456160956028544"
+                              "templateHash": "14675076864768551445"
                             }
                           },
                           "parameters": {
@@ -11126,7 +11126,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -11173,7 +11173,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -11395,7 +11395,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -11628,7 +11628,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -11698,7 +11698,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -11715,7 +11715,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -11785,7 +11785,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -11802,7 +11802,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -11872,7 +11872,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -11889,7 +11889,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -11959,7 +11959,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -12045,7 +12045,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "1142021073817187575"
+                                      "templateHash": "7485455451569222754"
                                     }
                                   },
                                   "parameters": {
@@ -13156,7 +13156,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14091341730586965810"
+                                              "templateHash": "3031207433156868824"
                                             }
                                           },
                                           "parameters": {
@@ -13209,7 +13209,7 @@
                                             {
                                               "type": "Microsoft.Resources/deployments",
                                               "apiVersion": "2022-09-01",
-                                              "name": "[format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))]",
+                                              "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                               "location": "[deployment().location]",
                                               "properties": {
@@ -13449,7 +13449,7 @@
                                                 "mode": "Incremental",
                                                 "parameters": {
                                                   "policyDefinitionId": {
-                                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                                   },
                                                   "assignmentName": {
                                                     "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -13519,7 +13519,7 @@
                                                 }
                                               },
                                               "dependsOn": [
-                                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName')))]"
+                                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                               ]
                                             },
                                             {
@@ -13536,7 +13536,7 @@
                                                 "mode": "Incremental",
                                                 "parameters": {
                                                   "policyDefinitionId": {
-                                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                                   },
                                                   "assignmentName": {
                                                     "value": "[format('{0}-{1}-{2}-vm', parameters('instanceName'), parameters('packtag'), parameters('ruleshortname'))]"
@@ -13606,7 +13606,7 @@
                                                 }
                                               },
                                               "dependsOn": [
-                                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('dcrName')))]"
+                                                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                               ]
                                             }
                                           ]
@@ -13682,7 +13682,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "18042263770006781815"
+                              "templateHash": "9278846103268739117"
                             }
                           },
                           "parameters": {
@@ -14616,7 +14616,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -14663,7 +14663,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -14885,7 +14885,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -15118,7 +15118,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -15188,7 +15188,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -15205,7 +15205,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -15275,7 +15275,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -15292,7 +15292,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -15362,7 +15362,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -15379,7 +15379,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -15449,7 +15449,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -15521,7 +15521,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "866739897949871235"
+                              "templateHash": "9876495016445449884"
                             }
                           },
                           "parameters": {
@@ -16459,7 +16459,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -16506,7 +16506,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -16728,7 +16728,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -16961,7 +16961,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -17031,7 +17031,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -17048,7 +17048,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -17118,7 +17118,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -17135,7 +17135,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -17205,7 +17205,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -17222,7 +17222,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -17292,7 +17292,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -17364,7 +17364,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "7737303855499204268"
+                              "templateHash": "15696373413381103749"
                             }
                           },
                           "parameters": {
@@ -18626,7 +18626,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -18673,7 +18673,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -18895,7 +18895,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -19128,7 +19128,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -19198,7 +19198,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -19215,7 +19215,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -19285,7 +19285,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -19302,7 +19302,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -19372,7 +19372,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -19389,7 +19389,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -19459,7 +19459,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -19661,7 +19661,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -19708,7 +19708,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -19930,7 +19930,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -20163,7 +20163,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -20233,7 +20233,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -20250,7 +20250,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -20320,7 +20320,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -20337,7 +20337,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -20407,7 +20407,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -20424,7 +20424,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -20494,7 +20494,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -20566,7 +20566,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4909131410176867644"
+                              "templateHash": "3394732697438019682"
                             }
                           },
                           "parameters": {
@@ -21850,7 +21850,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -21897,7 +21897,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -22119,7 +22119,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -22352,7 +22352,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -22422,7 +22422,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -22439,7 +22439,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -22509,7 +22509,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -22526,7 +22526,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -22596,7 +22596,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -22613,7 +22613,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -22683,7 +22683,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -22885,7 +22885,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -22932,7 +22932,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -23154,7 +23154,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -23387,7 +23387,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -23457,7 +23457,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -23474,7 +23474,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -23544,7 +23544,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -23561,7 +23561,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -23631,7 +23631,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -23648,7 +23648,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -23718,7 +23718,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -23790,7 +23790,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "16627974920116693780"
+                              "templateHash": "16467521499415187113"
                             }
                           },
                           "parameters": {
@@ -25419,7 +25419,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -25466,7 +25466,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -25688,7 +25688,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -25921,7 +25921,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -25991,7 +25991,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -26008,7 +26008,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -26078,7 +26078,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -26095,7 +26095,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -26165,7 +26165,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -26182,7 +26182,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -26252,7 +26252,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -26324,7 +26324,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "7142858227824804979"
+                              "templateHash": "7110386264495080664"
                             }
                           },
                           "parameters": {
@@ -26611,7 +26611,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -26658,7 +26658,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -26880,7 +26880,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -27113,7 +27113,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -27183,7 +27183,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -27200,7 +27200,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -27270,7 +27270,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -27287,7 +27287,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -27357,7 +27357,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -27374,7 +27374,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -27444,7 +27444,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
@@ -28271,7 +28271,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "14022798808455788385"
+                              "templateHash": "3276623846243683160"
                             }
                           },
                           "parameters": {
@@ -29323,7 +29323,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16257751553936853530"
+                                      "templateHash": "2120579419728058157"
                                     }
                                   },
                                   "parameters": {
@@ -29370,7 +29370,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -29592,7 +29592,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+                                      "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
                                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                                       "location": "[deployment().location]",
                                       "properties": {
@@ -29825,7 +29825,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -29895,7 +29895,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -29912,7 +29912,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -29982,7 +29982,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -29999,7 +29999,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "assignmentName": {
                                             "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -30069,7 +30069,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
                                       ]
                                     },
                                     {
@@ -30086,7 +30086,7 @@
                                         "mode": "Incremental",
                                         "parameters": {
                                           "policyDefinitionId": {
-                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                                            "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -30156,7 +30156,7 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('assocpolArc-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                                        "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
                                       ]
                                     }
                                   ]
