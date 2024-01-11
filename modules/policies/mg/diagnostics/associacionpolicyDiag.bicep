@@ -11,7 +11,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   name: policyName
   properties: {
     description: policyDescription
-    displayName: '[AMSP]-${policyDisplayName}'
+    displayName: 'AMP-${policyDisplayName}'
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
@@ -135,7 +135,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                 resources: [
                   {
                   type: '${resourceType}/providers/diagnosticSettings'
-                  name: '[concat(parameters(\'resourceName\'), \'/Microsoft.Insights/\', \'AMSP-\', parameters(\'packTag\'))]'
+                  name: '[concat(parameters(\'resourceName\'), \'/Microsoft.Insights/\', \'AMP-\', parameters(\'packTag\'))]'
                   apiVersion: '2021-05-01-preview'
                   properties: {
                     workspaceId: '[parameters(\'logAnalyticsWSResourceId\')]'

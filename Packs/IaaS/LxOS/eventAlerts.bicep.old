@@ -4,9 +4,9 @@ param AGId string
 param packtag string
 param solutionTag string
 param solutionVersion string
-
-var moduleprefix = 'AMSP-Lx-DCR-Alerts'
-
+param instanceName string
+//var moduleprefix = 'AMSP-Lx-DCR-Alerts'
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
 var alertlist =  [ 
   {

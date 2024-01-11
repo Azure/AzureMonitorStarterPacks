@@ -1,11 +1,15 @@
 // Pack specific parameters
-param moduleprefix string = 'AMSP-Win-PS2016'
+//param moduleprefix string = 'AMSP-Win-PS2016'
+
 // Common parameters
 param location string
 param workspaceId string
 param AGId string
 param packtag string
 param Tags object
+param instanceName string
+
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
 // Alert list
 var alertlist = [

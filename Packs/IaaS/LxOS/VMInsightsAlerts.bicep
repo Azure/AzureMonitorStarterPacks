@@ -3,6 +3,7 @@ param workspaceId string
 param AGId string
 param packtag string
 param Tags object
+param instanceName string
 /*
 List of Insights default metrics:
 LogicalDisk WriteBytesPerSecond 15M 
@@ -23,7 +24,8 @@ Computer    Heartbeat
 Memory      AvailableMB 
 Processor   UtilizationPercentage 
 */
-var moduleprefix = 'AMSP-Lx-VMI'
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
+//var moduleprefix = 'AMSP-Lx-VMI'
 // Alert list
 var alertlist = [
   {

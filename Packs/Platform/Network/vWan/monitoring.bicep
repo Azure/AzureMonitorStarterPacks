@@ -3,6 +3,8 @@ param workspaceId string
 param packtag string
 param solutionTag string
 param actionGroupResourceId string
+param instanceName string
+
 var resourceTypes = [
   'Microsoft.Network/vpngateways'
   'Microsoft.Network/expressRouteGateways'
@@ -91,5 +93,6 @@ module vWanAlerts 'alerts.bicep' = {
     solutionVersion: solutionVersion
     location: location
     workspaceId: workspaceId
+    instanceName: instanceName
   }
 }

@@ -150,6 +150,7 @@ module addscollectionDCR '../../../setup/discovery/modules/discoveryrule.bicep' 
     tableName: tableNameToUse
     packtag: 'ADDS'
     packtype: 'IaaS'
+    instanceName: instanceName
   }
 }
 

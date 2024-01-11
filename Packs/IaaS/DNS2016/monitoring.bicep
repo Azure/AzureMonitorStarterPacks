@@ -193,7 +193,7 @@ var performanceCounters=[
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
-module Alerts './WinDns2016Alerts.bicep' = {
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -202,6 +202,7 @@ module Alerts './WinDns2016Alerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR

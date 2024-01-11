@@ -90,6 +90,7 @@ module InsightsAlerts './VMInsightsAlerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }
 

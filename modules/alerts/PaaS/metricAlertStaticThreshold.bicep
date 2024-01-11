@@ -23,6 +23,7 @@ param AGId string
 param metricName string
 param operator string
 param initiativeMember bool //will mostly true
+param instanceName string
 
 param policyLocation string
 param deploymentRoleDefinitionIds array = [
@@ -82,9 +83,9 @@ param parMonitorDisable string = 'MonitorDisable'
 module metricAlert '../../alz/deploy.bicep' = {
     name: guid(alertname)
     params: {
-        name: alertname
-        displayName: alertDisplayName
-        description: alertDescription
+        name: 'AMP-${instanceName}-${alertname}'
+        displayName: 'AMP-${instanceName}-${alertDisplayName}'
+        description: 'AMP-${instanceName}-${alertDescription}'
         location: policyLocation
         metadata: {
             version: '1.0.0'

@@ -65,7 +65,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         effect: '[parameters(\'effect\')]'
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
-          name: 'AMSP-RulesAssociation' 
+          name: 'AMP-RulesAssociation' 
           roleDefinitionIds: [
             '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
             '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'

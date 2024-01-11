@@ -2,10 +2,13 @@
 param location string
 param workspaceId string
 param AGId string
-var moduleprefix = 'AMSP-Win-DCR-Alerts'
+//var moduleprefix = 'AMSP-Win-DCR-Alerts'
 param packtag string
 param solutionTag string
 param solutionVersion string
+param instanceName string
+
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
 var alertlist =  [ 
   {

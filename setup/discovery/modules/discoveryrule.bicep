@@ -9,13 +9,14 @@ param OS string
 param packtype string
 @description('Specifies the resource id of the data collection endpoint.')
 param endpointResourceId string
+param instanceName string
 
 var tableNameToUse = tableName
 var streamName= 'Custom-${tableNameToUse}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
-  name: 'AMSP-FileColl-${packtag}-${OS}'
+  name: 'AMP-${instanceName}-FileColl-${packtag}-${OS}'
   location: location
   tags: {
     '${solutionTag}': packtag

@@ -3,8 +3,10 @@ param workspaceId string
 param AGId string
 param packtag string
 param Tags object
+param instanceName string
 
-var moduleprefix = 'AMSP-LxOS-Nginx'
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
+//var moduleprefix = 'AMSP-LxOS-Nginx'
 // Alert list
 
 var alertlist = [

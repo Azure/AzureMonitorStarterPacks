@@ -132,6 +132,7 @@ module windiscoveryDCR '../modules/discoveryrule.bicep' = {
     tableName: tableNameToUse
     packtag: 'windiscovery'
     packtype: 'Discovery'
+    instanceName: instanceName
   }
 }
 

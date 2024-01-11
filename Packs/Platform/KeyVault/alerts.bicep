@@ -11,7 +11,7 @@ param userManagedIdentityResourceId string
 param AGId string
 param location string
 param solutionVersion string
-
+param instanceName string
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
 ]
@@ -35,13 +35,14 @@ module ActivityLogKeyVaultDeleteAlert '../../../modules/alerts/PaaS/activityLogA
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         alertname: 'Deploy_activitylog_KeyVault_Delete'
-        alertDisplayName: '[AMSP] Deploy Activity Log Key Vault Delete Alert'
-        alertDescription: 'AMSP policy to Deploy Activity Log Key Vault Delete Alert'
+        alertDisplayName: 'Deploy Activity Log Key Vault Delete Alert'
+        alertDescription: 'Policy to Deploy Activity Log Key Vault Delete Alert'
         assignmentSuffix: 'ActKVDel'
         AGId: AGId
         initiativeMember: true
         operationName: 'delete'
         packtype: 'Platform'
+        instanceName: instanceName
     }
 }
 module KeyVaultLatencyAlert '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -57,8 +58,8 @@ module KeyVaultLatencyAlert '../../../modules/alerts/PaaS/metricAlertStaticThres
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         alertname: 'Deploy_KeyVault_Latency_Alert'
-        alertDisplayName: '[AMSP] Deploy KeyVault Latency Alert'
-        alertDescription: 'AMSP policy to audit/deploy KeyVault Latency Alert'
+        alertDisplayName: 'Deploy KeyVault Latency Alert'
+        alertDescription: 'Policy to audit/deploy KeyVault Latency Alert'
         metricNamespace: 'Microsoft.KeyVault/vaults'
         parAlertSeverity: '3'
         parAlertState: parAlertState
@@ -73,14 +74,15 @@ module KeyVaultLatencyAlert '../../../modules/alerts/PaaS/metricAlertStaticThres
         operator: 'GreaterThan'
         initiativeMember: true
         packtype: 'Platform'
+        instanceName: instanceName
     }
 }
 module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
     name: '${packTag}-PolicySet'
     params: {
-        initiativeDescription: 'AMSP policy to deploy Key Vault policies'
-        initiativeDisplayName: '[AMSP] Key Vault policies'
-        initiativeName: 'AMSP-KV-PolicySet'
+        initiativeDescription: 'Policy Set to deploy Key Vault policies'
+        initiativeDisplayName: 'Key Vault policies'
+        initiativeName: 'KV-PolicySet'
         solutionTag: solutionTag
         category: 'Monitoring'
         version: solutionVersion
@@ -89,6 +91,7 @@ module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
         subscriptionId: subscriptionId
         packtag: packTag
         userManagedIdentityResourceId: userManagedIdentityResourceId
+        instanceName: instanceName
         policyDefinitions: [
             {
                 policyDefinitionId: KeyVaultLatencyAlert.outputs.policyId

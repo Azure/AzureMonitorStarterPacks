@@ -131,6 +131,7 @@ module Alerts './WinIISAlerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR

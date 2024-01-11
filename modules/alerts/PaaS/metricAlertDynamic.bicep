@@ -79,13 +79,13 @@ param parAutoMitigate string = 'true'
 param parAlertState string = 'true'
 
 param parMonitorDisable string = 'MonitorDisable' 
-
+param instanceName string
 module metricAlert '../../alz/deploy.bicep' = {
     name: guid(alertname)
     params: {
-        name: alertname
-        displayName: alertDisplayName
-        description: alertDescription
+        name: 'AMP-${instanceName}-${alertname}'
+        displayName: 'AMP-${instanceName}-${alertDisplayName}'
+        description: 'AMP-${instanceName}-${alertDescription}'
         location: policyLocation
         metadata: {
             version: '1.0.0'

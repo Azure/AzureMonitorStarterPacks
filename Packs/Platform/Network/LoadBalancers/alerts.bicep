@@ -11,6 +11,7 @@ param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param location string
+param instanceName string
 
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -23,9 +24,9 @@ param parAlertState string = 'true'
 module ALBDipPathAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ALBDipAvailabilityAlert'
     params: {
-        alertname: 'AMSP - Load Balancer Dip Availability'
-        alertDisplayName: '[AMSP] Load Balancer Dip Availability'
-        alertDescription: 'AMSP policy to deploy Load Balancer Dip Availability'
+        alertname: 'Load Balancer Dip Availability'
+        alertDisplayName: 'Load Balancer Dip Availability'
+        alertDescription: 'policy to deploy Load Balancer Dip Availability'
         metricNamespace: 'Microsoft.Network/loadBalancers'
         metricName: 'DipAvailability'
         operator: 'LessThan'
@@ -49,14 +50,15 @@ module ALBDipPathAvail '../../../../modules/alerts/PaaS/metricAlertStaticThresho
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
         packtype: 'Platform'
+        instanceName: instanceName
     }
 }
 module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ALBUsedSNATPortsAlert'
     params: {
-        alertname: 'AMSP - Load Balancer Metric Alert for ALB Used SNAT Ports'
-        alertDisplayName: '[AMSP] Metric Alert for ALB Used SNAT Ports'
-        alertDescription: 'AMSP policy to deploy Metric Alert for ALB Used SNAT Ports'
+        alertname: 'Load Balancer Metric Alert for ALB Used SNAT Ports'
+        alertDisplayName: 'Metric Alert for ALB Used SNAT Ports'
+        alertDescription: 'Policy to deploy Metric Alert for ALB Used SNAT Ports'
         metricNamespace: 'Microsoft.Network/loadBalancers'
         metricName: 'UsedSNATPorts'
         operator: 'GreaterThan'
@@ -80,14 +82,15 @@ module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThresh
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
         packtype: 'Platform'
+        instanceName: instanceName
     }
 }
 module ALBGlobalBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ALBDGlobalBackendAvailAlert'
     params: {
-        alertname: 'AMSP - Load Balancer Global Backend Availability'
-        alertDisplayName: '[AMSP] Global Backend Availability '
-        alertDescription: 'AMSP policy to deploy Global Backend Availability alert'
+        alertname: 'Load Balancer Global Backend Availability'
+        alertDisplayName: 'Global Backend Availability '
+        alertDescription: 'Policy to deploy Global Backend Availability alert'
         metricNamespace: 'Microsoft.Network/loadBalancers'
         metricName: 'GlobalBackendAvailability'
         operator: 'GreaterThan'
@@ -111,14 +114,15 @@ module ALBGlobalBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticT
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
         packtype: 'Platform'
+        instanceName: instanceName
     }
 }
 module ALBBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ALBBackendAvailabilityAlert'
     params: {
-        alertname: 'AMSP - Load Balancer VIP Availability Alert'
-        alertDisplayName: '[AMSP] Deploy ALB VIP Availability Alert'
-        alertDescription: 'AMSP policy to deploy ALB VIP Availability Alert'
+        alertname: 'Load Balancer VIP Availability Alert'
+        alertDisplayName: 'Deploy ALB VIP Availability Alert'
+        alertDescription: 'Policy to deploy ALB VIP Availability Alert'
         metricNamespace: 'Microsoft.Network/loadBalancers'
         parAlertSeverity: '0'
         parAutoMitigate: 'false'
@@ -142,14 +146,15 @@ module ALBBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThresho
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: true
         packtype: 'Platform'
+        instanceName: instanceName
     }
 }
 module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
     name: 'LB-PolicySet'
     params: {
-        initiativeDescription: 'AMSP Initiative to deploy Load Balancer Alert Policies'
-        initiativeDisplayName: '[AMSP] Load Balancer Alerting policies'
-        initiativeName: 'AMSP-LB-PolicySet'
+        initiativeDescription: 'Initiative to deploy Load Balancer Alert Policies'
+        initiativeDisplayName: 'Load Balancer Alerting policies'
+        initiativeName: 'LB-PolicySet'
         solutionTag: solutionTag
         category: 'Monitoring'
         version: solutionVersion
@@ -158,6 +163,7 @@ module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
         subscriptionId: subscriptionId
         packtag: packTag
         userManagedIdentityResourceId: userManagedIdentityResourceId
+        instanceName: instanceName
         policyDefinitions: [
             {
                 policyDefinitionId: ALBDipPathAvail.outputs.policyId

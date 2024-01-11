@@ -53,6 +53,7 @@ module Storage './Storage/monitoring.bicep' = {
     grafanaName: grafanaName
     dceId: dceId
     customerTags: customerTags
+    instanceName: instanceName
   }
 }
 module OpenAI './OpenAI/monitoring.bicep' = {
@@ -71,6 +72,7 @@ module OpenAI './OpenAI/monitoring.bicep' = {
     grafanaName: grafanaName
     dceId: dceId
     customerTags: customerTags
+    instanceName: instanceName
   }
 }
 

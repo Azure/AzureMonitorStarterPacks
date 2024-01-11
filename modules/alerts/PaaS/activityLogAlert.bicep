@@ -29,13 +29,13 @@ var parAlertState = 'true'
     'Platform'
 ])
 param packtype string
-
+param instanceName string
 module ActivityLogAlert '../../alz/deploy.bicep' = {
   name: guid(alertname)
   params: {
-      name: alertname
-      displayName: alertDisplayName
-      description: alertDescription
+      name: 'AMP-${instanceName}-${alertname}'
+      displayName: 'AMP-${instanceName}-${alertDisplayName}'
+      description: 'AMP-${instanceName}-${alertDescription}'
       location: policyLocation
       metadata: {
           version: '1.0.0'

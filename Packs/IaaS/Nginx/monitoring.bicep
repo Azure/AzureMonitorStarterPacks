@@ -93,7 +93,7 @@ module Alerts './nginxalerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
-    
+    instanceName: instanceName
   }
 }
 module policysetup '../../../modules/policies/mg/policies.bicep' = {

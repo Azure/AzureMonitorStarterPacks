@@ -21,6 +21,7 @@ param assignmentLevel string
 param resourceGroupId string
 param grafanaName string
 param customerTags object 
+param instanceName string
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'Platform'
@@ -64,5 +65,6 @@ module LBAlerts 'alerts.bicep' = {
     AGId: actionGroupResourceId
     solutionVersion: solutionVersion
     location: location
+    instanceName: instanceName
   }
 }

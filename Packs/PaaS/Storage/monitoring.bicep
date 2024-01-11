@@ -23,6 +23,7 @@ param resourceGroupId string
 param grafanaName string
 //param solutionVersion string
 param customerTags object 
+param instanceName string
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'PaaS'
@@ -47,6 +48,6 @@ module StorageAlerts 'alerts.bicep' = {
     assignmentLevel: assignmentLevel
     userManagedIdentityResourceId: userManagedIdentityResourceId
     AGId: actionGroupResourceId
-
+    instanceName: instanceName
   }
 }

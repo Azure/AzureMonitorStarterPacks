@@ -142,6 +142,7 @@ module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
     tableName: tableNameToUse
     packtag: 'linuxdiscovery'
     packtype: 'Discovery'
+    instanceName: instanceName
   }
 }
 

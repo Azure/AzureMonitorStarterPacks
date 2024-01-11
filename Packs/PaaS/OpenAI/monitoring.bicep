@@ -19,6 +19,7 @@ param mgname string
 param assignmentLevel string
 param resourceGroupId string
 param grafanaName string
+param instanceName string
 var resourceType = 'Microsoft.Network/loadBalancers'
 //var resourceShortType = split(resourceType, '/')[1]
 
@@ -45,5 +46,6 @@ module Alerts 'Alerts.bicep' = {
     assignmentLevel: assignmentLevel
     userManagedIdentityResourceId: userManagedIdentityResourceId
     AGId: actionGroupResourceId
+    instanceName: instanceName
   }
 }

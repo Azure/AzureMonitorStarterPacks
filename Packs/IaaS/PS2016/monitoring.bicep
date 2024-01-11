@@ -101,5 +101,6 @@ module Alerts './alerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }

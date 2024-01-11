@@ -9,7 +9,8 @@ param parResourceGroupName string
 param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
-
+@secure()
+param instanceName string
 param deploymentRoleDefinitionIds array = [
   '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
 ]
@@ -68,8 +69,8 @@ module vWanPacketEgressDropCountAlert '../../../../modules/alerts/PaaS/metricAle
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'Deploy_VPNGW_EgDropCount_Alert'
-      alertDisplayName: '[AMSP] Deploy VPN Gateway Egress Packet Drop Count Alert'
-      alertDescription: 'AMSP policy to audit/deploy VPN Gateway Egress Packet Drop Count Alert'
+      alertDisplayName: 'Deploy VPN Gateway Egress Packet Drop Count Alert'
+      alertDescription: 'Policy to audit/deploy VPN Gateway Egress Packet Drop Count Alert'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '2'
       parAlertState: parAlertState
@@ -86,6 +87,7 @@ module vWanPacketEgressDropCountAlert '../../../../modules/alerts/PaaS/metricAle
       operator: 'GreaterThan'
       initiativeMember: true
       packtype: 'Platform'
+instanceName: instanceName
   }
 }
 
@@ -102,8 +104,8 @@ module vWanTunnelIngressBytes '../../../../modules/alerts/PaaS/metricAlertStatic
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'Deploy_VPNGW_TunnelIgBytes_Alert'
-      alertDisplayName: '[AMSP] Metric Alert for VPN Gateway tunnel ingress bytes'
-      alertDescription: 'AMSP policy to audit/deploy Metric Alert for VPN Gateway tunnel ingress bytes'
+      alertDisplayName: 'Metric Alert for VPN Gateway tunnel ingress bytes'
+      alertDescription: 'Policy to audit/deploy Metric Alert for VPN Gateway tunnel ingress bytes'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '0'
       parAlertState: parAlertState
@@ -118,6 +120,7 @@ module vWanTunnelIngressBytes '../../../../modules/alerts/PaaS/metricAlertStatic
       operator: 'LessThan'
       initiativeMember: true
       packtype: 'Platform'
+instanceName: instanceName
   }
 }
 
@@ -134,8 +137,8 @@ module TunnelEgressBytes '../../../../modules/alerts/PaaS/metricAlertStaticThres
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'Tunnel_Egress_Bytes_Alert'
-      alertDisplayName: '[AMSP] Metric Alert for VPN Gateway tunnel egress bytes'
-      alertDescription: '[AMSP] Metric Alert for VPN Gateway tunnel egress bytes'
+      alertDisplayName: 'Metric Alert for VPN Gateway tunnel egress bytes'
+      alertDescription: 'Metric Alert for VPN Gateway tunnel egress bytes'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '0'
       parAlertState: parAlertState
@@ -150,6 +153,7 @@ module TunnelEgressBytes '../../../../modules/alerts/PaaS/metricAlertStaticThres
       operator: 'LessThan'
       initiativeMember: true
       packtype: 'Platform'
+instanceName: instanceName
   }
 }
 module TunnelAverageBandwidthAlert '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -165,7 +169,7 @@ module TunnelAverageBandwidthAlert '../../../../modules/alerts/PaaS/metricAlertS
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'Tunnel Average Bandwidth'
-      alertDisplayName: '[AMSP] Tunnel Average Bandwidth'
+      alertDisplayName: 'Tunnel Average Bandwidth'
       alertDescription: 'AMSP Metric Alert for VPN Gateway Bandwidth Utilization'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '0'
@@ -181,6 +185,7 @@ module TunnelAverageBandwidthAlert '../../../../modules/alerts/PaaS/metricAlertS
       operator: 'LessThan'
       initiativeMember: true
       packtype: 'Platform'
+instanceName: instanceName
   }
 }
 module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
@@ -196,7 +201,7 @@ module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'BGP_Peer_Status_Alert'
-      alertDisplayName: '[AMSP] Metric Alert for VPN Gateway BGP peer status'
+      alertDisplayName: 'Metric Alert for VPN Gateway BGP peer status'
       alertDescription: 'AMSP Metric Alert for VPN Gateway BGP peer status'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '0'
@@ -212,15 +217,16 @@ module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold
       operator: 'LessThan'
       initiativeMember: true
       packtype: 'Platform'
+instanceName: instanceName
   }
 }
 
 module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
   name: 'vWan-PolicySet'
   params: {
-      initiativeDescription: 'AMSP policy to deploy vWan policies'
-      initiativeDisplayName: '[AMSP] vWan policies'
-      initiativeName: 'AMSP-vWan-PolicySet'
+      initiativeDescription: 'Policy to deploy vWan policies'
+      initiativeDisplayName: 'vWan policies'
+      initiativeName: 'vWan-PolicySet'
       solutionTag: solutionTag
       category: 'Monitoring'
       version: solutionVersion
@@ -229,6 +235,7 @@ module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
       subscriptionId: subscriptionId
       packtag: packTag
       userManagedIdentityResourceId: userManagedIdentityResourceId
+      instanceName: instanceName
       policyDefinitions: [
           {
               policyDefinitionId: BGPPeerStatus.outputs.policyId

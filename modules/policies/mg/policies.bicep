@@ -18,7 +18,7 @@ var roledefinitionIds=[
 var dcrName = split (dcrId,'/')[8]
 
 module policyVM './associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM-${packtag}-${dcrName}'
+  name: 'assocpolVM-${packtag}-${dcrName}'
   scope: managementGroup(mgname)
   params: {
     packtag: packtag
@@ -31,7 +31,7 @@ module policyVM './associacionpolicyVM.bicep' = {
   }
 }
 module policyARC './associacionpolicyARC.bicep' = {
-  name: 'associationpolicyARC-${packtag}-${dcrName}'
+  name: 'assocpolArc-${packtag}-${dcrName}'
   scope: managementGroup(mgname)
   params: {
     packtag: packtag

@@ -3,7 +3,9 @@ param workspaceId string
 param AGId string
 param packtag string
 param Tags object 
-param moduleprefix string = 'AMSP-IIS2016'
+param instanceName string
+//param moduleprefix string = 'AMSP-IIS2016'
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 // Alert list
 
 var alertlist = [

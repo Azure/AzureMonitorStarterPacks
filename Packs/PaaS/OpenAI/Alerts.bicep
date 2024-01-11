@@ -9,6 +9,7 @@ param parResourceGroupName string
 param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
+param instanceName string
 
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -21,9 +22,9 @@ param parAlertState string = 'true'
 module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-OAIClErrors'
     params: {
-        alertname: 'AMSP - Alert on Client Errors over threshold'
-        alertDisplayName: '[AMSP] Alert on Client Errors over threshold'
-        alertDescription: 'AMSP policy to deploy Alert on Client Errors over threshold'
+        alertname: 'AMP-${instanceName}-Alert on Client Errors over threshold'
+        alertDisplayName: 'AMP-${instanceName} Alert on Client Errors over threshold'
+        alertDescription: 'AMP-${instanceName} policy to deploy Alert on Client Errors over threshold'
         metricNamespace: 'Microsoft.CognitiveServices/accounts'
         metricName: 'ClientErrors'
         operator: 'GreaterThan'
@@ -48,6 +49,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         initiativeMember: false
         packtype: 'PaaS'
+        instanceName: instanceName
         
     }
 }

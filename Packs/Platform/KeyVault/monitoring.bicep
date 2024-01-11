@@ -21,6 +21,7 @@ param mgname string
 param assignmentLevel string
 param resourceGroupId string
 param grafanaName string
+param instanceName string
 //param solutionVersion string
 param customerTags object 
 var tempTags ={
@@ -49,5 +50,6 @@ module KVAlert 'alerts.bicep' = {
     AGId: actionGroupResourceId
     solutionVersion: solutionVersion
     location: location
+    instanceName: instanceName
   }
 }

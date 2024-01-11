@@ -3,7 +3,9 @@ param workspaceId string
 param AGId string
 param packtag string
 param Tags object
-var moduleprefix = 'AMSP-Win-VMI'
+param instanceName string
+//var moduleprefix = 'AMSP-Win-VMI'
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
 // Alert list
 var alertlist = [

@@ -23,12 +23,13 @@ param location string
 param userManagedIdentityResourceId string
 param subscriptionId string
 param packtag string
+param instanceName string
 
 resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' = {
-  name: initiativeName
+  name: 'AMP-${instanceName}-${initiativeName}'
   properties: {
-    description: initiativeDescription
-    displayName: initiativeDisplayName 
+    description: 'AMP-${instanceName}-${initiativeDescription}'
+    displayName: 'AMP-${instanceName}-${initiativeDisplayName}'
     metadata: {
       category: category
       version: version
@@ -48,7 +49,7 @@ module assignment './assignment.bicep' = if (assignmentLevel == 'managementGroup
   params: {
     policyDefinitionId: policySetDef.id
     location: location
-    assignmentName: '[AMSP]AMA-${initiativeName}-Set'
+    assignmentName: 'AMP-AMA-${initiativeName}-Set'
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
     // roledefinitionIds: [
@@ -65,7 +66,7 @@ module assignmentsub '../subscription/assignment.bicep' = if (assignmentLevel !=
   params: {
     policyDefinitionId: policySetDef.id
     location: location
-    assignmentName: '[AMSP]AMA-${initiativeName}-Set'
+    assignmentName: 'AMP-AMA-${initiativeName}-Set'
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
     // roledefinitionIds: [
