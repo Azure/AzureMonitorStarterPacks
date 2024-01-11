@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "3318705211221018622"
+      "templateHash": "5423143010541055636"
     }
   },
   "parameters": {
@@ -138,7 +138,7 @@
     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
     "functionName": "[format('AMP-{0}-Function', parameters('instanceName'))]",
     "logicAppName": "[format('AMP-{0}-LogicApp', parameters('instanceName'))]",
-    "ImageGalleryName": "[format('AMP-{0}-Gallery', parameters('instanceName'))]"
+    "ImageGalleryName": "[format('AMP{0}Gallery', parameters('instanceName'))]"
   },
   "resources": [
     {

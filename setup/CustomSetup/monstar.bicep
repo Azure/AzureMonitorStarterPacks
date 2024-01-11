@@ -49,7 +49,7 @@ instanceName: instanceName}
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var functionName = 'AMP-${instanceName}-Function'
 var logicAppName = 'AMP-${instanceName}-LogicApp'
-var ImageGalleryName = 'AMP-${instanceName}-Gallery'
+var ImageGalleryName = 'AMP${instanceName}Gallery'
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
