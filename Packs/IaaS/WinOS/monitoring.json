@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "13539627308366536058"
+      "templateHash": "7955279270868694559"
     }
   },
   "parameters": {
@@ -14,13 +14,6 @@
       "defaultValue": "WinOS",
       "metadata": {
         "description": "The Tag value for this pack"
-      }
-    },
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-Windows-OS",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
       }
     },
     "actionGroupResourceId": {
@@ -64,16 +57,20 @@
     },
     "customerTags": {
       "type": "object"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
       "solutionVersion": "[parameters('solutionVersion')]"
     },
     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-    "ruleshortname": "VMI-OS",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
   },
   "resources": [
@@ -99,7 +96,7 @@
             "value": "[variables('Tags')]"
           },
           "ruleName": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "dceId": {
             "value": "[parameters('dceId')]"
@@ -908,7 +905,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"

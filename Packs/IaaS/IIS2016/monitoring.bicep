@@ -1,7 +1,7 @@
 targetScope='managementGroup'
 
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-IIS2016-Server'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-IIS2016-Server'
 param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
@@ -18,7 +18,9 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 param customerTags object
 var tempTags ={
   '${solutionTag}': packtag
@@ -28,7 +30,7 @@ var tempTags ={
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'IIS2016'
+
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 

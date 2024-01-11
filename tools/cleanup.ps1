@@ -308,7 +308,13 @@ if ($RemoveMainSolution  -or $RemoveAll) {
     # remove managed identities
     
     # Fetch existing managed identities. Name should be:
-    $managedIdentityNames=@( 'packsUserManagedIdentity', 'AMAUserManagedIdentity','functionUserManagedIdentity')
+    $query=@"
+    resources
+| where type =~ 'Microsoft.ManagedIdentity/userAssignedIdentities'
+| where tolower(resourceGroup) == '$($RG.toLower())'
+| project name
+"@
+$managedIdentityNames=(Search-AzGraph -Query $query).name
     foreach ($MIName in $managedIdentityNames) {
         $MIResourceName=(get-azresource -ResourceGroupName $RG -ResourceType 'Microsoft.ManagedIdentity/userAssignedIdentities' -Name $MIName -ErrorAction SilentlyContinue).Name
         $MIObjectId=(Get-AzADServicePrincipal -DisplayName $MIName -ErrorAction SilentlyContinue).Id

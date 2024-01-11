@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12730146961124372810"
+      "templateHash": "10669755449933711760"
     }
   },
   "parameters": {
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-Windows-PS2016",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
-      }
-    },
     "packtag": {
       "type": "string",
       "defaultValue": "PS2016",
@@ -70,9 +63,14 @@
     },
     "customerTags": {
       "type": "object"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
@@ -80,7 +78,6 @@
     },
     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
-    "ruleshortname": "PS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
     "kind": "Windows",
     "xPathQueries": [
@@ -120,7 +117,7 @@
             "value": "[parameters('location')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "workspaceId": {
             "value": "[parameters('workspaceId')]"
@@ -267,7 +264,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"

@@ -1,8 +1,8 @@
 targetScope = 'managementGroup'
 
 
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-VMI-Linux'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-VMI-Linux'
 param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
@@ -21,6 +21,8 @@ param resourceGroupId string
 param assignmentLevel string
 param customerTags object
 param instanceName string
+
+var rulename = 'AMP-${instanceName}-${packtag}'
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'
@@ -30,7 +32,7 @@ var tempTags ={
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'VMI-LxOS'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // Action Group

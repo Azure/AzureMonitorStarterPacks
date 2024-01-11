@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
 @description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-ADDS-Server'
+
 param packtag string = 'ADDS'
 param actionGroupResourceId string
 @description('location for the deployment.')
@@ -20,6 +20,7 @@ param resourceGroupId string
 param assignmentLevel string
 param instanceName string
 
+var rulename = 'AMP-${instanceName}-${packtag}'
 param customerTags object
 var tempTags ={
   '${solutionTag}': packtag

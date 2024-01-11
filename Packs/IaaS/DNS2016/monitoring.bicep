@@ -1,6 +1,6 @@
 targetScope='managementGroup'
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-DNS2016-Server'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-DNS2016-Server'
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -18,7 +18,8 @@ param solutionTag string
 param solutionVersion string
 param customerTags object
 param actionGroupResourceId string
-
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'

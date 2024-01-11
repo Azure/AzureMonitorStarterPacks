@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-Linux-Nginx'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-Linux-Nginx'
 
 param actionGroupResourceId string
 @description('location for the deployment.')
@@ -20,6 +20,10 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
+
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'
@@ -27,7 +31,7 @@ var tempTags ={
 }
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
-var ruleshortname = 'Nginx'
+
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var facilityNames = [

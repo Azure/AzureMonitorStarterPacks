@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "3321638859948617046"
+      "templateHash": "571442744553256837"
     }
   },
   "parameters": {
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-IIS-Server",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
-      }
-    },
     "location": {
       "type": "string",
       "metadata": {
@@ -67,9 +60,13 @@
     },
     "actionGroupResourceId": {
       "type": "string"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
@@ -1092,7 +1089,7 @@
             "value": "[parameters('location')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "workspaceId": {
             "value": "[parameters('workspaceId')]"
@@ -1239,7 +1236,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -2126,7 +2123,7 @@
             "value": "[parameters('location')]"
           },
           "ruleName": {
-            "value": "[format('{0}-IISLogs', parameters('rulename'))]"
+            "value": "[format('{0}-IISLogs', variables('rulename'))]"
           },
           "lawResourceId": {
             "value": "[parameters('workspaceId')]"
@@ -2274,7 +2271,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[format('{0}-IISLogs', parameters('rulename'))]"
+            "value": "[format('{0}-IISLogs', variables('rulename'))]"
           },
           "location": {
             "value": "[parameters('location')]"

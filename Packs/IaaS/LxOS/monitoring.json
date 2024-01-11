@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "771684716283612112"
+      "templateHash": "9367761598812756245"
     }
   },
   "parameters": {
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-VMI-Linux",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
-      }
-    },
     "actionGroupResourceId": {
       "type": "string"
     },
@@ -73,6 +66,7 @@
     }
   },
   "variables": {
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
@@ -80,7 +74,7 @@
       "instanceName": "[parameters('instanceName')]"
     },
     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-    "ruleshortname": "VMI-LxOS",
+    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
   },
   "resources": [
@@ -106,7 +100,7 @@
             "value": "[variables('Tags')]"
           },
           "ruleName": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "dceId": {
             "value": "[parameters('dceId')]"
@@ -915,7 +909,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"

@@ -1,8 +1,8 @@
 targetScope = 'managementGroup'
 @description('The Tag value for this pack')
 param packtag string = 'WinOS'
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-Windows-OS'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-Windows-OS'
 param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
@@ -17,6 +17,9 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'
@@ -24,7 +27,7 @@ var tempTags ={
 }
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
-var ruleshortname = 'VMI-OS'
+//var ruleshortname = 'VMI-OS'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // Action Group

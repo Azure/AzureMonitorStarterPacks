@@ -88,6 +88,7 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 
@@ -124,6 +125,7 @@ module IIS './IIS/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 
@@ -142,6 +144,7 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 module DNS2016 './DNS2016/monitoring.bicep' = {
@@ -159,6 +162,7 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 module PS2016 './PS2016/monitoring.bicep' = {
@@ -176,6 +180,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 module Nginx './Nginx/monitoring.bicep' = {
@@ -193,6 +198,7 @@ module Nginx './Nginx/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
   }
 }
 // Grafana upload and install

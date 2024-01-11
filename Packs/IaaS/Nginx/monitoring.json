@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11534667102268109795"
+      "templateHash": "2107255180121373601"
     }
   },
   "parameters": {
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-Linux-Nginx",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
-      }
-    },
     "actionGroupResourceId": {
       "type": "string"
     },
@@ -67,16 +60,20 @@
     },
     "customerTags": {
       "type": "object"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
       "solutionVersion": "[parameters('solutionVersion')]"
     },
     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-    "ruleshortname": "Nginx",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
     "facilityNames": [
       "daemon"
@@ -115,7 +112,7 @@
             "value": "[variables('Tags')]"
           },
           "ruleName": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "filepatterns": {
             "value": [
@@ -1026,7 +1023,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"

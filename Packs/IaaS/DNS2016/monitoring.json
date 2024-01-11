@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "14610338613671740869"
+      "templateHash": "16816364395085994357"
     }
   },
   "parameters": {
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-DNS2016-Server",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
-      }
-    },
     "location": {
       "type": "string",
       "metadata": {
@@ -67,9 +60,13 @@
     },
     "actionGroupResourceId": {
       "type": "string"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
     "tempTags": {
       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
       "MonitoringPackType": "IaaS",
@@ -1459,7 +1456,7 @@
             "value": "[parameters('location')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "workspaceId": {
             "value": "[parameters('workspaceId')]"
@@ -1606,7 +1603,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"

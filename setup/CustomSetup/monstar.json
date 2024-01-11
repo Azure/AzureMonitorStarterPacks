@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "3329399358097525267"
+      "templateHash": "17214113046769165245"
     }
   },
   "parameters": {
@@ -10417,7 +10417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "7365729130027668348"
+              "templateHash": "9300517234205021859"
             }
           },
           "parameters": {
@@ -10680,7 +10680,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12416319547569842739"
+                      "templateHash": "4101193263002053556"
                     }
                   },
                   "parameters": {
@@ -10824,20 +10824,16 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "9108631623483968863"
+                              "templateHash": "14044639170384592004"
                             }
                           },
                           "parameters": {
-                            "rulename": {
+                            "packtag": {
                               "type": "string",
-                              "defaultValue": "AMSP-ADDS-Server",
+                              "defaultValue": "ADDS",
                               "metadata": {
                                 "description": "Name of the DCR rule to be created"
                               }
-                            },
-                            "packtag": {
-                              "type": "string",
-                              "defaultValue": "ADDS"
                             },
                             "actionGroupResourceId": {
                               "type": "string"
@@ -10906,6 +10902,7 @@
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
@@ -10942,7 +10939,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "workspaceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -11089,7 +11086,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -13655,6 +13652,9 @@
                           },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -13664,7 +13664,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "13539627308366536058"
+                              "templateHash": "7955279270868694559"
                             }
                           },
                           "parameters": {
@@ -13673,13 +13673,6 @@
                               "defaultValue": "WinOS",
                               "metadata": {
                                 "description": "The Tag value for this pack"
-                              }
-                            },
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-Windows-OS",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
                               }
                             },
                             "actionGroupResourceId": {
@@ -13723,16 +13716,20 @@
                             },
                             "customerTags": {
                               "type": "object"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                            "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
                               "solutionVersion": "[parameters('solutionVersion')]"
                             },
                             "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-                            "ruleshortname": "VMI-OS",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                           },
                           "resources": [
@@ -13758,7 +13755,7 @@
                                     "value": "[variables('Tags')]"
                                   },
                                   "ruleName": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "dceId": {
                                     "value": "[parameters('dceId')]"
@@ -14567,7 +14564,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -15500,17 +15497,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "771684716283612112"
+                              "templateHash": "9367761598812756245"
                             }
                           },
                           "parameters": {
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-VMI-Linux",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
-                              }
-                            },
                             "actionGroupResourceId": {
                               "type": "string"
                             },
@@ -15568,6 +15558,7 @@
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
@@ -15575,7 +15566,7 @@
                               "instanceName": "[parameters('instanceName')]"
                             },
                             "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-                            "ruleshortname": "VMI-LxOS",
+                            "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                           },
                           "resources": [
@@ -15601,7 +15592,7 @@
                                     "value": "[variables('Tags')]"
                                   },
                                   "ruleName": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "dceId": {
                                     "value": "[parameters('dceId')]"
@@ -16410,7 +16401,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -17331,6 +17322,9 @@
                           },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -17340,17 +17334,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "3321638859948617046"
+                              "templateHash": "571442744553256837"
                             }
                           },
                           "parameters": {
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-IIS-Server",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
-                              }
-                            },
                             "location": {
                               "type": "string",
                               "metadata": {
@@ -17402,9 +17389,13 @@
                             },
                             "actionGroupResourceId": {
                               "type": "string"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
@@ -18427,7 +18418,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "workspaceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -18574,7 +18565,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -19461,7 +19452,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "ruleName": {
-                                    "value": "[format('{0}-IISLogs', parameters('rulename'))]"
+                                    "value": "[format('{0}-IISLogs', variables('rulename'))]"
                                   },
                                   "lawResourceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -19609,7 +19600,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[format('{0}-IISLogs', parameters('rulename'))]"
+                                    "value": "[format('{0}-IISLogs', variables('rulename'))]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -20530,6 +20521,9 @@
                           },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -20539,17 +20533,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "5911120729266619776"
+                              "templateHash": "8204946328606426360"
                             }
                           },
                           "parameters": {
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-IIS2016-Server",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
-                              }
-                            },
                             "actionGroupResourceId": {
                               "type": "string"
                             },
@@ -20601,11 +20588,16 @@
                             "assignmentLevel": {
                               "type": "string"
                             },
+                            "instanceName": {
+                              "type": "string"
+                            },
                             "customerTags": {
                               "type": "object"
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                            "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
@@ -20613,7 +20605,6 @@
                             },
                             "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
-                            "ruleshortname": "IIS2016",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                             "kind": "Windows",
                             "xPathQueries": [
@@ -21648,7 +21639,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "workspaceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -21795,7 +21786,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -22682,7 +22673,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "ruleName": {
-                                    "value": "[format('{0}-IISLogs', parameters('rulename'))]"
+                                    "value": "[format('{0}-IISLogs', variables('rulename'))]"
                                   },
                                   "lawResourceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -22830,7 +22821,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[format('{0}-IISLogs', parameters('rulename'))]"
+                                    "value": "[format('{0}-IISLogs', variables('rulename'))]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -23751,6 +23742,9 @@
                           },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -23760,17 +23754,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "14610338613671740869"
+                              "templateHash": "16816364395085994357"
                             }
                           },
                           "parameters": {
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-DNS2016-Server",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
-                              }
-                            },
                             "location": {
                               "type": "string",
                               "metadata": {
@@ -23822,9 +23809,13 @@
                             },
                             "actionGroupResourceId": {
                               "type": "string"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
@@ -25214,7 +25205,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "workspaceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -25361,7 +25352,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -26282,6 +26273,9 @@
                           },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -26291,17 +26285,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "12730146961124372810"
+                              "templateHash": "10669755449933711760"
                             }
                           },
                           "parameters": {
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-Windows-PS2016",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
-                              }
-                            },
                             "packtag": {
                               "type": "string",
                               "defaultValue": "PS2016",
@@ -26356,9 +26343,14 @@
                             },
                             "customerTags": {
                               "type": "object"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                            "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
@@ -26366,7 +26358,6 @@
                             },
                             "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
-                            "ruleshortname": "PS2016",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                             "kind": "Windows",
                             "xPathQueries": [
@@ -26406,7 +26397,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "workspaceId": {
                                     "value": "[parameters('workspaceId')]"
@@ -26553,7 +26544,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
@@ -28226,6 +28217,9 @@
                           },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -28235,17 +28229,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "11534667102268109795"
+                              "templateHash": "2107255180121373601"
                             }
                           },
                           "parameters": {
-                            "rulename": {
-                              "type": "string",
-                              "defaultValue": "AMSP-Linux-Nginx",
-                              "metadata": {
-                                "description": "Name of the DCR rule to be created"
-                              }
-                            },
                             "actionGroupResourceId": {
                               "type": "string"
                             },
@@ -28297,16 +28284,20 @@
                             },
                             "customerTags": {
                               "type": "object"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                            "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                             "tempTags": {
                               "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                               "MonitoringPackType": "IaaS",
                               "solutionVersion": "[parameters('solutionVersion')]"
                             },
                             "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-                            "ruleshortname": "Nginx",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                             "facilityNames": [
                               "daemon"
@@ -28345,7 +28336,7 @@
                                     "value": "[variables('Tags')]"
                                   },
                                   "ruleName": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "filepatterns": {
                                     "value": [
@@ -29256,7 +29247,7 @@
                                     "value": "[parameters('solutionTag')]"
                                   },
                                   "rulename": {
-                                    "value": "[parameters('rulename')]"
+                                    "value": "[variables('rulename')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
