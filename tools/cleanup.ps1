@@ -67,6 +67,9 @@ else {
 }
 
 if ($RemoveDiscovery -or $RemoveAll) {
+    # Remove DCR associations
+    # Remove DCRs
+    
     "Removing discovery components."
     "Removing DCRs and associations."
     $query=@'
@@ -78,7 +81,7 @@ if ($RemoveDiscovery -or $RemoveAll) {
     | where ruleId =~
 '@
     # Remove DCRs and associations
-    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tags.MonitorStarterPacksComponents -ne $null} -ErrorAction SilentlyContinue
+    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tags.MonitoringPackType -eq "Discovery"} -ErrorAction SilentlyContinue
     foreach ($DCR in $DCRs)
     {
         $searchQuery=$query + "'$($DCR.Id)'"
@@ -89,22 +92,76 @@ if ($RemoveDiscovery -or $RemoveAll) {
         }
         Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
     }
+    $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitoringPackType -eq "Discovery"}
+    # retrive unique list of packs installed
+    $packs=$pols.properties.Metadata.MonitorStarterPacks | Select-Object -Unique # should be just discovery anyways in this case.
+    "Found $($packs.count) packs with DCRs: $packs"
+    # if ($RemoveTag) {
+    #     "Removing packs with tag $RemoveTag."
+    #     $pols=$pols | where-object {$_.properties.Metadata.MonitorStarterPacks -eq $RemoveTag}
+    # }
+    foreach ($pack in $packs) {
+        "Removing pack $pack."
+        foreach ($pol in ($pols | Where-Object {$_.properties.Metadata.MonitorStarterPacks -eq $pack}) ) {
+            $remove=$true
+            if ($confirmEachPack) {
+                $confirm=Read-Host "Do you want to remove pack $($pol.Name)? (Y/N)"
+                if ($confirm -eq 'N') {
+                    $remove=$false
+                }
+                else {
+                    $Remove=$true
+                }
+            }
+            if ($remove) {
+                "Removing policy $($pol.PolicyDefinitionId) and assignments for pack $($pol.properties.Metadata.MonitorStarterPacks)"
+                #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId # Only works for the current subscription. Need to use resource graph.
+                $query=@"
+            policyresources
+            | where type == "microsoft.authorization/policyassignments"
+            | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
+            | where PolicyId == '$($pol.PolicyDefinitionId)'
+"@
+                $assignments=Search-AzGraph -Query $query -UseTenantScope
+                
+                if ($assignments.count -ne 0)
+                {
+                    "Removing assignments for $($pol.PolicyDefinitionId)"
+                    foreach ($assignment in $assignments) {
+                        # No need to remove role assignments with user defined managed identities.
+                        # $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
+                        # Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id} | Remove-AzRoleAssignment
+                        # #$ras=Get-AzRoleAssignment | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)" -and $_.ObjectId -eq $assignmentObjectId.Id}
+                        # -and $_. -eq $assignments.Identity.PrincipalId} | Remove-AzRoleAssignment
+                        "Removing assignment for $($assignment.name)"
+                        Remove-AzPolicyAssignment -Id $assignment.id
+                    }
+                 }
+                "Removing policy definition for $($pol.PolicyDefinitionId)"
+                Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force
+            }
+            else {
+                "Skipping pack $($pol.Name)"
+            }
+        }
+    }
+    # Uninstall vm applications from VMs.
+    # Remove Applications from Gallery
+    
     # uninstall VM Apps
     # find the gallery
-    # Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
-    #     $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
-    #     foreach ($ga in $galleryApps) {
-    #         Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
-    #         remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
-    #     }
-    # }
-    # find vm applications
-    # find vms with those applications
-    # cycle through vms and remove applications
-    # remove application versions
-    # remove application
-    
-    # Remove Gallery?
+    Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
+        $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
+        foreach ($ga in $galleryApps) {
+            # Find VMs with that app
+            #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
+            # Remove Application from VM - Remove-AzVMGalleryApplication
+            # Remove Application Version - Remove-AzGalleryApplicationVersion
+            #Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
+            # Remove Application - Remove-AzGalleryApplication
+            #remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
+        }
+    }
 }
 #region Packs
 # Remove policy assignments and policies

@@ -36,6 +36,7 @@ module linuxdiscoveryapp '../modules/aigapp.bicep' = {
     appName: appName
     location: location
     osType: OS
+    tags: tags
   }
 }
 
@@ -66,6 +67,7 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     mediaLink: uploadLinux.outputs.fileURL
     installCommands: 'tar -xvf ${appName} && chmod +x ./install.sh && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
+    tags: tags
   }
 }
 module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {

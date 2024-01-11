@@ -35,6 +35,7 @@ module windowsDiscoveryApp '../modules/aigapp.bicep' = {
     appName: appName
     location: location
     osType: OS
+    tags: tags
   }
 }
 module upload 'uploadDSWindows.bicep' = {
@@ -64,6 +65,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
     mediaLink: upload.outputs.fileURL
     installCommands: 'powershell -command "ren windiscovery discover.zip; expand-archive ./discover.zip . ; ./install.ps1"'
     removeCommands: 'Unregister-ScheduledTask -TaskName "Monstar Packs Discovery" "\\"'
+    tags: tags
   }
 }
 module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {

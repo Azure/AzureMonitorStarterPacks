@@ -41,6 +41,7 @@ module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
     appName: appName
     location: location
     osType: OS
+    tags: tags
   }
 }
 module upload 'uploadDSADDS.bicep' = {
@@ -70,6 +71,7 @@ module addscollectionappversion '../../../setup/discovery/modules/aigappversion.
     mediaLink: upload.outputs.fileURL
     installCommands: 'powershell -command "ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1"'
     removeCommands: 'Unregister-ScheduledTask -TaskName "AD DS Collection Task" "\\"'
+    tags: tags
   }
 }
 module applicationPolicy '../../../setup/discovery/modules/vmapplicationpolicy.bicep' = {

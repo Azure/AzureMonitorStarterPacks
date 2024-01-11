@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "9791259749192993483"
+      "templateHash": "12416319547569842739"
     }
   },
   "parameters": {
@@ -149,7 +149,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8264909272175044276"
+              "templateHash": "9108631623483968863"
             }
           },
           "parameters": {
@@ -1361,7 +1361,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "16032273584461803804"
+                      "templateHash": "11840691040383424311"
                     }
                   },
                   "parameters": {
@@ -1471,6 +1471,9 @@
                           },
                           "osType": {
                             "value": "[parameters('OS')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -1480,7 +1483,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "9342682896621983311"
+                              "templateHash": "16298643752623576341"
                             }
                           },
                           "parameters": {
@@ -1498,6 +1501,9 @@
                             },
                             "appName": {
                               "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "resources": [
@@ -1506,6 +1512,7 @@
                               "apiVersion": "2022-03-03",
                               "name": "[format('{0}/{1}', parameters('aigname'), parameters('appName'))]",
                               "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
                               "properties": {
                                 "supportedOSType": "[parameters('osType')]",
                                 "description": "[parameters('appDescription')]"
@@ -1661,6 +1668,9 @@
                           },
                           "removeCommands": {
                             "value": "Unregister-ScheduledTask -TaskName \"AD DS Collection Task\" \"\\\""
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -1670,7 +1680,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "2989618728269898268"
+                              "templateHash": "1739221338810218216"
                             }
                           },
                           "parameters": {
@@ -1697,6 +1707,9 @@
                             },
                             "removeCommands": {
                               "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "resources": [
@@ -1705,6 +1718,7 @@
                               "apiVersion": "2022-03-03",
                               "name": "[format('{0}/{1}/{2}', parameters('aigname'), parameters('appName'), parameters('appVersionName'))]",
                               "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
                               "properties": {
                                 "publishingProfile": {
                                   "source": {

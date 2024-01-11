@@ -3366,6 +3366,56 @@
                   "resourceType": "microsoft.operationalinsights/workspaces",
                   "value": null,
                   "label": "Select Server"
+                },
+                {
+                  "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "discoveryPeriod",
+                  "label": "Period",
+                  "type": 4,
+                  "typeSettings": {
+                    "selectableValues": [
+                      {
+                        "durationMs": 300000
+                      },
+                      {
+                        "durationMs": 900000
+                      },
+                      {
+                        "durationMs": 1800000
+                      },
+                      {
+                        "durationMs": 3600000
+                      },
+                      {
+                        "durationMs": 14400000
+                      },
+                      {
+                        "durationMs": 43200000
+                      },
+                      {
+                        "durationMs": 86400000
+                      },
+                      {
+                        "durationMs": 172800000
+                      },
+                      {
+                        "durationMs": 259200000
+                      },
+                      {
+                        "durationMs": 604800000
+                      },
+                      {
+                        "durationMs": 1209600000
+                      },
+                      {
+                        "durationMs": 2419200000
+                      }
+                    ]
+                  },
+                  "value": {
+                    "durationMs": 1800000
+                  }
                 }
               ],
               "style": "above",
@@ -3381,9 +3431,7 @@
               "query": "CustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n//| where Computer == 'server2'\n| project Computer,type,name,platform,othertype,vendor\n| where Computer == '{Computer}'",
               "size": 0,
               "title": "All Discovery Data",
-              "timeContext": {
-                "durationMs": 86400000
-              },
+              "timeContextFromParameter": "discoveryPeriod",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -3395,6 +3443,39 @@
               }
             },
             "name": "query - discovery - all"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
+              "size": 0,
+              "title": "Client Status (VM Applications)",
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "gridSettings": {
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "Computer",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "Computer",
+                  "sortOrder": 1
+                }
+              ]
+            },
+            "name": "query - vmapplications",
+            "styleSettings": {
+              "showBorder": true
+            }
           }
         ]
       },

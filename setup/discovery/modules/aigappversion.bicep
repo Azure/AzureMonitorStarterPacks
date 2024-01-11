@@ -6,6 +6,7 @@ param targetRegion string
 param mediaLink string
 param installCommands string
 param removeCommands string
+param tags object
 
 resource aig 'Microsoft.Compute/galleries@2022-03-03' existing = {
   name: aigname
@@ -21,6 +22,7 @@ resource appVersion 'Microsoft.Compute/galleries/applications/versions@2022-03-0
   parent: app1
   name: appVersionName
   location: location
+  tags: tags
   properties: {
     publishingProfile:{
       source: {

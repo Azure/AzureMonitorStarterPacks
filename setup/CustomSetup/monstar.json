@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4083557905197838516"
+      "templateHash": "16130488380850935457"
     }
   },
   "parameters": {
@@ -1399,7 +1399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "13255206269630645839"
+              "templateHash": "327748190088259151"
             }
           },
           "parameters": {
@@ -1587,7 +1587,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "7039150962680646616"
+                      "templateHash": "18136014869712289492"
                     }
                   },
                   "parameters": {
@@ -1668,6 +1668,9 @@
                           },
                           "osType": {
                             "value": "[variables('OS')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -1677,7 +1680,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "9342682896621983311"
+                              "templateHash": "16298643752623576341"
                             }
                           },
                           "parameters": {
@@ -1695,6 +1698,9 @@
                             },
                             "appName": {
                               "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "resources": [
@@ -1703,6 +1709,7 @@
                               "apiVersion": "2022-03-03",
                               "name": "[format('{0}/{1}', parameters('aigname'), parameters('appName'))]",
                               "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
                               "properties": {
                                 "supportedOSType": "[parameters('osType')]",
                                 "description": "[parameters('appDescription')]"
@@ -1858,6 +1865,9 @@
                           },
                           "removeCommands": {
                             "value": "Unregister-ScheduledTask -TaskName \"Monstar Packs Discovery\" \"\\\""
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -1867,7 +1877,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "2989618728269898268"
+                              "templateHash": "1739221338810218216"
                             }
                           },
                           "parameters": {
@@ -1894,6 +1904,9 @@
                             },
                             "removeCommands": {
                               "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "resources": [
@@ -1902,6 +1915,7 @@
                               "apiVersion": "2022-03-03",
                               "name": "[format('{0}/{1}/{2}', parameters('aigname'), parameters('appName'), parameters('appVersionName'))]",
                               "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
                               "properties": {
                                 "publishingProfile": {
                                   "source": {
@@ -3102,7 +3116,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "16565608202170190991"
+                      "templateHash": "17557935784768794995"
                     }
                   },
                   "parameters": {
@@ -3186,6 +3200,9 @@
                           },
                           "osType": {
                             "value": "[variables('OS')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -3195,7 +3212,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "9342682896621983311"
+                              "templateHash": "16298643752623576341"
                             }
                           },
                           "parameters": {
@@ -3213,6 +3230,9 @@
                             },
                             "appName": {
                               "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "resources": [
@@ -3221,6 +3241,7 @@
                               "apiVersion": "2022-03-03",
                               "name": "[format('{0}/{1}', parameters('aigname'), parameters('appName'))]",
                               "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
                               "properties": {
                                 "supportedOSType": "[parameters('osType')]",
                                 "description": "[parameters('appDescription')]"
@@ -3376,6 +3397,9 @@
                           },
                           "removeCommands": {
                             "value": "/opt/microsoft/discovery/uninstall.sh"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -3385,7 +3409,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "2989618728269898268"
+                              "templateHash": "1739221338810218216"
                             }
                           },
                           "parameters": {
@@ -3412,6 +3436,9 @@
                             },
                             "removeCommands": {
                               "type": "string"
+                            },
+                            "tags": {
+                              "type": "object"
                             }
                           },
                           "resources": [
@@ -3420,6 +3447,7 @@
                               "apiVersion": "2022-03-03",
                               "name": "[format('{0}/{1}/{2}', parameters('aigname'), parameters('appName'), parameters('appVersionName'))]",
                               "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
                               "properties": {
                                 "publishingProfile": {
                                   "source": {
@@ -4960,7 +4988,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "17188461185573596178"
+              "templateHash": "11691613276696790024"
             }
           },
           "parameters": {
@@ -5781,7 +5809,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "6130043545765933686"
+                      "templateHash": "4571749904088348241"
                     }
                   },
                   "parameters": {
@@ -9164,6 +9192,56 @@
                                       "resourceType": "microsoft.operationalinsights/workspaces",
                                       "value": null,
                                       "label": "Select Server"
+                                    },
+                                    {
+                                      "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
+                                      "version": "KqlParameterItem/1.0",
+                                      "name": "discoveryPeriod",
+                                      "label": "Period",
+                                      "type": 4,
+                                      "typeSettings": {
+                                        "selectableValues": [
+                                          {
+                                            "durationMs": 300000
+                                          },
+                                          {
+                                            "durationMs": 900000
+                                          },
+                                          {
+                                            "durationMs": 1800000
+                                          },
+                                          {
+                                            "durationMs": 3600000
+                                          },
+                                          {
+                                            "durationMs": 14400000
+                                          },
+                                          {
+                                            "durationMs": 43200000
+                                          },
+                                          {
+                                            "durationMs": 86400000
+                                          },
+                                          {
+                                            "durationMs": 172800000
+                                          },
+                                          {
+                                            "durationMs": 259200000
+                                          },
+                                          {
+                                            "durationMs": 604800000
+                                          },
+                                          {
+                                            "durationMs": 1209600000
+                                          },
+                                          {
+                                            "durationMs": 2419200000
+                                          }
+                                        ]
+                                      },
+                                      "value": {
+                                        "durationMs": 1800000
+                                      }
                                     }
                                   ],
                                   "style": "above",
@@ -9179,9 +9257,7 @@
                                   "query": "CustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n//| where Computer == 'server2'\n| project Computer,type,name,platform,othertype,vendor\n| where Computer == '{Computer}'",
                                   "size": 0,
                                   "title": "All Discovery Data",
-                                  "timeContext": {
-                                    "durationMs": 86400000
-                                  },
+                                  "timeContextFromParameter": "discoveryPeriod",
                                   "queryType": 0,
                                   "resourceType": "microsoft.operationalinsights/workspaces",
                                   "crossComponentResources": [
@@ -9193,6 +9269,39 @@
                                   }
                                 },
                                 "name": "query - discovery - all"
+                              },
+                              {
+                                "type": 3,
+                                "content": {
+                                  "version": "KqlItem/1.0",
+                                  "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
+                                  "size": 0,
+                                  "title": "Client Status (VM Applications)",
+                                  "queryType": 1,
+                                  "resourceType": "microsoft.resources/tenants",
+                                  "crossComponentResources": [
+                                    "value::tenant"
+                                  ],
+                                  "gridSettings": {
+                                    "filter": true,
+                                    "sortBy": [
+                                      {
+                                        "itemKey": "Computer",
+                                        "sortOrder": 1
+                                      }
+                                    ]
+                                  },
+                                  "sortBy": [
+                                    {
+                                      "itemKey": "Computer",
+                                      "sortOrder": 1
+                                    }
+                                  ]
+                                },
+                                "name": "query - vmapplications",
+                                "styleSettings": {
+                                  "showBorder": true
+                                }
                               }
                             ]
                           },
@@ -10308,7 +10417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "10274852175711859817"
+              "templateHash": "7365729130027668348"
             }
           },
           "parameters": {
@@ -10571,7 +10680,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9791259749192993483"
+                      "templateHash": "12416319547569842739"
                     }
                   },
                   "parameters": {
@@ -10715,7 +10824,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "8264909272175044276"
+                              "templateHash": "9108631623483968863"
                             }
                           },
                           "parameters": {
@@ -11927,7 +12036,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "16032273584461803804"
+                                      "templateHash": "11840691040383424311"
                                     }
                                   },
                                   "parameters": {
@@ -12037,6 +12146,9 @@
                                           },
                                           "osType": {
                                             "value": "[parameters('OS')]"
+                                          },
+                                          "tags": {
+                                            "value": "[parameters('tags')]"
                                           }
                                         },
                                         "template": {
@@ -12046,7 +12158,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "9342682896621983311"
+                                              "templateHash": "16298643752623576341"
                                             }
                                           },
                                           "parameters": {
@@ -12064,6 +12176,9 @@
                                             },
                                             "appName": {
                                               "type": "string"
+                                            },
+                                            "tags": {
+                                              "type": "object"
                                             }
                                           },
                                           "resources": [
@@ -12072,6 +12187,7 @@
                                               "apiVersion": "2022-03-03",
                                               "name": "[format('{0}/{1}', parameters('aigname'), parameters('appName'))]",
                                               "location": "[parameters('location')]",
+                                              "tags": "[parameters('tags')]",
                                               "properties": {
                                                 "supportedOSType": "[parameters('osType')]",
                                                 "description": "[parameters('appDescription')]"
@@ -12227,6 +12343,9 @@
                                           },
                                           "removeCommands": {
                                             "value": "Unregister-ScheduledTask -TaskName \"AD DS Collection Task\" \"\\\""
+                                          },
+                                          "tags": {
+                                            "value": "[parameters('tags')]"
                                           }
                                         },
                                         "template": {
@@ -12236,7 +12355,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "2989618728269898268"
+                                              "templateHash": "1739221338810218216"
                                             }
                                           },
                                           "parameters": {
@@ -12263,6 +12382,9 @@
                                             },
                                             "removeCommands": {
                                               "type": "string"
+                                            },
+                                            "tags": {
+                                              "type": "object"
                                             }
                                           },
                                           "resources": [
@@ -12271,6 +12393,7 @@
                                               "apiVersion": "2022-03-03",
                                               "name": "[format('{0}/{1}/{2}', parameters('aigname'), parameters('appName'), parameters('appVersionName'))]",
                                               "location": "[parameters('location')]",
+                                              "tags": "[parameters('tags')]",
                                               "properties": {
                                                 "publishingProfile": {
                                                   "source": {
