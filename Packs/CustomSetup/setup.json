@@ -122,6 +122,20 @@
                             }
                         },
                         {
+                            "name": "instanceName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Instance Name for the Monitoring Packs Implementation",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Name of the Monitoring Pack instance.",
+                            "constraints": {
+								"required": true,
+                    			"regex": "^[a-z0-9]{1,4}$",
+                    			"validationMessage": "Only alphanumeric lowercase characters are allowed, and the value must be 1-4 characters long."
+                            },
+                            "visible": true
+                        },
+                        {
                             "name": "subscriptionId",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Select Subscription",
@@ -400,7 +414,8 @@
                 "deployPaaSPacks": "[steps('Configuration').deployPaaSPacks]",
 				"deployPlatformPacks": "[steps('Configuration').deployPlatformPacks]",
                 "imagaGalleryName": "[steps('Configuration').ExistingApplicationGallery.name]",
-				"storageAccountName": "[steps('Configuration').ExistingStorageAccount.name]"
+				"storageAccountName": "[steps('Configuration').ExistingStorageAccount.name]",
+                "instanceName": "[steps('Configuration').instanceName]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",
