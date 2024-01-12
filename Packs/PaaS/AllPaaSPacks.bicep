@@ -1,5 +1,4 @@
 targetScope = 'managementGroup'
-
 // @description('Name of the Action Group to be used or created.')
 // param actionGroupName string = ''
 // @description('Email receiver names to be used for the Action Group if being created.')
@@ -54,6 +53,7 @@ module Storage './Storage/monitoring.bicep' = {
     dceId: dceId
     customerTags: customerTags
     instanceName: instanceName
+    solutionVersion: solutionVersion
   }
 }
 module OpenAI './OpenAI/monitoring.bicep' = {
@@ -68,11 +68,36 @@ module OpenAI './OpenAI/monitoring.bicep' = {
     actionGroupResourceId: actionGroupResourceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
-    packtag: 'Storage'
+    packtag: 'OpenAI'
     grafanaName: grafanaName
     dceId: dceId
     customerTags: customerTags
     instanceName: instanceName
+    solutionVersion: solutionVersion
   }
 }
+module AVD './AVD/monitoring.bicep' = {
+  name: 'AVDAlerts'
+  params: {
+    // assignmentLevel: assignmentLevel
+    // location: location
+    // mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    // subscriptionId: subscriptionId
+    // actionGroupResourceId: actionGroupResourceId
+    // userManagedIdentityResourceId: userManagedIdentityResourceId
+    // workspaceId: workspaceId
+    packtag: 'AVD'
+    // grafanaName: grafanaName
+    // dceId: dceId
+    // customerTags: customerTags
+    // instanceName: instanceName
+    // solutionVersion: solutionVersion
+    customerTags: customerTags
+    solutionVersion: solutionVersion
+    workspaceId: workspaceId
+  }
+}
+
 

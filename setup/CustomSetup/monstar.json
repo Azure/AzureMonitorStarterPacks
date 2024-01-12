@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "1184416836463219484"
+      "templateHash": "6914855410646600592"
     }
   },
   "parameters": {
@@ -1399,7 +1399,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "2440352391379945372"
+              "templateHash": "15717187107716527710"
             }
           },
           "parameters": {
@@ -1587,7 +1587,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "17243342055756154043"
+                      "templateHash": "13565995898416559068"
                     }
                   },
                   "parameters": {
@@ -1639,7 +1639,7 @@
                     "appName": "[format('{0}-windiscovery', parameters('instanceName'))]",
                     "appDescription": "Windows Workload discovery",
                     "OS": "Windows",
-                    "appVersionName": "1.0.5"
+                    "appVersionName": "1.0.0"
                   },
                   "resources": [
                     {
@@ -3122,7 +3122,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11831698472965597257"
+                      "templateHash": "12698163540192142803"
                     }
                   },
                   "parameters": {
@@ -3177,7 +3177,7 @@
                     "appName": "[format('{0}-LxDiscovery', parameters('instanceName'))]",
                     "appDescription": "Linux Workload discovery",
                     "OS": "Linux",
-                    "appVersionName": "1.0.5"
+                    "appVersionName": "1.0.0"
                   },
                   "resources": [
                     {
@@ -5000,7 +5000,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "6234235015199090885"
+              "templateHash": "16952391678225909791"
             }
           },
           "parameters": {
@@ -5821,7 +5821,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4571749904088348241"
+                      "templateHash": "4879541769713920735"
                     }
                   },
                   "parameters": {
@@ -6046,7 +6046,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/MonitorStarterPacks-Backend"
+                                      "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
                                     },
                                     {
                                       "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -6069,7 +6069,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP623923"
+                                      "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMP7111"
                                     },
                                     {
                                       "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -7578,7 +7578,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "Storage"
+                                      "value": null
                                     }
                                   ],
                                   "style": "pills",
@@ -9019,7 +9019,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "let windowsApps = datatable(Tag:string, name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\",\n   \"IIS\", \"Web-Server\",\n   \"STSVC\", \"Storage-Services\",\n   \"Nginx\", \"nginx-core\"\n];\nCustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project Computer,type,name,platform,othertype,vendor\n| join kind=inner (windowsApps) on name\n| project-away name1,othertype",
+                                  "query": "let windowsApps = datatable(Tag:string, name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\",\n   \"IIS\", \"Web-Server\",\n   \"STSVC\", \"Storage-Services\",\n   \"Nginx\", \"nginx-core\"\n];\nCustomDiscovery_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project timestamp,Computer,type,name,platform,othertype,vendor\n| join kind=inner (windowsApps) on name\n| summarize arg_max(timestamp,Computer) by name, Tag",
                                   "size": 0,
                                   "title": "Discovered Applications",
                                   "timeContext": {
@@ -9202,7 +9202,7 @@
                                       },
                                       "queryType": 0,
                                       "resourceType": "microsoft.operationalinsights/workspaces",
-                                      "value": null,
+                                      "value": "linuxasrtest",
                                       "label": "Select Server"
                                     },
                                     {
@@ -9252,7 +9252,7 @@
                                         ]
                                       },
                                       "value": {
-                                        "durationMs": 1800000
+                                        "durationMs": 86400000
                                       }
                                     }
                                   ],
@@ -10429,7 +10429,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "1150581506897504449"
+              "templateHash": "2881041446188849010"
             }
           },
           "parameters": {
@@ -10692,7 +10692,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4576414054832813073"
+                      "templateHash": "16381309363653879727"
                     }
                   },
                   "parameters": {
@@ -10827,6 +10827,9 @@
                           },
                           "instanceName": {
                             "value": "[parameters('instanceName')]"
+                          },
+                          "solutionVersion": {
+                            "value": "[parameters('solutionVersion')]"
                           }
                         },
                         "template": {
@@ -10836,7 +10839,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "7855953949910868793"
+                              "templateHash": "5996481752530629544"
                             }
                           },
                           "parameters": {
@@ -10867,8 +10870,7 @@
                               "defaultValue": "MonitorStarterPacks"
                             },
                             "solutionVersion": {
-                              "type": "string",
-                              "defaultValue": "0.1.0"
+                              "type": "string"
                             },
                             "dceId": {
                               "type": "string",
@@ -20566,7 +20568,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "5360310692343257233"
+                              "templateHash": "10590730359061919309"
                             }
                           },
                           "parameters": {
@@ -20594,8 +20596,7 @@
                               "defaultValue": "MonitorStarterPacks"
                             },
                             "solutionVersion": {
-                              "type": "string",
-                              "defaultValue": "0.1.0"
+                              "type": "string"
                             },
                             "dceId": {
                               "type": "string",
@@ -30353,7 +30354,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13692758051476048411"
+                      "templateHash": "10803219508076994448"
                     }
                   },
                   "parameters": {
@@ -30465,6 +30466,9 @@
                           },
                           "instanceName": {
                             "value": "[parameters('instanceName')]"
+                          },
+                          "solutionVersion": {
+                            "value": "[parameters('solutionVersion')]"
                           }
                         },
                         "template": {
@@ -30474,7 +30478,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4680249238916974455"
+                              "templateHash": "5158585037947406385"
                             }
                           },
                           "parameters": {
@@ -30487,8 +30491,7 @@
                               "defaultValue": "MonitorStarterPacks"
                             },
                             "solutionVersion": {
-                              "type": "string",
-                              "defaultValue": "0.1.0"
+                              "type": "string"
                             },
                             "actionGroupResourceId": {
                               "type": "string"
@@ -31833,7 +31836,7 @@
                             "value": "[parameters('workspaceId')]"
                           },
                           "packtag": {
-                            "value": "Storage"
+                            "value": "OpenAI"
                           },
                           "grafanaName": {
                             "value": "[parameters('grafanaName')]"
@@ -31846,6 +31849,9 @@
                           },
                           "instanceName": {
                             "value": "[parameters('instanceName')]"
+                          },
+                          "solutionVersion": {
+                            "value": "[parameters('solutionVersion')]"
                           }
                         },
                         "template": {
@@ -31855,7 +31861,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "16426930638347153153"
+                              "templateHash": "11038949651011728681"
                             }
                           },
                           "parameters": {
@@ -31868,8 +31874,7 @@
                               "defaultValue": "MonitorStarterPacks"
                             },
                             "solutionVersion": {
-                              "type": "string",
-                              "defaultValue": "0.1.0"
+                              "type": "string"
                             },
                             "rulename": {
                               "type": "string",
@@ -33183,6 +33188,336 @@
                           ]
                         }
                       }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "AVDAlerts",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "resourceGroupId": {
+                            "value": "[parameters('resourceGroupId')]"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "packtag": {
+                            "value": "AVD"
+                          },
+                          "customerTags": {
+                            "value": "[parameters('customerTags')]"
+                          },
+                          "solutionVersion": {
+                            "value": "[parameters('solutionVersion')]"
+                          },
+                          "workspaceId": {
+                            "value": "[parameters('workspaceId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "4975438790792572550"
+                            }
+                          },
+                          "parameters": {
+                            "packtag": {
+                              "type": "string",
+                              "defaultValue": "AVD"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "solutionVersion": {
+                              "type": "string"
+                            },
+                            "workspaceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Full resource ID of the log analytics workspace to be used for the deployment."
+                              }
+                            },
+                            "resourceGroupId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Full resource ID of the user managed identity to be used for the deployment"
+                              }
+                            },
+                            "customerTags": {
+                              "type": "object"
+                            }
+                          },
+                          "variables": {
+                            "resourceTypes": [
+                              "Microsoft.DesktopVirtualization/applicationgroups",
+                              "Microsoft.DesktopVirtualization/hostpools"
+                            ],
+                            "tempTags": {
+                              "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                              "MonitoringPackType": "PaaS",
+                              "solutionVersion": "[parameters('solutionVersion')]"
+                            },
+                            "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
+                            "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
+                          },
+                          "resources": [
+                            {
+                              "copy": {
+                                "name": "diagnosticsPolicy",
+                                "count": "[length(variables('resourceTypes'))]"
+                              },
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('associacionpolicy-{0}-{1}', parameters('packtag'), split(variables('resourceTypes')[copyIndex()], '/')[1])]",
+                              "location": "[deployment().location]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "logAnalyticsWSResourceId": {
+                                    "value": "[parameters('workspaceId')]"
+                                  },
+                                  "packtag": {
+                                    "value": "[parameters('packtag')]"
+                                  },
+                                  "solutionTag": {
+                                    "value": "[parameters('solutionTag')]"
+                                  },
+                                  "policyDescription": {
+                                    "value": "[format('Policy to associate the diagnostics setting for {0} resources the tagged with {1} tag.', split(variables('resourceTypes')[copyIndex()], '/')[1], parameters('packtag'))]"
+                                  },
+                                  "policyDisplayName": {
+                                    "value": "[format('Associate the diagnostics with the {0} resources tagged with {1} tag.', split(variables('resourceTypes')[copyIndex()], '/')[1], parameters('packtag'))]"
+                                  },
+                                  "policyName": {
+                                    "value": "[format('Associate-diagnostics-{0}-{1}', parameters('packtag'), split(variables('resourceTypes')[copyIndex()], '/')[1])]"
+                                  },
+                                  "resourceType": {
+                                    "value": "[variables('resourceTypes')[copyIndex()]]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "10010199335154193240"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "policyName": {
+                                      "type": "string"
+                                    },
+                                    "policyDisplayName": {
+                                      "type": "string"
+                                    },
+                                    "policyDescription": {
+                                      "type": "string"
+                                    },
+                                    "packtag": {
+                                      "type": "string"
+                                    },
+                                    "solutionTag": {
+                                      "type": "string"
+                                    },
+                                    "logAnalyticsWSResourceId": {
+                                      "type": "string"
+                                    },
+                                    "resourceType": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Authorization/policyDefinitions",
+                                      "apiVersion": "2021-06-01",
+                                      "name": "[format('AMP-{0}', parameters('policyName'))]",
+                                      "properties": {
+                                        "description": "[format('AMP-{0}', parameters('policyDescription'))]",
+                                        "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
+                                        "metadata": {
+                                          "category": "Monitoring",
+                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                        },
+                                        "policyType": "Custom",
+                                        "mode": "Indexed",
+                                        "parameters": {
+                                          "tagName": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Tag name",
+                                              "description": "A tag to apply the association conditionally."
+                                            },
+                                            "defaultValue": "[parameters('solutionTag')]"
+                                          },
+                                          "tagValue": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Tag value",
+                                              "description": "The value of the tag."
+                                            },
+                                            "defaultValue": "[parameters('packtag')]"
+                                          },
+                                          "resourceType": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Resource Type",
+                                              "description": "The the full Microsoft.ResourceProvider/resourceType format of the resource type to apply the policy to."
+                                            },
+                                            "defaultValue": "[parameters('packtag')]"
+                                          },
+                                          "effect": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "Effect",
+                                              "description": "Enable or disable the execution of the policy"
+                                            },
+                                            "allowedValues": [
+                                              "DeployIfNotExists",
+                                              "Disabled"
+                                            ],
+                                            "defaultValue": "DeployIfNotExists"
+                                          },
+                                          "logAnalyticsWSResourceId": {
+                                            "type": "String",
+                                            "metadata": {
+                                              "displayName": "LAW Id",
+                                              "description": "The Id of the Log Analytics workspace."
+                                            },
+                                            "defaultValue": "[parameters('logAnalyticsWSResourceId')]"
+                                          }
+                                        },
+                                        "policyRule": {
+                                          "if": {
+                                            "allOf": [
+                                              {
+                                                "field": "[[concat('tags[', parameters('tagName'), ']')]",
+                                                "contains": "[[parameters('tagValue')]"
+                                              },
+                                              {
+                                                "field": "type",
+                                                "equals": "[parameters('resourceType')]"
+                                              }
+                                            ]
+                                          },
+                                          "then": {
+                                            "effect": "[[parameters('effect')]",
+                                            "details": {
+                                              "roleDefinitionIds": [
+                                                "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+                                              ],
+                                              "type": "Microsoft.Insights/diagnosticSettings",
+                                              "existenceCondition": {
+                                                "allOf": [
+                                                  {
+                                                    "count": {
+                                                      "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+                                                      "where": {
+                                                        "allOf": [
+                                                          {
+                                                            "field": "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                                                            "equals": true
+                                                          },
+                                                          {
+                                                            "field": "microsoft.insights/diagnosticSettings/logs[*].categoryGroup",
+                                                            "equals": "allLogs"
+                                                          }
+                                                        ]
+                                                      }
+                                                    },
+                                                    "equals": 1
+                                                  },
+                                                  {
+                                                    "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                                                    "equals": "[parameters('logAnalyticsWSResourceId')]"
+                                                  }
+                                                ]
+                                              },
+                                              "deployment": {
+                                                "properties": {
+                                                  "mode": "incremental",
+                                                  "template": {
+                                                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                                    "contentVersion": "1.0.0.0",
+                                                    "parameters": {
+                                                      "resourceType": {
+                                                        "type": "string"
+                                                      },
+                                                      "logAnalyticsWSResourceId": {
+                                                        "type": "string"
+                                                      },
+                                                      "packTag": {
+                                                        "type": "string"
+                                                      },
+                                                      "resourceName": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "variables": {},
+                                                    "resources": [
+                                                      {
+                                                        "type": "[format('{0}/providers/diagnosticSettings', parameters('resourceType'))]",
+                                                        "name": "[[concat(parameters('resourceName'), '/Microsoft.Insights/', 'AMP-', parameters('packTag'))]",
+                                                        "apiVersion": "2021-05-01-preview",
+                                                        "properties": {
+                                                          "workspaceId": "[[parameters('logAnalyticsWSResourceId')]",
+                                                          "logs": [
+                                                            {
+                                                              "categoryGroup": "allLogs",
+                                                              "enabled": true
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "parameters": {
+                                                    "resourceType": {
+                                                      "value": "[[parameters('resourceType')]"
+                                                    },
+                                                    "logAnalyticsWSResourceId": {
+                                                      "value": "[[parameters('logAnalyticsWSResourceId')]"
+                                                    },
+                                                    "packTag": {
+                                                      "value": "[[parameters('tagValue')]"
+                                                    },
+                                                    "resourceName": {
+                                                      "value": "[[field('name')]"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "outputs": {
+                                    "policyId": {
+                                      "type": "string",
+                                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
                     }
                   ]
                 }
@@ -33251,7 +33586,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3530321499821474744"
+                      "templateHash": "8207565093114602742"
                     }
                   },
                   "parameters": {
@@ -33363,6 +33698,9 @@
                           },
                           "instanceName": {
                             "value": "[parameters('instanceName')]"
+                          },
+                          "solutionVersion": {
+                            "value": "[parameters('solutionVersion')]"
                           }
                         },
                         "template": {
@@ -33372,7 +33710,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "15490954526713342022"
+                              "templateHash": "2240996014428869933"
                             }
                           },
                           "parameters": {
@@ -33385,8 +33723,7 @@
                               "defaultValue": "MonitorStarterPacks"
                             },
                             "solutionVersion": {
-                              "type": "string",
-                              "defaultValue": "0.1.0"
+                              "type": "string"
                             },
                             "actionGroupResourceId": {
                               "type": "string"
@@ -42887,7 +43224,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "18157546670111407278"
+                              "templateHash": "9587714701969548598"
                             }
                           },
                           "parameters": {
@@ -42900,8 +43237,7 @@
                               "defaultValue": "MonitorStarterPacks"
                             },
                             "solutionVersion": {
-                              "type": "string",
-                              "defaultValue": "0.1.0"
+                              "type": "string"
                             },
                             "actionGroupResourceId": {
                               "type": "string"

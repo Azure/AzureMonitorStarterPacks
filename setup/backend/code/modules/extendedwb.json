@@ -208,7 +208,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/MonitorStarterPacks-Backend"
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -231,7 +231,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP623923"
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMP7111"
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -1740,7 +1740,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "Storage"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -3181,7 +3181,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let windowsApps = datatable(Tag:string, name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\",\n   \"IIS\", \"Web-Server\",\n   \"STSVC\", \"Storage-Services\",\n   \"Nginx\", \"nginx-core\"\n];\nCustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project Computer,type,name,platform,othertype,vendor\n| join kind=inner (windowsApps) on name\n| project-away name1,othertype",
+              "query": "let windowsApps = datatable(Tag:string, name:string)\n[\n   \"ADDS\", \"AD-Domain-Services\",\n   \"DNS\", \"DNS\",\n   \"FS\", \"FS-FileServer\",\n   \"IIS\", \"Web-Server\",\n   \"STSVC\", \"Storage-Services\",\n   \"Nginx\", \"nginx-core\"\n];\nCustomDiscovery_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project timestamp,Computer,type,name,platform,othertype,vendor\n| join kind=inner (windowsApps) on name\n| summarize arg_max(timestamp,Computer) by name, Tag",
               "size": 0,
               "title": "Discovered Applications",
               "timeContext": {
@@ -3364,7 +3364,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null,
+                  "value": "linuxasrtest",
                   "label": "Select Server"
                 },
                 {
@@ -3414,7 +3414,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 1800000
+                    "durationMs": 86400000
                   }
                 }
               ],
