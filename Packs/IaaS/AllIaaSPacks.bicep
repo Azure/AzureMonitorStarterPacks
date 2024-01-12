@@ -26,7 +26,7 @@ param grafanaResourceId string
 param customerTags object
 param actionGroupResourceId string
 param storageAccountName string
-param imagaGalleryName string
+param imageGalleryName string
 param instanceName string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
@@ -61,7 +61,7 @@ module ADDS './ADDS/monitoring.bicep' = {
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    imageGalleryName: imagaGalleryName
+    imageGalleryName: imageGalleryName
     resourceGroupId: resourceGroupId
     storageAccountname: storageAccountName
     tableName: 'addsmonitoring'

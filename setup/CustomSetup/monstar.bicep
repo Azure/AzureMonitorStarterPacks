@@ -203,7 +203,7 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     deployPaaSPacks: deployPaaSPacks || deployAllPacks
     deployPlatformPacks: deployPlatformPacks || deployAllPacks
     storageAccountName: storageAccountName
-    imagaGalleryName: ImageGalleryName
+    imageGalleryName: ImageGalleryName
     instanceName: instanceName
   }
 }

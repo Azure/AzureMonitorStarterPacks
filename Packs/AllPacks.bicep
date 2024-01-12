@@ -5,12 +5,6 @@ param subscriptionId string
 param resourceGroupId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
-@description('Name of the Action Group to be used or created.')
-param actionGroupName string = ''
-@description('Email receiver names to be used for the Action Group if being created.')
-param emailreceiver string = ''
-@description('Email addresses to be used for the Action Group if being created.')
-param emailreiceversemail string = ''
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -29,9 +23,17 @@ param deployIaaSPacks bool
 param deployPaaSPacks bool
 param deployPlatformPacks bool
 param storageAccountName string
-@secure()
-param imagaGalleryName string
+param imageGalleryName string
 param instanceName string
+
+@description('Name of the Action Group to be used or created.')
+param actionGroupName string = ''
+@description('Email receiver names to be used for the Action Group if being created.')
+param emailreceiver string = ''
+@description('Email addresses to be used for the Action Group if being created.')
+param emailreiceversemail string = ''
+
+
 var solutionTagComponents='MonitorStarterPacksComponents'
 
 var resourceGroupName = split(resourceGroupId, '/')[4]
@@ -72,7 +74,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     resourceGroupId: resourceGroupId
     subscriptionId: subscriptionId
     storageAccountName: storageAccountName
-    imagaGalleryName: imagaGalleryName
+    imageGalleryName: imageGalleryName
     instanceName: instanceName
   }
 }

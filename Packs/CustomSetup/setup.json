@@ -46,6 +46,14 @@
                             }
                         },
                         {
+                            "name": "imageGalleryApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Compute/galleries?api-version=2021-03-01')]"
+                            }
+                        },
+                        {
                             "name": "LogAnalyticsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -397,25 +405,26 @@
                 "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
                 "resourceGroupId": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, steps('Configuration').resourceGroupNameExisting)]",
                 "location": "[steps('basics').resourceScope.location.name]",
+                "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "workspaceId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "solutionTag":"MonitorStarterPacks",
                 "solutionVersion":"1.0.0",
                 "dceId":"[steps('Configuration').dataCollectionEndpointId]",
                 "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
-                "assignmentLevel": "[steps('Configuration').assignmentLevel]",                "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
-                "emailreceiver":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiver,'')]",
-                "emailreiceversemail":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemail,'')]",
-                "existingActionGroupResourceId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]",
-                "useExistingAG":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), 'false', 'true')]",
+                "assignmentLevel": "[steps('Configuration').assignmentLevel]",                
+                "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
                 "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "deployIaaSPacks": "[steps('Configuration').deployIaaSPacks]",
                 "deployPaaSPacks": "[steps('Configuration').deployPaaSPacks]",
 				"deployPlatformPacks": "[steps('Configuration').deployPlatformPacks]",
-                "imagaGalleryName": "[steps('Configuration').ExistingApplicationGallery.name]",
-				"storageAccountName": "[steps('Configuration').ExistingStorageAccount.name]",
-                "instanceName": "[steps('Configuration').instanceName]"
+                "storageAccountName": "[steps('Configuration').ExistingStorageAccount.name]",
+                "imageGalleryName": "[steps('Configuration').ExistingApplicationGallery.name]",
+                "instanceName": "[steps('Configuration').instanceName]",
+                "emailreceiver":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiver,'')]",
+                "emailreiceversemail":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemail,'')]",
+                "existingActionGroupResourceId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

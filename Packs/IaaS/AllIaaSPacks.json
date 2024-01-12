@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "16381309363653879727"
+      "templateHash": "12131532972353524276"
     }
   },
   "parameters": {
@@ -63,7 +63,7 @@
     "storageAccountName": {
       "type": "string"
     },
-    "imagaGalleryName": {
+    "imageGalleryName": {
       "type": "string"
     },
     "instanceName": {
@@ -115,7 +115,7 @@
             "value": "[parameters('userManagedIdentityResourceId')]"
           },
           "imageGalleryName": {
-            "value": "[parameters('imagaGalleryName')]"
+            "value": "[parameters('imageGalleryName')]"
           },
           "resourceGroupId": {
             "value": "[parameters('resourceGroupId')]"

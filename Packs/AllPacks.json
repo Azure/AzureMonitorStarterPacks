@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "2881041446188849010"
+      "templateHash": "16236832621168913076"
     }
   },
   "parameters": {
@@ -22,27 +22,6 @@
       "type": "string",
       "metadata": {
         "description": "location for the deployment."
-      }
-    },
-    "actionGroupName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the Action Group to be used or created."
-      }
-    },
-    "emailreceiver": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Email receiver names to be used for the Action Group if being created."
-      }
-    },
-    "emailreiceversemail": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Email addresses to be used for the Action Group if being created."
       }
     },
     "useExistingAG": {
@@ -99,11 +78,32 @@
     "storageAccountName": {
       "type": "string"
     },
-    "imagaGalleryName": {
-      "type": "securestring"
+    "imageGalleryName": {
+      "type": "string"
     },
     "instanceName": {
       "type": "string"
+    },
+    "actionGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Action Group to be used or created."
+      }
+    },
+    "emailreceiver": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Email receiver names to be used for the Action Group if being created."
+      }
+    },
+    "emailreiceversemail": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Email addresses to be used for the Action Group if being created."
+      }
     }
   },
   "variables": {
@@ -254,8 +254,8 @@
           "storageAccountName": {
             "value": "[parameters('storageAccountName')]"
           },
-          "imagaGalleryName": {
-            "value": "[parameters('imagaGalleryName')]"
+          "imageGalleryName": {
+            "value": "[parameters('imageGalleryName')]"
           },
           "instanceName": {
             "value": "[parameters('instanceName')]"
@@ -268,7 +268,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "16381309363653879727"
+              "templateHash": "12131532972353524276"
             }
           },
           "parameters": {
@@ -326,7 +326,7 @@
             "storageAccountName": {
               "type": "string"
             },
-            "imagaGalleryName": {
+            "imageGalleryName": {
               "type": "string"
             },
             "instanceName": {
@@ -378,7 +378,7 @@
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
                   "imageGalleryName": {
-                    "value": "[parameters('imagaGalleryName')]"
+                    "value": "[parameters('imageGalleryName')]"
                   },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
