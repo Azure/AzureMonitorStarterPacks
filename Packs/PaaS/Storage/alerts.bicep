@@ -31,9 +31,9 @@ module StorageAvailabilityAlert '../../../modules/alerts/PaaS/metricAlertStaticT
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-        alertname: 'AMP-${instanceName}-Deploy_Storage_Availability_Alert'
-        alertDisplayName: 'AMP-${instanceName}-Deploy Storage Availability Alert'
-        alertDescription: 'AMP-${instanceName}-Deploy Storage Availability Alert'
+        alertname: 'Deploy_Storage_Availability_Alert'
+        alertDisplayName: 'Deploy Storage Availability Alert'
+        alertDescription: 'Deploy Storage Availability Alert'
         metricNamespace: 'Microsoft.Storage/storageAccounts'
         parAlertSeverity: '1'
         parAlertState: parAlertState

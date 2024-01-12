@@ -32,8 +32,8 @@ module avdmetric1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
         alertname: 'Deploy_Storage_Availability_Alert'
-        alertDisplayName: 'AMP-${instanceName}-Deploy Storage Availability Alert'
-        alertDescription: 'AMSP Deploy Storage Availability Alert'
+        alertDisplayName: 'Deploy Storage Availability Alert'
+        alertDescription: 'Deploy Storage Availability Alert'
         metricNamespace: 'Microsoft.DesktopVirtualization/hostpools'
         parAlertSeverity: '1'
         parAlertState: parAlertState

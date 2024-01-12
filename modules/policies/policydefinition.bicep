@@ -4,10 +4,10 @@ param policyDisplayName string
 param policyDescription string
 
 resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
-  name: policyName
+  name: 'AMP-${policyName}'
   properties: {
-    description: policyDescription
-    displayName: policyDisplayName
+    description: 'AMP-${policyDescription}'
+    displayName: 'AMP-${policyDisplayName}'
     metadata: {
       category: 'Monitoring'
     }

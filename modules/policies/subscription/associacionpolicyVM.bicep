@@ -12,9 +12,9 @@ param roledefinitionIds array =[
 ]
 
 resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
-  name: policyName
+  name: 'AMP-${policyName}'
   properties: {
-    description: policyDescription
+    description: 'AMP-${policyDescription}'
     displayName: 'AMP-${policyDisplayName}'
     metadata: {
       category: 'Monitoring'

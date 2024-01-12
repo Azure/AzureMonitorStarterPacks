@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "9876495016445449884"
+      "templateHash": "3546504562437586511"
     }
   },
   "parameters": {
@@ -943,7 +943,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "2120579419728058157"
+              "templateHash": "9383939515637391234"
             }
           },
           "parameters": {
@@ -1028,7 +1028,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10293685168977419397"
+                      "templateHash": "18200540089679187126"
                     }
                   },
                   "parameters": {
@@ -1062,9 +1062,9 @@
                     {
                       "type": "Microsoft.Authorization/policyDefinitions",
                       "apiVersion": "2021-06-01",
-                      "name": "[parameters('policyName')]",
+                      "name": "[format('AMP-{0}', parameters('policyName'))]",
                       "properties": {
-                        "description": "[parameters('policyDescription')]",
+                        "description": "[format('AMP-{0}', parameters('policyDescription'))]",
                         "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
                         "metadata": {
                           "category": "Monitoring",
@@ -1203,7 +1203,7 @@
                   "outputs": {
                     "policyId": {
                       "type": "string",
-                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', parameters('policyName'))]"
+                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
                     }
                   }
                 }
@@ -1250,7 +1250,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "644768654039773435"
+                      "templateHash": "14744458748003087749"
                     }
                   },
                   "parameters": {
@@ -1284,9 +1284,9 @@
                     {
                       "type": "Microsoft.Authorization/policyDefinitions",
                       "apiVersion": "2021-06-01",
-                      "name": "[parameters('policyName')]",
+                      "name": "[format('AMP-{0}', parameters('policyName'))]",
                       "properties": {
-                        "description": "[parameters('policyDescription')]",
+                        "description": "[format('AMP-{0}', parameters('policyDescription'))]",
                         "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
                         "metadata": {
                           "category": "Monitoring",
@@ -1425,7 +1425,7 @@
                   "outputs": {
                     "policyId": {
                       "type": "string",
-                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', parameters('policyName'))]"
+                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
                     }
                   }
                 }

@@ -170,7 +170,7 @@ module TunnelAverageBandwidthAlert '../../../../modules/alerts/PaaS/metricAlertS
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'Tunnel Average Bandwidth'
       alertDisplayName: 'Tunnel Average Bandwidth'
-      alertDescription: 'AMSP Metric Alert for VPN Gateway Bandwidth Utilization'
+      alertDescription: 'Metric Alert for VPN Gateway Bandwidth Utilization'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '0'
       parAlertState: parAlertState
@@ -202,7 +202,7 @@ module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'BGP_Peer_Status_Alert'
       alertDisplayName: 'Metric Alert for VPN Gateway BGP peer status'
-      alertDescription: 'AMSP Metric Alert for VPN Gateway BGP peer status'
+      alertDescription: 'Metric Alert for VPN Gateway BGP peer status'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '0'
       parAlertState: parAlertState
@@ -217,7 +217,7 @@ module BGPPeerStatus '../../../../modules/alerts/PaaS/metricAlertStaticThreshold
       operator: 'LessThan'
       initiativeMember: true
       packtype: 'Platform'
-instanceName: instanceName
+      instanceName: instanceName
   }
 }
 

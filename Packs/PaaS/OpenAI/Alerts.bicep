@@ -22,9 +22,9 @@ param parAlertState string = 'true'
 module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-OAIClErrors'
     params: {
-        alertname: 'AMP-${instanceName}-Alert on Client Errors over threshold'
-        alertDisplayName: 'AMP-${instanceName} Alert on Client Errors over threshold'
-        alertDescription: 'AMP-${instanceName} policy to deploy Alert on Client Errors over threshold'
+        alertname: 'Alert on Client Errors over threshold'
+        alertDisplayName: 'Alert on Client Errors over threshold'
+        alertDescription: 'Policy to deploy Alert on Client Errors over threshold'
         metricNamespace: 'Microsoft.CognitiveServices/accounts'
         metricName: 'ClientErrors'
         operator: 'GreaterThan'
