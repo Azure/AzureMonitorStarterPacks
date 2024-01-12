@@ -19,7 +19,7 @@ var ruleshortname = 'amp${instanceName}windisc'
 var appName = '${instanceName}-windiscovery'
 var appDescription = 'Windows Workload discovery'
 var OS = 'Windows'
-var appVersionName = '1.0.5'
+var appVersionName = '1.0.0'
 //var resourceGroupName = split(resourceGroupId, '/')[4]
 
 //var tableNameToUse = 'Custom${tableName}_CL'

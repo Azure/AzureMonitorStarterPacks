@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4576414054832813073"
+      "templateHash": "16381309363653879727"
     }
   },
   "parameters": {
@@ -140,6 +140,9 @@
           },
           "instanceName": {
             "value": "[parameters('instanceName')]"
+          },
+          "solutionVersion": {
+            "value": "[parameters('solutionVersion')]"
           }
         },
         "template": {
@@ -149,7 +152,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "7855953949910868793"
+              "templateHash": "5996481752530629544"
             }
           },
           "parameters": {
@@ -180,8 +183,7 @@
               "defaultValue": "MonitorStarterPacks"
             },
             "solutionVersion": {
-              "type": "string",
-              "defaultValue": "0.1.0"
+              "type": "string"
             },
             "dceId": {
               "type": "string",
@@ -9879,7 +9881,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "5360310692343257233"
+              "templateHash": "10590730359061919309"
             }
           },
           "parameters": {
@@ -9907,8 +9909,7 @@
               "defaultValue": "MonitorStarterPacks"
             },
             "solutionVersion": {
-              "type": "string",
-              "defaultValue": "0.1.0"
+              "type": "string"
             },
             "dceId": {
               "type": "string",

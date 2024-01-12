@@ -70,6 +70,7 @@ module ADDS './ADDS/monitoring.bicep' = {
     customerTags: customerTags
     workspaceId: workspaceId
     instanceName: instanceName
+    solutionVersion: solutionVersion
   }
 }
 
@@ -89,6 +90,7 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
     instanceName: instanceName
+    
   }
 }
 

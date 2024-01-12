@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 param packtag string = 'OpenAI'
 param solutionTag string = 'MonitorStarterPacks'
-param solutionVersion string = '0.1.0'
+param solutionVersion string 
 @description('Name of the DCR rule to be created')
 param rulename string = ''
 @description('location for the deployment.')

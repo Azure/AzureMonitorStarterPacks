@@ -9,7 +9,7 @@ param location string //= resourceGroup().location
 param workspaceId string
 param packtag string = 'IIS2016'
 param solutionTag string = 'MonitorStarterPacks'
-param solutionVersion string = '0.1.0'
+param solutionVersion string 
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')

@@ -20,7 +20,7 @@ var ruleshortname = 'amp${instanceName}lxdisc'
 var appName = '${instanceName}-LxDiscovery'
 var appDescription = 'Linux Workload discovery'
 var OS = 'Linux'
-var appVersionName = '1.0.5'
+var appVersionName = '1.0.0'
 //var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // var tableNameToUse = 'Custom${tableName}_CL'

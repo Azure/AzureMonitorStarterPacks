@@ -46,6 +46,7 @@ module KVAlerts './KeyVault/monitoring.bicep' = {
     dceId: dceId
     customerTags: customerTags
     instanceName: instanceName
+    solutionVersion: solutionVersion
   }
 }
 module vWan './Network/vWan/monitoring.bicep' = {
