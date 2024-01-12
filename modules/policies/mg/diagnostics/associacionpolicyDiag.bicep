@@ -6,6 +6,8 @@ param packtag string
 param solutionTag string
 param logAnalyticsWSResourceId string
 param resourceType string// = 'Microsoft.Network/vpngateways'
+param packtype string
+param initiativeMember bool
 
 resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   name: 'AMP-${policyName}'
@@ -15,6 +17,8 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
+      MonitoringPackType: packtype
+      initiativeMember: initiativeMember
     }
     policyType: 'Custom'
     mode: 'Indexed'

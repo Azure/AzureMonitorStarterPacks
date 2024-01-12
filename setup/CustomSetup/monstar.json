@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "5053445222212270973"
+      "templateHash": "16913637083152903681"
     }
   },
   "parameters": {
@@ -10429,7 +10429,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "16236832621168913076"
+              "templateHash": "540680309070903931"
             }
           },
           "parameters": {
@@ -30354,7 +30354,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10803219508076994448"
+                      "templateHash": "4838602546601877989"
                     }
                   },
                   "parameters": {
@@ -33226,7 +33226,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4975438790792572550"
+                              "templateHash": "5437700501750207973"
                             }
                           },
                           "parameters": {
@@ -33260,14 +33260,7 @@
                             "resourceTypes": [
                               "Microsoft.DesktopVirtualization/applicationgroups",
                               "Microsoft.DesktopVirtualization/hostpools"
-                            ],
-                            "tempTags": {
-                              "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                              "MonitoringPackType": "PaaS",
-                              "solutionVersion": "[parameters('solutionVersion')]"
-                            },
-                            "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-                            "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
+                            ]
                           },
                           "resources": [
                             {
@@ -33305,6 +33298,12 @@
                                   },
                                   "resourceType": {
                                     "value": "[variables('resourceTypes')[copyIndex()]]"
+                                  },
+                                  "initiativeMember": {
+                                    "value": false
+                                  },
+                                  "packtype": {
+                                    "value": "PaaS"
                                   }
                                 },
                                 "template": {
@@ -33314,7 +33313,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "10010199335154193240"
+                                      "templateHash": "12341679943239618505"
                                     }
                                   },
                                   "parameters": {
@@ -33338,6 +33337,12 @@
                                     },
                                     "resourceType": {
                                       "type": "string"
+                                    },
+                                    "packtype": {
+                                      "type": "string"
+                                    },
+                                    "initiativeMember": {
+                                      "type": "bool"
                                     }
                                   },
                                   "resources": [
@@ -33350,7 +33355,9 @@
                                         "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
                                         "metadata": {
                                           "category": "Monitoring",
-                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                          "MonitoringPackType": "[parameters('packtype')]",
+                                          "initiativeMember": "[parameters('initiativeMember')]"
                                         },
                                         "policyType": "Custom",
                                         "mode": "Indexed",
@@ -33586,7 +33593,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "8207565093114602742"
+                      "templateHash": "12530856268362686892"
                     }
                   },
                   "parameters": {
@@ -36400,7 +36407,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "306429759954055999"
+                              "templateHash": "10361896890494345328"
                             }
                           },
                           "parameters": {
@@ -36493,6 +36500,12 @@
                                   },
                                   "resourceType": {
                                     "value": "[variables('resourceTypes')[copyIndex()]]"
+                                  },
+                                  "initiativeMember": {
+                                    "value": false
+                                  },
+                                  "packtype": {
+                                    "value": "Platform"
                                   }
                                 },
                                 "template": {
@@ -36502,7 +36515,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "10010199335154193240"
+                                      "templateHash": "12341679943239618505"
                                     }
                                   },
                                   "parameters": {
@@ -36526,6 +36539,12 @@
                                     },
                                     "resourceType": {
                                       "type": "string"
+                                    },
+                                    "packtype": {
+                                      "type": "string"
+                                    },
+                                    "initiativeMember": {
+                                      "type": "bool"
                                     }
                                   },
                                   "resources": [
@@ -36538,7 +36557,9 @@
                                         "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
                                         "metadata": {
                                           "category": "Monitoring",
-                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
+                                          "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                          "MonitoringPackType": "[parameters('packtype')]",
+                                          "initiativeMember": "[parameters('initiativeMember')]"
                                         },
                                         "policyType": "Custom",
                                         "mode": "Indexed",

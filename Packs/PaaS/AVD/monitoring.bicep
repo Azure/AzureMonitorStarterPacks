@@ -29,14 +29,14 @@ var resourceTypes = [
   'Microsoft.DesktopVirtualization/applicationgroups'
   'Microsoft.DesktopVirtualization/hostpools'
 ]
-var tempTags ={
-  '${solutionTag}': packtag
-  MonitoringPackType: 'PaaS'
-  solutionVersion: solutionVersion
-}
+// var tempTags ={
+//   '${solutionTag}': packtag
+//   MonitoringPackType: 'PaaS'
+//   solutionVersion: solutionVersion
+// }
 // if the customer has provided tags, then use them, otherwise use the default tags
-var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
-var resourceGroupName = split(resourceGroupId, '/')[4]
+// var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+// var resourceGroupName = split(resourceGroupId, '/')[4]
 
 module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpolicyDiag.bicep' = [for (rt,i) in resourceTypes: {
   name: 'associacionpolicy-${packtag}-${split(rt, '/')[1]}'
@@ -48,5 +48,7 @@ module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpo
     policyDisplayName: 'Associate the diagnostics with the ${split(rt, '/')[1]} resources tagged with ${packtag} tag.'
     policyName: 'Associate-diagnostics-${packtag}-${split(rt, '/')[1]}'
     resourceType: rt
+    initiativeMember: false
+    packtype: 'PaaS'
   }
 }]

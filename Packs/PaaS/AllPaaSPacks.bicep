@@ -97,6 +97,7 @@ module AVD './AVD/monitoring.bicep' = {
     customerTags: customerTags
     solutionVersion: solutionVersion
     workspaceId: workspaceId
+    
   }
 }
 

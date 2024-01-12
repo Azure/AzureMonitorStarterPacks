@@ -55,6 +55,8 @@ module diagnosticsPolicy '../../../../modules/policies/mg/diagnostics/associacio
     policyDisplayName: 'Associate the diagnostics with the ${split(rt, '/')[1]} resources tagged with ${packtag} tag.'
     policyName: 'Associate-diagnostics-${packtag}-${split(rt, '/')[1]}'
     resourceType: rt
+    initiativeMember: false
+    packtype: 'Platform'
   }
 }]
 
