@@ -61,12 +61,14 @@ Alternatively, you can select to remove specific components of the solution by u
 
 - RemovePacks : Removes all the packs deployed by the solution
 - RemoveAMAPolicySet : Removes the policy set deployed by the solution
-- RemoveMainSolution : Removes the main solution deployed by the solution
+- RemoveMainSolution : Removes the main components of the deployed solution
+- RemoveDiscovery : Removes the discovery deployed by the solution
 
 Once completed, some resources will remain in the resource group. These resources are not removed by the script and need to be removed manually. The resources are:
 
 - Storage Account
 - Log Analytics Workspace
+- Application Gallery
 
 Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
 
