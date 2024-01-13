@@ -40,11 +40,11 @@ module KVAlerts './KeyVault/monitoring.bicep' = {
     subscriptionId: subscriptionId
     actionGroupResourceId: actionGroupResourceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: workspaceId
+    //workspaceId: workspaceId
     packtag: 'KeyVault'
-    grafanaName: grafanaName
-    dceId: dceId
-    customerTags: customerTags
+    // grafanaName: grafanaName
+    // dceId: dceId
+    // customerTags: customerTags
     instanceName: instanceName
     solutionVersion: solutionVersion
   }
@@ -78,10 +78,10 @@ module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: workspaceId
+    //workspaceId: workspaceId
     packtag: 'ALB'
     solutionVersion: solutionVersion
-    dceId: dceId
+    //dceId: dceId
     grafanaName: grafanaName
     customerTags: customerTags
     instanceName: instanceName

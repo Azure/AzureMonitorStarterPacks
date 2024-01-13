@@ -6,7 +6,6 @@ param subscriptionId string
 param mgname string
 param resourceType string
 param policyLocation string
-param parResourceGroupName string
 param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
@@ -16,9 +15,7 @@ param instanceName string
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
 ]
-param parResourceGroupTags object = {
-    environment: 'test'
-}
+
 param parAlertState string = 'true'
 
 module ALBDipPathAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {

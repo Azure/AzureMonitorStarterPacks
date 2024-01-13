@@ -11,7 +11,7 @@ param evaluationFrequency string = 'PT15M'
 param autoMitigate bool = false
 param query string
 //param starterPackName string
-param packtag string
+//param packtag string
 param Tags object
 
 resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {

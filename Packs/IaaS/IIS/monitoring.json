@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "6062574768876300164"
+      "templateHash": "3010773033695536777"
     }
   },
   "parameters": {
@@ -183,7 +183,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9388126828813662041"
+              "templateHash": "16848282078807397027"
             }
           },
           "parameters": {
@@ -548,7 +548,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "75933667383542312"
+                      "templateHash": "499576576386413037"
                     }
                   },
                   "parameters": {
@@ -642,7 +642,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1955376536405090411"
+                              "templateHash": "16431236836762143778"
                             }
                           },
                           "parameters": {
@@ -761,9 +761,6 @@
                                   "query": {
                                     "value": "[parameters('query')]"
                                   },
-                                  "packtag": {
-                                    "value": "[parameters('packtag')]"
-                                  },
                                   "Tags": {
                                     "value": "[parameters('Tags')]"
                                   }
@@ -775,7 +772,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "5611522469594456278"
+                                      "templateHash": "15025113715005484383"
                                     }
                                   },
                                   "parameters": {
@@ -813,9 +810,6 @@
                                       "defaultValue": false
                                     },
                                     "query": {
-                                      "type": "string"
-                                    },
-                                    "packtag": {
                                       "type": "string"
                                     },
                                     "Tags": {
@@ -2136,9 +2130,6 @@
           },
           "endpointResourceId": {
             "value": "[parameters('dceId')]"
-          },
-          "tableName": {
-            "value": "IISLogs"
           }
         },
         "template": {
@@ -2148,7 +2139,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "926628126860187676"
+              "templateHash": "7062276494072168506"
             }
           },
           "parameters": {
@@ -2162,12 +2153,6 @@
               "type": "string",
               "metadata": {
                 "description": "Specifies the resource id of the data collection endpoint."
-              }
-            },
-            "tableName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the table."
               }
             },
             "location": {

@@ -1,15 +1,24 @@
 targetScope = 'managementGroup'
+
 param policyName string
 param policyDisplayName string
 param policyDescription string
+// param policyLocation string
+// param mgname string
+// param subscriptionId string
+// param userManagedIdentityResourceId string
 param packtag string
 param solutionTag string
 param logAnalyticsWSResourceId string
 param resourceType string// = 'Microsoft.Network/vpngateways'
 param packtype string
 param initiativeMember bool
+// param instanceName string
+// param assignmentLevel string
+// param assignmentSuffix string
+// param resourceTypes array
 
-resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
+resource diagPolicy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   name: 'AMP-${policyName}'
   properties: {
     description: 'AMP-${policyDescription}'
@@ -185,4 +194,22 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     }
   }
 }
-output policyId string = policy.id
+
+// module policyassignment '../../../../modules/policies/mg/policiesDiag.bicep' = if(!initiativeMember) {
+//   name: guid('AMP-${instanceName}-${policyName}')
+//   params: {
+//     location: policyLocation
+//     mgname: mgname
+//     packtag: packtag
+//     policydefinitionId: diagPolicy.id
+//     resourceType: resourceType
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId 
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     assignmentLevel: assignmentLevel
+//     policyType: 'diag'
+//     assignmentSuffix: assignmentSuffix
+//   }
+// }
+
+output policyId string = diagPolicy.id

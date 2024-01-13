@@ -175,7 +175,7 @@ module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' =
     lawResourceId: workspaceId
     Tags: Tags
     endpointResourceId: dceId
-    tableName: 'IISLogs'
+    //tableName: 'IISLogs'
   }
 }
 module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {

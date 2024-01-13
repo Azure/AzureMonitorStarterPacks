@@ -2,14 +2,14 @@ targetScope = 'managementGroup'
 param packtag string = 'OpenAI'
 param solutionTag string = 'MonitorStarterPacks'
 param solutionVersion string 
-@description('Name of the DCR rule to be created')
-param rulename string = ''
+// @description('Name of the DCR rule to be created')
+// param rulename string = ''
 @description('location for the deployment.')
 param location string //= resourceGroup().location
-@description('Full resource ID of the log analytics workspace to be used for the deployment.')
-param workspaceId string
-@description('Full resource ID of the data collection endpoint to be used for the deployment.')
-param dceId string
+// @description('Full resource ID of the log analytics workspace to be used for the deployment.')
+// param workspaceId string
+// @description('Full resource ID of the data collection endpoint to be used for the deployment.')
+// param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param actionGroupResourceId string
 

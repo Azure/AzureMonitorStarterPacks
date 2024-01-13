@@ -47,10 +47,10 @@ module Storage './Storage/monitoring.bicep' = {
     subscriptionId: subscriptionId
     actionGroupResourceId: actionGroupResourceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: workspaceId
+    //workspaceId: workspaceId
     packtag: 'Storage'
-    grafanaName: grafanaName
-    dceId: dceId
+    //grafanaName: grafanaName
+    //dceId: dceId
     customerTags: customerTags
     instanceName: instanceName
     solutionVersion: solutionVersion
@@ -67,10 +67,10 @@ module OpenAI './OpenAI/monitoring.bicep' = {
     subscriptionId: subscriptionId
     actionGroupResourceId: actionGroupResourceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: workspaceId
+    //workspaceId: workspaceId
     packtag: 'OpenAI'
     grafanaName: grafanaName
-    dceId: dceId
+    //dceId: dceId
     customerTags: customerTags
     instanceName: instanceName
     solutionVersion: solutionVersion
@@ -79,25 +79,25 @@ module OpenAI './OpenAI/monitoring.bicep' = {
 module AVD './AVD/monitoring.bicep' = {
   name: 'AVDAlerts'
   params: {
-    // assignmentLevel: assignmentLevel
-    // location: location
-    // mgname: mgname
-    resourceGroupId: resourceGroupId
+    assignmentLevel: assignmentLevel
+    location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
     solutionTag: solutionTag
-    // subscriptionId: subscriptionId
+    subscriptionId: subscriptionId
     // actionGroupResourceId: actionGroupResourceId
-    // userManagedIdentityResourceId: userManagedIdentityResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
     // workspaceId: workspaceId
     packtag: 'AVD'
     // grafanaName: grafanaName
     // dceId: dceId
     // customerTags: customerTags
-    // instanceName: instanceName
+    instanceName: instanceName
     // solutionVersion: solutionVersion
-    customerTags: customerTags
-    solutionVersion: solutionVersion
+    // customerTags: customerTags
+    // solutionVersion: solutionVersion
     workspaceId: workspaceId
-    
+
   }
 }
 

@@ -46,7 +46,7 @@ module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
     autoMitigate: autoMitigate
     query: query
     //starterPackName: starterPackName
-    packtag: packtag
+    //packtag: packtag
     Tags: Tags
   }
 }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "3546504562437586511"
+      "templateHash": "2347204635869713595"
     }
   },
   "parameters": {
@@ -228,7 +228,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "6426218414382632849"
+              "templateHash": "12382374848035101773"
             }
           },
           "parameters": {
@@ -365,7 +365,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "75933667383542312"
+                      "templateHash": "499576576386413037"
                     }
                   },
                   "parameters": {
@@ -459,7 +459,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1955376536405090411"
+                              "templateHash": "16431236836762143778"
                             }
                           },
                           "parameters": {
@@ -578,9 +578,6 @@
                                   "query": {
                                     "value": "[parameters('query')]"
                                   },
-                                  "packtag": {
-                                    "value": "[parameters('packtag')]"
-                                  },
                                   "Tags": {
                                     "value": "[parameters('Tags')]"
                                   }
@@ -592,7 +589,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "5611522469594456278"
+                                      "templateHash": "15025113715005484383"
                                     }
                                   },
                                   "parameters": {
@@ -630,9 +627,6 @@
                                       "defaultValue": false
                                     },
                                     "query": {
-                                      "type": "string"
-                                    },
-                                    "packtag": {
                                       "type": "string"
                                     },
                                     "Tags": {

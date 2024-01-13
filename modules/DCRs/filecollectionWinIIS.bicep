@@ -5,8 +5,8 @@ param ruleName string
 @description('Specifies the resource id of the data collection endpoint.')
 param endpointResourceId string
 
-@description('Name of the table.')
-param tableName string
+// @description('Name of the table.')
+// param tableName string
 
 @description('Specifies the location in which to create the data collection rule.')
 param location string

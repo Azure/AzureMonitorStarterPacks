@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "540680309070903931"
+      "templateHash": "6655922223960552466"
     }
   },
   "parameters": {
@@ -268,7 +268,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12131532972353524276"
+              "templateHash": "15808379887933358475"
             }
           },
           "parameters": {
@@ -3260,7 +3260,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "1320602779637026996"
+                      "templateHash": "16327031097143483077"
                     }
                   },
                   "parameters": {
@@ -3479,7 +3479,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "17729674135152505181"
+                              "templateHash": "12985458178328507122"
                             }
                           },
                           "parameters": {
@@ -3616,7 +3616,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -3710,7 +3710,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -3829,9 +3829,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -3843,7 +3840,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -3881,9 +3878,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -5099,7 +5093,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3546504562437586511"
+                      "templateHash": "2347204635869713595"
                     }
                   },
                   "parameters": {
@@ -5322,7 +5316,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "6426218414382632849"
+                              "templateHash": "12382374848035101773"
                             }
                           },
                           "parameters": {
@@ -5459,7 +5453,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -5553,7 +5547,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -5672,9 +5666,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -5686,7 +5677,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -5724,9 +5715,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -6942,7 +6930,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "6062574768876300164"
+                      "templateHash": "3010773033695536777"
                     }
                   },
                   "parameters": {
@@ -7120,7 +7108,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "9388126828813662041"
+                              "templateHash": "16848282078807397027"
                             }
                           },
                           "parameters": {
@@ -7485,7 +7473,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -7579,7 +7567,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -7698,9 +7686,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -7712,7 +7697,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -7750,9 +7735,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -9073,9 +9055,6 @@
                           },
                           "endpointResourceId": {
                             "value": "[parameters('dceId')]"
-                          },
-                          "tableName": {
-                            "value": "IISLogs"
                           }
                         },
                         "template": {
@@ -9085,7 +9064,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "926628126860187676"
+                              "templateHash": "7062276494072168506"
                             }
                           },
                           "parameters": {
@@ -9099,12 +9078,6 @@
                               "type": "string",
                               "metadata": {
                                 "description": "Specifies the resource id of the data collection endpoint."
-                              }
-                            },
-                            "tableName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Name of the table."
                               }
                             },
                             "location": {
@@ -10144,7 +10117,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "10590730359061919309"
+                      "templateHash": "11856800576745056399"
                     }
                   },
                   "parameters": {
@@ -10343,7 +10316,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "9388126828813662041"
+                              "templateHash": "16848282078807397027"
                             }
                           },
                           "parameters": {
@@ -10708,7 +10681,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -10802,7 +10775,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -10921,9 +10894,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -10935,7 +10905,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -10973,9 +10943,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -12296,9 +12263,6 @@
                           },
                           "endpointResourceId": {
                             "value": "[parameters('dceId')]"
-                          },
-                          "tableName": {
-                            "value": "IISLogs"
                           }
                         },
                         "template": {
@@ -12308,7 +12272,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "926628126860187676"
+                              "templateHash": "7062276494072168506"
                             }
                           },
                           "parameters": {
@@ -12322,12 +12286,6 @@
                               "type": "string",
                               "metadata": {
                                 "description": "Specifies the resource id of the data collection endpoint."
-                              }
-                            },
-                            "tableName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Name of the table."
                               }
                             },
                             "location": {
@@ -13367,7 +13325,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "3646567615740455325"
+                      "templateHash": "7858557047429151387"
                     }
                   },
                   "parameters": {
@@ -13615,7 +13573,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "15034825022451052634"
+                              "templateHash": "17068741638345352495"
                             }
                           },
                           "parameters": {
@@ -14277,7 +14235,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -14371,7 +14329,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -14490,9 +14448,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -14504,7 +14459,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -14542,9 +14497,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -15901,7 +15853,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "4042057769330964525"
+                      "templateHash": "1551039444826568579"
                     }
                   },
                   "parameters": {
@@ -17069,7 +17021,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "396229193872397473"
+                              "templateHash": "1927605958841006683"
                             }
                           },
                           "parameters": {
@@ -17258,7 +17210,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -17352,7 +17304,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -17471,9 +17423,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -17485,7 +17434,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -17523,9 +17472,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -17848,7 +17794,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "16693075236264858501"
+                      "templateHash": "5438513570484598527"
                     }
                   },
                   "parameters": {
@@ -18244,7 +18190,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "93192211460103918"
+                              "templateHash": "2027126625852785992"
                             }
                           },
                           "parameters": {
@@ -18323,7 +18269,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "75933667383542312"
+                                      "templateHash": "499576576386413037"
                                     }
                                   },
                                   "parameters": {
@@ -18417,7 +18363,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "1955376536405090411"
+                                              "templateHash": "16431236836762143778"
                                             }
                                           },
                                           "parameters": {
@@ -18536,9 +18482,6 @@
                                                   "query": {
                                                     "value": "[parameters('query')]"
                                                   },
-                                                  "packtag": {
-                                                    "value": "[parameters('packtag')]"
-                                                  },
                                                   "Tags": {
                                                     "value": "[parameters('Tags')]"
                                                   }
@@ -18550,7 +18493,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "5611522469594456278"
+                                                      "templateHash": "15025113715005484383"
                                                     }
                                                   },
                                                   "parameters": {
@@ -18588,9 +18531,6 @@
                                                       "defaultValue": false
                                                     },
                                                     "query": {
-                                                      "type": "string"
-                                                    },
-                                                    "packtag": {
                                                       "type": "string"
                                                     },
                                                     "Tags": {
@@ -19930,7 +19870,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "4838602546601877989"
+              "templateHash": "12155807079539302421"
             }
           },
           "parameters": {
@@ -20025,17 +19965,8 @@
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
-                  "workspaceId": {
-                    "value": "[parameters('workspaceId')]"
-                  },
                   "packtag": {
                     "value": "Storage"
-                  },
-                  "grafanaName": {
-                    "value": "[parameters('grafanaName')]"
-                  },
-                  "dceId": {
-                    "value": "[parameters('dceId')]"
                   },
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
@@ -20054,7 +19985,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "5158585037947406385"
+                      "templateHash": "3031295493964103179"
                     }
                   },
                   "parameters": {
@@ -20072,29 +20003,10 @@
                     "actionGroupResourceId": {
                       "type": "string"
                     },
-                    "rulename": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Name of the DCR rule to be created"
-                      }
-                    },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "location for the deployment."
-                      }
-                    },
-                    "workspaceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the log analytics workspace to be used for the deployment."
-                      }
-                    },
-                    "dceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
                     "subscriptionId": {
@@ -20115,9 +20027,6 @@
                     "resourceGroupId": {
                       "type": "string"
                     },
-                    "grafanaName": {
-                      "type": "string"
-                    },
                     "customerTags": {
                       "type": "object"
                     },
@@ -20126,12 +20035,6 @@
                     }
                   },
                   "variables": {
-                    "tempTags": {
-                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                      "MonitoringPackType": "PaaS",
-                      "solutionVersion": "[parameters('solutionVersion')]"
-                    },
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "resourceType": "Microsoft.Storage/storageaccounts"
                   },
@@ -21408,17 +21311,11 @@
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
-                  "workspaceId": {
-                    "value": "[parameters('workspaceId')]"
-                  },
                   "packtag": {
                     "value": "OpenAI"
                   },
                   "grafanaName": {
                     "value": "[parameters('grafanaName')]"
-                  },
-                  "dceId": {
-                    "value": "[parameters('dceId')]"
                   },
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
@@ -21437,7 +21334,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11038949651011728681"
+                      "templateHash": "11811652945214665752"
                     }
                   },
                   "parameters": {
@@ -21452,29 +21349,10 @@
                     "solutionVersion": {
                       "type": "string"
                     },
-                    "rulename": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Name of the DCR rule to be created"
-                      }
-                    },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "location for the deployment."
-                      }
-                    },
-                    "workspaceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the log analytics workspace to be used for the deployment."
-                      }
-                    },
-                    "dceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
                     "actionGroupResourceId": {
@@ -22776,20 +22654,29 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "resourceGroupId": {
-                    "value": "[parameters('resourceGroupId')]"
+                  "assignmentLevel": {
+                    "value": "[parameters('assignmentLevel')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "mgname": {
+                    "value": "[parameters('mgname')]"
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
                   },
+                  "subscriptionId": {
+                    "value": "[parameters('subscriptionId')]"
+                  },
+                  "userManagedIdentityResourceId": {
+                    "value": "[parameters('userManagedIdentityResourceId')]"
+                  },
                   "packtag": {
                     "value": "AVD"
                   },
-                  "customerTags": {
-                    "value": "[parameters('customerTags')]"
-                  },
-                  "solutionVersion": {
-                    "value": "[parameters('solutionVersion')]"
+                  "instanceName": {
+                    "value": "[parameters('instanceName')]"
                   },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
@@ -22802,7 +22689,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "5437700501750207973"
+                      "templateHash": "10583293954582906595"
                     }
                   },
                   "parameters": {
@@ -22813,8 +22700,11 @@
                     "solutionTag": {
                       "type": "string"
                     },
-                    "solutionVersion": {
-                      "type": "string"
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "location for the deployment."
+                      }
                     },
                     "workspaceId": {
                       "type": "string",
@@ -22822,14 +22712,23 @@
                         "description": "Full resource ID of the log analytics workspace to be used for the deployment."
                       }
                     },
-                    "resourceGroupId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
                     },
-                    "customerTags": {
-                      "type": "object"
+                    "userManagedIdentityResourceId": {
+                      "type": "string"
+                    },
+                    "mgname": {
+                      "type": "string"
+                    },
+                    "assignmentLevel": {
+                      "type": "string"
+                    },
+                    "instanceName": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -23097,6 +22996,282 @@
                           }
                         }
                       }
+                    },
+                    {
+                      "copy": {
+                        "name": "policyassignment",
+                        "count": "[length(variables('resourceTypes'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('AMP-diag-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), split(variables('resourceTypes')[copyIndex()], '/')[1])]",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "mgname": {
+                            "value": "[parameters('mgname')]"
+                          },
+                          "packtag": {
+                            "value": "[parameters('packtag')]"
+                          },
+                          "policydefinitionId": {
+                            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('associacionpolicy-{0}-{1}', parameters('packtag'), split(variables('resourceTypes')[copyIndex()], '/')[1])), '2022-09-01').outputs.policyId.value]"
+                          },
+                          "resourceType": {
+                            "value": "[variables('resourceTypes')[copyIndex()]]"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "subscriptionId": {
+                            "value": "[parameters('subscriptionId')]"
+                          },
+                          "userManagedIdentityResourceId": {
+                            "value": "[parameters('userManagedIdentityResourceId')]"
+                          },
+                          "assignmentLevel": {
+                            "value": "[parameters('assignmentLevel')]"
+                          },
+                          "policyType": {
+                            "value": "diag"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "196652062591472434"
+                            }
+                          },
+                          "parameters": {
+                            "packtag": {
+                              "type": "string"
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "userManagedIdentityResourceId": {
+                              "type": "string"
+                            },
+                            "assignmentSuffix": {
+                              "type": "string",
+                              "defaultValue": ""
+                            },
+                            "mgname": {
+                              "type": "string"
+                            },
+                            "assignmentLevel": {
+                              "type": "string",
+                              "defaultValue": "managementGroup"
+                            },
+                            "subscriptionId": {
+                              "type": "string"
+                            },
+                            "resourceType": {
+                              "type": "string"
+                            },
+                            "policyType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "diag",
+                                "alert"
+                              ]
+                            },
+                            "policydefinitionId": {
+                              "type": "string"
+                            }
+                          },
+                          "variables": {
+                            "resourceShortType": "[split(parameters('resourceType'), '/')[1]]"
+                          },
+                          "resources": [
+                            {
+                              "condition": "[equals(parameters('assignmentLevel'), 'managementGroup')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('AM-{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]",
+                              "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
+                              "location": "[deployment().location]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "policyDefinitionId": {
+                                    "value": "[parameters('policydefinitionId')]"
+                                  },
+                                  "assignmentName": {
+                                    "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "solutionTag": {
+                                    "value": "[parameters('solutionTag')]"
+                                  },
+                                  "userManagedIdentityResourceId": {
+                                    "value": "[parameters('userManagedIdentityResourceId')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "18204016525654709950"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "policyDefinitionId": {
+                                      "type": "string"
+                                    },
+                                    "assignmentName": {
+                                      "type": "string"
+                                    },
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "solutionTag": {
+                                      "type": "string"
+                                    },
+                                    "userManagedIdentityResourceId": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "variables": {
+                                    "loc2": "[trim(parameters('location'))]"
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Authorization/policyAssignments",
+                                      "apiVersion": "2022-06-01",
+                                      "name": "[parameters('assignmentName')]",
+                                      "identity": {
+                                        "type": "UserAssigned",
+                                        "userAssignedIdentities": {
+                                          "[format('{0}', parameters('userManagedIdentityResourceId'))]": {}
+                                        }
+                                      },
+                                      "location": "[variables('loc2')]",
+                                      "properties": {
+                                        "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                                        "displayName": "[parameters('assignmentName')]",
+                                        "enforcementMode": "Default",
+                                        "metadata": {
+                                          "createdBy": "[parameters('solutionTag')]"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "condition": "[not(equals(parameters('assignmentLevel'), 'managementGroup'))]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('AM-{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]",
+                              "subscriptionId": "[parameters('subscriptionId')]",
+                              "location": "[deployment().location]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "policyDefinitionId": {
+                                    "value": "[parameters('policydefinitionId')]"
+                                  },
+                                  "assignmentName": {
+                                    "value": "[format('{0}-{1}-{2}-{3}', parameters('packtag'), variables('resourceShortType'), parameters('policyType'), parameters('assignmentSuffix'))]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "solutionTag": {
+                                    "value": "[parameters('solutionTag')]"
+                                  },
+                                  "userManagedIdentityResourceId": {
+                                    "value": "[parameters('userManagedIdentityResourceId')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "15632908880880169790"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "policyDefinitionId": {
+                                      "type": "string"
+                                    },
+                                    "assignmentName": {
+                                      "type": "string"
+                                    },
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "solutionTag": {
+                                      "type": "string"
+                                    },
+                                    "userManagedIdentityResourceId": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "variables": {
+                                    "loc2": "[trim(parameters('location'))]"
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Authorization/policyAssignments",
+                                      "apiVersion": "2022-06-01",
+                                      "name": "[parameters('assignmentName')]",
+                                      "identity": {
+                                        "type": "UserAssigned",
+                                        "userAssignedIdentities": {
+                                          "[format('{0}', parameters('userManagedIdentityResourceId'))]": {}
+                                        }
+                                      },
+                                      "location": "[variables('loc2')]",
+                                      "properties": {
+                                        "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                                        "displayName": "[parameters('assignmentName')]",
+                                        "enforcementMode": "Default",
+                                        "metadata": {
+                                          "createdBy": "[parameters('solutionTag')]"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "diagnosticsPolicy"
+                      ]
                     }
                   ]
                 }
@@ -23169,7 +23344,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12530856268362686892"
+              "templateHash": "9784449273659783111"
             }
           },
           "parameters": {
@@ -23264,20 +23439,8 @@
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
-                  "workspaceId": {
-                    "value": "[parameters('workspaceId')]"
-                  },
                   "packtag": {
                     "value": "KeyVault"
-                  },
-                  "grafanaName": {
-                    "value": "[parameters('grafanaName')]"
-                  },
-                  "dceId": {
-                    "value": "[parameters('dceId')]"
-                  },
-                  "customerTags": {
-                    "value": "[parameters('customerTags')]"
                   },
                   "instanceName": {
                     "value": "[parameters('instanceName')]"
@@ -23293,7 +23456,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "2240996014428869933"
+                      "templateHash": "16918529995496348949"
                     }
                   },
                   "parameters": {
@@ -23311,35 +23474,16 @@
                     "actionGroupResourceId": {
                       "type": "string"
                     },
-                    "rulename": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Name of the DCR rule to be created"
-                      }
-                    },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "location for the deployment."
                       }
                     },
-                    "workspaceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the log analytics workspace to be used for the deployment."
-                      }
-                    },
-                    "dceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
-                      }
-                    },
                     "subscriptionId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Full resource ID of the user managed identity to be used for the deployment"
+                        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
                     "userManagedIdentityResourceId": {
@@ -23354,23 +23498,11 @@
                     "resourceGroupId": {
                       "type": "string"
                     },
-                    "grafanaName": {
-                      "type": "string"
-                    },
                     "instanceName": {
                       "type": "string"
-                    },
-                    "customerTags": {
-                      "type": "object"
                     }
                   },
                   "variables": {
-                    "tempTags": {
-                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                      "MonitoringPackType": "Platform",
-                      "solutionVersion": "[parameters('solutionVersion')]"
-                    },
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "resourceType": "Microsoft.KeyVault/vaults"
                   },
@@ -32792,17 +32924,11 @@
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
-                  "workspaceId": {
-                    "value": "[parameters('workspaceId')]"
-                  },
                   "packtag": {
                     "value": "ALB"
                   },
                   "solutionVersion": {
                     "value": "[parameters('solutionVersion')]"
-                  },
-                  "dceId": {
-                    "value": "[parameters('dceId')]"
                   },
                   "grafanaName": {
                     "value": "[parameters('grafanaName')]"
@@ -32821,7 +32947,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9587714701969548598"
+                      "templateHash": "4936652695917809149"
                     }
                   },
                   "parameters": {
@@ -32839,29 +32965,10 @@
                     "actionGroupResourceId": {
                       "type": "string"
                     },
-                    "rulename": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Name of the DCR rule to be created"
-                      }
-                    },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "location for the deployment."
-                      }
-                    },
-                    "workspaceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the log analytics workspace to be used for the deployment."
-                      }
-                    },
-                    "dceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
                     "subscriptionId": {
@@ -32898,7 +33005,6 @@
                       "MonitoringPackType": "Platform",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "resourceType": "Microsoft.Network/loadBalancers",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
                   },
@@ -32922,9 +33028,6 @@
                           },
                           "solutionTag": {
                             "value": "[parameters('solutionTag')]"
-                          },
-                          "parResourceGroupName": {
-                            "value": "[variables('resourceGroupName')]"
                           },
                           "subscriptionId": {
                             "value": "[parameters('subscriptionId')]"
@@ -32961,7 +33064,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "11556987926389818623"
+                              "templateHash": "7268811579083172960"
                             }
                           },
                           "parameters": {
@@ -32986,9 +33089,6 @@
                             "policyLocation": {
                               "type": "string"
                             },
-                            "parResourceGroupName": {
-                              "type": "string"
-                            },
                             "assignmentLevel": {
                               "type": "string"
                             },
@@ -33009,12 +33109,6 @@
                               "defaultValue": [
                                 "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
                               ]
-                            },
-                            "parResourceGroupTags": {
-                              "type": "object",
-                              "defaultValue": {
-                                "environment": "test"
-                              }
                             },
                             "parAlertState": {
                               "type": "string",

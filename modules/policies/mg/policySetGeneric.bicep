@@ -43,9 +43,9 @@ resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' 
 
 module assignment './assignment.bicep' = if (assignmentLevel == 'managementGroup'){
   name: 'assignment-${initiativeName}'
-  dependsOn: [
-    policySetDef
-  ]
+  // dependsOn: [
+  //   policySetDef
+  // ]
   params: {
     policyDefinitionId: policySetDef.id
     location: location
@@ -59,9 +59,9 @@ module assignment './assignment.bicep' = if (assignmentLevel == 'managementGroup
 }
 module assignmentsub '../subscription/assignment.bicep' = if (assignmentLevel != 'managementGroup') {
   name: 'assignment--${initiativeName}'
-  dependsOn: [
-    policySetDef
-  ]
+  // dependsOn: [
+  //   policySetDef
+  // ]
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policySetDef.id

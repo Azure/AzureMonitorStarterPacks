@@ -2,28 +2,26 @@ targetScope = 'managementGroup'
 
 param packtag string = 'AVD'
 param solutionTag string
-param solutionVersion string 
+// param solutionVersion string 
 // param actionGroupResourceId string
 // @description('Name of the DCR rule to be created')
 // param rulename string = ''
-// @description('location for the deployment.')
-// param location string //= resourceGroup().location
+@description('location for the deployment.')
+param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
 
 // @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 // param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
-param resourceGroupId string
-// param subscriptionId string
-// param userManagedIdentityResourceId string
-// param mgname string 
-// param assignmentLevel string
+//param resourceGroupId string
+param subscriptionId string
+param userManagedIdentityResourceId string
+param mgname string 
+param assignmentLevel string
 // param grafanaName string
-//param solutionVersion string
-param customerTags object 
-// param instanceName string
-
+// param customerTags object 
+param instanceName string
 
 var resourceTypes = [
   'Microsoft.DesktopVirtualization/applicationgroups'
@@ -50,5 +48,30 @@ module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpo
     resourceType: rt
     initiativeMember: false
     packtype: 'PaaS'
+    // assignmentLevel: assignmentLevel
+    // assignmentSuffix: ''
+    // instanceName: instanceName
+    // mgname: mgname
+    // policyLocation: location
+    // subscriptionId: subscriptionId
+    // userManagedIdentityResourceId: userManagedIdentityResourceId
+  }
+}]
+module policyassignment '../../../modules/policies/mg/policiesDiag.bicep' = [for (rt,i) in resourceTypes: {
+  name: 'AMP-diag-${instanceName}-${packtag}-${split(rt, '/')[1]}'
+  dependsOn: [
+    diagnosticsPolicy
+  ]
+  params: {
+    location: location
+    mgname: mgname
+    packtag: packtag
+    policydefinitionId: diagnosticsPolicy[i].outputs.policyId
+    resourceType: rt
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId 
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    assignmentLevel: assignmentLevel
+    policyType: 'diag'
   }
 }]
