@@ -82,7 +82,7 @@ module AVD './AVD/monitoring.bicep' = {
     assignmentLevel: assignmentLevel
     location: location
     mgname: mgname
-    //resourceGroupId: resourceGroupId
+    resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     // actionGroupResourceId: actionGroupResourceId
@@ -90,11 +90,11 @@ module AVD './AVD/monitoring.bicep' = {
     // workspaceId: workspaceId
     packtag: 'AVD'
     // grafanaName: grafanaName
-    // dceId: dceId
+    dceId: dceId
     // customerTags: customerTags
     instanceName: instanceName
-    // solutionVersion: solutionVersion
-    // customerTags: customerTags
+    solutionVersion: solutionVersion
+    customerTags: customerTags
     // solutionVersion: solutionVersion
     workspaceId: workspaceId
 

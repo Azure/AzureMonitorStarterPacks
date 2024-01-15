@@ -76,6 +76,7 @@ module policyassignment '../../../../modules/policies/mg/policiesDiag.bicep' = [
     userManagedIdentityResourceId: userManagedIdentityResourceId
     assignmentLevel: assignmentLevel
     policyType: 'diag'
+    instanceName: instanceName
   }
 }]
 

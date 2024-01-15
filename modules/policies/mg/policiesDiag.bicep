@@ -8,6 +8,8 @@ param mgname string
 param assignmentLevel string = 'managementGroup'
 param subscriptionId string
 param resourceType string
+param instanceName string
+
 @allowed(
   [
     'diag'
@@ -32,7 +34,7 @@ module diagassignment './assignment.bicep' = if(assignmentLevel == 'managementGr
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policydefinitionId
-    assignmentName: '${packtag}-${resourceShortType}-${assignmentSuffix}'
+    assignmentName: 'AMP-assig-${instanceName}-${packtag}-${resourceShortType}'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag

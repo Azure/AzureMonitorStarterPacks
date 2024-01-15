@@ -405,6 +405,7 @@ module policyassignment '../../../modules/policies/mg/policiesDiag.bicep' = if (
     assignmentLevel: assignmentLevel
     policyType: 'alert'
     assignmentSuffix: assignmentSuffix
+    instanceName: instanceName
   }
 }
 

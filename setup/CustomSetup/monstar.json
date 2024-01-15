@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7914999092663820173"
+      "templateHash": "13328348164946028848"
     }
   },
   "parameters": {
@@ -10429,7 +10429,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "6655922223960552466"
+              "templateHash": "7673015234291165140"
             }
           },
           "parameters": {
@@ -30294,7 +30294,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "12155807079539302421"
+                      "templateHash": "8461435668407770964"
                     }
                   },
                   "parameters": {
@@ -30409,7 +30409,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "3031295493964103179"
+                              "templateHash": "14679522600813391058"
                             }
                           },
                           "parameters": {
@@ -30515,7 +30515,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "3046688962929049366"
+                                      "templateHash": "16478335544931837258"
                                     }
                                   },
                                   "parameters": {
@@ -30664,7 +30664,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -31446,6 +31446,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -31455,7 +31458,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -31486,6 +31489,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -31520,7 +31526,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -31758,7 +31764,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "11811652945214665752"
+                              "templateHash": "10743785273289952527"
                             }
                           },
                           "parameters": {
@@ -31873,7 +31879,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "11217727316255497350"
+                                      "templateHash": "9044604195001847498"
                                     }
                                   },
                                   "parameters": {
@@ -32031,7 +32037,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -32813,6 +32819,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -32822,7 +32831,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -32853,6 +32862,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -32887,7 +32899,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -33113,7 +33125,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "10583293954582906595"
+                              "templateHash": "13813400171251895772"
                             }
                           },
                           "parameters": {
@@ -33465,6 +33477,9 @@
                                   },
                                   "policyType": {
                                     "value": "diag"
+                                  },
+                                  "instanceName": {
+                                    "value": "[parameters('instanceName')]"
                                   }
                                 },
                                 "template": {
@@ -33474,7 +33489,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "196652062591472434"
+                                      "templateHash": "654351933993541925"
                                     }
                                   },
                                   "parameters": {
@@ -33505,6 +33520,9 @@
                                       "type": "string"
                                     },
                                     "resourceType": {
+                                      "type": "string"
+                                    },
+                                    "instanceName": {
                                       "type": "string"
                                     },
                                     "policyType": {
@@ -33539,7 +33557,7 @@
                                             "value": "[parameters('policydefinitionId')]"
                                           },
                                           "assignmentName": {
-                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -33768,7 +33786,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9784449273659783111"
+                      "templateHash": "14567277926418057279"
                     }
                   },
                   "parameters": {
@@ -33880,7 +33898,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "16918529995496348949"
+                              "templateHash": "15124670624766481959"
                             }
                           },
                           "parameters": {
@@ -33989,7 +34007,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "8115483571861852899"
+                                      "templateHash": "16671320084021425614"
                                     }
                                   },
                                   "parameters": {
@@ -34129,7 +34147,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "7892140889236028461"
+                                              "templateHash": "15814039176770394269"
                                             }
                                           },
                                           "parameters": {
@@ -34768,6 +34786,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -34777,7 +34798,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -34808,6 +34829,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -34842,7 +34866,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -35114,7 +35138,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -35896,6 +35920,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -35905,7 +35932,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -35936,6 +35963,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -35970,7 +36000,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -36539,7 +36569,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "10361896890494345328"
+                              "templateHash": "4821081531992687833"
                             }
                           },
                           "parameters": {
@@ -36900,6 +36930,9 @@
                                   },
                                   "policyType": {
                                     "value": "diag"
+                                  },
+                                  "instanceName": {
+                                    "value": "[parameters('instanceName')]"
                                   }
                                 },
                                 "template": {
@@ -36909,7 +36942,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "196652062591472434"
+                                      "templateHash": "654351933993541925"
                                     }
                                   },
                                   "parameters": {
@@ -36940,6 +36973,9 @@
                                       "type": "string"
                                     },
                                     "resourceType": {
+                                      "type": "string"
+                                    },
+                                    "instanceName": {
                                       "type": "string"
                                     },
                                     "policyType": {
@@ -36974,7 +37010,7 @@
                                             "value": "[parameters('policydefinitionId')]"
                                           },
                                           "assignmentName": {
-                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                           },
                                           "location": {
                                             "value": "[parameters('location')]"
@@ -37193,7 +37229,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "8420923391289641661"
+                                      "templateHash": "17358668041539497592"
                                     }
                                   },
                                   "parameters": {
@@ -37382,7 +37418,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "17418007601524114545"
+                                              "templateHash": "2823314818004889350"
                                             }
                                           },
                                           "parameters": {
@@ -38208,6 +38244,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -38217,7 +38256,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -38248,6 +38287,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -38282,7 +38324,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -38554,7 +38596,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -39336,6 +39378,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -39345,7 +39390,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -39376,6 +39421,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -39410,7 +39458,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -39682,7 +39730,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -40464,6 +40512,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -40473,7 +40524,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -40504,6 +40555,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -40538,7 +40592,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -40810,7 +40864,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -41592,6 +41646,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -41601,7 +41658,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -41632,6 +41689,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -41666,7 +41726,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -41938,7 +41998,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -42720,6 +42780,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -42729,7 +42792,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -42760,6 +42823,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -42794,7 +42860,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -43371,7 +43437,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "4936652695917809149"
+                              "templateHash": "4933449790451053081"
                             }
                           },
                           "parameters": {
@@ -43488,7 +43554,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "7268811579083172960"
+                                      "templateHash": "9766096794295307729"
                                     }
                                   },
                                   "parameters": {
@@ -43640,7 +43706,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -44422,6 +44488,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -44431,7 +44500,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -44462,6 +44531,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -44496,7 +44568,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -44768,7 +44840,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -45550,6 +45622,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -45559,7 +45634,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -45590,6 +45665,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -45624,7 +45702,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -45896,7 +45974,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -46678,6 +46756,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -46687,7 +46768,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -46718,6 +46799,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -46752,7 +46836,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
@@ -47024,7 +47108,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.20.4.51522",
-                                              "templateHash": "14114572949180963178"
+                                              "templateHash": "3803785147704858662"
                                             }
                                           },
                                           "parameters": {
@@ -47806,6 +47890,9 @@
                                                   },
                                                   "assignmentSuffix": {
                                                     "value": "[parameters('assignmentSuffix')]"
+                                                  },
+                                                  "instanceName": {
+                                                    "value": "[parameters('instanceName')]"
                                                   }
                                                 },
                                                 "template": {
@@ -47815,7 +47902,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.20.4.51522",
-                                                      "templateHash": "196652062591472434"
+                                                      "templateHash": "654351933993541925"
                                                     }
                                                   },
                                                   "parameters": {
@@ -47846,6 +47933,9 @@
                                                       "type": "string"
                                                     },
                                                     "resourceType": {
+                                                      "type": "string"
+                                                    },
+                                                    "instanceName": {
                                                       "type": "string"
                                                     },
                                                     "policyType": {
@@ -47880,7 +47970,7 @@
                                                             "value": "[parameters('policydefinitionId')]"
                                                           },
                                                           "assignmentName": {
-                                                            "value": "[format('{0}-{1}-{2}', parameters('packtag'), variables('resourceShortType'), parameters('assignmentSuffix'))]"
+                                                            "value": "[format('AMP-assig-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), variables('resourceShortType'))]"
                                                           },
                                                           "location": {
                                                             "value": "[parameters('location')]"
