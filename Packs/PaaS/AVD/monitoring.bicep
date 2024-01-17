@@ -44,7 +44,7 @@ var performanceCounters=[
 ]
 
 var resourceTypes = [
-  'Microsoft.DesktopVirtualization/applicationgroups'
+  'Microsoft.DesktopVirtualization/workspaces'
   'Microsoft.DesktopVirtualization/hostpools'
 ]
 // var tempTags ={

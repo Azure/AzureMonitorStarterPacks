@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "7673015234291165140"
+      "templateHash": "4716052814604977190"
     }
   },
   "parameters": {
@@ -19870,7 +19870,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8461435668407770964"
+              "templateHash": "8783158867582908444"
             }
           },
           "parameters": {
@@ -22675,6 +22675,9 @@
                   "mgname": {
                     "value": "[parameters('mgname')]"
                   },
+                  "resourceGroupId": {
+                    "value": "[parameters('resourceGroupId')]"
+                  },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
                   },
@@ -22687,8 +22690,17 @@
                   "packtag": {
                     "value": "AVD"
                   },
+                  "dceId": {
+                    "value": "[parameters('dceId')]"
+                  },
                   "instanceName": {
                     "value": "[parameters('instanceName')]"
+                  },
+                  "solutionVersion": {
+                    "value": "[parameters('solutionVersion')]"
+                  },
+                  "customerTags": {
+                    "value": "[parameters('customerTags')]"
                   },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
@@ -22701,7 +22713,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13813400171251895772"
+                      "templateHash": "1995831185710548502"
                     }
                   },
                   "parameters": {
@@ -22710,6 +22722,9 @@
                       "defaultValue": "AVD"
                     },
                     "solutionTag": {
+                      "type": "string"
+                    },
+                    "solutionVersion": {
                       "type": "string"
                     },
                     "location": {
@@ -22724,11 +22739,17 @@
                         "description": "Full resource ID of the log analytics workspace to be used for the deployment."
                       }
                     },
-                    "subscriptionId": {
+                    "dceId": {
+                      "type": "string"
+                    },
+                    "resourceGroupId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
+                    },
+                    "subscriptionId": {
+                      "type": "string"
                     },
                     "userManagedIdentityResourceId": {
                       "type": "string"
@@ -22739,17 +22760,176 @@
                     "assignmentLevel": {
                       "type": "string"
                     },
+                    "customerTags": {
+                      "type": "object"
+                    },
                     "instanceName": {
                       "type": "string"
                     }
                   },
                   "variables": {
+                    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "IaaS",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
+                    "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
+                    "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
+                    "kind": "Windows",
+                    "xPathQueries": [
+                      "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=10)]]"
+                    ],
+                    "performanceCounters": [],
                     "resourceTypes": [
-                      "Microsoft.DesktopVirtualization/applicationgroups",
+                      "Microsoft.DesktopVirtualization/workspaces",
                       "Microsoft.DesktopVirtualization/hostpools"
                     ]
                   },
                   "resources": [
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('dcrPerformance-{0}', parameters('packtag'))]",
+                      "subscriptionId": "[parameters('subscriptionId')]",
+                      "resourceGroup": "[variables('resourceGroupName')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "rulename": {
+                            "value": "[variables('rulename')]"
+                          },
+                          "workspaceId": {
+                            "value": "[parameters('workspaceId')]"
+                          },
+                          "wsfriendlyname": {
+                            "value": "[variables('workspaceFriendlyName')]"
+                          },
+                          "kind": {
+                            "value": "[variables('kind')]"
+                          },
+                          "xPathQueries": {
+                            "value": "[variables('xPathQueries')]"
+                          },
+                          "counterSpecifiers": {
+                            "value": "[variables('performanceCounters')]"
+                          },
+                          "Tags": {
+                            "value": "[variables('Tags')]"
+                          },
+                          "dceId": {
+                            "value": "[parameters('dceId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.20.4.51522",
+                              "templateHash": "10387281639106552930"
+                            }
+                          },
+                          "parameters": {
+                            "location": {
+                              "type": "string"
+                            },
+                            "rulename": {
+                              "type": "string"
+                            },
+                            "workspaceId": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "type": "string",
+                              "defaultValue": "Windows"
+                            },
+                            "wsfriendlyname": {
+                              "type": "string",
+                              "defaultValue": "TBD"
+                            },
+                            "xPathQueries": {
+                              "type": "array",
+                              "defaultValue": []
+                            },
+                            "counterSpecifiers": {
+                              "type": "array",
+                              "defaultValue": []
+                            },
+                            "samplingFrequencyInSeconds": {
+                              "type": "int",
+                              "defaultValue": 300
+                            },
+                            "Tags": {
+                              "type": "object"
+                            },
+                            "dceId": {
+                              "type": "string"
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Insights/dataCollectionRules",
+                              "apiVersion": "2022-06-01",
+                              "name": "[parameters('rulename')]",
+                              "location": "[parameters('location')]",
+                              "tags": "[parameters('Tags')]",
+                              "kind": "[parameters('kind')]",
+                              "properties": {
+                                "dataCollectionEndpointId": "[parameters('dceId')]",
+                                "description": "[format('Data Collection Rule for {0}}} - {1}}}', parameters('kind'), parameters('rulename'))]",
+                                "destinations": {
+                                  "logAnalytics": [
+                                    {
+                                      "workspaceResourceId": "[parameters('workspaceId')]",
+                                      "name": "[parameters('wsfriendlyname')]"
+                                    }
+                                  ]
+                                },
+                                "dataSources": {
+                                  "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
+                                  "performanceCounters": [
+                                    {
+                                      "streams": [
+                                        "Microsoft-Perf"
+                                      ],
+                                      "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
+                                      "counterSpecifiers": "[parameters('counterSpecifiers')]",
+                                      "name": "PerfCountersDataSource"
+                                    }
+                                  ]
+                                },
+                                "dataFlows": [
+                                  {
+                                    "streams": [
+                                      "Microsoft-Event",
+                                      "Microsoft-Perf"
+                                    ],
+                                    "destinations": [
+                                      "[parameters('wsfriendlyname')]"
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "dcrId": {
+                              "type": "string",
+                              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('rulename'))]"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "copy": {
                         "name": "diagnosticsPolicy",
