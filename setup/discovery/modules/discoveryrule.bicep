@@ -11,8 +11,7 @@ param packtype string
 param endpointResourceId string
 param instanceName string
 
-var tableNameToUse = tableName
-var streamName= 'Custom-${tableNameToUse}'
+var streamName= 'Custom-${tableName}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
@@ -37,7 +36,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
                   recordStartTimestampFormat: 'ISO 8601'
               }
             }
-            name: tableNameToUse
+            name: tableName
         }
       ]
     }
