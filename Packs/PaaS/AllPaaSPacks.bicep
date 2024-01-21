@@ -99,5 +99,57 @@ module AVD './AVD/monitoring.bicep' = {
     workspaceId: workspaceId
   }
 }
+module LogicApps './LogicApps/alerts.bicep' = {
+  name: 'LogicAppsAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'LogicApps'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    //solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Logic/workflows'
+  }
+}
+
+module WebApps './WebApp/monitoring.bicep' = {
+  name: 'WebApps'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packtag: 'WebApp'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    //solutionVersion: solutionVersion
+    actionGroupResourceId: actionGroupResourceId
+    customerTags: customerTags
+    location: location
+    resourceGroupId: resourceGroupId
+    solutionVersion: solutionVersion
+    workspaceId: workspaceId
+  }
+}
+
 
 

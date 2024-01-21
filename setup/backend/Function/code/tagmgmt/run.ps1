@@ -71,57 +71,6 @@ function Install-azMonitorAgent {
         Write-Host "Error installing agent. $($_.Exception.Message)"
     }
 }
-# function install-azmonitorLinuxAgent {
-#     param (
-#         $subscriptionId, 
-#         $resourceGroupName, 
-#         $vmName, 
-#         $location
-#     )
-#     # Identity
-#     $URL="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName"+"?api-version=2018-06-01"
-#     $Method="PATCH"
-#     $Body=@"
-#     {
-#         "identity": {
-#             "type": "SystemAssigned"
-#         }
-#     }
-# "@
-#     invoke-Azrestmethod -URI $URL -Method $Method -Payload $Body 
-#     # Extension
-#     Set-AzContext -SubscriptionId $subscriptionId
-#     $tags=get-azvm -Name $vmName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-#     $Method="PUT"
-#     $ExtensionName="AzureMonitorWindowsAgent"
-#     $URL="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName/extensions/$ExtensionName"+"?api-version=2023-09-01"
-#     $Body=@"
-#     {
-#         "properties": {
-#             "autoUpgradeMinorVersion": true,
-#             "enableAutomaticUpgrade": true,
-#             "publisher": "Microsoft.Azure.Monitor",
-#             "type": "AzureMonitorLinuxAgent",
-#             "typeHandlerVersion": "1.27",
-#             "settings": {
-#                 "authentication": {
-#                     "managedIdentity": {
-#                         "identifier-name": "mi_res_id",
-#                         "identifier-value": "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/"
-#                     }
-#                 }
-#             }
-#         },
-#         "location": "$location",
-#         "tags": $tags
-#     }
-# }
-# "@
-
-#     Invoke-AzRestMethod -URI $URL -Method "PUT" -Payload $Body
-# }
-# # install-azmonitorWindowsAgent -subscriptionId $subscriptionId -resourceGroupName $resourceGroupName -vmName $vmName -location $location
-
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.

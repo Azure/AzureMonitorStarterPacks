@@ -394,7 +394,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                     {
                                         type: 'Microsoft.Insights/metricAlerts'
                                         apiVersion: '2018-03-01'
-                                        name: '[parameters(\'alertname\')]'
+                                        name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
                                         location: 'global'
                                         tags: {
                                             '[parameters(\'solutionTag\')]': '[parameters(\'packTag\')]'

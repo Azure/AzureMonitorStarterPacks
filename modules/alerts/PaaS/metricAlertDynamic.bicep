@@ -22,6 +22,7 @@ param metricNamespace string
 param AGId string
 param metricName string
 param operator string
+param timeAggregation string
 param minFailingPeriodsToAlert string
 param numberOfEvaluationPeriods string
 param alertSensitivity string
@@ -213,11 +214,26 @@ module metricAlert '../../alz/deploy.bicep' = {
                 ]
                 defaultValue: operator
             }
+            timeAggregation: {
+                type: 'String'
+                metadata: {
+                    displayName: 'Time Aggregation'
+                    description: 'Time Aggregation for the alert'
+                }
+                allowedValues: [
+                    'Average'
+                    'Minimum'
+                    'Maximum'
+                    'Total'
+                    'Count'
+                ]
+                defaultValue: timeAggregation
+            }
             alertname: {
                 type: 'String'
                 metadata: {
-                    displayName: 'Operator'
-                    description: 'Operator for the alert'
+                    displayName: 'alertname'
+                    description: 'Alert Name'
                 }
                 defaultValue: alertname
             }
@@ -368,6 +384,13 @@ module metricAlert '../../alz/deploy.bicep' = {
                                             description: 'alert operator for metric threshold compatirson, like GreaterThan, LessThan, GreaterOrLessThan'
                                         }
                                     }
+                                    timeAggregation : {
+                                        type: 'String'
+                                        metadata: {
+                                            displayName: 'timeAggregation'
+                                            description: 'Time aggregation for the metric'
+                                        }
+                                    }
                                     alertname : {
                                         type: 'String'
                                         metadata: {
@@ -421,7 +444,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                     {
                                         type: 'Microsoft.Insights/metricAlerts'
                                         apiVersion: '2018-03-01'
-                                        name: '[parameters(\'alertname\')]'
+                                        name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
                                         location: 'global'
                                         tags: {
                                             '[parameters(\'solutionTag\')]': '[parameters(\'packTag\')]'
@@ -442,7 +465,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                         metricNamespace: '[parameters(\'metricNamespace\')]'
                                                         metricName: '[parameters(\'metricName\')]'
                                                         operator: '[parameters(\'operator\')]'
-                                                        timeAggregation: 'Average'
+                                                        timeAggregation: '[parameters(\'timeAggregation\')]'
                                                         criterionType: 'DynamicThresholdCriterion'
                                                         failingPeriods: {
                                                             numberOfEvaluationPeriods: '[parameters(\'numberOfEvaluationPeriods\')]'
@@ -482,6 +505,9 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                     type: 'string'
                                                 }
                                                 operator: {
+                                                    type: 'string'
+                                                }
+                                                timeAggregation: {
                                                     type: 'string'
                                                 }
                                                 alertname: {

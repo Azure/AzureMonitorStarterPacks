@@ -87,7 +87,8 @@ module vWanPacketEgressDropCountAlert '../../../../modules/alerts/PaaS/metricAle
       operator: 'GreaterThan'
       initiativeMember: true
       packtype: 'Platform'
-instanceName: instanceName
+      instanceName: instanceName
+      timeAggregation: 'Average'
   }
 }
 
