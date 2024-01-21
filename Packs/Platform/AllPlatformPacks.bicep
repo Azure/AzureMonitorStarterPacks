@@ -87,3 +87,27 @@ module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
     instanceName: instanceName
   }
 }
+module AA './AA/alerts.bicep' = {
+  name: 'AA'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'AA'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    //solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Automation/automationAccounts'
+  }
+}

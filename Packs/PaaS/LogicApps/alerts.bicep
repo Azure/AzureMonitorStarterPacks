@@ -30,8 +30,8 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsFailed - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunsFailed - Microsoft.Logic/workflows'
+      alertname: 'RunsFailed - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunsFailed - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow runs failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -64,8 +64,8 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionsFailed - Microsoft.Logic/workflows'
-      alertDisplayName: 'ActionsFailed - Microsoft.Logic/workflows'
+      alertname: 'ActionsFailed - Microsoft.Logic-workflows'
+      alertDisplayName: 'ActionsFailed - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow actions failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -98,8 +98,8 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggersFailed - Microsoft.Logic/workflows'
-      alertDisplayName: 'TriggersFailed - Microsoft.Logic/workflows'
+      alertname: 'TriggersFailed - Microsoft.Logic-workflows'
+      alertDisplayName: 'TriggersFailed - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow triggers failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -132,8 +132,8 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunLatency - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunLatency - Microsoft.Logic/workflows'
+      alertname: 'RunLatency - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunLatency - Microsoft.Logic-workflows'
       alertDescription: 'Latency of completed workflow runs.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -166,8 +166,8 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunFailurePercentage - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunFailurePercentage - Microsoft.Logic/workflows'
+      alertname: 'RunFailurePercentage - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunFailurePercentage - Microsoft.Logic-workflows'
       alertDescription: 'Percentage of workflow runs failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '2'
@@ -200,8 +200,8 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsStarted - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunsStarted - Microsoft.Logic/workflows'
+      alertname: 'RunsStarted - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunsStarted - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow runs started.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -234,8 +234,8 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsSucceeded - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunsSucceeded - Microsoft.Logic/workflows'
+      alertname: 'RunsSucceeded - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunsSucceeded - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow runs succeeded.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -303,8 +303,8 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionLatency - Microsoft.Logic/workflows'
-      alertDisplayName: 'ActionLatency - Microsoft.Logic/workflows'
+      alertname: 'ActionLatency - Microsoft.Logic-workflows'
+      alertDisplayName: 'ActionLatency - Microsoft.Logic-workflows'
       alertDescription: 'Latency of completed workflow actions.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -337,8 +337,8 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggerLatency - Microsoft.Logic/workflows'
-      alertDisplayName: 'TriggerLatency - Microsoft.Logic/workflows'
+      alertname: 'TriggerLatency - Microsoft.Logic-workflows'
+      alertDisplayName: 'TriggerLatency - Microsoft.Logic-workflows'
       alertDescription: 'Latency of completed workflow triggers.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -371,8 +371,8 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggerThrottledEvents - Microsoft.Logic/workflows'
-      alertDisplayName: 'TriggerThrottledEvents - Microsoft.Logic/workflows'
+      alertname: 'TriggerThrottledEvents - Microsoft.Logic-workflows'
+      alertDisplayName: 'TriggerThrottledEvents - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow trigger throttled events.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -405,8 +405,8 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionThrottledEvents - Microsoft.Logic/workflows'
-      alertDisplayName: 'ActionThrottledEvents - Microsoft.Logic/workflows'
+      alertname: 'ActionThrottledEvents - Microsoft.Logic-workflows'
+      alertDisplayName: 'ActionThrottledEvents - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow action throttled events..'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -439,8 +439,8 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggersSkipped - Microsoft.Logic/workflows'
-      alertDisplayName: 'TriggersSkipped - Microsoft.Logic/workflows'
+      alertname: 'TriggersSkipped - Microsoft.Logic-workflows'
+      alertDisplayName: 'TriggersSkipped - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow triggers skipped.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '2'
@@ -473,8 +473,8 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunStartThrottledEvents - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunStartThrottledEvents - Microsoft.Logic/workflows'
+      alertname: 'RunStartThrottledEvents - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunStartThrottledEvents - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow run start throttled events.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -507,8 +507,8 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunThrottledEvents - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunThrottledEvents - Microsoft.Logic/workflows'
+      alertname: 'RunThrottledEvents - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunThrottledEvents - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow action or trigger throttled events.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -541,8 +541,8 @@ module Alert16 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TotalBillableExecutions - Microsoft.Logic/workflows'
-      alertDisplayName: 'TotalBillableExecutions - Microsoft.Logic/workflows'
+      alertname: 'TotalBillableExecutions - Microsoft.Logic-workflows'
+      alertDisplayName: 'TotalBillableExecutions - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow executions getting billed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -575,7 +575,7 @@ module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunSuccessLatency - Microsoft.Logic/workflows'
+      alertname: 'RunSuccessLatency - Microsoft.Logic-workflows'
       alertDisplayName: 'RunSuccessLatency - Microsoft.Logic/workflows'
       alertDescription: 'Latency of succeeded workflow runs.'
       metricNamespace: 'Microsoft.Logic/workflows'
@@ -609,8 +609,8 @@ module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionsSkipped - Microsoft.Logic/workflows'
-      alertDisplayName: 'ActionsSkipped - Microsoft.Logic/workflows'
+      alertname: 'ActionsSkipped - Microsoft.Logic-workflows'
+      alertDisplayName: 'ActionsSkipped - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow actions skipped.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -643,8 +643,8 @@ module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsCancelled - Microsoft.Logic/workflows'
-      alertDisplayName: 'RunsCancelled - Microsoft.Logic/workflows'
+      alertname: 'RunsCancelled - Microsoft.Logic-workflows'
+      alertDisplayName: 'RunsCancelled - Microsoft.Logic-workflows'
       alertDescription: 'Number of workflow runs cancelled.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'

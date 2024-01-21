@@ -456,6 +456,9 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                 operator: {
                                                     type: 'string'
                                                 }
+                                                timeAggregation: {
+                                                    type: 'string'
+                                                }
                                                 alertname: {
                                                     type: 'string'
                                                 }
@@ -505,6 +508,9 @@ module metricAlert '../../alz/deploy.bicep' = {
                                     value: '[parameters(\'metricName\')]'
                                 }
                                 operator: {
+                                    value: '[parameters(\'operator\')]'
+                                }
+                                timeAggregation: {
                                     value: '[parameters(\'operator\')]'
                                 }
                                 alertname: {

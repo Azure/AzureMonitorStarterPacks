@@ -90,8 +90,8 @@ module Alert${i}  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: '$($_.Name)'
-      alertDisplayName: '$($_.Name)'
+      alertname: '$($_.Name) - $($_.Properties.metricNameSpace).replace("/", "-")'
+      alertDisplayName: '$($_.Name) - $($_.Properties.metricNameSpace)'
       alertDescription: '$($_.description)'
       metricNamespace: '$($_.Properties.metricNameSpace)'
       parAlertSeverity: '$($_.Properties.severity)'

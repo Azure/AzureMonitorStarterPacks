@@ -30,8 +30,8 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'AverageResponseTime - Microsoft.Web/sites'
-      alertDisplayName: 'AverageResponseTime - Microsoft.Web/sites'
+      alertname: 'AverageResponseTime - Microsoft.Web-sites'
+      alertDisplayName: 'AverageResponseTime - Microsoft.Web-sites'
       alertDescription: 'The average time taken for the app to serve requests, in seconds. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '2'
@@ -64,8 +64,8 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'CpuTime - Microsoft.Web/sites'
-      alertDisplayName: 'CpuTime - Microsoft.Web/sites'
+      alertname: 'CpuTime - Microsoft.Web-sites'
+      alertDisplayName: 'CpuTime - Microsoft.Web-sites'
       alertDescription: 'The amount of CPU consumed by the app, in seconds. For more information about this metric. Please see https://aka.ms/website-monitor-cpu-time-vs-cpu-percentage (CPU time vs CPU percentage). For WebApps only.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -98,8 +98,8 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'PrivateBytes - Microsoft.Web/sites'
-      alertDisplayName: 'PrivateBytes - Microsoft.Web/sites'
+      alertname: 'PrivateBytes - Microsoft.Web-sites'
+      alertDisplayName: 'PrivateBytes - Microsoft.Web-sites'
       alertDescription: 'Private Bytes is the current size, in bytes, of memory that the app process has allocated that can`t be shared with other processes. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -132,8 +132,8 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RequestsInApplicationQueue - Microsoft.Web/sites'
-      alertDisplayName: 'RequestsInApplicationQueue - Microsoft.Web/sites'
+      alertname: 'RequestsInApplicationQueue - Microsoft.Web-sites'
+      alertDisplayName: 'RequestsInApplicationQueue - Microsoft.Web-sites'
       alertDescription: 'The number of requests in the application request queue. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -166,8 +166,8 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Connections - Microsoft.Web/sites'
-      alertDisplayName: 'Connections - Microsoft.Web/sites'
+      alertname: 'Connections - Microsoft.Web-sites'
+      alertDisplayName: 'Connections - Microsoft.Web-sites'
       alertDescription: 'The number of bound sockets existing in the sandbox (w3wp.exe and its child processes). A bound socket is created by calling bind()/connect() APIs and remains until said socket is closed with CloseHandle()/closesocket(). For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -200,8 +200,8 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http401 - Microsoft.Web/sites'
-      alertDisplayName: 'Http401 - Microsoft.Web/sites'
+      alertname: 'Http401 - Microsoft.Web-sites'
+      alertDisplayName: 'Http401 - Microsoft.Web-sites'
       alertDescription: 'The count of requests resulting in HTTP 401 status code. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '2'
@@ -234,8 +234,8 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http404 - Microsoft.Web/sites'
-      alertDisplayName: 'Http404 - Microsoft.Web/sites'
+      alertname: 'Http404 - Microsoft.Web-sites'
+      alertDisplayName: 'Http404 - Microsoft.Web-sites'
       alertDescription: 'The count of requests resulting in HTTP 404 status code. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -268,8 +268,8 @@ module Alert8 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'FileSystemUsage - Microsoft.Web/sites'
-      alertDisplayName: 'FileSystemUsage - Microsoft.Web/sites'
+      alertname: 'FileSystemUsage - Microsoft.Web-sites'
+      alertDisplayName: 'FileSystemUsage - Microsoft.Web-sites'
       alertDescription: 'Percentage of filesystem quota consumed by the app. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '2'
@@ -302,8 +302,8 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'MemoryWorkingSet - Microsoft.Web/sites'
-      alertDisplayName: 'MemoryWorkingSet - Microsoft.Web/sites'
+      alertname: 'MemoryWorkingSet - Microsoft.Web-sites'
+      alertDisplayName: 'MemoryWorkingSet - Microsoft.Web-sites'
       alertDescription: 'The current amount of memory used by the app, in MiB. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -336,8 +336,8 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'FunctionExecutionCount - Microsoft.Web/sites'
-      alertDisplayName: 'FunctionExecutionCount - Microsoft.Web/sites'
+      alertname: 'FunctionExecutionCount - Microsoft.Web-sites'
+      alertDisplayName: 'FunctionExecutionCount - Microsoft.Web-sites'
       alertDescription: 'Function Execution Count. For FunctionApps only.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '1'
@@ -370,8 +370,8 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Thread Count - Microsoft.Web/sites'
-      alertDisplayName: 'Thread Count - Microsoft.Web/sites'
+      alertname: 'Thread Count - Microsoft.Web-sites'
+      alertDisplayName: 'Thread Count - Microsoft.Web-sites'
       alertDescription: 'The number of threads currently active in the app process. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '2'
@@ -439,8 +439,8 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http406 - Microsoft.Web/sites'
-      alertDisplayName: 'Http406 - Microsoft.Web/sites'
+      alertname: 'Http406 - Microsoft.Web-sites'
+      alertDisplayName: 'Http406 - Microsoft.Web-sites'
       alertDescription: 'The count of requests resulting in HTTP 406 status code. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '1'
@@ -473,8 +473,8 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Data In - Microsoft.Web/sites'
-      alertDisplayName: 'Data In - Microsoft.Web/sites'
+      alertname: 'Data In - Microsoft.Web-sites'
+      alertDisplayName: 'Data In - Microsoft.Web-sites'
       alertDescription: 'The amount of incoming bandwidth consumed by the app, in MiB. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -507,8 +507,8 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http3xx - Microsoft.Web/sites'
-      alertDisplayName: 'Http3xx - Microsoft.Web/sites'
+      alertname: 'Http3xx - Microsoft.Web-sites'
+      alertDisplayName: 'Http3xx - Microsoft.Web-sites'
       alertDescription: 'The count of requests resulting in an HTTP status code >= 300 but < 400. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -576,8 +576,8 @@ module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'FunctionExecutionUnits - Microsoft.Web/sites'
-      alertDisplayName: 'FunctionExecutionUnits - Microsoft.Web/sites'
+      alertname: 'FunctionExecutionUnits - Microsoft.Web-sites'
+      alertDisplayName: 'FunctionExecutionUnits - Microsoft.Web-sites'
       alertDescription: 'Function Execution Units. For FunctionApps only.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -610,8 +610,8 @@ module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http2xx - Microsoft.Web/sites'
-      alertDisplayName: 'Http2xx - Microsoft.Web/sites'
+      alertname: 'Http2xx - Microsoft.Web-sites'
+      alertDisplayName: 'Http2xx - Microsoft.Web-sites'
       alertDescription: 'The count of requests resulting in an HTTP status code >= 200 but < 300. For WebApps and FunctionApps.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '3'
@@ -644,8 +644,8 @@ module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'WorkflowRunsFailureRate - Microsoft.Web/sites'
-      alertDisplayName: 'WorkflowRunsFailureRate - Microsoft.Web/sites'
+      alertname: 'WorkflowRunsFailureRate - Microsoft.Web-sites'
+      alertDisplayName: 'WorkflowRunsFailureRate - Microsoft.Web-sites'
       alertDescription: 'Workflow Runs Failure Rate. For LogicApps only.'
       metricNamespace: 'Microsoft.Web/sites'
       parAlertSeverity: '1'
@@ -771,241 +771,241 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       timeAggregation: 'Average'
     }
   }
-module Alert23 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-HttpServerErrors'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'HttpServerErrors - Microsoft.Web/sites/slots'
-      alertDisplayName: 'HttpServerErrors - Microsoft.Web/sites/slots'
-      alertDescription: 'The count of requests resulting in an HTTP status code >= 500 but < 600. For Web and Function Apps.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '1'
-      metricName: 'Http5xx'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT5M'   
-      parWindowSize: 'PT15M'
-      parThreshold: '10'
-      assignmentSuffix: 'MetsitesHttp'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
+// module Alert23 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-HttpServerErrors'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'HttpServerErrors - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'HttpServerErrors - Microsoft.Web-sites-slots'
+//       alertDescription: 'The count of requests resulting in an HTTP status code >= 500 but < 600. For Web and Function Apps.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '1'
+//       metricName: 'Http5xx'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT5M'   
+//       parWindowSize: 'PT15M'
+//       parThreshold: '10'
+//       assignmentSuffix: 'MetsitesHttp'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Total'
+//     }
+//   }
   
-module Alert24 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-ResponseTime'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ResponseTime - Microsoft.Web/sites/slots'
-      alertDisplayName: 'ResponseTime - Microsoft.Web/sites/slots'
-      alertDescription: 'The time taken for the app to serve requests, in seconds. For WebApps and FunctionApps.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '1'
-      metricName: 'HttpResponseTime'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT15M'   
-      parWindowSize: 'PT30M'
-      parThreshold: '5'
-      assignmentSuffix: 'MetsitesHttp'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Average'
-    }
-  }
+// module Alert24 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-ResponseTime'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'ResponseTime - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'ResponseTime - Microsoft.Web-sites/slots'
+//       alertDescription: 'The time taken for the app to serve requests, in seconds. For WebApps and FunctionApps.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '1'
+//       metricName: 'HttpResponseTime'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT15M'   
+//       parWindowSize: 'PT30M'
+//       parThreshold: '5'
+//       assignmentSuffix: 'MetsitesHttp'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Average'
+//     }
+//   }
   
-module Alert25 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-Http4xx'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http4xx - Microsoft.Web/sites/slots'
-      alertDisplayName: 'Http4xx - Microsoft.Web/sites/slots'
-      alertDescription: 'The count of requests resulting in an HTTP status code >= 400 but < 500. For WebApps and FunctionApps.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '1'
-      metricName: 'Http4xx'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT15M'   
-      parWindowSize: 'PT30M'
-      parThreshold: '5'
-      assignmentSuffix: 'MetsitesHttp'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Average'
-    }
-  }
+// module Alert25 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-Http4xx'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'Http4xx - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'Http4xx - Microsoft.Web/sites/slots'
+//       alertDescription: 'The count of requests resulting in an HTTP status code >= 400 but < 500. For WebApps and FunctionApps.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '1'
+//       metricName: 'Http4xx'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT15M'   
+//       parWindowSize: 'PT30M'
+//       parThreshold: '5'
+//       assignmentSuffix: 'MetsitesHttp'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Average'
+//     }
+//   }
   
-module Alert26 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-AverageMemoryWorkingSet'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'AverageMemoryWorkingSet - Microsoft.Web/sites/slots'
-      alertDisplayName: 'AverageMemoryWorkingSet - Microsoft.Web/sites/slots'
-      alertDescription: 'The average amount of memory used by the app, in megabytes (MiB). For WebApps and FunctionApps.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '3'
-      metricName: 'AverageMemoryWorkingSet'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT5M'   
-      parWindowSize: 'PT5M'
-      parThreshold: '800000000'
-      assignmentSuffix: 'MetsitesAver'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Average'
-    }
-  }
+// module Alert26 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-AverageMemoryWorkingSet'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'AverageMemoryWorkingSet - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'AverageMemoryWorkingSet - Microsoft.Web-sites-slots'
+//       alertDescription: 'The average amount of memory used by the app, in megabytes (MiB). For WebApps and FunctionApps.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '3'
+//       metricName: 'AverageMemoryWorkingSet'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT5M'   
+//       parWindowSize: 'PT5M'
+//       parThreshold: '800000000'
+//       assignmentSuffix: 'MetsitesAver'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Average'
+//     }
+//   }
   
-module Alert27 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-Requests'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Requests - Microsoft.Web/sites/slots'
-      alertDisplayName: 'Requests - Microsoft.Web/sites/slots'
-      alertDescription: 'The total number of requests regardless of their resulting HTTP status. For WebApps and FunctionApps. code.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '2'
-      metricName: 'Requests'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1M'   
-      parWindowSize: 'PT5M'
-      parThreshold: '2000'
-      assignmentSuffix: 'MetsitesRequ'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
+// module Alert27 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-Requests'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'Requests - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'Requests - Microsoft.Web-sites-slots'
+//       alertDescription: 'The total number of requests regardless of their resulting HTTP status. For WebApps and FunctionApps. code.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '2'
+//       metricName: 'Requests'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT1M'   
+//       parWindowSize: 'PT5M'
+//       parThreshold: '2000'
+//       assignmentSuffix: 'MetsitesRequ'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Total'
+//     }
+//   }
   
-module Alert28 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-HealthCheckStatus'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'HealthCheckStatus - Microsoft.Web/sites/slots'
-      alertDisplayName: 'HealthCheckStatus - Microsoft.Web/sites/slots'
-      alertDescription: 'Health check status.  For WebApps and FunctionApps.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '3'
-      metricName: 'HealthCheckStatus'
-      operator: 'LessThan'
-      parEvaluationFrequency: 'PT1M'   
-      parWindowSize: 'PT5M'
-      parThreshold: '100'
-      assignmentSuffix: 'MetsitesHeal'
-      parAutoMitigate: ''
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Average'
-    }
-  }
+// module Alert28 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-HealthCheckStatus'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'HealthCheckStatus - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'HealthCheckStatus - Microsoft.Web-sites-slots'
+//       alertDescription: 'Health check status.  For WebApps and FunctionApps.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '3'
+//       metricName: 'HealthCheckStatus'
+//       operator: 'LessThan'
+//       parEvaluationFrequency: 'PT1M'   
+//       parWindowSize: 'PT5M'
+//       parThreshold: '100'
+//       assignmentSuffix: 'MetsitesHeal'
+//       parAutoMitigate: ''
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Average'
+//     }
+//   }
   
-module Alert29 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-Http403'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Http403 - Microsoft.Web/sites/slots'
-      alertDisplayName: 'Http403 - Microsoft.Web/sites/slots'
-      alertDescription: 'The count of requests resulting in HTTP 403 status code. For WebApps and FunctionApps.'
-      metricNamespace: 'Microsoft.Web/sites/slots'
-      parAlertSeverity: '0'
-      metricName: 'Http403'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT15M'   
-      parWindowSize: 'PT30M'
-      parThreshold: '5'
-      assignmentSuffix: 'MetsitesHttp'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
+// module Alert29 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-Http403'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'Http403 - Microsoft.Web-sites-slots'
+//       alertDisplayName: 'Http403 - Microsoft.Web-sites-slots'
+//       alertDescription: 'The count of requests resulting in HTTP 403 status code. For WebApps and FunctionApps.'
+//       metricNamespace: 'Microsoft.Web/sites/slots'
+//       parAlertSeverity: '0'
+//       metricName: 'Http403'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT15M'   
+//       parWindowSize: 'PT30M'
+//       parThreshold: '5'
+//       assignmentSuffix: 'MetsitesHttp'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Total'
+//     }
+//   }
   

@@ -567,6 +567,9 @@ module metricAlert '../../alz/deploy.bicep' = {
                                 operator: {
                                     value: '[parameters(\'operator\')]'
                                 }
+                                timeAggregation: {
+                                    value: '[parameters(\'timeAggregation\')]'
+                                }
                                 alertname: {
                                     value: '[parameters(\'alertname\')]'
                                 }
