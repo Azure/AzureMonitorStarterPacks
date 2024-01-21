@@ -52,39 +52,39 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
     }
   }
   
-module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-TotalJob'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TotalJob - Microsoft.Automation-automationAccounts'
-      alertDisplayName: 'TotalJob - Microsoft.Automation-automationAccounts'
-      alertDescription: 'The total number of jobs'
-      metricNamespace: 'Microsoft.Automation-automationAccounts'
-      parAlertSeverity: '3'
-      metricName: 'TotalJob'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1M'   
-      parWindowSize: 'PT5M'
-      parThreshold: '0'
-      assignmentSuffix: 'MetautomationAccountsTota'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: false
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
+// module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-TotalJob'
+//     params: {
+//     assignmentLevel: assignmentLevel
+//       policyLocation: policyLocation
+//       mgname: mgname
+//       packTag: packTag
+//       resourceType: resourceType
+//       solutionTag: solutionTag
+//       subscriptionId: subscriptionId
+//       userManagedIdentityResourceId: userManagedIdentityResourceId
+//       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//       alertname: 'TotalJob - Microsoft.Automation-automationAccounts'
+//       alertDisplayName: 'TotalJob - Microsoft.Automation-automationAccounts'
+//       alertDescription: 'The total number of jobs'
+//       metricNamespace: 'Microsoft.Automation-automationAccounts'
+//       parAlertSeverity: '3'
+//       metricName: 'TotalJob'
+//       operator: 'GreaterThan'
+//       parEvaluationFrequency: 'PT1M'   
+//       parWindowSize: 'PT5M'
+//       parThreshold: '0'
+//       assignmentSuffix: 'MetautomationAccountsTota'
+//       parAutoMitigate: 'false'
+//       parPolicyEffect: 'deployIfNotExists'
+//       AGId: AGId
+//       parAlertState: parAlertState
+//       initiativeMember: false
+//       packtype: 'PaaS'
+//       instanceName: instanceName
+//       timeAggregation: 'Total'
+//     }
+//   }
   
 module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-TotalUpdateDeploymentMachineRuns'
