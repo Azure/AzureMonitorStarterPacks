@@ -20,6 +20,13 @@ param Tags object
 
 param threshold int = 0
 param metricMeasureColumn string = ''
+param dimensions array = [{
+  name: 'Computer'
+  operator: 'Include'
+  values: [
+    '*'
+  ]
+}]
 
 @allowed([
   'GreaterThan'
@@ -38,6 +45,7 @@ module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
     alertRuleDisplayName: alertRuleDisplayName
     alertRuleDescription: alertRuleDescription
     scope: scope
+    dimensions: dimensions
     actionGroupResourceId: actionGroupResourceId
     alertRuleSeverity: alertRuleSeverity
     location: location
@@ -58,6 +66,7 @@ module aggregateAlert './scheduledqueryruleAggregate.bicep' = if (alertType == '
     alertRuleDisplayName: alertRuleDisplayName
     alertRuleDescription: alertRuleDescription
     scope: scope
+    dimensions: dimensions
     actionGroupResourceId: actionGroupResourceId
     alertRuleSeverity: alertRuleSeverity
     location: location

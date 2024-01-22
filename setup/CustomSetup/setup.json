@@ -152,20 +152,6 @@
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
                         },
                         {
-                            "name": "instanceName",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Instance Name for the Monitoring Packs Implementation",
-                            "subLabel": "",
-                            "defaultValue": "",
-                            "toolTip": "Name of the Monitoring Pack instance.",
-                            "constraints": {
-								"required": true,
-                    			"regex": "^[a-z0-9]{1,4}$",
-                    			"validationMessage": "Only alphanumeric lowercase characters are allowed, and the value must be 1-4 characters long."
-                            },
-                            "visible": true
-                        },
-                        {
                             "name": "storageAccountStatus",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Use New or Existing Storage Account",
@@ -215,7 +201,6 @@
                             },
                             "visible": "[equals(steps('Configuration').storageAccountStatus, 'Existing')]"
                         },
-
                         {
                             "name": "LAWStatus",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -264,6 +249,81 @@
                             "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
                         },
                         {
+                            "name": "AVDLawSeperate",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Seperate Log Analytics for AVD",
+                            "toolTip": "Select this option if you have or plan to deploy a seperate Log Analytics Workspace for Azure Virtual Desktop.",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy or conifgure packs for the AVD environment."
+                            }
+                        },
+                        {
+                            "name": "SectionAVDLAW",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Azure Virtual Desktop Log Analytics Workspace",
+                            "elements": [
+                                {
+                                    "name": "LAWStatusAVD",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Use New or Existing AVD Log Analytics Workspace",
+                                    "toolTip": "This will be the log analytics workspace from which data will be read and stored.",
+                                    "defaultValue": "Existing",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "New",
+                                                "value": "New"
+                                            },
+                                            {
+                                                "label": "Existing",
+                                                "value": "Existing"
+                                            }
+                                        ],
+                                        "required": true
+                                    },
+                                    "visible": true
+                                },
+                                {
+                                    "name": "LogAnalyticsWorkspaceResourceAVDNew",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Log Analytics Workspace Name for AVD Insights.",
+                                    "subLabel": "",
+                                    "defaultValue": "Monster-LA-AVD",
+                                    "toolTip": "Log Analytics Workspace Name for AVD Insights.",
+                                    "constraints": {
+                                        "required": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]",
+                                        "regex": "",
+                                        "validationMessage": ""
+                                    },
+                                    "visible": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]"
+                                },
+                                {
+                                    "name": "LogAnalyticsWorkspaceAVDResource",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Log Analytics Workspace for AVD",
+                                    "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
+                                    "resourceType": "Microsoft.OperationalInsights/workspaces",
+                                    "constraints": {
+                                        "required": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'Existing')]"
+                                    },
+                                    "infoMessages": [],
+                                    "visible": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'Existing')]"
+                                }
+                            ],
+                            "visible": "[equals(steps('Configuration').AVDLawSeperate, true)]"
+                        },
+                        {
+                            "name": "AVDInfoBox",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "style": "Info",
+                              "text": "Selecting the option ABOVE will allow you to choose between an existing or new workspace for Azure Virtual Desktop. Selecting New will conifgure it in the same manner as the AVD Insights Configuration workbook. Often AVD Inisights is configured separately from the rest of the environment to allow for different retention periods and performance. Using a seperate Log Analytics Workspace is recommended. This deployment will then create the alerts targeted to the separate workspace.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/insights?tabs=monitor"
+                            }
+                        },
+                        {
                             "name": "assignmentLevel",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Assign Policies to ManagementGroup or Subscription",
@@ -293,7 +353,8 @@
                                 "required": false,
                                 "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
                             }
-                        },                        {
+                        },
+                        {
                             "name": "infoBoxAMA",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[equals(steps('Configuration').deployAMAPolicy, true)]",
@@ -337,193 +398,193 @@
                                 "required": true,
                                 "allowedValues": [
                                     {
-                                        "label":  "East US",
-                                        "value":  "eastus"
+                                        "label": "East US",
+                                        "value": "eastus"
                                     },
                                     {
-                                        "label":  "South Central US",
-                                        "value":  "southcentralus"
+                                        "label": "South Central US",
+                                        "value": "southcentralus"
                                     },
                                     {
-                                        "label":  "North Europe",
-                                        "value":  "northeurope"
+                                        "label": "North Europe",
+                                        "value": "northeurope"
                                     },
                                     {
-                                        "label":  "West Europe",
-                                        "value":  "westeurope"
+                                        "label": "West Europe",
+                                        "value": "westeurope"
                                     },
                                     {
-                                        "label":  "Southeast Asia",
-                                        "value":  "southeastasia"
+                                        "label": "Southeast Asia",
+                                        "value": "southeastasia"
                                     },
                                     {
-                                        "label":  "West US 2",
-                                        "value":  "westus2"
+                                        "label": "West US 2",
+                                        "value": "westus2"
                                     },
                                     {
-                                        "label":  "UK South",
-                                        "value":  "uksouth"
+                                        "label": "UK South",
+                                        "value": "uksouth"
                                     },
                                     {
-                                        "label":  "Canada Central",
-                                        "value":  "canadacentral"
+                                        "label": "Canada Central",
+                                        "value": "canadacentral"
                                     },
                                     {
-                                        "label":  "Central India",
-                                        "value":  "centralindia"
+                                        "label": "Central India",
+                                        "value": "centralindia"
                                     },
                                     {
-                                        "label":  "Japan East",
-                                        "value":  "japaneast"
+                                        "label": "Japan East",
+                                        "value": "japaneast"
                                     },
                                     {
-                                        "label":  "Australia East",
-                                        "value":  "australiaeast"
+                                        "label": "Australia East",
+                                        "value": "australiaeast"
                                     },
                                     {
-                                        "label":  "Korea Central",
-                                        "value":  "koreacentral"
+                                        "label": "Korea Central",
+                                        "value": "koreacentral"
                                     },
                                     {
-                                        "label":  "France Central",
-                                        "value":  "francecentral"
+                                        "label": "France Central",
+                                        "value": "francecentral"
                                     },
                                     {
-                                        "label":  "Central US",
-                                        "value":  "centralus"
+                                        "label": "Central US",
+                                        "value": "centralus"
                                     },
                                     {
-                                        "label":  "East US 2",
-                                        "value":  "eastus2"
+                                        "label": "East US 2",
+                                        "value": "eastus2"
                                     },
                                     {
-                                        "label":  "East Asia",
-                                        "value":  "eastasia"
+                                        "label": "East Asia",
+                                        "value": "eastasia"
                                     },
                                     {
-                                        "label":  "West US",
-                                        "value":  "westus"
+                                        "label": "West US",
+                                        "value": "westus"
                                     },
                                     {
-                                        "label":  "South Africa North",
-                                        "value":  "southafricanorth"
+                                        "label": "South Africa North",
+                                        "value": "southafricanorth"
                                     },
                                     {
-                                        "label":  "North Central US",
-                                        "value":  "northcentralus"
+                                        "label": "North Central US",
+                                        "value": "northcentralus"
                                     },
                                     {
-                                        "label":  "Brazil South",
-                                        "value":  "brazilsouth"
+                                        "label": "Brazil South",
+                                        "value": "brazilsouth"
                                     },
                                     {
-                                        "label":  "Switzerland North",
-                                        "value":  "switzerlandnorth"
+                                        "label": "Switzerland North",
+                                        "value": "switzerlandnorth"
                                     },
                                     {
-                                        "label":  "Norway East",
-                                        "value":  "norwayeast"
+                                        "label": "Norway East",
+                                        "value": "norwayeast"
                                     },
                                     {
-                                        "label":  "Norway West",
-                                        "value":  "norwaywest"
+                                        "label": "Norway West",
+                                        "value": "norwaywest"
                                     },
                                     {
-                                        "label":  "Australia Southeast",
-                                        "value":  "australiasoutheast"
+                                        "label": "Australia Southeast",
+                                        "value": "australiasoutheast"
                                     },
                                     {
-                                        "label":  "Australia Central 2",
-                                        "value":  "australiacentral2"
+                                        "label": "Australia Central 2",
+                                        "value": "australiacentral2"
                                     },
                                     {
-                                        "label":  "Germany West Central",
-                                        "value":  "germanywestcentral"
+                                        "label": "Germany West Central",
+                                        "value": "germanywestcentral"
                                     },
                                     {
-                                        "label":  "Switzerland West",
-                                        "value":  "switzerlandwest"
+                                        "label": "Switzerland West",
+                                        "value": "switzerlandwest"
                                     },
                                     {
-                                        "label":  "UAE Central",
-                                        "value":  "uaecentral"
+                                        "label": "UAE Central",
+                                        "value": "uaecentral"
                                     },
                                     {
-                                        "label":  "UK West",
-                                        "value":  "ukwest"
+                                        "label": "UK West",
+                                        "value": "ukwest"
                                     },
                                     {
-                                        "label":  "Japan West",
-                                        "value":  "japanwest"
+                                        "label": "Japan West",
+                                        "value": "japanwest"
                                     },
                                     {
-                                        "label":  "Brazil Southeast",
-                                        "value":  "brazilsoutheast"
+                                        "label": "Brazil Southeast",
+                                        "value": "brazilsoutheast"
                                     },
                                     {
-                                        "label":  "UAE North",
-                                        "value":  "uaenorth"
+                                        "label": "UAE North",
+                                        "value": "uaenorth"
                                     },
                                     {
-                                        "label":  "Australia Central",
-                                        "value":  "australiacentral"
+                                        "label": "Australia Central",
+                                        "value": "australiacentral"
                                     },
                                     {
-                                        "label":  "France South",
-                                        "value":  "francesouth"
+                                        "label": "France South",
+                                        "value": "francesouth"
                                     },
                                     {
-                                        "label":  "South India",
-                                        "value":  "southindia"
+                                        "label": "South India",
+                                        "value": "southindia"
                                     },
                                     {
-                                        "label":  "West US 3",
-                                        "value":  "westus3"
+                                        "label": "West US 3",
+                                        "value": "westus3"
                                     },
                                     {
-                                        "label":  "Korea South",
-                                        "value":  "koreasouth"
+                                        "label": "Korea South",
+                                        "value": "koreasouth"
                                     },
                                     {
-                                        "label":  "Sweden Central",
-                                        "value":  "swedencentral"
+                                        "label": "Sweden Central",
+                                        "value": "swedencentral"
                                     },
                                     {
-                                        "label":  "Canada East",
-                                        "value":  "canadaeast"
+                                        "label": "Canada East",
+                                        "value": "canadaeast"
                                     },
                                     {
-                                        "label":  "Jio India Central",
-                                        "value":  "jioindiacentral"
+                                        "label": "Jio India Central",
+                                        "value": "jioindiacentral"
                                     },
                                     {
-                                        "label":  "Jio India West",
-                                        "value":  "jioindiawest"
+                                        "label": "Jio India West",
+                                        "value": "jioindiawest"
                                     },
                                     {
-                                        "label":  "Qatar Central",
-                                        "value":  "qatarcentral"
+                                        "label": "Qatar Central",
+                                        "value": "qatarcentral"
                                     },
                                     {
-                                        "label":  "South Africa West",
-                                        "value":  "southafricawest"
+                                        "label": "South Africa West",
+                                        "value": "southafricawest"
                                     },
                                     {
-                                        "label":  "Germany North",
-                                        "value":  "germanynorth"
+                                        "label": "Germany North",
+                                        "value": "germanynorth"
                                     },
                                     {
-                                        "label":  "Poland Central",
-                                        "value":  "polandcentral"
+                                        "label": "Poland Central",
+                                        "value": "polandcentral"
                                     },
                                     {
-                                        "label":  "Israel Central",
-                                        "value":  "israelcentral"
+                                        "label": "Israel Central",
+                                        "value": "israelcentral"
                                     },
                                     {
-                                        "label":  "Italy North",
-                                        "value":  "italynorth"
-                                    }                                
+                                        "label": "Italy North",
+                                        "value": "italynorth"
+                                    }
                                 ]
                             },
                             "visible": "true"
@@ -562,7 +623,6 @@
                             },
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                         },
-                        
                         {
                             "name": "ExistingGrafanaInstance",
                             "type": "Microsoft.Solutions.ResourceSelector",
@@ -647,17 +707,14 @@
                                         "label": "West Europe",
                                         "value": "westeurope"
                                     },
-
-                                     {
+                                    {
                                         "label": "Central India",
                                         "value": "centralindia"
                                     },
-
                                     {
                                         "label": "Southeast Asia",
                                         "value": "southeastasia"
                                     },
-                                    
                                     {
                                         "label": "Sweden Central",
                                         "value": "swedencentral"
@@ -666,9 +723,7 @@
                                 "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                             },
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                        
                         }
-
                     ]
                 },
                 {
@@ -692,12 +747,12 @@
                             "label": "Deploy All IaaS Packs",
                             "toolTip": "Select to deploy all IaaS packs.",
                             "defaultValue": false,
-							"visible": "[equals(steps('Packs').deployPacks, false)]",
+                            "visible": "[equals(steps('Packs').deployPacks, false)]",
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the available IaaS packs to the selected environment."
                             }
-                        },                        
+                        },
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
@@ -708,7 +763,7 @@
                                 "required": false,
                                 "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
                             },
-							"visible": "[equals(steps('Packs').deployPacks, false)]"
+                            "visible": "[equals(steps('Packs').deployPacks, false)]"
                         },
                         {
                             "name": "deployPlatformPacks",
@@ -716,22 +771,22 @@
                             "label": "Deploy All Platform Packs",
                             "toolTip": "Select to deploy all Platform packs.",
                             "defaultValue": false,
-							"visible": "[equals(steps('Packs').deployPacks, false)]",
+                            "visible": "[equals(steps('Packs').deployPacks, false)]",
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the available Platform packs to the selected environment."
                             }
                         },
                         {
-                            "name":"packsText",
+                            "name": "packsText",
                             "type": "Microsoft.Common.TextBlock",
-							"options": {
-								"text": "When selected, all packs or all packs of a specific type  will be deployed.",
-								"link": {
-									"label": "Learn more",
-									"uri": "https://github.com/Azure/AzureMonitorStarterPacks/tree/main/Packs#readme"
-								}
-							},
+                            "options": {
+                                "text": "When selected, all packs or all packs of a specific type  will be deployed.",
+                                "link": {
+                                    "label": "Learn more",
+                                    "uri": "https://github.com/Azure/AzureMonitorStarterPacks/tree/main/Packs#readme"
+                                }
+                            },
                             "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true))]"
                         },
                         {
@@ -837,25 +892,28 @@
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountStatus,'New')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
                 "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
-                "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "existingLogAnalyticsWSId": "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
-                "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
+                "separateLAWforAVD": "[steps('Configuration').AVDLawSeperate]",
+                "existingLogAnalyticsWSIdAVD": "[steps('Configuration').SectionAVDLAW.LogAnalyticsWorkspaceAVDResource.id]",
+                "createNewLogAnalyticsWSAVD": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]",
+                "newLogAnalyticsWSNameAVD": "[steps('Configuration').SectionAVDLAW.LogAnalyticsWorkspaceResourceAVDNew]",
+                "resourceGroupId": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
                 "deployAllPacks": "[steps('Packs').deployPacks]",
                 "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
                 "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]",
                 "deployPlatformPacks": "[steps('Packs').deployPlatformPacks]",
-                "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
-                "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
-                "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
-                "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiveremail,'')]",
-                "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
-                "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
+                "actionGroupName": "[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
+                "existingActionGroupId": "[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
+                "emailreceiver": "[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
+                "emailreiceversemail": "[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiveremail,'')]",
+                "existingAGRG": "[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
+                "useExistingAG": "[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "customerTags": "[steps('tags').tagsByResource]",
-                "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
+                "newGrafana": "[equals(steps('Configuration').GrafanaStatus,'New')]",
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
-                "deployDiscovery": "[steps('Configuration').deployDiscovery]",
-				"instanceName":  "[steps('Configuration').instanceName]"
+                "deployDiscovery": "[steps('Configuration').deployDiscovery]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

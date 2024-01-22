@@ -1,5 +1,10 @@
 targetScope = 'managementGroup'
 
+
+param _artifactsLocation string
+@secure()
+param _artifactsLocationSasToken string
+
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
@@ -9,6 +14,7 @@ param location string //= resourceGroup().location
 param useExistingAG bool
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
+param workspaceIdAVD string
 param solutionTag string
 param solutionVersion string
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
@@ -83,8 +89,11 @@ module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
   name: 'deployPaaSPacks'
   params: {
     // Tags: Tags
+    _artifactsLocation: _artifactsLocation
+    _artifactsLocationSasToken: _artifactsLocationSasToken
     location: location
     workspaceId: workspaceId
+    workspaceIdAVD: workspaceIdAVD
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     dceId: dceId
