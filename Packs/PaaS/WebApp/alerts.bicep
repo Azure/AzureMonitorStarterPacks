@@ -359,7 +359,7 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
   }
   
 module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-Thread Count'
+    name: '${uniqueString(deployment().name)}-ThreadCount'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
@@ -530,7 +530,7 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
   }
   
 module Alert16  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
-    name: '${uniqueString(deployment().name)}-Handle Count'
+    name: '${uniqueString(deployment().name)}-HandleCount'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
