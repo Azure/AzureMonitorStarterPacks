@@ -30,10 +30,10 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TotalJob - Microsoft.Automation-automationAccounts'
-      alertDisplayName: 'TotalJob - Microsoft.Automation-automationAccounts'
+      alertname: 'TotalJob - Microsoft.Automation-AA'
+      alertDisplayName: 'TotalJob - Microsoft.Automation-AA'
       alertDescription: 'The total number of jobs'
-      metricNamespace: 'Microsoft.Automation-automationAccounts'
+      metricNamespace: 'Microsoft.Automation-AA'
       parAlertSeverity: '2'
       metricName: 'TotalJob'
       operator: 'GreaterThan'
@@ -64,10 +64,10 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
 //       subscriptionId: subscriptionId
 //       userManagedIdentityResourceId: userManagedIdentityResourceId
 //       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-//       alertname: 'TotalJob - Microsoft.Automation-automationAccounts'
-//       alertDisplayName: 'TotalJob - Microsoft.Automation-automationAccounts'
+//       alertname: 'TotalJob - Microsoft.Automation-AA'
+//       alertDisplayName: 'TotalJob - Microsoft.Automation-AA'
 //       alertDescription: 'The total number of jobs'
-//       metricNamespace: 'Microsoft.Automation-automationAccounts'
+//       metricNamespace: 'Microsoft.Automation-AA'
 //       parAlertSeverity: '3'
 //       metricName: 'TotalJob'
 //       operator: 'GreaterThan'
@@ -99,9 +99,9 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
       alertname: 'TotalUpdateDeploymentMachineRuns - Automation-Accounts'
-      alertDisplayName: 'TotalUpdateDeploymentMachineRuns - Microsoft.Automation-automationAccounts'
+      alertDisplayName: 'TotalUpdateDeploymentMachineRuns - Microsoft.Automation-AA'
       alertDescription: 'Total software update deployment machine runs in a software update deployment run'
-      metricNamespace: 'Microsoft.Automation-automationAccounts'
+      metricNamespace: 'Microsoft.Automation-AA'
       parAlertSeverity: '2'
       metricName: 'TotalUpdateDeploymentMachineRuns'
       operator: 'GreaterThan'
@@ -132,10 +132,10 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TotalUpdateDeploymentRuns - Microsoft.Automation-automationAccounts'
-      alertDisplayName: 'TotalUpdateDeploymentRuns - Microsoft.Automation-automationAccounts'
+      alertname: 'TotalUpdateDeploymentRuns - Microsoft.Automation-AA'
+      alertDisplayName: 'TotalUpdateDeploymentRuns - Microsoft.Automation-AA'
       alertDescription: 'Total software update deployment runs'
-      metricNamespace: 'Microsoft.Automation-automationAccounts'
+      metricNamespace: 'Microsoft.Automation-AA'
       parAlertSeverity: '3'
       metricName: 'TotalUpdateDeploymentRuns'
       operator: 'GreaterThan'

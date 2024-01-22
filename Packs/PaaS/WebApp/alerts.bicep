@@ -393,7 +393,7 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
   }
   
 module Alert12  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
-    name: '${uniqueString(deployment().name)}-Data Out'
+    name: '${uniqueString(deployment().name)}-DataOut'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
@@ -462,7 +462,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
   }
   
 module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-Data In'
+    name: '${uniqueString(deployment().name)}-DataIn'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation

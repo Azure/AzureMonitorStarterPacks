@@ -40,7 +40,7 @@ $alerts |ForEach-Object {
 
 @"
 module Alert${i} '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '`${uniqueString(deployment().name)}-$($_.name)'
+    name: '`${uniqueString(deployment().name)}-$($_.name.replace(' ',''))'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
@@ -51,7 +51,7 @@ module Alert${i} '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: '$($_.Name) - $($_.Properties.metricNameSpace)'
+      alertname: '$($_.Name) - $($_.Properties.metricNameSpace.split("/")[1].replace("/", "-"))'
       alertDisplayName: '$($_.Name) - $($_.Properties.metricNameSpace)'
       alertDescription: '$($_.description)'
       metricNamespace: '$($_.Properties.metricNameSpace)'
@@ -61,7 +61,7 @@ module Alert${i} '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parEvaluationFrequency: '$($_.Properties.evaluationFrequency)'   
       parWindowSize: '$($_.Properties.windowSize)'
       parThreshold: '$($_.Properties.threshold)'
-      assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])$($_.properties.metricName.Substring(0,4))'
+      assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])${i}'
       parAutoMitigate: '$($_.Properties.autoMitigate)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -79,7 +79,7 @@ module Alert${i} '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
     if ($_.Properties.criterionType -eq 'DynamicThresholdCriterion') {  
 @"
 module Alert${i}  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
-    name: '`${uniqueString(deployment().name)}-$($_.Name)'
+    name: '`${uniqueString(deployment().name)}-$($_.name.replace(' ',''))'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
@@ -90,7 +90,7 @@ module Alert${i}  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: '$($_.Name) - $($_.Properties.metricNameSpace).replace("/", "-")'
+      alertname: '$($_.Name) - $($_.Properties.metricNameSpace.split("/")[1].replace("/", "-"))'
       alertDisplayName: '$($_.Name) - $($_.Properties.metricNameSpace)'
       alertDescription: '$($_.description)'
       metricNamespace: '$($_.Properties.metricNameSpace)'
@@ -102,7 +102,7 @@ module Alert${i}  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       alertSensitivity: '$($_.Properties.alertSensitivity)'
       minFailingPeriodsToAlert: '$($_.properties.failingPeriods.minFailingPeriodsToAlert)'
       numberOfEvaluationPeriods: '$($_.properties.failingPeriods.numberOfEvaluationPeriods)'
-      assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])$($_.properties.metricName.Substring(0,4))'
+      assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])${i}'
       parAutoMitigate: '$($_.Properties.autoMitigate)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
