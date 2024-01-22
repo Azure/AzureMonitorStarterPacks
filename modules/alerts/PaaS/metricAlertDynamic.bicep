@@ -212,6 +212,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                     'LessThan'
                     'GreaterOrLessThan'
                     'GreaterThanOrEqual'
+                    'LessThanOrEqual'
                 ]
                 defaultValue: operator
             }

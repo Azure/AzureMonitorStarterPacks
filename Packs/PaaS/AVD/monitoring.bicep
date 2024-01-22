@@ -58,21 +58,21 @@ var resourceTypes = [
 
 // DCRs
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
-module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
-  name: 'dcrPerformance-${packtag}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: location
-    rulename: rulename
-    workspaceId: workspaceId
-    wsfriendlyname: workspaceFriendlyName
-    kind: kind
-    xPathQueries: xPathQueries
-    counterSpecifiers: performanceCounters
-    Tags: Tags
-    dceId: dceId
-  }
-}
+// module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
+//   name: 'dcrPerformance-${packtag}'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     location: location
+//     rulename: rulename
+//     workspaceId: workspaceId
+//     wsfriendlyname: workspaceFriendlyName
+//     kind: kind
+//     xPathQueries: xPathQueries
+//     counterSpecifiers: performanceCounters
+//     Tags: Tags
+//     dceId: dceId
+//   }
+// }
 
 // Diagnostic settings policies
 module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpolicyDiag.bicep' = [for (rt,i) in resourceTypes: {
