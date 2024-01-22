@@ -210,7 +210,7 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       parThreshold: '20'
-      assignmentSuffix: 'MetsitesHttp'
+      assignmentSuffix: 'MetsitesHttp1'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -244,7 +244,7 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT15M'
       parThreshold: '10'
-      assignmentSuffix: 'MetsitesHttp'
+      assignmentSuffix: 'MetsitesHttp2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -449,7 +449,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT15M'   
       parWindowSize: 'PT15M'
       parThreshold: '1'
-      assignmentSuffix: 'MetsitesHttp'
+      assignmentSuffix: 'MetsitesHttp3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -517,7 +517,7 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       parThreshold: '15'
-      assignmentSuffix: 'MetsitesHttp'
+      assignmentSuffix: 'MetsitesHttp4'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -620,7 +620,7 @@ module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       parThreshold: '15'
-      assignmentSuffix: 'MetsitesHttp'
+      assignmentSuffix: 'MetsitesHttp5'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -793,7 +793,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parEvaluationFrequency: 'PT5M'   
 //       parWindowSize: 'PT15M'
 //       parThreshold: '10'
-//       assignmentSuffix: 'MetsitesHttp'
+//       assignmentSuffix: 'MetsitesHttp6'
 //       parAutoMitigate: 'false'
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
@@ -827,7 +827,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parEvaluationFrequency: 'PT15M'   
 //       parWindowSize: 'PT30M'
 //       parThreshold: '5'
-//       assignmentSuffix: 'MetsitesHttp'
+//       assignmentSuffix: 'MetsitesHttp7'
 //       parAutoMitigate: 'false'
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
@@ -861,7 +861,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parEvaluationFrequency: 'PT15M'   
 //       parWindowSize: 'PT30M'
 //       parThreshold: '5'
-//       assignmentSuffix: 'MetsitesHttp'
+//       assignmentSuffix: 'MetsitesHttp8'
 //       parAutoMitigate: 'false'
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
@@ -997,7 +997,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parEvaluationFrequency: 'PT15M'   
 //       parWindowSize: 'PT30M'
 //       parThreshold: '5'
-//       assignmentSuffix: 'MetsitesHttp'
+//       assignmentSuffix: 'MetsitesHttp9'
 //       parAutoMitigate: 'false'
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId

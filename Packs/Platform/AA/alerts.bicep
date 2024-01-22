@@ -87,7 +87,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
 //   }
   
 module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-TotalUpdateDeploymentMachineRuns'
+    name: '${uniqueString(deployment().name)}-TotalUpdDplmntMachineRuns'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
