@@ -210,7 +210,7 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns'
+      assignmentSuffix: 'MetworkflowsRuns4'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId

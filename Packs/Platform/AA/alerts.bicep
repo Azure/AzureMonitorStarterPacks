@@ -87,7 +87,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
 //   }
   
 module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-TotalUpdDplmntMachineRuns'
+    name: '${uniqueString(deployment().name)}-TotalUpdDplmntMRuns'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
@@ -98,7 +98,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TotalUpdateDeploymentMachineRuns - Microsoft.Automation-automationAccounts'
+      alertname: 'TotalUpdateDeploymentMachineRuns - Automation-Accounts'
       alertDisplayName: 'TotalUpdateDeploymentMachineRuns - Microsoft.Automation-automationAccounts'
       alertDescription: 'Total software update deployment machine runs in a software update deployment run'
       metricNamespace: 'Microsoft.Automation-automationAccounts'
@@ -121,7 +121,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
   }
   
 module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-TotalUpdateDeploymentRuns'
+    name: '${uniqueString(deployment().name)}-TotalUpdateDepRuns'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
