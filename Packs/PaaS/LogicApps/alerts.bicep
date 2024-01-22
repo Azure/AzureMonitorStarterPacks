@@ -74,7 +74,7 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsActi'
+      assignmentSuffix: 'MetworkflowsActi1'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -244,7 +244,7 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns'
+      assignmentSuffix: 'MetworkflowsRuns2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -280,7 +280,7 @@ module Alert8  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       alertSensitivity: 'Medium'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
       numberOfEvaluationPeriods: '4'
-      assignmentSuffix: 'MetworkflowsRuns'
+      assignmentSuffix: 'MetworkflowsRuns3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -313,7 +313,7 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '15'
-      assignmentSuffix: 'MetworkflowsActi'
+      assignmentSuffix: 'MetworkflowsActi2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -381,7 +381,7 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsTrig'
+      assignmentSuffix: 'MetworkflowsTrig2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -415,7 +415,7 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsActi'
+      assignmentSuffix: 'MetworkflowsActi3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -449,7 +449,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1H'   
       parWindowSize: 'PT1H'
       parThreshold: '5'
-      assignmentSuffix: 'MetworkflowsTrig'
+      assignmentSuffix: 'MetworkflowsTrig3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -585,7 +585,7 @@ module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '100'
-      assignmentSuffix: 'MetworkflowsRunS'
+      assignmentSuffix: 'MetworkflowsRunS2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -619,7 +619,7 @@ module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1H'   
       parWindowSize: 'PT1H'
       parThreshold: '10'
-      assignmentSuffix: 'MetworkflowsActi'
+      assignmentSuffix: 'MetworkflowsActi4'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -653,7 +653,7 @@ module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns'
+      assignmentSuffix: 'MetworkflowsRuns5'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId

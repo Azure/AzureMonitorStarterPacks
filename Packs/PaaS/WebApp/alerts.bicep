@@ -483,7 +483,7 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       parThreshold: '2048000000'
-      assignmentSuffix: 'MetsitesByte'
+      assignmentSuffix: 'MetsitesByte2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -586,7 +586,7 @@ module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '13000000000'
-      assignmentSuffix: 'MetsitesFunc'
+      assignmentSuffix: 'MetsitesFunc2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
