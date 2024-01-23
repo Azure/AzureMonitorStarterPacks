@@ -436,7 +436,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                         metricName: '[parameters(\'metricName\')]'
                                                         operator: '[parameters(\'operator\')]'
                                                         threshold: '[parameters(\'threshold\')]'
-                                                        timeAggregation: timeAggregation
+                                                        timeAggregation: '[parameters(\'timeAgregation\')]'
                                                         criterionType: 'StaticThresholdCriterion'
                                                     }
                                                 ]
@@ -531,7 +531,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                     value: '[parameters(\'operator\')]'
                                 }
                                 timeAggregation: {
-                                    value: '[parameters(\'operator\')]'
+                                    value: '[parameters(\'timeAggregation\')]'
                                 }
                                 alertname: {
                                     value: '[parameters(\'alertname\')]'
