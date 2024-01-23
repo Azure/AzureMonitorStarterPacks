@@ -23,11 +23,12 @@ param mgname string
 param imageGalleryName string
 
 var packPolicyRoleDefinitionIds=[
-  '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
-  '92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
-  //Above role should be able to add diagnostics to everything according to docs.
-  '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // VM Contributor, in order to update VMs with vm Applications
+  // '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
+  // '92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
+  // //Above role should be able to add diagnostics to everything according to docs.
+  // '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // VM Contributor, in order to update VMs with vm Applications
   //Contributor may be needed if we want to create alerts anywhere
+  'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
   // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
 ]
 

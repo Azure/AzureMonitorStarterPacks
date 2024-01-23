@@ -39,18 +39,20 @@ switch ($action) {
                 "Policy $($pol.PolicyDefinitionId) is compliant"
             }
         }
-                    # $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
-            # foreach ($init in $inits) {
-            #     "Retrieving policy set $($init.PolicySetDefinitionId) compliance:"
-            #     $compliance=(get-AzPolicystate -PolicySetDefinitionName $init.Name).ComplianceState
-            #     $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
-            #     if ($assignments.count -ne 0)
-            #     {
-            #         "Removing assignments for $($init.PolicySetDefinitionId)"
-            #         $assignments | Remove-AzPolicyAssignment 
-            #     }
-            #     Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId
-            # }
+        $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
+        foreach ($init in $inits) {
+            "Remediating policy set $($init.PolicySetDefinitionId)."
+            $assignment=Get-AzPolicyAssignment -PolicyDefinitionId $init.ResourceId
+            if ($assignment) {
+                $policiesInSet=$init.Properties.PolicyDefinitions | Select-Object -ExpandProperty policyDefinitionReferenceId
+                #$policiesInSet
+                foreach ($pol in $policiesInSet) {
+                    "Starting remediation for $($assignment.PolicyAssignmentId)"
+                    Start-AzPolicyRemediation -Name "$($pol) remediation" -PolicyAssignmentId $assignment.PolicyAssignmentId -PolicyDefinitionReferenceId $pol # -ResourceDiscoveryMode ExistingNonCompliant
+                }
+            }
+        }
+            
     }
     'Scan' {
         Start-AzPolicyComplianceScan -AsJob

@@ -223,6 +223,21 @@ module metricAlert '../../alz/deploy.bicep' = {
                 ]
                 defaultValue: operator
             }
+            timeAggregation: {
+                type: 'String'
+                metadata: {
+                    displayName: 'Time Aggregation'
+                    description: 'Time Aggregation for the alert'
+                }
+                allowedValues: [
+                    'Average'
+                    'Minimum'
+                    'Maximum'
+                    'Total'
+                    'Count'
+                ]
+                defaultValue: timeAggregation
+            }
             alertname: {
                 type: 'String'
                 metadata: {
@@ -388,6 +403,9 @@ module metricAlert '../../alz/deploy.bicep' = {
                                         type: 'string'
                                     }
                                     actionGroupResourceId :{
+                                        type: 'string'
+                                    }
+                                    timeAggregation: {
                                         type: 'string'
                                     }
                                 }

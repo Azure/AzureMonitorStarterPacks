@@ -108,7 +108,7 @@
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs",
+                            "label": "Deploy All PaaS Packs (Preview).",
                             "toolTip": "Select to deploy all PaaS packs.",
                             "defaultValue": false,
                             "constraints": {
@@ -120,7 +120,7 @@
                         {
                             "name": "deployPlatformPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs",
+                            "label": "Deploy All Platform Packs (Preview).",
                             "toolTip": "Select to deploy all Platform packs.",
                             "defaultValue": false,
 							"visible": true,

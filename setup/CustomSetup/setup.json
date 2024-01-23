@@ -306,8 +306,8 @@
                         {
                             "name": "deployDiscovery",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy Discovery features.",
-                            "toolTip": "The Discovery features will discovery applications and roles on OS targetted machines.",
+                            "label": "Deploy Discovery features.(Preview)",
+                            "toolTip": "Preview: The Discovery features will discovery applications and roles on OS targetted machines.",
                             "constraints": {
                                 "required": false,
                                 "validationMessage": "Select to deploy the Discovery featues to the selected Management Group or Subscription."
@@ -701,7 +701,7 @@
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs",
+                            "label": "Deploy All PaaS Packs (Preview).",
                             "toolTip": "Select to deploy all PaaS packs.",
                             "defaultValue": false,
                             "constraints": {
@@ -713,7 +713,7 @@
                         {
                             "name": "deployPlatformPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs",
+                            "label": "Deploy All Platform Packs (Preview).",
                             "toolTip": "Select to deploy all Platform packs.",
                             "defaultValue": false,
 							"visible": "[equals(steps('Packs').deployPacks, false)]",

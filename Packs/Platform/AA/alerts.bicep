@@ -40,7 +40,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetautomationAccountsTota'
+      assignmentSuffix: 'MetautomationAccountsTot1'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -74,7 +74,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
 //       parEvaluationFrequency: 'PT1M'   
 //       parWindowSize: 'PT5M'
 //       parThreshold: '0'
-//       assignmentSuffix: 'MetautomationAccountsTota'
+//       assignmentSuffix: 'MetautomationAccountsTot4'
 //       parAutoMitigate: 'false'
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
@@ -108,7 +108,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetautomationAccountsTota'
+      assignmentSuffix: 'MetautomationAccountsTot2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -142,7 +142,7 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetautomationAccountsTota'
+      assignmentSuffix: 'MetautomationAccountsTot3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
