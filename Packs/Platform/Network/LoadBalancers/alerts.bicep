@@ -82,38 +82,38 @@ module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThresh
         instanceName: instanceName
     }
 }
-module ALBGlobalBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-ALBDGlobalBackendAvailAlert'
-    params: {
-        alertname: 'Load Balancer Global Backend Availability'
-        alertDisplayName: 'Global Backend Availability '
-        alertDescription: 'Policy to deploy Global Backend Availability alert'
-        metricNamespace: 'Microsoft.Network/loadBalancers'
-        metricName: 'GlobalBackendAvailability'
-        operator: 'GreaterThan'
-        parAlertSeverity: '0'
-        parAutoMitigate: 'false'
-        parEvaluationFrequency: 'PT1M'
-        parPolicyEffect: 'deployIfNotExists'
-        parWindowSize: 'PT1M'
-        parThreshold: '90'
-        assignmentSuffix: 'ActALBGlbBEAvl'
-        AGId: AGId
-        parAlertState: parAlertState
-        assignmentLevel: assignmentLevel
-        policyLocation: policyLocation
-        mgname: mgname
-        packTag: packTag
-        resourceType: resourceType
-        solutionTag: solutionTag
-        subscriptionId: subscriptionId
-        userManagedIdentityResourceId: userManagedIdentityResourceId
-        deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-        initiativeMember: true
-        packtype: 'Platform'
-        instanceName: instanceName
-    }
-}
+// module ALBGlobalBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+//     name: '${uniqueString(deployment().name)}-ALBDGlobalBackendAvailAlert'
+//     params: {
+//         alertname: 'Load Balancer Global Backend Availability'
+//         alertDisplayName: 'Global Backend Availability '
+//         alertDescription: 'Policy to deploy Global Backend Availability alert'
+//         metricNamespace: 'Microsoft.Network/loadBalancers'
+//         metricName: 'GlobalBackendAvailability'
+//         operator: 'GreaterThan'
+//         parAlertSeverity: '0'
+//         parAutoMitigate: 'false'
+//         parEvaluationFrequency: 'PT1M'
+//         parPolicyEffect: 'deployIfNotExists'
+//         parWindowSize: 'PT1M'
+//         parThreshold: '90'
+//         assignmentSuffix: 'ActALBGlbBEAvl'
+//         AGId: AGId
+//         parAlertState: parAlertState
+//         assignmentLevel: assignmentLevel
+//         policyLocation: policyLocation
+//         mgname: mgname
+//         packTag: packTag
+//         resourceType: resourceType
+//         solutionTag: solutionTag
+//         subscriptionId: subscriptionId
+//         userManagedIdentityResourceId: userManagedIdentityResourceId
+//         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
+//         initiativeMember: true
+//         packtype: 'Platform'
+//         instanceName: instanceName
+//     }
+// }
 module ALBBackendAvail '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ALBBackendAvailabilityAlert'
     params: {
@@ -168,9 +168,9 @@ module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
             {
                 policyDefinitionId: ALBUsedSNATPorts.outputs.policyId
             }
-            {
-                policyDefinitionId: ALBGlobalBackendAvail.outputs.policyId
-            }
+            // {
+            //     policyDefinitionId: ALBGlobalBackendAvail.outputs.policyId
+            // }
             {
                 policyDefinitionId: ALBBackendAvail.outputs.policyId
             }

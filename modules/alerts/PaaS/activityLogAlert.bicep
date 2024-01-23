@@ -220,6 +220,12 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                 actionGroupResourceId: {
                                     type: 'string'
                                 }
+                                resourceType: {
+                                    type: 'string'
+                                }
+                                operationName: {
+                                    type: 'string'
+                                }
                               }
                               variables: {}
                               resources: [
