@@ -104,7 +104,18 @@
                                 "required": false,
                                 "validationMessage": "Select to deploy the available IaaS packs to the selected environment."
                             }
-                        },                        
+                        },
+						{
+							"name": "infoBoxIaaS",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": "[steps('Configuration').deployIaaSPacks]",
+							"options": {
+								"icon": "None",
+								"text": "IaaS packs focus on VM/Arc workloads, like IIS, DNS, etc.",
+								"uri": "",
+								"style": "Info"
+							}
+						},
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
@@ -117,6 +128,17 @@
                             },
 							"visible": true
                         },
+						{
+							"name": "infoBoxPaaS",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": "[steps('Configuration').deployPaaSPacks]",
+							"options": {
+								"icon": "None",
+								"text": "PaaS packs focus on resources like WebApps, Automation Accounts, AVD, etc.",
+								"uri": "",
+								"style": "Info"
+							}
+						},
                         {
                             "name": "deployPlatformPacks",
                             "type": "Microsoft.Common.CheckBox",
@@ -129,13 +151,24 @@
                                 "validationMessage": "Select to deploy the available Platform packs to the selected environment."
                             }
                         },
+						{
+							"name": "infoBoxPlato",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": "[steps('Configuration').deployPlatformPacks]",
+							"options": {
+								"icon": "None",
+								"text": "Platform packs focus on platform resources like Key Vault, Load Balancers, Gateways, etc.",
+								"uri": "",
+								"style": "Info"
+							}
+						},
                         {
                             "name": "instanceName",
                             "type": "Microsoft.Common.TextBox",
                             "label": "Instance Name for the Monitoring Packs Implementation",
                             "subLabel": "",
                             "defaultValue": "",
-                            "toolTip": "Name of the Monitoring Pack instance.",
+                            "toolTip": "Name of the Monitoring Pack instance. Instances names can have up to 4 characters and can only contain alphanumeric lowercase characters. The name will be used to define the names of the resources deployed by the Monitoring Packs.",
                             "constraints": {
 								"required": true,
                     			"regex": "^[a-z0-9]{1,4}$",

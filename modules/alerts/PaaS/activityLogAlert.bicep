@@ -172,7 +172,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                               allOf: [
                                                   {
                                                       field: 'microsoft.insights/activityLogAlerts/condition.allOf[*].field'
-                                                      equals: operationName
+                                                      equals: 'operationName'
                                                   }
                                                   {
                                                       field: 'microsoft.insights/activityLogAlerts/condition.allOf[*].equals'
