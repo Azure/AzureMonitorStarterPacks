@@ -40,9 +40,9 @@ var tempTags ={
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
-var avdLogAlertsUri = '${_artifactsLocation}LogAlertsHostPool.json${_ArtifactsLocationSasToken}'
-var primaryScriptUri = '${_artifactsLocation}AVDHostPoolMapAlerts.ps1${_ArtifactsLocationSasToken}'
-var templateUri = '${_artifactsLocation}alerts.json${_ArtifactsLocationSasToken}'
+var avdLogAlertsUri = '${_artifactsLocation}Packs/PaaS/AVD/LogAlertsHostPool.json${_ArtifactsLocationSasToken}'
+var primaryScriptUri = '${_artifactsLocation}Packs/PaaS/AVD/AVDHostPoolMapAlerts.ps1${_ArtifactsLocationSasToken}'
+var templateUri = '${_artifactsLocation}modules/alerts/alerts.json${_ArtifactsLocationSasToken}'
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'

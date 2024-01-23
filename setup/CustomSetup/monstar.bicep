@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
 
-param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/HostPoolDeployment/master/'
+param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/JCore-AVD/'
 @secure()
 param _artifactsLocationSasToken string = ''
 
