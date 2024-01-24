@@ -167,7 +167,11 @@ try {
             $j = 0
         }
         $params.alertlist = $alertListHP
-                     
+        # correct deployment name if too long
+        if($deployname.Length -gt 64) {
+            $deployname = $deployname.Substring(0,64)
+        }
+
         New-AzResourceGroupDeployment -Name $deployname -ResourceGroupName $resourceGroup -TemplateUri $templateUri -TemplateParameterObject $params
         $params.alertlist = $null
         $alertListHP = $null
