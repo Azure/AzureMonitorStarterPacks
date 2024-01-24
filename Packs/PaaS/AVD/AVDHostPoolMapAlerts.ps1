@@ -28,10 +28,6 @@ Param(
 
     [parameter(Mandatory)]
     [string]
-    $alertList,
-    
-    [parameter(Mandatory)]
-    [string]
     $location,
 
     [parameter(Mandatory)]
