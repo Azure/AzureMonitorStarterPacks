@@ -25,6 +25,10 @@ Param(
     [parameter(Mandatory)]
     [string]
     $AGId,
+
+    [parameter(Mandatory)]
+    [string]
+    $alertList,
     
     [parameter(Mandatory)]
     [string]
