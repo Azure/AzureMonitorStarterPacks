@@ -909,7 +909,7 @@
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
-                "separateLAWforAVD": "[steps('Configuration').AVDLawSeperate]",
+                "seperateLAWforAVD": "[steps('Configuration').AVDLawSeperate]",
                 "existingLogAnalyticsWSIdAVD": "[steps('Configuration').SectionAVDLAW.LogAnalyticsWorkspaceAVDResource.id]",
                 "createNewLogAnalyticsWSAVD": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]",
                 "newLogAnalyticsWSNameAVD": "[steps('Configuration').SectionAVDLAW.LogAnalyticsWorkspaceResourceAVDNew]",
