@@ -11,7 +11,7 @@ param workspaceId string
 param userManagedIdentityResourceId string
 param Tags object
 
-var dsArguments = '-Environment ${environment().name} -TenantId ${subscription().tenantId} -resourceGroup ${resourceGroup().name} -avdLogAlertsUri ${avdLogAlertsUri} -templateUri ${templateUri} -Tags \'${Tags}\' -AGId ${AGId} -modulePrefix ${solutionTag} -packtag ${packtag} -workspaceId ${workspaceId} -location ${location}'
+var dsArguments = '-Environment ${environment().name} -TenantId ${subscription().tenantId} -resourceGroup ${resourceGroup().name} -avdLogAlertsUri ${avdLogAlertsUri} -templateUri ${templateUri} -Tags "${Tags}" -AGId ${AGId} -modulePrefix ${solutionTag} -packtag ${packtag} -workspaceId ${workspaceId} -location ${location}'
 
 resource deployScriptAVD 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-AVDHostMapping'
