@@ -95,7 +95,7 @@ module AVD './AVD/monitoring.bicep' = {
     subscriptionId: subscriptionId
     actionGroupResourceId: actionGroupResourceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: empty(workspaceIdAVD) ? workspaceId : workspaceIdAVD
+    workspaceId: workspaceIdAVD != '' ? workspaceIdAVD : workspaceId
     packtag: 'Avd'
     //grafanaName: grafanaName
     dceId: dceId

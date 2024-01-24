@@ -25,13 +25,6 @@
           ]
         },
         {
-          "name": "Computer",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
           "name": "UserSessionsTotal",
           "operator": "Include",
           "values": [
@@ -88,13 +81,6 @@
         },
         {
           "name": "HostPoolName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "Computer",
           "operator": "Include",
           "values": [
             "*"
@@ -230,13 +216,6 @@
           "values": [
             "*"
           ]
-        },
-        {
-          "name": "Computer",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
         }
       ]
     },
@@ -264,13 +243,6 @@
           "values": [
             "*"
           ]
-        },
-        {
-          "name": "Computer",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
         }
       ]
     },
@@ -294,13 +266,6 @@
         },
         {
           "name": "SessionHostName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "Computer",
           "operator": "Include",
           "values": [
             "*"
@@ -709,13 +674,6 @@
           ]
         },
         {
-          "name": "Computer",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
           "name": "HealthCheckDesc",
           "operator": "Include",
           "values": [
@@ -792,13 +750,6 @@
       "dimensions": [
         {
           "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "Computer",
           "operator": "Include",
           "values": [
             "*"
