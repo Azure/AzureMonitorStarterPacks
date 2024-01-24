@@ -42,7 +42,7 @@ module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '8000000'
       assignmentSuffix: 'MetpublicIPAddresses1'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -75,7 +75,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '0'
       assignmentSuffix: 'MetpublicIPAddresses2'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -108,7 +108,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '40000'
       assignmentSuffix: 'MetpublicIPAddresses3'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -141,7 +141,7 @@ module Alert4 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '90'
       assignmentSuffix: 'MetpublicIPAddresses4'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState

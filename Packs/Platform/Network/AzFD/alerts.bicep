@@ -42,7 +42,7 @@ module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '80'
       assignmentSuffix: 'Metfrontdoors1'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -75,7 +75,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '10'
       assignmentSuffix: 'Metfrontdoors2'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -108,7 +108,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '25000'
       assignmentSuffix: 'Metfrontdoors3'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState

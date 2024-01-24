@@ -41,7 +41,7 @@ module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '0'
       assignmentSuffix: 'Metservers1'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -75,7 +75,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '0'
       assignmentSuffix: 'Metservers2'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -109,7 +109,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '5'
       assignmentSuffix: 'Metservers3'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -143,7 +143,7 @@ module Alert4 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '934584883610'
       assignmentSuffix: 'Metservers4'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -179,7 +179,7 @@ module Alert5  '../../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
       numberOfEvaluationPeriods: '5'
       assignmentSuffix: 'Metservers5'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -212,7 +212,7 @@ module Alert6 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '10'
       assignmentSuffix: 'Metservers6'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -246,7 +246,7 @@ module Alert7 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '85'
       assignmentSuffix: 'Metservers7'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState

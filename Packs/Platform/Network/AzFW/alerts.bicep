@@ -42,7 +42,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '90'
       assignmentSuffix: 'MetazureFirewalls2'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -75,7 +75,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT5M'
       parThreshold: '80'
       assignmentSuffix: 'MetazureFirewalls3'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState

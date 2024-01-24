@@ -42,7 +42,7 @@ module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT1H'
       parThreshold: '80'
       assignmentSuffix: 'MetprivateDnsZones1'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -75,7 +75,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT1H'
       parThreshold: '500'
       assignmentSuffix: 'MetprivateDnsZones2'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -108,7 +108,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT1H'
       parThreshold: '80'
       assignmentSuffix: 'MetprivateDnsZones3'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -141,7 +141,7 @@ module Alert4 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: 'PT1H'
       parThreshold: '80'
       assignmentSuffix: 'MetprivateDnsZones4'
-      parAutoMitigate: 'False'
+      parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
