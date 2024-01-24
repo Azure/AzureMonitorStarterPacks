@@ -231,6 +231,7 @@ module PIP './Network/PIP/alerts.bicep' = {
     resourceType: 'Microsoft.Network/publicIPAddresses'
   }
 }
+
 module NSG './Network/NSG/alerts.bicep' = {
   name: 'NSGAlerts'
   params: {
@@ -252,6 +253,6 @@ module NSG './Network/NSG/alerts.bicep' = {
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
-    resourceType: ''
+    resourceType: 'Microsoft.Network/networkSecurityGroups'
   }
 }

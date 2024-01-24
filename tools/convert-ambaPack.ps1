@@ -154,7 +154,7 @@ if ($_.type -eq 'ActivityLog') {
         mgname: mgname
         packTag: packTag
         parResourceGroupName: parResourceGroupName
-        resourceType: 'resourceType'
+        resourceType: resourceType
         solutionTag: solutionTag
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
@@ -174,7 +174,9 @@ if ($_.type -eq 'ActivityLog') {
 }
 $i++    
 }
-
+if ([string]::IsNullOrEmpty($metricNamespace)) {
+  $metricNamespace=$resourceType
+}
 $alertconfig=@"
 module $packTag '$packfolder' = {
   name: '$($packTag)Alerts'

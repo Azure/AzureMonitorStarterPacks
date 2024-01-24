@@ -265,6 +265,27 @@
               "value": "backend"
             },
             "name": "generalParams"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where isnotempty(tags.MonitorStarterPacks) or isnotempty(tags.MonitorStarterPacksComponents)\n|union ( \npolicyresources | where isnotempty(properties.metadata.MonitorStarterPacks))\n| summarize count() by type\n| sort by count_ desc ",
+              "size": 0,
+              "title": "Monitoring Packs resources and Components",
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "gridSettings": {
+                "filter": true
+              }
+            },
+            "name": "Installed Components",
+            "styleSettings": {
+              "showBorder": true
+            }
           }
         ],
         "exportParameters": true
@@ -712,6 +733,54 @@
             "name": "text - 3"
           },
           {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId=tostring(resourceId)//ruleId=properties.dataCollectionRuleId\n| join kind= inner  (\nresources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| summarize by resourceId, Pack\n| summarize Packs=make_list(Pack) by resourceId",
+              "size": 0,
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Packs",
+                    "formatter": 1
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "test",
+              "comparison": "isEqualTo",
+              "value": "1"
+            },
+            "showPin": false,
+            "name": "query - associatedVMs"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+              "size": 0,
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "showHidden",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": false,
+            "name": "query - taggedVMs"
+          },
+          {
             "type": 12,
             "content": {
               "version": "NotebookGroup/1.0",
@@ -721,7 +790,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"outer\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Packs1\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\"}]}",
                     "size": 0,
                     "title": "Monitored Machines",
                     "exportMultipleValues": true,
@@ -729,25 +798,25 @@
                       {
                         "fieldName": "",
                         "parameterName": "taggedVMs",
-                        "parameterType": 5,
+                        "parameterType": 1,
                         "quote": ""
                       }
                     ],
-                    "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources",
-                    "crossComponentResources": [
-                      "{Subscriptions}"
-                    ],
+                    "queryType": 7,
                     "visualization": "table",
                     "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "Associated Packs",
+                          "formatter": 1
+                        }
+                      ],
                       "filter": true
-                    },
-                    "sortBy": []
+                    }
                   },
-                  "name": "Monitored Servers",
+                  "showPin": false,
+                  "name": "query-mergeVMs",
                   "styleSettings": {
-                    "margin": "400",
-                    "padding": "400",
                     "showBorder": true
                   }
                 },
@@ -779,7 +848,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resourcegraph/resources",
-                        "value": "WinOS"
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -946,7 +1015,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "WinOS"
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1009,73 +1078,6 @@
               "value": "discovery"
             },
             "name": "NonTaggedGroup"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId=tostring(resourceId)//ruleId=properties.dataCollectionRuleId\n| join kind= inner  (\nresources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| summarize by resourceId, Pack\n| summarize Packs=make_list(Pack) by resourceId",
-              "size": 0,
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
-              "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "Packs",
-                    "formatter": 1
-                  }
-                ]
-              }
-            },
-            "conditionalVisibility": {
-              "parameterName": "test",
-              "comparison": "isEqualTo",
-              "value": "1"
-            },
-            "showPin": false,
-            "name": "query - associatedVMs"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
-              "size": 0,
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ]
-            },
-            "conditionalVisibility": {
-              "parameterName": "showHidden",
-              "comparison": "isEqualTo",
-              "value": "true"
-            },
-            "showPin": false,
-            "name": "query - taggedVMs"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"innerunique\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Associated Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\"}]}",
-              "size": 0,
-              "queryType": 7,
-              "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "Associated Packs",
-                    "formatter": 1
-                  }
-                ]
-              }
-            },
-            "showPin": false,
-            "name": "query - mergeVMs"
           }
         ]
       },
@@ -1106,7 +1108,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults',\n    'microsoft.network/networksecuritygroups',\n    'microsoft.network/publicipaddresses',\n    'microsoft.network/privatednszones',\n    'microsoft.network/frontdoors',\n    'microsoft.network/azurefirewalls',\n    'microsoft.network/applicationgateways'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored Services",
                     "exportMultipleValues": true,
@@ -1269,7 +1271,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id,type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.network/vpngateways',\n    'microsoft.network/virtualnetworkgateways',\n    'microsoft.keyvault/vaults',\n    'microsoft.network/networksecuritygroups',\n    'microsoft.network/publicipaddresses',\n    'microsoft.network/privatednszones',\n    'microsoft.network/frontdoors',\n    'microsoft.network/azurefirewalls',\n    'microsoft.network/applicationgateways'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id,type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored Services",
                     "exportMultipleValues": true,
@@ -1415,7 +1417,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools'\n) \n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools',\n    'microsoft.logic/workflows',\n    'microsoft.ql/managedinstances',\n    'microsoft.sql/servers/databases'\n) or (\n    tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic'\n)\nor (\n    tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'OpenAI'\n)\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored PaaS",
                     "exportMultipleValues": true,
@@ -1578,7 +1580,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools'\n) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools',\n    'microsoft.logic/workflows',\n    'microsoft.ql/managedinstances',\n    'microsoft.sql/servers/databases'\n) or (\n    tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic'\n)\nor (\n    tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'\n)\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored PaaS",
                     "exportMultipleValues": true,
@@ -1597,9 +1599,20 @@
                     ],
                     "visualization": "table",
                     "gridSettings": {
-                      "filter": true
+                      "filter": true,
+                      "sortBy": [
+                        {
+                          "itemKey": "type",
+                          "sortOrder": 1
+                        }
+                      ]
                     },
-                    "sortBy": []
+                    "sortBy": [
+                      {
+                        "itemKey": "type",
+                        "sortOrder": 1
+                      }
+                    ]
                   },
                   "name": "Non Monitores PaaS",
                   "styleSettings": {
@@ -1636,7 +1649,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "Storage"
                       }
                     ],
                     "style": "pills",
@@ -1740,7 +1753,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "KeyVault"
                 }
               ],
               "style": "pills",
@@ -2701,14 +2714,14 @@
                 "filter": true,
                 "sortBy": [
                   {
-                    "itemKey": "policyName",
+                    "itemKey": "pack",
                     "sortOrder": 1
                   }
                 ]
               },
               "sortBy": [
                 {
-                  "itemKey": "policyName",
+                  "itemKey": "pack",
                   "sortOrder": 1
                 }
               ]
@@ -2739,7 +2752,7 @@
                       {
                         "id": "b3bb5a4d-0f95-4e9a-8634-9cb027f860aa",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Remediate (selected)",
+                        "linkLabel": "Remediate",
                         "preText": "",
                         "style": "primary",
                         "linkIsContextBlade": true,
@@ -3364,7 +3377,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "linuxasrtest",
+                  "value": null,
                   "label": "Select Server"
                 },
                 {
@@ -3485,6 +3498,45 @@
         "value": "autodiscovery"
       },
       "name": "AutoDiscoveryGroup"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+        "size": 0,
+        "title": "Monitored Machines (old)",
+        "exportMultipleValues": true,
+        "exportedParameters": [
+          {
+            "fieldName": "",
+            "parameterName": "taggedVMsOld",
+            "parameterType": 5,
+            "quote": ""
+          }
+        ],
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "filter": true
+        },
+        "sortBy": []
+      },
+      "conditionalVisibility": {
+        "parameterName": "ew",
+        "comparison": "isEqualTo",
+        "value": "w"
+      },
+      "name": "Monitored Servers",
+      "styleSettings": {
+        "margin": "400",
+        "padding": "400",
+        "showBorder": true
+      }
     }
   ],
   "fallbackResourceIds": [

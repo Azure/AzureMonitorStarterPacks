@@ -26,7 +26,7 @@ param parAlertState string = 'true'
         mgname: mgname
         packTag: packTag
         parResourceGroupName: parResourceGroupName
-        resourceType: 'resourceType'
+        resourceType: resourceType
         solutionTag: solutionTag
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
