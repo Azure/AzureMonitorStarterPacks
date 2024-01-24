@@ -20,7 +20,7 @@ param deploymentRoleDefinitionIds array = [
 param parAlertState string = 'true'
 
 module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-VirtualNetworkLinkCapacityUtilization'
+    name: 'VirtualNetworkLinkCapacityUtilization'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation
@@ -119,7 +119,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
     }
   }
 module Alert4 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-VirtualNetworkWithRegistrationCapacityUtilization'
+    name: 'VirtualNetworkWithRegistrationCapacityUtilization'
     params: {
     assignmentLevel: assignmentLevel
       policyLocation: policyLocation

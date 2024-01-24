@@ -18,8 +18,9 @@ param deploymentRoleDefinitionIds array = [
 //     environment: 'test'
 // }
 param parAlertState string = 'true'
-  module Alert1 '../../../../modules/alerts/PaaS/activityLogAlert.bicep' = {
-    name: '-ActivityLogNSGDelete'
+
+module Alert1 '../../../../modules/alerts/PaaS/activityLogAlert.bicep' = {
+    name: 'ActivityLogNSGDelete'
     params: {
         assignmentLevel: assignmentLevel
         policyLocation: policyLocation
@@ -31,12 +32,12 @@ param parAlertState string = 'true'
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-        alertname: 'Activity Log NSG Delete '
-        alertDisplayName: 'Activity Log NSG Delete - '
+        alertname: 'Activity Log NSG Delete'
+        alertDisplayName: 'Activity Log NSG Delete'
         alertDescription: 'Activity Log Alert for NSG Delete'
         assignmentSuffix: 'ActnetworkSecurityGroups1'
         AGId: AGId
-        initiativeMember: true
+        initiativeMember: false
         operationName: 'delete'
         packtype: 'Platform'
         instanceName: instanceName
