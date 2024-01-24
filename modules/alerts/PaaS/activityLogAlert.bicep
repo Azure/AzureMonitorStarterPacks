@@ -198,6 +198,13 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                 alertResourceGroupName: {
                                     type: 'string'
                                 }
+                                resourceName: {
+                                    type: 'String'
+                                    metadata: {
+                                        displayName: 'resourceName'
+                                        description: 'Name of the resource'
+                                    }
+                                }
                                 alertResourceGroupTags: {
                                     type: 'object'
                                 }
@@ -230,16 +237,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                               variables: {}
                               resources: [
                                   {
-                                      type: 'Microsoft.Resources/resourceGroups'
-                                      apiVersion: '2021-04-01'
-                                      name: '[parameters(\'alertResourceGroupName\')]'
-                                      location: policyLocation
-                                      tags: '[parameters(\'alertResourceGroupTags\')]'
-                                  }
-                                  {
                                       type: 'Microsoft.Resources/deployments'
                                       apiVersion: '2019-10-01'
-                                      name: alertname
+                                      name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
                                       resourceGroup: '[parameters(\'alertResourceGroupName\')]'
                                       dependsOn: [
                                           '[concat(\'Microsoft.Resources/resourceGroups/\', parameters(\'alertResourceGroupName\'))]'
@@ -360,6 +360,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                           parameters: {
                             enabled: {
                                 value: '[parameters(\'enabled\')]'
+                            }
+                            resourceName: {
+                                value: '[field(\'name\')]'
                             }
                             alertResourceGroupName: {
                                 value: '[parameters(\'alertResourceGroupName\')]'
