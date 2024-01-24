@@ -89,7 +89,7 @@ module Alert${i} '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: '$($_.Properties.windowSize)'
       parThreshold: '$($_.Properties.threshold)'
       assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])${i}'
-      parAutoMitigate: '$($_.Properties.autoMitigate)'
+      parAutoMitigate: '$($_.Properties.autoMitigate).tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
@@ -130,7 +130,7 @@ if ($_.Properties.criterionType -eq 'DynamicThresholdCriterion') {
       minFailingPeriodsToAlert: '$($_.properties.failingPeriods.minFailingPeriodsToAlert)'
       numberOfEvaluationPeriods: '$($_.properties.failingPeriods.numberOfEvaluationPeriods)'
       assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])${i}'
-      parAutoMitigate: '$($_.Properties.autoMitigate)'
+      parAutoMitigate: '$($_.Properties.autoMitigate).tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
