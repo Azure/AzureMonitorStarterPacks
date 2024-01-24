@@ -34,7 +34,7 @@ param parAlertState string = 'true'
 
 
 $i=1
-$alerts |ForEach-Object {
+$alerts | Where-Object {$_.visible -eq $true} | ForEach-Object {
 #$($_.Properties.criterionType)
     if ($_.Properties.criterionType -eq 'StaticThresholdCriterion') {
 

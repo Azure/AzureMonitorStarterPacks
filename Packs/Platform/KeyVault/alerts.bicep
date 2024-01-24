@@ -34,9 +34,9 @@ module ActivityLogKeyVaultDeleteAlert '../../../modules/alerts/PaaS/activityLogA
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-        alertname: 'Deploy_activitylog_KeyVault_Delete'
-        alertDisplayName: 'Deploy Activity Log Key Vault Delete Alert'
-        alertDescription: 'Policy to Deploy Activity Log Key Vault Delete Alert'
+        alertname: 'Activitylog_KeyVault_Delete'
+        alertDisplayName: 'Activity Log Key Vault Delete Alert'
+        alertDescription: 'Activity Log Key Vault Delete Alert'
         assignmentSuffix: 'ActKVDel'
         AGId: AGId
         initiativeMember: true

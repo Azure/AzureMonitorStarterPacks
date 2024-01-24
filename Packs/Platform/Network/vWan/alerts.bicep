@@ -68,9 +68,9 @@ module vWanPacketEgressDropCountAlert '../../../../modules/alerts/PaaS/metricAle
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'Deploy_VPNGW_EgDropCount_Alert'
-      alertDisplayName: 'Deploy VPN Gateway Egress Packet Drop Count Alert'
-      alertDescription: 'Policy to audit/deploy VPN Gateway Egress Packet Drop Count Alert'
+      alertname: 'VPNGW_EgDropCount_Alert'
+      alertDisplayName: 'VPN Gateway Egress Packet Drop Count Alert'
+      alertDescription: 'VPN Gateway Egress Packet Drop Count Alert'
       metricNamespace: 'microsoft.network/vpngateways'
       parAlertSeverity: '2'
       parAlertState: parAlertState

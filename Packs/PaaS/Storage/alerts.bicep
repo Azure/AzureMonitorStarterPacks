@@ -31,9 +31,9 @@ module StorageAvailabilityAlert '../../../modules/alerts/PaaS/metricAlertStaticT
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-        alertname: 'Deploy_Storage_Availability_Alert'
-        alertDisplayName: 'Deploy Storage Availability Alert'
-        alertDescription: 'Deploy Storage Availability Alert'
+        alertname: 'Storage_Availability_Alert'
+        alertDisplayName: 'Storage Availability Alert'
+        alertDescription: 'Storage Availability Alert'
         metricNamespace: 'Microsoft.Storage/storageAccounts'
         parAlertSeverity: '1'
         parAlertState: parAlertState
