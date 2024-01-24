@@ -99,6 +99,7 @@ module AVD './AVD/monitoring.bicep' = {
     workspaceId: workspaceId
   }
 }
+// No logs for this pack, so going straight to alerts
 module LogicApps './LogicApps/alerts.bicep' = {
   name: 'LogicAppsAlerts'
   params: {
@@ -124,6 +125,55 @@ module LogicApps './LogicApps/alerts.bicep' = {
   }
 }
 
+// No logs for this pack, so going straight to alerts
+module SQLMI './SQL/SQLMI/alerts.bicep' = {
+  name: 'SQLMIAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'SQLMI'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    //solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Sql/managedInstances'
+  }
+}
+module SQLSrv './SQL/server/alerts.bicep' = {                              
+  name: 'SQLSrvAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'SQLSrv'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    //solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Sql/servers/databases'
+  }
+}
 module WebApps './WebApp/monitoring.bicep' = {
   name: 'WebApps'
   params: {
