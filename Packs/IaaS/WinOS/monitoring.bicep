@@ -81,7 +81,7 @@ module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
   }
 }
 
-module InsightsAlerts './VMInsightsAlerts.bicep' = {
+module InsightsAlerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {

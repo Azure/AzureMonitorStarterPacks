@@ -73,9 +73,8 @@ module ADDS './ADDS/monitoring.bicep' = {
     solutionVersion: solutionVersion
   }
 }
-
-module WinOSPack './WinOS/monitoring.bicep' = {
-  name: 'WinOSPack'
+module VMInsightsPack './VMInsights/monitoring.bicep' = {
+  name: 'VMInsightsPack'
   params: {
     assignmentLevel: assignmentLevel
     dceId: dceId
@@ -90,28 +89,47 @@ module WinOSPack './WinOS/monitoring.bicep' = {
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
     instanceName: instanceName
+  }
+}
+
+// module WinOSPack './WinOS/monitoring.bicep' = {
+//   name: 'WinOSPack'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     dceId: dceId
+//     location: location
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     subscriptionId: subscriptionId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     workspaceId: workspaceId
+//     customerTags: customerTags
+//     actionGroupResourceId: actionGroupResourceId
+//     instanceName: instanceName
     
-  }
-}
+//   }
+// }
 
-module LxOSPack './LxOS/monitoring.bicep' = {
-  name: 'LxOSPack-deployment'
-  params: {
-    assignmentLevel: assignmentLevel
-    dceId: dceId
-    location: location
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: workspaceId
-    customerTags: customerTags
-    actionGroupResourceId: actionGroupResourceId
-    instanceName: instanceName
-  }
-}
+// module LxOSPack './LxOS/monitoring.bicep' = {
+//   name: 'LxOSPack-deployment'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     dceId: dceId
+//     location: location
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     subscriptionId: subscriptionId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     workspaceId: workspaceId
+//     customerTags: customerTags
+//     actionGroupResourceId: actionGroupResourceId
+//     instanceName: instanceName
+//   }
+// }
 module IIS './IIS/monitoring.bicep' = {
   name: 'IISPack-deployment'
   params: {
