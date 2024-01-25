@@ -1,25 +1,41 @@
 targetScope = 'managementGroup'
-param solutionTag string
-param packTag string
+param avdLogAlertsUri string
+param packtag string
+param primaryScriptUri string
 param subscriptionId string
-param mgname string
-param resourceType string
-param policyLocation string
+param Tags object
+//param mgname string
+//param resourceType string
+//param policyLocation string
 param parResourceGroupName string
-param assignmentLevel string
+param templateUri string
+//param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param instanceName string
+param location string
+param workspaceId string
 
-param deploymentRoleDefinitionIds array = [
-    '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-]
-// param parResourceGroupTags object = {
-//     environment: 'test'
-// }
-param parAlertState string = 'true'
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
-module avdmetric1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module dsAVDHostPoolMapAlerts 'dsAVDHostMapping.bicep' = {
+    name: 'linked_ds-AVDHostMapping-${uniqueString(deployment().name)}'
+    scope: resourceGroup(subscriptionId, parResourceGroupName)
+    params: {
+      avdLogAlertsUri: avdLogAlertsUri
+      AGId: AGId
+      location: location
+      moduleprefix: moduleprefix
+      packtag: packtag
+      primaryScriptUri: primaryScriptUri
+      templateUri: templateUri
+      workspaceId: workspaceId
+      userManagedIdentityResourceId: userManagedIdentityResourceId
+      Tags: Tags
+    }
+  }
+
+/* module avdmetric1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-avd'
     params: {
         assignmentLevel: assignmentLevel
@@ -50,5 +66,7 @@ module avdmetric1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep
         packtype: 'PaaS'
         instanceName: instanceName
     }
-}
+} */
+
+output dsAVDHostPoolMapAlerts object = dsAVDHostPoolMapAlerts.outputs
 

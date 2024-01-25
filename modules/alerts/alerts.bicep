@@ -20,6 +20,7 @@ module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
     windowSize: alert.windowSize
     scope: workspaceId
     query: alert.query
+    dimensions: contains(alert, 'dimensions') ? alert.dimensions : null
     packtag: packtag
     Tags: Tags
     alertType: alert.alertType
