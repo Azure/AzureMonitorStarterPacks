@@ -48,23 +48,6 @@ var logLevels =[
   'Emergency'
 ]
 
-// Action Group
-// module ag '../../../modules/actiongroups/ag.bicep' =  {
-//   name: 'actionGroup'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
-
 module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = {
   name: 'filecollectionrule-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -109,6 +92,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: ruleshortname
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 // // Grafana upload and install

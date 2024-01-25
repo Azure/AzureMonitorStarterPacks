@@ -159,7 +159,7 @@ if ($_.type -eq 'ActivityLog') {
         subscriptionId: subscriptionId
         userManagedIdentityResourceId: userManagedIdentityResourceId
         deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-        alertname: '$($_.Name) '
+        alertname: '$($_.Name)'
         alertDisplayName: '$($_.Name) - $($_.Properties.metricNameSpace)'
         alertDescription: '$($_.description)'
         assignmentSuffix: 'Act$($resourceType.split("/")[1])${i}'

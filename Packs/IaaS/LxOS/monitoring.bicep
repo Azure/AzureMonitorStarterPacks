@@ -73,6 +73,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: ruleshortname
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 

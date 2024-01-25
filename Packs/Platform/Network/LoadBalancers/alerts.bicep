@@ -86,7 +86,7 @@ module ALBUsedSNATPorts '../../../../modules/alerts/PaaS/metricAlertStaticThresh
 //     name: '${uniqueString(deployment().name)}-ALBDGlobalBackendAvailAlert'
 //     params: {
 //         alertname: 'Load Balancer Global Backend Availability'
-//         alertDisplayName: 'Global Backend Availability '
+//         alertDisplayName: 'Global Backend Availability'
 //         alertDescription: 'Policy to deploy Global Backend Availability alert'
 //         metricNamespace: 'Microsoft.Network/loadBalancers'
 //         metricName: 'GlobalBackendAvailability'

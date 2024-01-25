@@ -9,6 +9,7 @@ param userManagedIdentityResourceId string
 param mgname string
 param assignmentLevel string = 'managementGroup'
 param subscriptionId string
+param instanceName string
 
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -41,6 +42,7 @@ module policyARC './associacionpolicyARC.bicep' = {
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
+    instanceName: instanceName
   }
 }
 //module policyAssignment {}

@@ -164,6 +164,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-1'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 
@@ -193,6 +194,7 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-2'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 
