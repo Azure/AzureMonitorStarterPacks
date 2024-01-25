@@ -1,5 +1,10 @@
 targetScope = 'managementGroup'
 
+// Given the need to loop through each host pool this deployment will eventually pass the alerts to a deployment script that will
+// map the host pool session hosts to the possible different Resource Group to scope the alerts to for VMs.  It will then launch the
+// modules/alerts/PaaS/alerts.json from within the script. Thus the dependancy on the ARM/JSON version of alerts.json.
+
+
 @description('Location of needed scripts to deploy solution.')
 param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/HostPoolDeployment/master/'
 
