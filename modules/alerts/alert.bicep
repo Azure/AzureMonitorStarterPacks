@@ -39,7 +39,7 @@ param dimensions array = [{
 param operator string = 'GreaterThan'
 
 module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
-  name: 'rowAlert-AMSP-${alertRuleName}'
+  name: 'rowAlert-${packtag}-${alertRuleName}'
   params: {
     alertRuleName: alertRuleName
     alertRuleDisplayName: alertRuleDisplayName
@@ -60,7 +60,7 @@ module rowAlert './scheduledqueryruleRows.bicep' = if (alertType == 'rows') {
 }
 
 module aggregateAlert './scheduledqueryruleAggregate.bicep' = if (alertType == 'Aggregated') {
-  name: 'AggregateAlert-AMSP-${alertRuleName}'
+  name: 'AggregateAlert-${packtag}-${alertRuleName}'
   params: {
     alertRuleName: alertRuleName
     alertRuleDisplayName: alertRuleDisplayName

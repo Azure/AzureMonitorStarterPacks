@@ -1,6 +1,5 @@
 targetScope = 'managementGroup'
 param avdLogAlertsUri string
-param solutionTag string
 param packtag string
 param primaryScriptUri string
 param subscriptionId string
@@ -13,11 +12,11 @@ param templateUri string
 //param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
-//param instanceName string
+param instanceName string
 param location string
 param workspaceId string
 
-
+var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
 module dsAVDHostPoolMapAlerts 'dsAVDHostMapping.bicep' = {
     name: 'linked_ds-AVDHostMapping-${uniqueString(deployment().name)}'
@@ -26,7 +25,7 @@ module dsAVDHostPoolMapAlerts 'dsAVDHostMapping.bicep' = {
       avdLogAlertsUri: avdLogAlertsUri
       AGId: AGId
       location: location
-      solutionTag: solutionTag
+      moduleprefix: moduleprefix
       packtag: packtag
       primaryScriptUri: primaryScriptUri
       templateUri: templateUri

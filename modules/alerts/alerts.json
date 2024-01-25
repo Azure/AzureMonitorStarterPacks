@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5295182051807501165"
+      "templateHash": "14360914330328314924"
     }
   },
   "parameters": {
@@ -100,7 +100,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "17415609957541989580"
+              "templateHash": "16978214315872862550"
             }
           },
           "parameters": {
@@ -191,7 +191,7 @@
               "condition": "[equals(parameters('alertType'), 'rows')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('rowAlert-AMSP-{0}', parameters('alertRuleName'))]",
+              "name": "[format('rowAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -346,7 +346,7 @@
               "condition": "[equals(parameters('alertType'), 'Aggregated')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('AggregateAlert-AMSP-{0}', parameters('alertRuleName'))]",
+              "name": "[format('AggregateAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

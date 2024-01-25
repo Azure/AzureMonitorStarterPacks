@@ -110,6 +110,7 @@ module Alerts 'alerts.bicep' = {
   params: {
     location: location
     avdLogAlertsUri: avdLogAlertsUri
+    instanceName: instanceName
     workspaceId: workspaceId
     AGId: actionGroupResourceId
     templateUri: templateUri
@@ -118,7 +119,6 @@ module Alerts 'alerts.bicep' = {
     primaryScriptUri: primaryScriptUri
     Tags: Tags
     parResourceGroupName: parResourceGroupName
-    solutionTag: solutionTag
     subscriptionId: subscriptionId
   }
 }
