@@ -35,22 +35,6 @@ var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
-// Action Group
-// module ag '../../../modules/actiongroups/ag.bicep' =  {
-//   name: 'New-AG'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
 // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
 module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
   name: 'vmInsightsDCR-${packtag}'
@@ -91,17 +75,4 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     subscriptionId: subscriptionId
   }
 }
-// // Grafana upload and install
-// module grafana 'ds.bicep' = {
-//   name: 'grafana'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   params: {
-//     fileName: 'grafana.json'
-//     grafanaName: grafanaName
-//     location: location
-//     resourceGroupName: resourceGroupName
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     packsManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
+
