@@ -72,6 +72,7 @@ module addscollectionappversion '../../../setup/discovery/modules/aigappversion.
     installCommands: 'powershell -command "ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1"'
     removeCommands: 'Unregister-ScheduledTask -TaskName "AD DS Collection Task" "\\"'
     tags: tags
+    packageFileName: 'addscollection.zip'
   }
 }
 module applicationPolicy '../../../setup/discovery/modules/vmapplicationpolicy.bicep' = {

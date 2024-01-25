@@ -66,6 +66,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
     installCommands: 'powershell -command "ren windiscovery discover.zip; expand-archive ./discover.zip . ; ./install.ps1"'
     removeCommands: 'Unregister-ScheduledTask -TaskName "Monstar Packs Discovery" "\\"'
     tags: tags
+    packageFileName: 'discover.zip'
   }
 }
 module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {

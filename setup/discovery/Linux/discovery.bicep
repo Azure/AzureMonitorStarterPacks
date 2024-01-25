@@ -68,6 +68,7 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     installCommands: 'tar -xvf ${appName} && chmod +x ./install.sh && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
     tags: tags
+    packageFileName: 'discover.tar'
   }
 }
 module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {

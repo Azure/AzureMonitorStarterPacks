@@ -4,6 +4,7 @@ param appVersionName string
 param location string
 param targetRegion string
 param mediaLink string
+param packageFileName string
 param installCommands string
 param removeCommands string
 param tags object
@@ -32,7 +33,9 @@ resource appVersion 'Microsoft.Compute/galleries/applications/versions@2022-03-0
         install: installCommands
         remove: removeCommands
       }
-      settings: {}
+      settings: {
+        packageFileName: packageFileName
+      }
       enableHealthCheck: false
       targetRegions: [
         {
