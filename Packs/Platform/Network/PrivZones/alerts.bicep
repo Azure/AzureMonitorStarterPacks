@@ -130,7 +130,7 @@ module Alert4 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'VNet With Registration Capacity Utilization - privateDnsZones'
+      alertname: 'VNet With Registration Capacity Util. - privateDnsZones'
       alertDisplayName: 'Virtual Network With Registration Capacity Utilization - Microsoft.Network/privateDnsZones'
       alertDescription: 'Percent of Virtual Network Link with auto-registration capacity utilized by a Private DNS zone'
       metricNamespace: 'Microsoft.Network/privateDnsZones'
