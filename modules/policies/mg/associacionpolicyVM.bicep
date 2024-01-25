@@ -5,6 +5,7 @@ param policyDisplayName string
 param policyDescription string
 param packtag string
 param solutionTag string
+param instanceName string
 param roledefinitionIds array =[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
   '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
@@ -19,6 +20,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
+      instanceName: instanceName
     }
     policyType: 'Custom'
     mode: 'Indexed'
@@ -38,6 +40,14 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
           description: 'The value of the tag.'
         }
         defaultValue: packtag
+      }
+      instanceName: {
+        type: 'String'
+        metadata: {
+          displayName: 'Tag value'
+          description: 'The value of the tag.'
+        }
+        defaultValue: instanceName
       }
       // DCRName: {
       //   type: 'String'
@@ -84,7 +94,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         effect: '[parameters(\'effect\')]'
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
-          name: 'AMP-${packtag}-${split(DCRId,'/')[8]}' 
+          name: 'AMP-${instanceName}-${packtag}-${split(DCRId,'/')[8]}'
           roleDefinitionIds: roledefinitionIds
           deployment: {
             properties: {
@@ -105,7 +115,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   packTag: {
                     type: 'string'
                   }
-
+                  instanceName: {
+                    type: 'string'
+                  }
                 }
                 variables: {
                   locationLongNameToShortMap: {
@@ -124,7 +136,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   //dcrId: '[concat(\'/subscriptions/\', variables(\'subscriptionId\'), \'/resourceGroups\', variables('defaultRGName'), '/providers/Microsoft.Insights/dataCollectionRules/', variables('dcrName'))]'
                   //DcrId: '[resourceId(\'Microsoft.Insights/dataCollectionRules\', variables (\'DCRName\'))]'
                   subscriptionId: '[subscription().subscriptionId]'
-                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/MonStar-\',parameters(\'packTag\'),\'-\',split(parameters(\'DCRId2\'),\'/\')[8])]'
+                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/AMP-\',parameters(\'instanceName\'),\'-\'parameters(\'packTag\'),\'-\',split(parameters(\'DCRId2\'),\'/\')[8])]'
                 }
                 resources: [
                   {
@@ -150,6 +162,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                 }
                 packTag: {
                   value: '[parameters(\'tagValue\')]'
+                }
+                instanceName: {
+                  value: '[parameters(\'instanceName\')]'
                 }
               }
             }

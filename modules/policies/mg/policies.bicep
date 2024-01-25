@@ -29,6 +29,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
+    instanceName: instanceName
   }
 }
 module policyARC './associacionpolicyARC.bicep' = {
