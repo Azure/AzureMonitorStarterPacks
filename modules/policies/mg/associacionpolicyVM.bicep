@@ -84,7 +84,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
         effect: '[parameters(\'effect\')]'
         details: {
           type: 'Microsoft.Insights/dataCollectionRuleAssociations'
-          name: 'MonStar-${packtag}-${split(DCRId,'/')[8]}' 
+          name: 'AMP-${packtag}-${split(DCRId,'/')[8]}' 
           roleDefinitionIds: roledefinitionIds
           deployment: {
             properties: {

@@ -35,7 +35,7 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'Aggregated'
     metricMeasureColumn: 'AvgMemUse'
     operator: 'GreaterThan'
@@ -57,7 +57,7 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'Aggregated'
     metricMeasureColumn: 'AvgMemUse'
     operator: 'GreaterThan'
@@ -85,14 +85,14 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query: '''
     arg("").resources
     | where type =~ 'microsoft.compute/virtualmachines'
     | project Computer=name, OS=properties.storageProfile.osDisk.osType
     | join (
-      InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
+      InsightsMetrics\n| where Namespace == 'LogicalDisk'\n    and Name == 'FreeSpacePercentage'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
       ) on Computer
     | where OS=~'Linux'
     | project-away Computer1
@@ -105,14 +105,14 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query: '''
     arg("").resources
     | where type =~ 'microsoft.hybridcompute/machines'
     | project Computer=tolower(name), OS=tolower(properties.osType)
     | join (
-      InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
+      InsightsMetrics\n| where Namespace == 'LogicalDisk'\n    and Name == 'FreeSpacePercentage'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
       ) on Computer
     | where OS=~'Linux'
     | project-away Computer1
@@ -125,14 +125,14 @@ var alertlist = [
     alertRuleSeverity:1 //critical
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query: '''
     arg("").resources
     | where type =~ 'microsoft.compute/virtualmachines'
     | project Computer=name, OS=properties.storageProfile.osDisk.osType
     | join (
-    InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
+    InsightsMetrics\n| where Namespace == 'LogicalDisk'\n    and Name == 'FreeSpacePercentage'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
     ) on Computer  | where OS=~'Linux'  | project-away Computer1
     '''
   }
@@ -143,14 +143,14 @@ var alertlist = [
     alertRuleSeverity:1 //critical
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query: '''
     arg("").resources
     | where type =~ 'microsoft.hybridcompute/machines'
     | project Computer=tolower(name), OS=tolower(properties.osType)
     | join (
-    InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
+    InsightsMetrics\n| where Namespace == 'LogicalDisk'\n    and Name == 'FreeSpacePercentage'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
     ) on Computer  | where OS=~'Linux'  | project-away Computer1
     '''
   }
@@ -162,14 +162,14 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT5M'
-    Linuxize: 'PT5M'
+    windowSize: 'PT5M'
     alertType: 'rows'
     query:   '''
     arg("").resources
     | where type =~ 'microsoft.compute/virtualmachines'
     | project Computer=name, OS=properties.storageProfile.osDisk.osType
     | join (
-      InsightsMetrics| where Namespace == \'Computer\' and Name == \'Heartbeat\'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
+      InsightsMetrics| where Namespace == 'Computer' and Name == 'Heartbeat'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
       ) on Computer  | where OS=~'Linux'  | project-away Computer1
       '''
   }
@@ -180,14 +180,14 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT5M'
-    Linuxize: 'PT5M'
+    windowSize: 'PT5M'
     alertType: 'rows'
     query:   '''
     arg("").resources
     | where type =~ 'microsoft.hybridcompute/machines'
     | project Computer=tolower(name), OS=tolower(properties.osType)
     | join (
-      InsightsMetrics| where Namespace == \'Computer\' and Name == \'Heartbeat\'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
+      InsightsMetrics| where Namespace == 'Computer' and Name == 'Heartbeat'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
       ) on Computer  | where OS=~'Linux'  | project-away Computer1
       '''
   }
@@ -199,13 +199,13 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query:   '''
     arg("").resources
     | where type =~ 'microsoft.compute/virtualmachines'
     | project Computer=name, OS=properties.storageProfile.osDisk.osType
-    | join (InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+    | join (InsightsMetrics\n| where Namespace == 'Processor'\n    and Name == 'UtilizationPercentage'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
     ) on Computer  | where OS=~'Linux'  | project-away Computer1
     '''
   }
@@ -216,13 +216,13 @@ var alertlist = [
     alertRuleSeverity:2 //warning
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query:   '''
     arg("").resources
     | where type =~ 'microsoft.hybridcompute/machines'
     | project Computer=tolower(name), OS=tolower(properties.osType)
-    | join (InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+    | join (InsightsMetrics\n| where Namespace == 'Processor'\n    and Name == 'UtilizationPercentage'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
     ) on Computer  | where OS=~'Linux'  | project-away Computer1
     '''
   }
@@ -233,14 +233,14 @@ var alertlist = [
     alertRuleSeverity:1 //critical
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query: '''
     arg("").resources
     | where type =~ 'microsoft.compute/virtualmachines'
     | project Computer=name, OS=properties.storageProfile.osDisk.osType
     | join (
-      InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+      InsightsMetrics\n| where Namespace == 'Processor'\n    and Name == 'UtilizationPercentage'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
     ) on Computer  | where OS=~'Linux'  | project-away Computer1
     '''
   }
@@ -251,14 +251,14 @@ var alertlist = [
     alertRuleSeverity:1 //critical
     autoMitigate: true
     evaluationFrequency: 'PT15M'
-    Linuxize: 'PT15M'
+    windowSize: 'PT15M'
     alertType: 'rows'
     query: '''
     arg("").resources
     | where type =~ 'microsoft.hybridcompute/machines'
     | project Computer=tolower(name), OS=tolower(properties.osType)
     | join (
-      InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+      InsightsMetrics\n| where Namespace == 'Processor'\n    and Name == 'UtilizationPercentage'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
     ) on Computer  | where OS=~'Linux'  | project-away Computer1
     '''
   }
@@ -275,7 +275,7 @@ var alertlist = [
 //     alertRuleSeverity:2 //warning
 //     autoMitigate: true
 //     evaluationFrequency: 'PT15M'
-//     Linuxize: 'PT15M'
+//     windowSize: 'PT15M'
 //     alertType: 'Aggregated'
 //     metricMeasureColumn: 'AvgMemUse'
 //     operator: 'GreaterThan'
@@ -289,9 +289,9 @@ var alertlist = [
 //     alertRuleSeverity:2 //warning
 //     autoMitigate: true
 //     evaluationFrequency: 'PT15M'
-//     Linuxize: 'PT15M'
+//     windowSize: 'PT15M'
 //     alertType: 'rows'
-//     query: 'InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
+//     query: 'InsightsMetrics\n| where Namespace == 'LogicalDisk'\n    and Name == 'FreeSpacePercentage'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
 //   }
 //   {
 //     alertRuleDescription: 'Alert for disk space under 5%'
@@ -300,9 +300,9 @@ var alertlist = [
 //     alertRuleSeverity:1 //critical
 //     autoMitigate: true
 //     evaluationFrequency: 'PT15M'
-//     Linuxize: 'PT15M'
+//     windowSize: 'PT15M'
 //     alertType: 'rows'
-//     query: 'InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 \n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
+//     query: 'InsightsMetrics\n| where Namespace == 'LogicalDisk'\n    and Name == 'FreeSpacePercentage'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 \n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
 //   }
 //   {
 //     alertRuleDescription: 'Heartbeat alert for VMs - 5 minutes'
@@ -311,9 +311,9 @@ var alertlist = [
 //     alertRuleSeverity:2 //warning
 //     autoMitigate: true
 //     evaluationFrequency: 'PT5M'
-//     Linuxize: 'PT5M'
+//     windowSize: 'PT5M'
 //     alertType: 'rows'
-//     query: 'InsightsMetrics| where Namespace == \'Computer\' and Name == \'Heartbeat\'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
+//     query: 'InsightsMetrics| where Namespace == 'Computer' and Name == 'Heartbeat'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
 //   }
 //   {
 //     alertRuleDescription: 'Alert for CPU usage over 90%'
@@ -322,9 +322,9 @@ var alertlist = [
 //     alertRuleSeverity:2 //warning
 //     autoMitigate: true
 //     evaluationFrequency: 'PT15M'
-//     Linuxize: 'PT15M'
+//     windowSize: 'PT15M'
 //     alertType: 'rows'
-//     query: 'InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+//     query: 'InsightsMetrics\n| where Namespace == 'Processor'\n    and Name == 'UtilizationPercentage'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
 //   }
 //   {
 //     alertRuleDescription: 'Alert for CPU usage over 95%'
@@ -333,9 +333,9 @@ var alertlist = [
 //     alertRuleSeverity:1 //critical
 //     autoMitigate: true
 //     evaluationFrequency: 'PT15M'
-//     Linuxize: 'PT15M'
+//     windowSize: 'PT15M'
 //     alertType: 'rows'
-//     query: 'InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+//     query: 'InsightsMetrics\n| where Namespace == 'Processor'\n    and Name == 'UtilizationPercentage'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
 //   }
 // ]
 module alertsnew '../../../modules/alerts/alerts.bicep' = {
