@@ -228,7 +228,7 @@
       "evaluationFrequency": "PT1H",
       "windowSize": "PT1H",
       "alertType": "rows",
-      "query": "// Session duration \n// Lists users by session duration in the last 24 hours. \n// The \"State\" provides information on the connection stage of an activity.\n// The delta between \"Connected\" and \"Completed\" provides the connection time for a specific connection.\nWVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\" \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(24:00:00)\n| sort by Duration desc",
+      "query": "WVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\" \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(24:00:00)\n| sort by Duration desc",
       "dimensions": [
         {
           "name": "UserName",
@@ -255,7 +255,7 @@
       "evaluationFrequency": "PT1H",
       "windowSize": "PT1H",
       "alertType": "rows",
-      "query": "// Session duration \n// Lists users by session duration in the last 24 hours. \n// The \"State\" provides information on the connection stage of an activity.\n// The delta between \"Connected\" and \"Completed\" provides the connection time for a specific connection.\nWVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\"  \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(72:00:00)\n| sort by Duration desc",
+      "query": "WVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\"  \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(72:00:00)\n| sort by Duration desc",
       "dimensions": [
         {
           "name": "UserName",

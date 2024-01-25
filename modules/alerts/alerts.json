@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "11531326503677694531"
+      "templateHash": "14360914330328314924"
     }
   },
   "parameters": {
@@ -79,6 +79,7 @@
           "query": {
             "value": "[parameters('alertlist')[copyIndex()].query]"
           },
+          "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
           "packtag": {
             "value": "[parameters('packtag')]"
           },
