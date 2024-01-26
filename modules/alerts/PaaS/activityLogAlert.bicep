@@ -70,6 +70,14 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
             }
             defaultValue: alertDescription
         }
+        alertname: {
+            type: 'String'
+            metadata: {
+                displayName: 'Description'
+                description: 'Description for the alert'
+            }
+            defaultValue: alertname
+        }
         enabled: {
             type: 'String'
             metadata: {
@@ -218,6 +226,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                 alertDescription: {
                                     type: 'string'
                                 }
+                                alertname: {
+                                    type: 'string'
+                                }
                                 solutionTag: {
                                     type: 'string'
                                 }
@@ -259,6 +270,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                 alertDescription: {
                                                     type: 'string'
                                                 }
+                                                alertname: {
+                                                    type: 'string'
+                                                }
                                                 solutionTag: {
                                                     type: 'string'
                                                 }
@@ -280,7 +294,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                   {
                                                       type: 'microsoft.insights/activityLogAlerts'
                                                       apiVersion: '2020-10-01'
-                                                      name: alertname
+                                                      name: '[parameters(\'alertname\')]'
                                                       location: 'global'
                                                       tags: {
                                                          '[parameters(\'solutionTag\')]': '[parameters(\'packTag\')]'
@@ -337,6 +351,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                             alertDescription: {
                                                 value: '[parameters(\'alertDescription\')]'
                                             }
+                                            alertname: {
+                                                value: '[parameters(\'alertDescription\')]'
+                                            }
                                             solutionTag: {
                                                 value: '[parameters(\'solutionTag\')]'
                                             }
@@ -371,6 +388,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                 value: '[parameters(\'alertResourceGroupTags\')]'
                             }
                             alertDescription: {
+                                value: '[parameters(\'alertDescription\')]'
+                            }
+                            alertname: {
                                 value: '[parameters(\'alertDescription\')]'
                             }
                             solutionTag: {
