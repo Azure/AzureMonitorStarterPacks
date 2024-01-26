@@ -68,61 +68,49 @@ var resourceGroupName = split(resourceGroupId, '/')[4]
 //   scope: resourceGroup(insightsRuleRg)
 // }
 // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
+//
+// Previously, this pack was composed of VMInsights rules. Since there are conflicts Linux and Windows boxes running VMinsights and no way to determine if a machne is Linux or Windows, these have been deactivated.
 
-module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
-  name: 'vmInsightsDCR-${packtag}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: location
-    workspaceResourceId: workspaceId
-    Tags: Tags
-    ruleName: rulename
-    dceId: dceId
-  }
-}
-
-module InsightsAlerts './alerts.bicep' = {
-  name: 'Alerts-${packtag}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: location
-    workspaceId: workspaceId
-    AGId: actionGroupResourceId
-    packtag: packtag
-    Tags: Tags
-    instanceName: instanceName
-  }
-}
-
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  scope: managementGroup(mgname)
-  params: {
-    dcrId: vmInsightsDCR.outputs.VMIRuleId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: ruleshortname
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
-// // Grafana upload and install
-// module grafana 'ds.bicep' = {
-//   name: 'grafana'
+// module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
+//   name: 'vmInsightsDCR-${packtag}'
 //   scope: resourceGroup(subscriptionId, resourceGroupName)
 //   params: {
-//     fileName: 'grafana.json'
-//     grafanaName: grafanaName
 //     location: location
-//     resourceGroupName: resourceGroupName
+//     workspaceResourceId: workspaceId
+//     Tags: Tags
+//     ruleName: rulename
+//     dceId: dceId
+//   }
+// }
+
+// module InsightsAlerts './alerts.bicep' = {
+//   name: 'Alerts-${packtag}'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     location: location
+//     workspaceId: workspaceId
+//     AGId: actionGroupResourceId
+//     packtag: packtag
+//     Tags: Tags
+//     instanceName: instanceName
+//   }
+// }
+
+// module policysetup '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   scope: managementGroup(mgname)
+//   params: {
+//     dcrId: vmInsightsDCR.outputs.VMIRuleId
+//     packtag: packtag
 //     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     packsManagedIdentityResourceId: userManagedIdentityResourceId
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: ruleshortname
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
 //   }
 // }
 

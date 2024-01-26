@@ -122,7 +122,7 @@ var performanceCounters=[
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
-module Alerts './WinIISAlerts.bicep' = {
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {

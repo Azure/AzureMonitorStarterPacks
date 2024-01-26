@@ -39,18 +39,6 @@ var tempTags= {
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
-
-// module ag '../../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
-//     name: 'deployAG-new'
-//     scope: resourceGroup(subscriptionId, resourceGroupName)
-//     params: {
-//       emailreceiver: emailreceiver
-//       emailreiceversemail: emailreiceversemail
-//       Tags: Tags
-//       location: 'global'
-//       groupshortname: actionGroupName
-//     }
-//   }
 module ADDS './ADDS/monitoring.bicep' = {
   name: 'ADDSPack'
   params: {
@@ -91,7 +79,6 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
     instanceName: instanceName
   }
 }
-
 // module WinOSPack './WinOS/monitoring.bicep' = {
 //   name: 'WinOSPack'
 //   params: {
@@ -111,7 +98,6 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
     
 //   }
 // }
-
 // module LxOSPack './LxOS/monitoring.bicep' = {
 //   name: 'LxOSPack-deployment'
 //   params: {
@@ -148,7 +134,6 @@ module IIS './IIS/monitoring.bicep' = {
     instanceName: instanceName
   }
 }
-
 module IIS2016 './IIS2016/monitoring.bicep' = {
   name: 'IIS2016-deployment'
   params: {

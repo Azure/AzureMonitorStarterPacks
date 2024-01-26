@@ -34,19 +34,40 @@ var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
+//
+// Previously, this pack was composed of VMInsights rules. Since there are conflicts Linux and Windows boxes running VMinsights and no way to determine if a machne is Linux or Windows, these have been deactivated.
 
-// So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
-module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
-  name: 'vmInsightsDCR-${packtag}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: location
-    workspaceResourceId: workspaceId
-    Tags: Tags
-    ruleName: rulename
-    dceId: dceId
-  }
-}
+// // So, let's create an Insights rule for the VMs that should be the same as the usual VMInsights.
+// module vmInsightsDCR '../../../modules/DCRs/DefaultVMI-rule.bicep' = {
+//   name: 'vmInsightsDCR-${packtag}'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     location: location
+//     workspaceResourceId: workspaceId
+//     Tags: Tags
+//     ruleName: rulename
+//     dceId: dceId
+//   }
+// }
+
+// module policysetup '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   scope: managementGroup(mgname)
+//   params: {
+//     dcrId: vmInsightsDCR.outputs.VMIRuleId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: ruleshortname
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }
+
 module InsightsAlerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -59,21 +80,3 @@ module InsightsAlerts './alerts.bicep' = {
     instanceName: instanceName
   }
 }
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  scope: managementGroup(mgname)
-  params: {
-    dcrId: vmInsightsDCR.outputs.VMIRuleId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: ruleshortname
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
-

@@ -11,7 +11,7 @@ param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/Hos
 @description('SaS token if needed for script location.')
 @secure()
 param _ArtifactsLocationSasToken string = ''
-
+param ruleshortname string = 'AVD'
 param actionGroupResourceId string
 param packtag string = 'AVD'
 param solutionTag string
@@ -143,7 +143,22 @@ module dcravdMonitoring '../../../modules/DCRs/dcr-AVD.bicep' = {
     dceId: dceId
   }
 }
-
+module policysetup '../../../modules/policies/mg/policies.bicep' = {
+  name: 'policysetup-${packtag}'
+  params: {
+    dcrId: dcravdMonitoring.outputs.dcrId
+    packtag: packtag
+    solutionTag: solutionTag
+    rulename: rulename
+    location: location
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    mgname: mgname
+    ruleshortname: '${ruleshortname}-1'
+    assignmentLevel: assignmentLevel
+    subscriptionId: subscriptionId
+    instanceName: instanceName
+  }
+}
 // Diagnostic settings policies
 module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpolicyDiag.bicep' = [for (rt,i) in resourceTypes: {
   name: 'associacionpolicy-${packtag}-${split(rt, '/')[1]}'

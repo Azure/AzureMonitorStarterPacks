@@ -136,7 +136,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   //dcrId: '[concat(\'/subscriptions/\', variables(\'subscriptionId\'), \'/resourceGroups\', variables('defaultRGName'), '/providers/Microsoft.Insights/dataCollectionRules/', variables('dcrName'))]'
                   //DcrId: '[resourceId(\'Microsoft.Insights/dataCollectionRules\', variables (\'DCRName\'))]'
                   subscriptionId: '[subscription().subscriptionId]'
-                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/AMP-\',parameters(\'instanceName\'),\'-\'parameters(\'packTag\'),\'-\',split(parameters(\'DCRId2\'),\'/\')[8])]'
+                  dcraName: '[concat(parameters(\'vmName\'),\'/Microsoft.Insights/AMP-\',parameters(\'instanceName\'),\'-\',parameters(\'packTag\'),\'-\',split(parameters(\'DCRId2\'),\'/\')[8])]'
                 }
                 resources: [
                   {
