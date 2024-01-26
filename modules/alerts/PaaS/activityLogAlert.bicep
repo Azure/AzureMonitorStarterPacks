@@ -73,8 +73,8 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
         alertname: {
             type: 'String'
             metadata: {
-                displayName: 'Description'
-                description: 'Description for the alert'
+                displayName: 'Name'
+                description: 'Name for the alert'
             }
             defaultValue: alertname
         }
@@ -352,7 +352,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                 value: '[parameters(\'alertDescription\')]'
                                             }
                                             alertname: {
-                                                value: '[parameters(\'alertDescription\')]'
+                                                value: '[parameters(\'alertname\')]'
                                             }
                                             solutionTag: {
                                                 value: '[parameters(\'solutionTag\')]'
@@ -391,7 +391,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                 value: '[parameters(\'alertDescription\')]'
                             }
                             alertname: {
-                                value: '[parameters(\'alertDescription\')]'
+                                value: '[parameters(\'alertname\')]'
                             }
                             solutionTag: {
                             value: '[parameters(\'tagName\')]'
