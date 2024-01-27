@@ -252,9 +252,6 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                       apiVersion: '2019-10-01'
                                       name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
                                       resourceGroup: '[parameters(\'alertResourceGroupName\')]'
-                                      dependsOn: [
-                                          '[concat(\'Microsoft.Resources/resourceGroups/\', parameters(\'alertResourceGroupName\'))]'
-                                      ]
                                       properties: {
                                           mode: 'Incremental'
                                           template: {

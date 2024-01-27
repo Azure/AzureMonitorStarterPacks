@@ -31,6 +31,7 @@ module policyVM '../modules/associacionpolicyVM.bicep' = {
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
     packtype: packtype
+    instanceName: instanceName
   }
 }
 module vmassignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {

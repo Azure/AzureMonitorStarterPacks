@@ -141,7 +141,7 @@ module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
     OS: 'Linux'
     solutionTag: solutionTag
     tableName: tableNameToUse
-    packtag: 'linuxdiscovery'
+    packtag: 'LxDisc'
     packtype: 'Discovery'
     instanceName: instanceName
   }
@@ -152,7 +152,7 @@ module policysetup '../modules/policies.bicep' = {
   name: 'policysetup-linuxdiscovery'
   params: {
     dcrId: LinuxDiscoveryDCR.outputs.ruleId
-    packtag: 'LxOS'
+    packtag: 'LxDisc'
     solutionTag: solutionTag
     rulename: LinuxDiscoveryDCR.outputs.ruleName
     location: location

@@ -72,7 +72,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
 module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
   name: 'applicationPolicy-${appName}'
   params: {
-    packtag: 'WinOS'
+    packtag: 'WinDisc'
     policyDescription: 'Install ${appName} to ${OS} VMs'
     policyName: 'Install ${appName}'
     policyDisplayName: 'Install ${appName} to ${OS} VMs'
@@ -131,7 +131,7 @@ module windiscoveryDCR '../modules/discoveryrule.bicep' = {
     OS: 'Windows'
     solutionTag: solutionTag
     tableName: tableNameToUse
-    packtag: 'windiscovery'
+    packtag: 'WinDisc'
     packtype: 'Discovery'
     instanceName: instanceName
   }
