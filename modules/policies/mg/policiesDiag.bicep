@@ -34,7 +34,7 @@ module diagassignment './assignment.bicep' = if(assignmentLevel == 'managementGr
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policydefinitionId
-    assignmentName: 'AMP-${instanceName}-${packtag}-${resourceShortType}'
+    assignmentName: 'AMP-${instanceName}-${packtag}-${resourceShortType}-${assignmentSuffix}'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
@@ -46,7 +46,7 @@ module diagassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policydefinitionId
-    assignmentName: 'AMP-assig-${instanceName}-${packtag}-${resourceShortType}'
+    assignmentName: 'AMP-${instanceName}-${packtag}-${resourceShortType}-${assignmentSuffix}'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
