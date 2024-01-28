@@ -42,7 +42,7 @@ module vmassignment '../modules/assignment.bicep' = if(assignmentLevel == 'manag
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: '${packtag}-${ruleshortname}-vm'
+    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
@@ -57,7 +57,7 @@ module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel !=
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: '${instanceName}-${packtag}-${ruleshortname}-vm'
+    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag

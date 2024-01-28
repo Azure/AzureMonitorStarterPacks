@@ -29,7 +29,7 @@ var tempTags ={
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'DNS2016'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 

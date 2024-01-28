@@ -68,7 +68,7 @@ module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if
   params: {
     policyDefinitionId: amaPolicyMG.outputs.policySetDefId
     location: location
-    assignmentName: 'assign-${rulename}'
+    assignmentName: 'AMP-Assign-${rulename}'
     solutionTag: solutionTag
     userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
     // roledefinitionIds: [

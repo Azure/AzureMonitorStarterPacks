@@ -20,6 +20,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
+      instanceName: instanceName
     }
     policyType: 'Custom'
     mode: 'Indexed'
@@ -39,6 +40,14 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
           description: 'The value of the tag.'
         }
         defaultValue: packtag
+      }
+      instanceName: {
+        type: 'String'
+        metadata: {
+          displayName: 'Instance Name'
+          description: 'The name of the instance of the virtual machine.'
+        }
+        defaultValue: instanceName
       }
       // DCRName: {
       //   type: 'String'
@@ -106,7 +115,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                   packTag: {
                     type: 'string'
                   }
-
+                  instanceName: {
+                    type: 'string'
+                  }
                 }
                 variables: {
                   locationLongNameToShortMap: {
@@ -151,6 +162,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
                 }
                 packTag: {
                   value: '[parameters(\'tagValue\')]'
+                }
+                instanceName: {
+                  value: '[parameters(\'instanceName\')]'
                 }
               }
             }

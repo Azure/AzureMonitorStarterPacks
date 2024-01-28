@@ -98,7 +98,7 @@ module vmapplicationAssignment '../../../setup/discovery/modules/assignment.bice
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: '${ruleshortname}-application'
+    assignmentName: 'AMP-Assign-${ruleshortname}-application'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
@@ -113,7 +113,7 @@ module vmassignmentsub '../../../setup/discovery/modules/sub/assignment.bicep' =
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: '${ruleshortname}-application'
+    assignmentName: 'AMP-Assign-${ruleshortname}-application'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag

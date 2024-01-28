@@ -46,7 +46,7 @@ module diagassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policydefinitionId
-    assignmentName: '${packtag}-${resourceShortType}-${policyType}-${assignmentSuffix}'
+    assignmentName: 'AMP-assig-${instanceName}${packtag}-${resourceShortType}-${policyType}-${assignmentSuffix}'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag

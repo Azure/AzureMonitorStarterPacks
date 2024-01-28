@@ -58,7 +58,7 @@ module arcassignment './assignment.bicep' = if(assignmentLevel == 'managementGro
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: '${packtag}-${ruleshortname}-arc'
+    assignmentName: 'AMP-Assign-${ruleshortname}-arc'
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
@@ -72,7 +72,7 @@ module vmassignment './assignment.bicep' = if(assignmentLevel == 'managementGrou
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: '${packtag}-${ruleshortname}-vm'
+    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
@@ -87,7 +87,7 @@ module vmassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel !
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: '${packtag}-${ruleshortname}-vm'
+    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
@@ -103,7 +103,7 @@ module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel 
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: '${packtag}-${ruleshortname}-arc'
+    assignmentName: 'AMP-Assign-${ruleshortname}-arc'
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
