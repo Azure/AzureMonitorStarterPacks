@@ -46,7 +46,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -80,7 +80,7 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -114,7 +114,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -148,7 +148,7 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -182,7 +182,7 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -216,7 +216,7 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -250,7 +250,7 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -286,7 +286,7 @@ module Alert8  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Count'
@@ -319,7 +319,7 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -353,7 +353,7 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -387,7 +387,7 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -421,7 +421,7 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -455,7 +455,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Count'
@@ -489,7 +489,7 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -523,7 +523,7 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -557,7 +557,7 @@ module Alert16 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -591,7 +591,7 @@ module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -625,7 +625,7 @@ module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -659,7 +659,7 @@ module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'

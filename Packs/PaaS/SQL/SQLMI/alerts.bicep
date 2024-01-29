@@ -46,7 +46,7 @@ module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -80,7 +80,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
