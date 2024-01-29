@@ -10,6 +10,7 @@ param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param instanceName string
+param solutionVersion string
 
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -46,7 +47,7 @@ module Alert1 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'Platform'
       instanceName: instanceName
       timeAggregation: 'Maximum'
@@ -79,7 +80,7 @@ module Alert2 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'Platform'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -112,7 +113,7 @@ module Alert3 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'Platform'
       instanceName: instanceName
       timeAggregation: 'Maximum'
@@ -145,9 +146,40 @@ module Alert4 '../../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'Platform'
       instanceName: instanceName
       timeAggregation: 'Maximum'
     }
   }
+  module policySet '../../../../modules/policies/mg/policySetGeneric.bicep' = {
+    name: '${packTag}-PolicySet'
+    params: {
+        initiativeDescription: 'AMP-Policy Set to deploy ${resourceType} monitoring policies'
+        initiativeDisplayName: 'AMP-${resourceType} monitoring policies'
+        initiativeName: '${packTag}-PolicySet'
+        solutionTag: solutionTag
+        category: 'Monitoring'
+        version: solutionVersion
+        assignmentLevel: assignmentLevel
+        location: policyLocation
+        subscriptionId: subscriptionId
+        packtag: packTag
+        userManagedIdentityResourceId: userManagedIdentityResourceId
+        instanceName: instanceName
+        policyDefinitions: [
+            {
+                policyDefinitionId: Alert1.outputs.policyId
+            }
+            {
+              policyDefinitionId: Alert2.outputs.policyId
+            }
+            {
+                policyDefinitionId: Alert3.outputs.policyId
+            }
+            {
+              policyDefinitionId: Alert4.outputs.policyId
+            }
+        ]
+    }
+}

@@ -123,10 +123,10 @@ module LogicApps './LogicApps/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
+    solutionVersion: solutionVersion
     resourceType: 'Microsoft.Logic/workflows'
   }
 }
@@ -149,7 +149,7 @@ module SQLMI './SQL/SQLMI/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -173,7 +173,7 @@ module SQLSrv './SQL/server/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -197,12 +197,11 @@ module WebApps './WebApp/monitoring.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     actionGroupResourceId: actionGroupResourceId
     customerTags: customerTags
     location: location
     resourceGroupId: resourceGroupId
-    solutionVersion: solutionVersion
     workspaceId: workspaceId
   }
 }

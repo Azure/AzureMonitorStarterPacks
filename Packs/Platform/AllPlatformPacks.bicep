@@ -104,7 +104,7 @@ module AA './AA/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -128,7 +128,7 @@ module AppGW './Network/AppGW/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -152,7 +152,7 @@ module AzFW './Network/AzFW/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -176,7 +176,7 @@ module AzFD './Network/AzFD/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -200,7 +200,7 @@ module PrivZones './Network/PrivZones/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -224,7 +224,7 @@ module PIP './Network/PIP/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId
@@ -249,7 +249,7 @@ module NSG './Network/NSG/alerts.bicep' = {
     //dceId: dceId
     //customerTags: customerTags
     instanceName: instanceName
-    //solutionVersion: solutionVersion
+    solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
     parResourceGroupName: resourceGroupId

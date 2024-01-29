@@ -10,6 +10,7 @@ param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param instanceName string
+param solutionVersion string
 
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -45,7 +46,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -79,7 +80,7 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -113,7 +114,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -147,7 +148,7 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Maximum'
@@ -181,7 +182,7 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Maximum'
@@ -215,7 +216,7 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -249,7 +250,7 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -283,7 +284,7 @@ module Alert8 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -317,7 +318,7 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -351,7 +352,7 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -385,7 +386,7 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -421,7 +422,7 @@ module Alert12  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -454,7 +455,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -488,7 +489,7 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -522,7 +523,7 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -558,7 +559,7 @@ module Alert16  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -591,7 +592,7 @@ module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -625,7 +626,7 @@ module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -659,7 +660,7 @@ module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -695,7 +696,7 @@ module Alert20  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -730,7 +731,7 @@ module Alert21  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -765,7 +766,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -798,7 +799,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Total'
@@ -832,7 +833,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Average'
@@ -866,7 +867,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Average'
@@ -900,7 +901,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Average'
@@ -934,7 +935,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Total'
@@ -968,7 +969,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Average'
@@ -1002,10 +1003,95 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
 //       parPolicyEffect: 'deployIfNotExists'
 //       AGId: AGId
 //       parAlertState: parAlertState
-//       initiativeMember: false
+//       initiativeMember: true
 //       packtype: 'PaaS'
 //       instanceName: instanceName
 //       timeAggregation: 'Total'
 //     }
 //   }
   
+module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
+  name: '${packTag}-PolicySet'
+  params: {
+      initiativeDescription: 'AMP-Policy Set to deploy ${resourceType} monitoring policies'
+      initiativeDisplayName: 'AMP-${resourceType} monitoring policies'
+      initiativeName: '${packTag}-PolicySet'
+      solutionTag: solutionTag
+      category: 'Monitoring'
+      version: solutionVersion
+      assignmentLevel: assignmentLevel
+      location: policyLocation
+      subscriptionId: subscriptionId
+      packtag: packTag
+      userManagedIdentityResourceId: userManagedIdentityResourceId
+      instanceName: instanceName
+      policyDefinitions: [
+          {
+              policyDefinitionId: Alert1.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert2.outputs.policyId
+          }
+          {
+              policyDefinitionId: Alert3.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert4.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert5.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert6.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert7.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert8.outputs.policyId
+          }
+          {
+            policyDefinitionId: Alert9.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert10.outputs.policyId
+        }
+        {
+            policyDefinitionId: Alert11.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert12.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert13.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert14.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert15.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert16.outputs.policyId
+        }
+        {
+          policyDefinitionId: Alert17.outputs.policyId
+      }
+      {
+        policyDefinitionId: Alert18.outputs.policyId
+      }
+      {
+          policyDefinitionId: Alert19.outputs.policyId
+      }
+      {
+        policyDefinitionId: Alert20.outputs.policyId
+      }
+      {
+        policyDefinitionId: Alert21.outputs.policyId
+      }
+      {
+        policyDefinitionId: Alert22.outputs.policyId
+      }
+      ]
+  }
+}

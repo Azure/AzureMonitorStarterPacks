@@ -204,8 +204,8 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     backend
   ]
   params: {
-    _artifactsLocation: _artifactsLocation
-    _artifactsLocationSasToken: _artifactsLocationSasToken
+    // _artifactsLocation: _artifactsLocation
+    // _artifactsLocationSasToken: _artifactsLocationSasToken
     assignmentLevel: assignmentLevel
     location: location
     dceId: backend.outputs.dceId
@@ -215,7 +215,7 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     workspaceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
-    workspaceIdAVD: seperateLAWforAVD ? (createNewLogAnalyticsWSAVD ? logAnalyticsAVD.outputs.lawresourceid : existingLogAnalyticsWSIdAVD) : ''
+    //workspaceIdAVD: seperateLAWforAVD ? (createNewLogAnalyticsWSAVD ? logAnalyticsAVD.outputs.lawresourceid : existingLogAnalyticsWSIdAVD) : ''
     actionGroupName: actionGroupName
     resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
     emailreceiver: emailreceiver

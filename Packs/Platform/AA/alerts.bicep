@@ -1,5 +1,6 @@
 targetScope = 'managementGroup'
 param solutionTag string
+param solutionVersion string
 param packTag string
 param subscriptionId string
 param mgname string
@@ -45,7 +46,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -113,7 +114,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -147,10 +148,38 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: true
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
     }
   }
   
+  module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
+    name: '${packTag}-PolicySet'
+    params: {
+        initiativeDescription: 'AMP-Policy Set to deploy ${resourceType} monitoring policies'
+        initiativeDisplayName: 'AMP-${resourceType} monitoring policies'
+        initiativeName: '${packTag}-PolicySet'
+        solutionTag: solutionTag
+        category: 'Monitoring'
+        version: solutionVersion
+        assignmentLevel: assignmentLevel
+        location: policyLocation
+        subscriptionId: subscriptionId
+        packtag: packTag
+        userManagedIdentityResourceId: userManagedIdentityResourceId
+        instanceName: instanceName
+        policyDefinitions: [
+            {
+                policyDefinitionId: Alert1.outputs.policyId
+            }
+            {
+                policyDefinitionId: Alert3.outputs.policyId
+            }
+          {
+            policyDefinitionId: Alert4.outputs.policyId
+          }
+        ]
+    }
+}

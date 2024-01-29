@@ -42,5 +42,6 @@ module webappsalerts 'alerts.bicep' = {
     userManagedIdentityResourceId: userManagedIdentityResourceId
     AGId: actionGroupResourceId
     instanceName: instanceName
+    solutionVersion: solutionVersion
   }
 }
