@@ -75,7 +75,10 @@ function Install-azMonitorAgent {
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
+"Resources"
+$resources
 $action = $Request.Body.Action
+
 #$TagList = $Request.Body.Pack.split(',')
 # $PackType = $Request.Body.PackType
 
@@ -91,8 +94,8 @@ if ($resources) {
     switch ($action) {
         'AddAgent' {
             foreach ($resource in $resources) {
-                $resourceName=$resource.Resource.split('/')[8]
-                $resourceSubcriptionId=$resource.Resource.split('/')[2]
+                $resourceName=$resource.id.split('/')[8]
+                $resourceSubcriptionId=$resource.id.split('/')[2]
                 "Running $action for $resourceName resource."
                 #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
                 if ($resource.OS -eq 'Linux') {
@@ -107,31 +110,31 @@ if ($resources) {
                 else {
                     "Agent not installed. Installing..."
                     if ($resource.OS -eq 'Linux') { # 
-                        if ($resource.Resource.split('/')[7] -eq 'virtualMachines') {
+                        if ($resource.id.split('/')[7] -eq 'virtualMachines') {
                             # Virtual machine - add extension
-                            install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.Location `
+                            install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.location `
                             -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27"
-                            #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -EnableAutomaticUpgrade $true
+                            #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.location -EnableAutomaticUpgrade $true
                         }
                         else {
                             # Arc machine -add extension
                             Set-AzContext -SubscriptionId $subscriptionId
                             $tags=get-azvm -Name $resourceName -ResourceGroupName $resource.resourceGroup | Select-Object -ExpandProperty tags | ConvertTo-Json
-                            $agent= New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade -Tag $tags
+                            $agent= New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.location -EnableAutomaticUpgrade -Tag $tags
                         }
                     }
                     else { # Windows
-                        if ($resource.Resource.split('/')[7] -eq 'virtualMachines') {
+                        if ($resource.id.split('/')[7] -eq 'virtualMachines') {
                             # Virtual machine - add extension
-                            install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.Location `
+                            install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.location `
                             -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2"
-                            #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
+                            #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
                         }
                         else {
                             # Arc machine -add extension
                             Set-AzContext -SubscriptionId $subscriptionId
                             $tags=get-azvm -Name $resourceName -ResourceGroupName $resource.resourceGroup | Select-Object -ExpandProperty tags | ConvertTo-Json
-                            $agent=New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade -Tag $tags
+                            $agent=New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.location -EnableAutomaticUpgrade -Tag $tags
                         }
                     }
                     if ($agent) {

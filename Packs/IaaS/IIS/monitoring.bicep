@@ -103,25 +103,7 @@ var performanceCounters=[
   '\\SMTP Server(SMTP 1)\\Total Messages Submitted'
 ]
 
-// Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-// module ag '../../../modules/actiongroups/ag.bicep' = {
-//   name: 'actionGroupName-deployment'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
-
 // Alerts - the module below creates the alerts and associates them with the action group
-
 module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -196,18 +178,3 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
     instanceName: instanceName
   }
 }
-
-// // Grafana upload and install
-// module grafana 'ds.bicep' = {
-//   name: 'grafana'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   params: {
-//     fileName: 'grafana.json'
-//     grafanaName: grafanaName
-//     location: location
-//     resourceGroupName: resourceGroupName
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     packsManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
