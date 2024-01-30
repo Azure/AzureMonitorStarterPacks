@@ -153,6 +153,17 @@ if ($RemoveDiscovery -or $RemoveAll) {
     Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
         $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
         foreach ($ga in $galleryApps) {
+            $gavs=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
+            foreach ($gav in $gavs) {
+                # Find vms with that app
+                $vms=Get-AzVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
+                foreach ($vm in $vms) {
+                    # Remove Application from VM - Remove-AzVMGalleryApplication
+                    Remove-AzVMGalleryApplication -VM $vm -Name $ga.Name -Version $gav.Name -ResourceGroupName $RG
+                }
+                # Remove Application Version - Remove-AzGalleryApplicationVersion
+                Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -Name $gav.Name -ResourceGroupName $RG
+            }
             # Find VMs with that app
             #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
             # Remove Application from VM - Remove-AzVMGalleryApplication

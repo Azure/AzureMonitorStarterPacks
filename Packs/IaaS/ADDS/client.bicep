@@ -70,7 +70,7 @@ module addscollectionappversion '../../../setup/discovery/modules/aigappversion.
     targetRegion: location
     mediaLink: upload.outputs.fileURL
     installCommands: 'powershell -command "ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1"'
-    removeCommands: 'Unregister-ScheduledTask -TaskName "AD DS Collection Task" "\\"'
+    removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'AD DS Collection Task\' \'\\\' "'
     tags: tags
     packageFileName: 'addscollection.zip'
   }

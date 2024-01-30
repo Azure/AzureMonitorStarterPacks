@@ -64,7 +64,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
     targetRegion: location
     mediaLink: upload.outputs.fileURL
     installCommands: 'powershell -command "ren windiscovery discover.zip; expand-archive ./discover.zip . ; ./install.ps1"'
-    removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'Monstar Packs Discovery\' "\\"'
+    removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'Monstar Packs Discovery\' \'\\\'"'
     tags: tags
     packageFileName: 'discover.zip'
   }
