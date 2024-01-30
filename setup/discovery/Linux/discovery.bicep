@@ -74,7 +74,7 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
 module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
   name: 'applicationPolicy-${appName}'
   params: {
-    packtag: 'LxOS'
+    packtag: 'LxDisc'
     policyDescription: 'Install ${appName} to ${OS} VMs'
     policyName: 'Install ${appName}'
     policyDisplayName: 'Install ${appName} to ${OS} VMs'

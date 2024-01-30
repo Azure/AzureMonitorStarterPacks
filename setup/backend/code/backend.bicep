@@ -11,11 +11,7 @@ param solutionTag string
 //param kvname string
 param lawresourceid string
 param appInsightsLocation string
-//param packageUri string = 'https://amonstarterpacks2abbd.blob.core.windows.net/discovery/discovery.zip'
 @description('UTC timestamp used to create distinct deployment scripts for each deployment')
-//param utcValue string = utcNow()
-//param filename string = 'discovery.zip'
-//param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param Tags object
 param subscriptionId string
 param resourceGroupName string

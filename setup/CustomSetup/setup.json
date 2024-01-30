@@ -27,7 +27,7 @@
                 },
                 {
                     "name": "Configuration",
-                    "label": "MonStar Configuration",
+                    "label": "Configuration",
                     "elements": [
                         {
                             "name": "subscriptionAPI",
@@ -394,7 +394,7 @@
                             "visible": "[equals(steps('Configuration').deployDiscovery, true)]",
                             "options": {
                                 "icon": "None",
-                                "text": "When discovery is enabled, machines tagged with WinOS or LxOS will receive an extra extension (VM Application) that will generate application discovery data.",
+                                "text": "When discovery is enabled in the configuration page, workloads will be discovered in those Azure VMs.",
                                 "uri": "https://www.microsoft.com"
                             }
                         },

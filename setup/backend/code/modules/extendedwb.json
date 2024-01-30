@@ -3663,7 +3663,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null,
+                  "value": "dc1",
                   "label": "Select Server"
                 },
                 {
@@ -3713,7 +3713,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 86400000
+                    "durationMs": 900000
                   }
                 }
               ],

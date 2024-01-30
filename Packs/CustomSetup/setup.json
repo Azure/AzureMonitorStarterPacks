@@ -27,7 +27,7 @@
                 },
                 {
                     "name": "Configuration",
-                    "label": "MonStar Configuration",
+                    "label": "Configuration",
                     "elements": [
                         {
                             "name": "subscriptionAPI",

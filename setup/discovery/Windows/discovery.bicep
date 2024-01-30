@@ -64,7 +64,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
     targetRegion: location
     mediaLink: upload.outputs.fileURL
     installCommands: 'powershell -command "ren windiscovery discover.zip; expand-archive ./discover.zip . ; ./install.ps1"'
-    removeCommands: 'Unregister-ScheduledTask -TaskName "Monstar Packs Discovery" "\\"'
+    removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'Monstar Packs Discovery\' "\\"'
     tags: tags
     packageFileName: 'discover.zip'
   }
@@ -114,7 +114,6 @@ module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel !=
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-
 // DCR to collect the data
 module windiscoveryDCR '../modules/discoveryrule.bicep' = {
   name: 'amp-${instanceName}-DCR-${OS}Discovery'
@@ -142,7 +141,7 @@ module policysetup '../modules/policies.bicep' = {
   name: 'policysetup-windoscovery'
   params: {
     dcrId: windiscoveryDCR.outputs.ruleId
-    packtag: 'WinOS'
+    packtag: 'WinDisc'
     solutionTag: solutionTag
     rulename: windiscoveryDCR.outputs.ruleName
     location: location

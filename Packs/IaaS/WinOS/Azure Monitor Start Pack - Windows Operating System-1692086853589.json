@@ -1449,7 +1449,7 @@
             "resources": []
           },
           "azureResourceGraph": {
-            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack contains \"WinOS\" and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
+            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack contains \"VMI\" and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
