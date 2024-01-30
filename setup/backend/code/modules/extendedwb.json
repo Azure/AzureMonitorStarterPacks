@@ -129,7 +129,7 @@
             "id": "afec2944-3bd3-4bd3-8afa-6dc39d0b623a",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Discovery",
+            "linkLabel": "Discovery (Preview)",
             "subTarget": "autodiscovery",
             "style": "link"
           }
@@ -182,8 +182,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca"
                   ]
                 },
                 {
@@ -301,7 +300,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Getting Started\n\nWelcome to the Azure Monitor Starter Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs. You may also disable all the monitoring for a specific server. This will remove the tags and the rule associations*\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts.\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations\n\n## ***If this is the first time using this solution, please configure parameters in the Configuration tab and save the workbook for proper functionality.***\n\n\n[Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n\n[Azure Managed Grafana ({GrafanaInstance:label})]({GrafanaInstance:label})\n\n"
+        "json": "# Getting Started\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance. Make sure to property set permissions before attemping to access it.\n\n## ***If this is the first time using this solution, please configure parameters in the Configuration tab and save the workbook for proper functionality.***\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
       },
       "conditionalVisibility": {
         "parameterName": "tabSelection",
@@ -961,7 +960,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "Resources\n| where type == 'microsoft.compute/virtualmachines'\n| extend\n    JoinID = toupper(id),\n    OSName = tostring(properties.osProfile.computerName),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines'\n| extend\n    JoinID = toupper(id),\n    OSName = tostring(properties.osProfile.computerName),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSName, OSType, ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), subscriptionId, ['Resource Group']=resourceGroup\n| extend Install=iff(ExtensionName=='N/A','Install','N/A'), Uninstall=iff(ExtensionName<>'N/A','Uninstall','N/A')\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1\n| order by tolower(OSName) asc",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' | where isempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter  (\n    resourcecontainers| where type =~ 'microsoft.resources/subscriptions'\n    | project Subscription=name,subscriptionId\n    ) \non subscriptionId| project-away subscriptionId, subscriptionId1",
                     "size": 0,
                     "title": "Non-monitored Machines",
                     "exportMultipleValues": true,
@@ -1022,7 +1021,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "ADDS"
+                          "PS2016"
                         ]
                       }
                     ],
@@ -1227,7 +1226,6 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "NSG",
                           "PrivZones"
                         ]
                       }
@@ -1353,9 +1351,20 @@
                     ],
                     "visualization": "table",
                     "gridSettings": {
-                      "filter": true
+                      "filter": true,
+                      "sortBy": [
+                        {
+                          "itemKey": "Subscription",
+                          "sortOrder": 1
+                        }
+                      ]
                     },
-                    "sortBy": []
+                    "sortBy": [
+                      {
+                        "itemKey": "Subscription",
+                        "sortOrder": 1
+                      }
+                    ]
                   },
                   "name": "Non Monitores Servers",
                   "styleSettings": {
@@ -1396,7 +1405,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "vWan"
+                          "PrivZones"
                         ]
                       }
                     ],
@@ -1545,7 +1554,10 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants"
+                        "resourceType": "microsoft.resources/tenants",
+                        "value": [
+                          "Storage"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1723,7 +1735,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "Avd"
+                          "LogicApps"
                         ]
                       }
                     ],
@@ -1877,7 +1889,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "Storage"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -2039,6 +2051,24 @@
                           "description": "Updating alerts:\n\n\n{alertsselected}\n\nwith Action Group:\n\n{selectedAG}\n",
                           "actionName": "updateAG",
                           "runLabel": "Update"
+                        }
+                      },
+                      {
+                        "id": "f802b903-8a8a-458d-9c55-a428d96ba63d",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Delete Alert Rule",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Delete\", \n    \"alerts\":  [{alertsselected}]\n  }\n}\n",
+                          "httpMethod": "POST",
+                          "title": "Delete",
+                          "description": "# Deleting Alerts\n\nThe following alert rules will be deleted:\n\n{alertsselected}",
+                          "actionName": "Delete",
+                          "runLabel": "Delete"
                         }
                       }
                     ]
@@ -2213,6 +2243,24 @@
                           "description": "Updating alerts:\n\n\n{alertsselected}\n\nwith Action Group:\n\n{selectedAG}\n",
                           "actionName": "updateAG",
                           "runLabel": "Update"
+                        }
+                      },
+                      {
+                        "id": "eb46862a-b443-489e-a2bf-abc05c541b53",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Delete Alert Rule",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Delete\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}\n",
+                          "httpMethod": "POST",
+                          "title": "Delete",
+                          "description": "# Deleting the following Alert rules:\n\n\n{alertsselectednopack}]\n",
+                          "actionName": "Delete",
+                          "runLabel": "Delete"
                         }
                       }
                     ]
@@ -2850,14 +2898,14 @@
                 "filter": true,
                 "sortBy": [
                   {
-                    "itemKey": "pack",
+                    "itemKey": "type",
                     "sortOrder": 1
                   }
                 ]
               },
               "sortBy": [
                 {
-                  "itemKey": "pack",
+                  "itemKey": "type",
                   "sortOrder": 1
                 }
               ]
@@ -3215,7 +3263,7 @@
                         {
                           "operator": "is Empty",
                           "representation": "success",
-                          "text": ""
+                          "text": "Ok"
                         },
                         {
                           "operator": "Default",
@@ -3231,7 +3279,7 @@
                         "body": "{ \n  \"function\": \"agentMgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddAgent\",\n    \"Resources\": [{vmstoinstall}]\n  }\n}\n",
                         "httpMethod": "POST",
                         "title": "Install Agent",
-                        "description": "# Installing agent(s) for the following machine(s):\n\n\n\n{vmstoinstall}\n",
+                        "description": "# Installing agent(s) for the following machine(s):\n\n\n{vmstoinstall}\n",
                         "actionName": "Install Agent",
                         "runLabel": "Install Agent"
                       }
@@ -3247,8 +3295,8 @@
                       "thresholdsGrid": [
                         {
                           "operator": "is Empty",
-                          "representation": "success",
-                          "text": "{0}{1}"
+                          "representation": "3",
+                          "text": "Not Installed"
                         },
                         {
                           "operator": "Default",
@@ -3264,7 +3312,7 @@
                         "body": "{ \n  \"function\": \"agentMgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveAgent\",\n    \"Resources\": [{vmstoinstall}]\n  }\n}\n",
                         "httpMethod": "POST",
                         "title": "Remove Agent",
-                        "description": "# Removing agent(s) for the following machine(s):\n\n\n\n{vmstoinstall}\n",
+                        "description": "# Removing agent(s) for the following machine(s):\n\n## <span style=\"color:red\">Warning! </span> Removing the agent from the machine(s) may result in data not being collected.\n\n\n{vmstoinstall}\n",
                         "actionName": "RemoveAgent",
                         "runLabel": "RemoveAgent"
                       }
@@ -3986,9 +4034,7 @@
                               },
                               "queryType": 1,
                               "resourceType": "microsoft.resources/tenants",
-                              "value": [
-                                "WinDisc"
-                              ]
+                              "value": []
                             }
                           ],
                           "style": "pills",

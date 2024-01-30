@@ -29,8 +29,6 @@ if ($alerts) {
                 }
             }
 "@
-<#
-{"id":"/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/Amonstarterpacks3/providers/microsoft.insights/activityLogAlerts/Deploy_activitylog_KeyVault_Delete","MP":"Keyvault","Enabled":true,"Description":"AMSP policy to Deploy Activity Log Key Vault Delete Alert","Action Group":"VMAdmins","location":"global","Target":"6c64f9ed-88d2-4598-8de6-7a9527dc16ca"}#>
             foreach ($alert in $alerts) {
                 
                 $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group, 6 will be alert type, #8 is alert name
@@ -106,6 +104,13 @@ if ($alerts) {
                     }
                 }
                 
+            }
+        }
+        'Delete' {
+            foreach ($alert in $alerts) {
+                $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group, 6 will be alert type, #8 is alert name
+                "Running $action for $($alertinfo[8]) alert."
+                Remove-AzResource -ResourceId $alert.id -Force
             }
         }
         default {

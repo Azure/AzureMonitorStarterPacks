@@ -3,7 +3,6 @@ using namespace System.Net
 
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
-
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
 function Install-azMonitorAgent {
@@ -79,17 +78,7 @@ $resources = $Request.Body.Resources
 $resources
 $action = $Request.Body.Action
 
-#$TagList = $Request.Body.Pack.split(',')
-# $PackType = $Request.Body.PackType
-
 if ($resources) {
-        #$TagName='MonitorStarterPacks'
-    #$TagName=$env:SolutionTag
-    # if ([string]::isnullorempty($TagName)) {
-    #     $TagName='MonitorStarterPacks'
-    #     "Missing TagName. Please set the TagName environment variable. Setting to Default"
-    # }
-    # Add the option for multiple tags, comma separated
     "Working on $($resources.count) resource(s). Action: $action. Altering AMA configuration."
     switch ($action) {
         'AddAgent' {
@@ -148,101 +137,53 @@ if ($resources) {
             }
         }
         'RemoveAgent' {
-#                 foreach ($resource in $resources) {
-#                     "Running $action for $($resource.Resource) resource."
-#                     #[System.Object]$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
-#                     [System.Object]$tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
-#                     if ($null -eq $tag) { # initializes if no tag is there.
-#                         $tag = @{}
-#                     }
-#                     else {
-#                         if ($tag.Keys -notcontains $tagName) { # doesn´t have the monitoring tag
-#                             "No monitoring tag, can't delete the value. Something is wrong"
-#                         }
-#                         else { #Monitoring Tag exists. Good.  
-#                             if ($TagValue -eq 'All') { # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings. 
-#                                 #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
-#                                 #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
-#                                 $tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
-#                                 $tag.Remove($tagName)
-#                                 if ($tag.count -ne 0) {
-#                                     Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
-#                                 }
-#                                 else {
-#                                     $tagToRemove=@{"$($TagName)"="$($tag.$tagValue)"}
-#                                     Update-AzTag -ResourceId $resource.Resource -Tag $tagToRemove -Operation Delete
-#                                 }
-#                             }
-#                             else {
-#                                 if ($tag.$tagName.Split(',') -notcontains $TagValue) {
-#                                     "Tag exists, but not the value. Can't remove it. Something is wrong."
-#                                 }
-#                                 else {
-#                                     [System.Collections.ArrayList]$tagarray=$tag[$tagName].split(',')
-#                                     $tagarray.Remove($TagValue)
-#                                     if ($tagarray.Count -eq 0) {
-#                                         "Removing tag since it has no values."
-#                                         $tag.Remove($tagName)
-#                                         $tagToRemove=@{"$($TagName)"="$($tag.$tagValue)"}
-#                                         Update-AzTag -ResourceId $resource.Resource -Tag $tagToRemove -Operation Delete
-#                                     }
-#                                     else {
-#                                         $tag[$tagName]=$tagarray -join ','
-#                                         Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
-#                                     }
-#                                     if ($PackType -ne 'Paas') {
-#                                         # Remove association for the rule with the monitoring pack. PlaceHolder. Function will need to have monitoring contributor role.
-#                                         # Find the specific rule by the tag with ARG
-#                                         # Find association with the monitoring pack and that resource
-#                                         # Remove association
-#                                         # find rule
-#                                         $DCRQuery=@"
-# resources
-# | where type == "microsoft.insights/datacollectionrules"
-# | extend MPs=tostring(['tags'].MonitorStarterPacks)
-# | where MPs=~'$TagValue'
-# | summarize by name, id
-# "@
-#                                         $DCR=Search-AzGraph -Query $DCRQuery
-#                                         "Found rule $($DCR.name)."
-#                                         "DCR id : $($DCR.id)"
-#                                         "resource: $($resource.Resource)"
-#                                         $associationQuery=@"
-# insightsresources
-# | where type == "microsoft.insights/datacollectionruleassociations"
-# | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
-# | where isnotnull(properties.dataCollectionRuleId)
-# | where resourceId =~ '$($resource.Resource)' and
-# ruleId =~ '$($DCR.id)'
-# "@
-#                                         $associationQuery
-#                                         $association=Search-AzGraph -Query $associationQuery
-#                                         "Found association $($association.name). Removing..."
-#                                         if ($association.count -gt 0) {
-#                                             Remove-AzDataCollectionRuleAssociation -TargetResourceId $resource.Resource -AssociationName $association.name
-#                                         }
-#                                         else {
-#                                             "No association Found."
-#                                         }
-#                                     }
-#                                     else {
-#                                         "Paas Pack. No need to remove association."
-#                                         $diagnosticConfig=Get-AzDiagnosticSetting -ResourceId $resource.Resource -Name "AMSP-$TagValue"
-#                                         if ($diagnosticConfig) {
-#                                             "Found diagnostic setting. Removing..."
-#                                             Remove-AzDiagnosticSetting -ResourceId $resource.Resource -Name "AMSP-$TagValue"
-#                                         }
-#                                         else {
-#                                             "No diagnostic setting found."
-#                                         }
-#                                     }
-#                                 }
-#                             #Update-AzTag -ResourceId $resource.Resource -Tag $tag
-#                             }
-                        
-#                     }
-#                 }
-#             }
+            foreach ($resource in $resources) {
+                $resourceName=$resource.id.split('/')[8]
+                $resourceSubcriptionId=$resource.id.split('/')[2]
+                "Running $action for $resourceName resource."
+                #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
+                if ($resource.OS -eq 'Linux') {
+                    $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
+                }
+                else {
+                    $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
+                }
+                if (!$agentstatus) {
+                    "Agent not installed."
+                }
+                else {
+                    "Agent installed. Removing..."
+                    if ($resource.OS -eq 'Linux') { # 
+                        if ($resource.id.split('/')[7] -eq 'virtualMachines') {
+                            # Virtual machine - remove extension
+                            Remove-AzVMExtension -Name AzureMonitorLinuxAgent -ResourceGroupName $resource.'Resource Group'  -VMName $resourceName -Force
+                            # install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.location `
+                            # -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27"
+                            # #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.location -EnableAutomaticUpgrade $true
+                        }
+                        else {
+                            # Arc machine - remove extension
+                            Set-AzContext -SubscriptionId $subscriptionId
+                            Remove-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName
+                        }
+                    }
+                    else { # Windows
+                        if ($resource.id.split('/')[7] -eq 'virtualMachines') {
+                            # Virtual machine - remove extension
+                            Remove-AzVMExtension -Name AzureMonitorWindowsAgent -ResourceGroupName $resource.'Resource Group'  -VMName $resourceName -Force
+                            # install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.location `
+                            # -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2"
+                            # #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
+                        }
+                        else {
+                            # Arc machine - remove extension
+                            Set-AzContext -SubscriptionId $subscriptionId
+                            Remove-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName
+                        }
+                    }
+                }
+                #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
+            }
         }
         default {
             Write-Host "Invalid Action"

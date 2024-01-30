@@ -20,10 +20,14 @@ switch ($action) {
         $Request.Body.Policies
         $policylist=$Request.Body.Policies
         if ($null -eq $policylist) {
+            "No policy list provided. Getting all policies and initiatives."
             $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null}
+            $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
         }
         else {
+            "Policy list provided. Getting only those policies and initiatives."
             $pols=Get-AzPolicyDefinition | Where-Object {($_.properties.Metadata.$SolutionTag -ne $null -or $_.properties.Metadata.MonitorStarterPacksComponents -ne $null) -and $_.ResourceId -in $policylist.policyId} 
+            $inits=Get-AzPolicySetDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null -and $_.ResourceId -in $policylist.policyId}
         }
         foreach ($pol in $pols) {
             $compliance=(get-AzPolicystate | where-object {$_.PolicyDefinitionName -eq $pol.Name}).ComplianceState
@@ -39,7 +43,7 @@ switch ($action) {
                 "Policy $($pol.PolicyDefinitionId) is compliant"
             }
         }
-        $inits=Get-AzPolicySetDefinition | ? {$_.properties.Metadata.MonitorStarterPacks -ne $null}
+        
         foreach ($init in $inits) {
             "Remediating policy set $($init.PolicySetDefinitionId)."
             $assignment=Get-AzPolicyAssignment -PolicyDefinitionId $init.ResourceId
