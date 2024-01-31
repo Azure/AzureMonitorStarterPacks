@@ -4,9 +4,9 @@
 
 - Minimize the initial ramp up required for customers, in multiple aspects of the Azure technologies to deploy basic monitoring.
 
-- Minimize the need for the Customer tto determine the minimal monitoring items for a certain type of workload 
+- Minimize the need for the Customer to determine the minimal monitoring items for a certain type of workload 
 
-- Provide best practices out of the box on items that need monitoring for different workloads 
+- Provide best practices out of the box on items that need monitoring for different workloads. The Monitoring Packs work closely wit the Azure Monitor Baseline Alerts [AMBA](http://aka.ms/amba) and the Azure Monitor teams to provide an comprehensive and aligned monitoring solution.
 
 - Create a framework for collaboration that will make it easy to add new monitored technologies. 
 
@@ -25,9 +25,9 @@ The Main solution can be deployed by clicking the link below.
 
 [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fsetup.json)
 
-## Starter Packs
+## Monitoring Packs
 
-Packs can also be deployed individually or all at the same time.
+Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
 
 Review Packs documentation [here](./Packs/README.md).
 
@@ -46,7 +46,6 @@ In order for the current user to have access to the Grafana environment, the use
 
 ## Removing the solution
 
-
 In order to remove the solution, you can run the following script in this [link](https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1). The script will remove all the resources created by the solution.
 
 - Open the Azure CLI with PowerShell:
@@ -55,7 +54,6 @@ In order to remove the solution, you can run the following script in this [link]
 wget https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1
 ./cleanup.ps1 -RG <Resource Group Name> -RemoveAll
 ```
-
 
 Alternatively, you can select to remove specific components of the solution by using the following parameters:
 

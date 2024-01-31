@@ -71,6 +71,16 @@ function Install-azMonitorAgent {
         Write-Host "Error installing agent. $($_.Exception.Message)"
     }
 }
+function Config-AVD {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$hostpoolResource,
+        [Parameter(Mandatory=$true)]
+        [string]$AVDResourceGroup
+    )
+
+    # Do your thing!
+}
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
@@ -163,8 +173,14 @@ if ($resources) {
                             "Agent not installed."
                         }
                     }
-                    #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
-                }
+                    # End of agent installation
+                    # Add Tag Based condition.
+                    if ($TagValue -eq 'AVD') {
+                        # Create AVD alerts function.
+                        $AVDRG=$Request.Body.AVDResourceGroup ? $Request.Body.AVDResourceGroup : $resource.'Resource Group'
+                        Config-AVD -hostpoolResource $resource.Resource -AVDResourceGroup $AVDRG
+                    }
+                } # End of resource loop
             }
         }
         'RemoveTag' {
