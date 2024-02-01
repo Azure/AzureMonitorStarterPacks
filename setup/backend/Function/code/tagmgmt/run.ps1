@@ -3,23 +3,6 @@ using namespace System.Net
 
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
-$Request=@"
-{
-    "Body": {
-        "Action": "AddTag",
-        "Resources": [
-          {
-            "Resource": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterPacks/providers/Microsoft.HybridCompute/machines/WIN-012O0PRF1EN",
-            "Resource Group": "amonstarterpacks",
-            "OS": "windows",
-            "Location": "eastus",
-            "Subscription": "JF-AIRS-Internal"
-          }
-        ],
-        "Pack": "VMI"
-      }
-    }
-"@ | ConvertFrom-Json
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
 function Install-azMonitorAgent {
@@ -245,6 +228,7 @@ if ($resources) {
                 foreach ($resource in $resources) {
                     "Running $action for $($resource.Resource) resource. TagValue: $TagValue"
                     #[System.Object]$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
+                    Remove-Tag 
                     [System.Object]$tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
                     if ($null -eq $tag) { # initializes if no tag is there.
                         $tag = @{}
