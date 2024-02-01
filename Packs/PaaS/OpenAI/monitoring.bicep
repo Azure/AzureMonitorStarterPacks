@@ -20,7 +20,7 @@ param assignmentLevel string
 param resourceGroupId string
 param grafanaName string
 param instanceName string
-var resourceType = 'Microsoft.Network/loadBalancers'
+var resourceType = 'Microsoft.CognitiveServices/accounts'
 //var resourceShortType = split(resourceType, '/')[1]
 
 var resourceGroupName = split(resourceGroupId, '/')[4]

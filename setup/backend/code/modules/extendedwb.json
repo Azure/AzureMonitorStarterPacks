@@ -135,7 +135,7 @@
           }
         ]
       },
-      "customWidth": "50",
+      "customWidth": "75",
       "name": "mainLinksTab"
     },
     {
@@ -157,9 +157,6 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
               "parameters": [
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -231,7 +228,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMP7111"
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP123"
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -252,11 +249,23 @@
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
                   "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                },
+                {
+                  "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "configKey",
+                  "type": 1,
+                  "description": "configFunctionKey",
+                  "isGlobal": true,
+                  "typeSettings": {
+                    "isPassword": true
+                  },
+                  "value": "ZWVlNmE5ZTAtODYzNi00MWJmLTg4MDUtODczNDRkZGJiYTNk"
                 }
               ],
               "style": "above",
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants"
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
             },
             "customWidth": "100",
             "conditionalVisibility": {
@@ -265,6 +274,32 @@
               "value": "backend"
             },
             "name": "generalParams"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "f5b4b4b6-c5d7-4941-b807-8a61df48a0f4",
+                  "cellValue": "configTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Resource List",
+                  "subTarget": "resources",
+                  "style": "link"
+                },
+                {
+                  "id": "2b8648a3-8221-4c46-bf6c-0962dc862628",
+                  "cellValue": "configTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Namespace Table",
+                  "subTarget": "namespaces",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "links - 4"
           },
           {
             "type": 3,
@@ -282,10 +317,30 @@
                 "filter": true
               }
             },
+            "conditionalVisibility": {
+              "parameterName": "configTab",
+              "comparison": "isEqualTo",
+              "value": "resources"
+            },
             "name": "Installed Components",
             "styleSettings": {
               "showBorder": true
             }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://amp-prod-6c64f9ed-function.azurewebsites.net/api/config?Action=getAllServiceTags\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":[{\"type\":\"jsonpath\"}]}",
+              "size": 0,
+              "queryType": 10
+            },
+            "conditionalVisibility": {
+              "parameterName": "configTab",
+              "comparison": "isEqualTo",
+              "value": "namespaces"
+            },
+            "name": "queryServiceTags"
           }
         ],
         "exportParameters": true
@@ -1020,9 +1075,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "PS2016"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1035,55 +1088,6 @@
                     "comparison": "isNotEqualTo"
                   },
                   "name": "param-IaaS-vmstotag"
-                },
-                {
-                  "type": 9,
-                  "content": {
-                    "version": "KqlParameterItem/1.0",
-                    "crossComponentResources": [
-                      "value::tenant"
-                    ],
-                    "parameters": [
-                      {
-                        "id": "27d8cc17-6eb9-4158-aff2-f5a2bbddff58",
-                        "version": "KqlParameterItem/1.0",
-                        "name": "AvdLAW",
-                        "label": "Select AVD Log Analytics Workspace",
-                        "type": 2,
-                        "isGlobal": true,
-                        "query": "resources\n| where type =~ \"Microsoft.OperationalInsights/workspaces\"\n| summarize by name",
-                        "crossComponentResources": [
-                          "value::tenant"
-                        ],
-                        "typeSettings": {
-                          "additionalResourceOptions": [],
-                          "showDefault": false
-                        },
-                        "timeContext": {
-                          "durationMs": 86400000
-                        },
-                        "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants",
-                        "value": null
-                      }
-                    ],
-                    "style": "pills",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resources/tenants"
-                  },
-                  "customWidth": "50",
-                  "conditionalVisibilities": [
-                    {
-                      "parameterName": "vmstotag",
-                      "comparison": "isNotEqualTo"
-                    },
-                    {
-                      "parameterName": "PackTags",
-                      "comparison": "isEqualTo",
-                      "value": "Avd"
-                    }
-                  ],
-                  "name": "param-IaaS-AvdLaw"
                 },
                 {
                   "type": 11,
@@ -1735,7 +1739,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "LogicApps"
+                          "AA"
                         ]
                       }
                     ],
@@ -1794,7 +1798,7 @@
                     {
                       "parameterName": "PackTagsPaaS",
                       "comparison": "isEqualTo",
-                      "value": "Avd"
+                      "value": "AA"
                     }
                   ],
                   "name": "param-IaaS-AvdLaw"
@@ -1899,6 +1903,32 @@
             "name": "param-alerts-toAction"
           },
           {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "355de2ec-11fb-4db8-9813-2e0bf7cdb3d0",
+                  "cellValue": "alertTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Packs` Alerts",
+                  "subTarget": "packs",
+                  "style": "link"
+                },
+                {
+                  "id": "d1f8bc9e-5a21-47f3-a2b3-e7fc213e04ee",
+                  "cellValue": "alertTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Other Alerts",
+                  "subTarget": "others",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "links - 18"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
@@ -1934,6 +1964,11 @@
               }
             },
             "customWidth": "70",
+            "conditionalVisibility": {
+              "parameterName": "alertTab",
+              "comparison": "isEqualTo",
+              "value": "packs"
+            },
             "name": "AlertConfigQuery",
             "styleSettings": {
               "showBorder": true
@@ -2079,6 +2114,202 @@
             },
             "customWidth": "30",
             "name": "AlertsSubGroup1"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Alert Management - Other Alerts",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "resources\n| where tolower(type) in (\"microsoft.insights/scheduledqueryrules\")\n| where isempty(tags.MonitorStarterPacks)\n| project id,Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1]\n| union (\nresources\n| where tolower(type) in (\"microsoft.insights/metricalerts\")\n| where isempty(tags.MonitorStarterPacks)\n| project id, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])\n| union (resources\n| where tolower(type) in (\"microsoft.insights/activitylogalerts\")\n| where isempty(tags.MonitorStarterPacks)\n| project id,Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])",
+                    "size": 0,
+                    "exportMultipleValues": true,
+                    "exportedParameters": [
+                      {
+                        "fieldName": "",
+                        "parameterName": "alertsselectednopack",
+                        "parameterType": 1,
+                        "quote": ""
+                      }
+                    ],
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "visualization": "table",
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "location",
+                          "formatter": 5
+                        },
+                        {
+                          "columnMatch": "name",
+                          "formatter": 7
+                        }
+                      ],
+                      "filter": true,
+                      "sortBy": [
+                        {
+                          "itemKey": "$gen_link_Enabled_1",
+                          "sortOrder": 1
+                        }
+                      ]
+                    },
+                    "sortBy": [
+                      {
+                        "itemKey": "$gen_link_Enabled_1",
+                        "sortOrder": 1
+                      }
+                    ]
+                  },
+                  "customWidth": "70",
+                  "name": "queryOtherAlerts",
+                  "styleSettings": {
+                    "showBorder": true
+                  }
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.\n\n# Update Action Group\n## Select a list of alerts on the left and a new Action Group to assign to the alert.",
+                          "style": "info"
+                        },
+                        "conditionalVisibility": {
+                          "parameterName": "showHelp",
+                          "comparison": "isEqualTo",
+                          "value": "yes"
+                        },
+                        "name": "text - 3"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id, emailReceivers=strcat(properties.emailReceivers[0].name,\"(\",properties.emailReceivers[0].emailAddress,\")\")",
+                          "size": 1,
+                          "exportFieldName": "",
+                          "exportParameterName": "selectedAG",
+                          "queryType": 1,
+                          "resourceType": "microsoft.resourcegraph/resources",
+                          "gridSettings": {
+                            "filter": true
+                          }
+                        },
+                        "name": "agQuery2",
+                        "styleSettings": {
+                          "showBorder": true
+                        }
+                      },
+                      {
+                        "type": 11,
+                        "content": {
+                          "version": "LinkItem/1.0",
+                          "style": "paragraph",
+                          "links": [
+                            {
+                              "id": "f5cb3ede-91d1-4414-bfa1-a1689f45d0c8",
+                              "linkTarget": "ArmAction",
+                              "linkLabel": "Enable Alerts",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "armActionContext": {
+                                "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                "headers": [],
+                                "params": [],
+                                "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Enable\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}",
+                                "httpMethod": "POST",
+                                "title": "Enable Alerts",
+                                "description": "# This action will Enable the selected Alerts\n\n{alertsselected}",
+                                "runLabel": "Confirm"
+                              }
+                            },
+                            {
+                              "id": "d9469141-a104-4696-b9cd-f0fc7e3f963e",
+                              "linkTarget": "ArmAction",
+                              "linkLabel": "Disable Alerts",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "armActionContext": {
+                                "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                "headers": [],
+                                "params": [],
+                                "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Disable\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}\n",
+                                "httpMethod": "POST",
+                                "title": "Disable Alerts",
+                                "description": "# This action will disable the selected Alerts\n\n{alertsselected}",
+                                "runLabel": "Confirm"
+                              }
+                            },
+                            {
+                              "id": "7942ba17-4942-4f4a-b2ea-e19ad806b49d",
+                              "linkTarget": "ArmAction",
+                              "linkLabel": "Update Action Group",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "armActionContext": {
+                                "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                "headers": [],
+                                "params": [],
+                                "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Update\", \n    \"alerts\":  [{alertsselectednopack}],\n    \"aGroup\": {selectedAG}\n  }\n}\n",
+                                "httpMethod": "POST",
+                                "title": "Update Action Group",
+                                "description": "Updating alerts:\n\n\n{alertsselected}\n\nwith Action Group:\n\n{selectedAG}\n",
+                                "actionName": "updateAG",
+                                "runLabel": "Update"
+                              }
+                            },
+                            {
+                              "id": "eb46862a-b443-489e-a2bf-abc05c541b53",
+                              "linkTarget": "ArmAction",
+                              "linkLabel": "Delete Alert Rule",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "armActionContext": {
+                                "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                "headers": [],
+                                "params": [],
+                                "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Delete\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}\n",
+                                "httpMethod": "POST",
+                                "title": "Delete",
+                                "description": "# Deleting the following Alert rules:\n\n\n{alertsselectednopack}]\n",
+                                "actionName": "Delete",
+                                "runLabel": "Delete"
+                              }
+                            }
+                          ]
+                        },
+                        "name": "links - 8"
+                      }
+                    ]
+                  },
+                  "customWidth": "30",
+                  "conditionalVisibility": {
+                    "parameterName": "alertsselectednopack",
+                    "comparison": "isNotEqualTo"
+                  },
+                  "name": "AlertsSubGroup1"
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "alertTab",
+              "comparison": "isEqualTo",
+              "value": "others"
+            },
+            "name": "AlertMGMT - Others"
           }
         ]
       },
@@ -2088,202 +2319,6 @@
         "value": "alertmanagement"
       },
       "name": "AlertMGMT"
-    },
-    {
-      "type": 12,
-      "content": {
-        "version": "NotebookGroup/1.0",
-        "groupType": "editable",
-        "title": "Alert Management - Other Alerts",
-        "items": [
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "resources\n| where tolower(type) in (\"microsoft.insights/scheduledqueryrules\")\n| where isempty(tags.MonitorStarterPacks)\n| project id,Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1]\n| union (\nresources\n| where tolower(type) in (\"microsoft.insights/metricalerts\")\n| where isempty(tags.MonitorStarterPacks)\n| project id, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])\n| union (resources\n| where tolower(type) in (\"microsoft.insights/activitylogalerts\")\n| where isempty(tags.MonitorStarterPacks)\n| project id,Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])",
-              "size": 0,
-              "exportMultipleValues": true,
-              "exportedParameters": [
-                {
-                  "fieldName": "",
-                  "parameterName": "alertsselectednopack",
-                  "parameterType": 1,
-                  "quote": ""
-                }
-              ],
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
-              "visualization": "table",
-              "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "location",
-                    "formatter": 5
-                  },
-                  {
-                    "columnMatch": "name",
-                    "formatter": 7
-                  }
-                ],
-                "filter": true,
-                "sortBy": [
-                  {
-                    "itemKey": "$gen_link_Enabled_1",
-                    "sortOrder": 1
-                  }
-                ]
-              },
-              "sortBy": [
-                {
-                  "itemKey": "$gen_link_Enabled_1",
-                  "sortOrder": 1
-                }
-              ]
-            },
-            "customWidth": "70",
-            "name": "queryOtherAlerts",
-            "styleSettings": {
-              "showBorder": true
-            }
-          },
-          {
-            "type": 12,
-            "content": {
-              "version": "NotebookGroup/1.0",
-              "groupType": "editable",
-              "items": [
-                {
-                  "type": 1,
-                  "content": {
-                    "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.\n\n# Update Action Group\n## Select a list of alerts on the left and a new Action Group to assign to the alert.",
-                    "style": "info"
-                  },
-                  "conditionalVisibility": {
-                    "parameterName": "showHelp",
-                    "comparison": "isEqualTo",
-                    "value": "yes"
-                  },
-                  "name": "text - 3"
-                },
-                {
-                  "type": 3,
-                  "content": {
-                    "version": "KqlItem/1.0",
-                    "query": "resources\n| where type == \"microsoft.insights/actiongroups\"\n| where properties.enabled == 'true'\n| project id, emailReceivers=strcat(properties.emailReceivers[0].name,\"(\",properties.emailReceivers[0].emailAddress,\")\")",
-                    "size": 1,
-                    "exportFieldName": "",
-                    "exportParameterName": "selectedAG",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources",
-                    "gridSettings": {
-                      "filter": true
-                    }
-                  },
-                  "name": "agQuery2",
-                  "styleSettings": {
-                    "showBorder": true
-                  }
-                },
-                {
-                  "type": 11,
-                  "content": {
-                    "version": "LinkItem/1.0",
-                    "style": "paragraph",
-                    "links": [
-                      {
-                        "id": "f5cb3ede-91d1-4414-bfa1-a1689f45d0c8",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Enable Alerts",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Enable\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Enable Alerts",
-                          "description": "# This action will Enable the selected Alerts\n\n{alertsselected}",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "d9469141-a104-4696-b9cd-f0fc7e3f963e",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Disable Alerts",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Disable\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}\n",
-                          "httpMethod": "POST",
-                          "title": "Disable Alerts",
-                          "description": "# This action will disable the selected Alerts\n\n{alertsselected}",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "7942ba17-4942-4f4a-b2ea-e19ad806b49d",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Update Action Group",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Update\", \n    \"alerts\":  [{alertsselectednopack}],\n    \"aGroup\": {selectedAG}\n  }\n}\n",
-                          "httpMethod": "POST",
-                          "title": "Update Action Group",
-                          "description": "Updating alerts:\n\n\n{alertsselected}\n\nwith Action Group:\n\n{selectedAG}\n",
-                          "actionName": "updateAG",
-                          "runLabel": "Update"
-                        }
-                      },
-                      {
-                        "id": "eb46862a-b443-489e-a2bf-abc05c541b53",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Delete Alert Rule",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"alertmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"Delete\", \n    \"alerts\":  [{alertsselectednopack}]\n  }\n}\n",
-                          "httpMethod": "POST",
-                          "title": "Delete",
-                          "description": "# Deleting the following Alert rules:\n\n\n{alertsselectednopack}]\n",
-                          "actionName": "Delete",
-                          "runLabel": "Delete"
-                        }
-                      }
-                    ]
-                  },
-                  "name": "links - 8"
-                }
-              ]
-            },
-            "customWidth": "30",
-            "conditionalVisibility": {
-              "parameterName": "alertsselectednopack",
-              "comparison": "isNotEqualTo"
-            },
-            "name": "AlertsSubGroup1"
-          }
-        ]
-      },
-      "conditionalVisibility": {
-        "parameterName": "tabSelection",
-        "comparison": "isEqualTo",
-        "value": "alertmanagement"
-      },
-      "name": "AlertMGMT - Others"
     },
     {
       "type": 12,
@@ -2829,6 +2864,32 @@
         "title": "Policy Assignment Status",
         "items": [
           {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "ec38b692-92dd-405d-9e0c-7fdce860cbd9",
+                  "cellValue": "policyTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Compliance",
+                  "subTarget": "compliance",
+                  "style": "link"
+                },
+                {
+                  "id": "fde6131a-93c5-4a3d-a8ee-1509d3546026",
+                  "cellValue": "policyTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Assignment",
+                  "subTarget": "assignment",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "links - 8"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
@@ -2912,9 +2973,9 @@
             },
             "customWidth": "75",
             "conditionalVisibility": {
-              "parameterName": "tabSelection",
+              "parameterName": "policyTab",
               "comparison": "isEqualTo",
-              "value": "policystatus"
+              "value": "compliance"
             },
             "name": "policylist",
             "styleSettings": {
@@ -2996,6 +3057,11 @@
               ]
             },
             "customWidth": "25",
+            "conditionalVisibility": {
+              "parameterName": "policyTab",
+              "comparison": "isEqualTo",
+              "value": "compliance"
+            },
             "name": "ComplianceButtons"
           },
           {
@@ -3006,14 +3072,14 @@
             },
             "conditionalVisibilities": [
               {
-                "parameterName": "tabSelection",
-                "comparison": "isEqualTo",
-                "value": "policystatus"
-              },
-              {
                 "parameterName": "showHelp",
                 "comparison": "isEqualTo",
                 "value": "yes"
+              },
+              {
+                "parameterName": "policyTab",
+                "comparison": "isEqualTo",
+                "value": "assignment"
               }
             ],
             "name": "text - 7"
@@ -3050,11 +3116,11 @@
               }
             },
             "conditionalVisibility": {
-              "parameterName": "tabSelection",
+              "parameterName": "policyTab",
               "comparison": "isEqualTo",
-              "value": "policystatus"
+              "value": "assignment"
             },
-            "name": "query - 8 - Copy",
+            "name": "query - policiestoassign",
             "styleSettings": {
               "showBorder": true
             }
@@ -3065,10 +3131,17 @@
               "json": "Select Scope below to assign a policy. There is no need to Select a scope to Unassign the policy.",
               "style": "info"
             },
-            "conditionalVisibility": {
-              "parameterName": "policyseletedpolicy",
-              "comparison": "isNotEqualTo"
-            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "policyseletedpolicy",
+                "comparison": "isNotEqualTo"
+              },
+              {
+                "parameterName": "policyTab",
+                "comparison": "isEqualTo",
+                "value": "assignment"
+              }
+            ],
             "name": "text - 6"
           },
           {
@@ -3144,10 +3217,17 @@
               ]
             },
             "customWidth": "25",
-            "conditionalVisibility": {
-              "parameterName": "policyseletedpolicy",
-              "comparison": "isNotEqualTo"
-            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "policyseletedpolicy",
+                "comparison": "isNotEqualTo"
+              },
+              {
+                "parameterName": "policyTab",
+                "comparison": "isEqualTo",
+                "value": "assignment"
+              }
+            ],
             "name": "links - 2 - Copy"
           },
           {
@@ -3477,6 +3557,57 @@
         "loadType": "always",
         "items": [
           {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "6346adc4-5e50-4b56-ab9d-0d8b17b8a86f",
+                  "cellValue": "discTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Discovery Results",
+                  "subTarget": "discResults",
+                  "preText": "",
+                  "style": "link"
+                },
+                {
+                  "id": "a914f6ed-4d20-4895-bed4-48a32f3a5c21",
+                  "cellValue": "discTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Discovery Config",
+                  "subTarget": "discConfig",
+                  "style": "link"
+                },
+                {
+                  "id": "2c17bf03-2295-4b97-850f-3208602c9e50",
+                  "cellValue": "discTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Discovery Policies",
+                  "subTarget": "discPolicies",
+                  "style": "link"
+                },
+                {
+                  "id": "d8862da2-59ce-4e61-93a3-5bc5a46149a8",
+                  "cellValue": "discTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "VM Apps Status",
+                  "subTarget": "discVMApps",
+                  "style": "link"
+                },
+                {
+                  "id": "3a11d108-b694-4989-9302-48010831377a",
+                  "cellValue": "discTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Discovery Data",
+                  "subTarget": "discData",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "links - 10"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
@@ -3486,6 +3617,17 @@
               "timeContext": {
                 "durationMs": 172800000
               },
+              "exportedParameters": [
+                {
+                  "parameterName": "vmsDiscoveryTag",
+                  "parameterType": 1
+                },
+                {
+                  "fieldName": "Tag",
+                  "parameterName": "vmsDiscoveryTagValueOld",
+                  "parameterType": 1
+                }
+              ],
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -3498,7 +3640,18 @@
                     "formatter": 7,
                     "formatOptions": {
                       "linkTarget": "ArmAction",
-                      "linkIsContextBlade": true
+                      "linkIsContextBlade": true,
+                      "armActionContext": {
+                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                        "headers": [],
+                        "params": [],
+                        "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                        "httpMethod": "POST",
+                        "title": "TagDiscovery",
+                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag}]\n\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                        "actionName": "TagDiscovery",
+                        "runLabel": "TagDiscovery"
+                      }
                     },
                     "tooltipFormat": {
                       "tooltip": "Click to Enable monitoring"
@@ -3507,241 +3660,139 @@
                 ]
               }
             },
+            "conditionalVisibility": {
+              "parameterName": "showHidden",
+              "comparison": "isEqualTo",
+              "value": "1"
+            },
             "name": "discoveryQuery"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName),complianceState=properties.complianceState\n| join \n    (policyresources | where type == \"microsoft.authorization/policydefinitions\" and properties.metadata.MonitoringPackType == 'Discovery'  \n        | project policyId=id, policyName=name) \n        on policyName\n| project Name=policyName, State=tostring(complianceState), type='Policy',policyId\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and properties.metadata.MonitoringPackType=='Discovery'\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project Name=name,State=complianceState, type='Set',policyId=policySetDefinitionId)",
+              "query": "CustomDiscovery_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project timestamp,Computer,type,name,platform,othertype,vendor",
               "size": 0,
-              "title": "Assignment Status (Compliance) - Discovery",
+              "timeContext": {
+                "durationMs": 172800000
+              },
               "exportedParameters": [
                 {
-                  "parameterName": "policiesToRemediate",
-                  "parameterType": 5
-                }
-              ],
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
-              "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "State",
-                    "formatter": 18,
-                    "formatOptions": {
-                      "thresholdsOptions": "icons",
-                      "thresholdsGrid": [
-                        {
-                          "operator": "==",
-                          "thresholdValue": "NonCompliant",
-                          "representation": "2",
-                          "text": "{0}{1}"
-                        },
-                        {
-                          "operator": "==",
-                          "thresholdValue": "nonCompliant",
-                          "representation": "2",
-                          "text": "{0}{1}"
-                        },
-                        {
-                          "operator": "Default",
-                          "thresholdValue": null,
-                          "representation": "success",
-                          "text": "{0}{1}"
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "filter": true
-              }
-            },
-            "customWidth": "75",
-            "name": "Query DiscoveryPolicies",
-            "styleSettings": {
-              "showBorder": true
-            }
-          },
-          {
-            "type": 12,
-            "content": {
-              "version": "NotebookGroup/1.0",
-              "groupType": "editable",
-              "items": [
-                {
-                  "type": 11,
-                  "content": {
-                    "version": "LinkItem/1.0",
-                    "style": "list",
-                    "links": [
-                      {
-                        "id": "b3bb5a4d-0f95-4e9a-8634-9cb027f860aa",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Remediate (all policies)",
-                        "preText": "",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Rmediate policies",
-                          "description": "# Please confirm remediation\n\nThis button will trigger a global policy remeadiation. \n\nThe backend script will go through the policies and initiatives, finding the ones that are not compliant, and will trigger remediation. \n\nIt is not restricted to the ones in this screen.",
-                          "actionName": "Remediate",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "8dfc5afa-108a-4713-8a0c-651c3a32c5f1",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Check Compliance",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Scan\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Check Policy Compliance",
-                          "description": "# Please confirm the scan.",
-                          "runLabel": "Confirm"
-                        }
-                      }
-                    ]
-                  },
-                  "name": "links - 3"
+                  "parameterName": "vmsDiscoveryTag",
+                  "parameterType": 1
                 },
                 {
-                  "type": 1,
-                  "content": {
-                    "json": "## Policy Compliance Check\nThis task will trigger a tenant wide check for policy compliance.\n\n## Policy Remediation\n\nThis Task will trigger remediation for the policies in the list that are considered not compliant at this time.",
-                    "style": "info"
-                  },
-                  "conditionalVisibilities": [
-                    {
-                      "parameterName": "tabSelection",
-                      "comparison": "isEqualTo",
-                      "value": "policystatus"
-                    },
-                    {
-                      "parameterName": "showHelp",
-                      "comparison": "isEqualTo",
-                      "value": "yes"
-                    }
-                  ],
-                  "name": "text - 7"
-                }
-              ]
-            },
-            "customWidth": "25",
-            "name": "ComplianceButtons - Copy"
-          },
-          {
-            "type": 9,
-            "content": {
-              "version": "KqlParameterItem/1.0",
-              "parameters": [
-                {
-                  "id": "079a4550-40c9-44cd-a223-40097e453659",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "Computer",
-                  "type": 2,
-                  "query": "\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)\n\n",
-                  "typeSettings": {
-                    "additionalResourceOptions": [],
-                    "showDefault": false
-                  },
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "dc1",
-                  "label": "Select Server"
-                },
-                {
-                  "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "discoveryPeriod",
-                  "label": "Period",
-                  "type": 4,
-                  "typeSettings": {
-                    "selectableValues": [
-                      {
-                        "durationMs": 300000
-                      },
-                      {
-                        "durationMs": 900000
-                      },
-                      {
-                        "durationMs": 1800000
-                      },
-                      {
-                        "durationMs": 3600000
-                      },
-                      {
-                        "durationMs": 14400000
-                      },
-                      {
-                        "durationMs": 43200000
-                      },
-                      {
-                        "durationMs": 86400000
-                      },
-                      {
-                        "durationMs": 172800000
-                      },
-                      {
-                        "durationMs": 259200000
-                      },
-                      {
-                        "durationMs": 604800000
-                      },
-                      {
-                        "durationMs": 1209600000
-                      },
-                      {
-                        "durationMs": 2419200000
-                      }
-                    ]
-                  },
-                  "value": {
-                    "durationMs": 900000
-                  }
+                  "fieldName": "Tag",
+                  "parameterName": "vmsDiscoveryTagValue",
+                  "parameterType": 1
                 }
               ],
-              "style": "above",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
-            },
-            "name": "param-discovery-period"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "CustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n//| where Computer == 'server2'\n| project Computer,type,name,platform,othertype,vendor\n| where Computer == '{Computer}'",
-              "size": 0,
-              "title": "All Discovery Data",
-              "timeContextFromParameter": "discoveryPeriod",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
                 "{Workspace}"
               ],
               "gridSettings": {
-                "rowLimit": 1000,
-                "filter": true
+                "formatters": [
+                  {
+                    "columnMatch": "Tag",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "ArmAction",
+                      "linkIsContextBlade": true,
+                      "armActionContext": {
+                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                        "headers": [],
+                        "params": [],
+                        "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                        "httpMethod": "POST",
+                        "title": "TagDiscovery",
+                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag}]\n\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                        "actionName": "TagDiscovery",
+                        "runLabel": "TagDiscovery"
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Click to Enable monitoring"
+                    }
+                  }
+                ]
               }
             },
-            "name": "query - discovery - all"
+            "conditionalVisibility": {
+              "parameterName": "showHidden",
+              "comparison": "isEqualTo",
+              "value": "1"
+            },
+            "name": "discoveryQuery part1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://amp-prod-6c64f9ed-function.azurewebsites.net/api/config?Action=getDiscoveryMappings\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":[{\"type\":\"jsonpath\"}]}",
+              "size": 0,
+              "queryType": 10
+            },
+            "conditionalVisibility": {
+              "parameterName": "showHidden",
+              "comparison": "isEqualTo",
+              "value": "1"
+            },
+            "name": "queryApplicationTags"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\",\"mergeType\":\"innerunique\",\"leftTable\":\"discoveryQuery part1\",\"rightTable\":\"queryApplicationTags\",\"leftColumn\":\"name\",\"rightColumn\":\"application\"}],\"projectRename\":[{\"originalName\":\"[discoveryQuery part1].timestamp\",\"mergedName\":\"timestamp\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[discoveryQuery part1].Computer\",\"mergedName\":\"Computer\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[discoveryQuery part1].type\",\"mergedName\":\"type\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[discoveryQuery part1].name\",\"mergedName\":\"name\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[discoveryQuery part1].platform\",\"mergedName\":\"platform\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[discoveryQuery part1].vendor\",\"mergedName\":\"vendor\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[queryApplicationTags].tag\",\"mergedName\":\"tag\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[queryApplicationTags].application\",\"mergedName\":\"application\",\"fromId\":\"e3f6e021-18e8-4ca6-83cb-657ee80e7a90\"},{\"originalName\":\"[discoveryQuery part1].othertype\"}]}",
+              "size": 0,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "vmsDiscoveryTag",
+                  "parameterType": 1
+                },
+                {
+                  "fieldName": "tag",
+                  "parameterName": "vmsDiscoveryTagValue",
+                  "parameterType": 1
+                }
+              ],
+              "queryType": 7,
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "tag",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "ArmAction",
+                      "linkIsContextBlade": true,
+                      "armActionContext": {
+                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                        "headers": [],
+                        "params": [],
+                        "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                        "httpMethod": "POST",
+                        "title": "TagDiscovery",
+                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag:$.Computer}]\n\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                        "actionName": "TagDiscovery",
+                        "runLabel": "TagDiscovery"
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Click to Enable monitoring"
+                    }
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discResults"
+            },
+            "name": "query - 9"
           },
           {
             "type": 12,
@@ -4034,7 +4085,9 @@
                               },
                               "queryType": 1,
                               "resourceType": "microsoft.resources/tenants",
-                              "value": []
+                              "value": [
+                                "LxDisc"
+                              ]
                             }
                           ],
                           "style": "pills",
@@ -4096,14 +4149,268 @@
               ]
             },
             "conditionalVisibility": {
-              "parameterName": "tabSelection",
+              "parameterName": "discTab",
               "comparison": "isEqualTo",
-              "value": "autodiscovery"
+              "value": "discConfig"
             },
             "name": "Servers - Discovery",
             "styleSettings": {
               "showBorder": true
             }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName),complianceState=properties.complianceState\n| join \n    (policyresources | where type == \"microsoft.authorization/policydefinitions\" and properties.metadata.MonitoringPackType == 'Discovery'  \n        | project policyId=id, policyName=name) \n        on policyName\n| project Name=policyName, State=tostring(complianceState), type='Policy',policyId\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and properties.metadata.MonitoringPackType=='Discovery'\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project Name=name,State=complianceState, type='Set',policyId=policySetDefinitionId)",
+              "size": 0,
+              "title": "Assignment Status (Compliance) - Discovery",
+              "exportedParameters": [
+                {
+                  "parameterName": "policiesToRemediate",
+                  "parameterType": 5
+                }
+              ],
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "State",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "NonCompliant",
+                          "representation": "2",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "nonCompliant",
+                          "representation": "2",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "filter": true
+              }
+            },
+            "customWidth": "75",
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discPolicies"
+            },
+            "name": "Query DiscoveryPolicies",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 11,
+                  "content": {
+                    "version": "LinkItem/1.0",
+                    "style": "list",
+                    "links": [
+                      {
+                        "id": "b3bb5a4d-0f95-4e9a-8634-9cb027f860aa",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Remediate (all policies)",
+                        "preText": "",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\"\n  }\n}",
+                          "httpMethod": "POST",
+                          "title": "Rmediate policies",
+                          "description": "# Please confirm remediation\n\nThis button will trigger a global policy remeadiation. \n\nThe backend script will go through the policies and initiatives, finding the ones that are not compliant, and will trigger remediation. \n\nIt is not restricted to the ones in this screen.",
+                          "actionName": "Remediate",
+                          "runLabel": "Confirm"
+                        }
+                      },
+                      {
+                        "id": "8dfc5afa-108a-4713-8a0c-651c3a32c5f1",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Check Compliance",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Scan\"\n  }\n}",
+                          "httpMethod": "POST",
+                          "title": "Check Policy Compliance",
+                          "description": "# Please confirm the scan.",
+                          "runLabel": "Confirm"
+                        }
+                      }
+                    ]
+                  },
+                  "name": "links - 3"
+                },
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "## Policy Compliance Check\nThis task will trigger a tenant wide check for policy compliance.\n\n## Policy Remediation\n\nThis Task will trigger remediation for the policies in the list that are considered not compliant at this time.",
+                    "style": "info"
+                  },
+                  "conditionalVisibilities": [
+                    {
+                      "parameterName": "tabSelection",
+                      "comparison": "isEqualTo",
+                      "value": "policystatus"
+                    },
+                    {
+                      "parameterName": "showHelp",
+                      "comparison": "isEqualTo",
+                      "value": "yes"
+                    }
+                  ],
+                  "name": "text - 7"
+                }
+              ]
+            },
+            "customWidth": "25",
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discPolicies"
+            },
+            "name": "ComplianceButtons - Copy"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "079a4550-40c9-44cd-a223-40097e453659",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Computer",
+                  "type": 2,
+                  "query": "\nCustomDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)\n\n",
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "value": "dc1",
+                  "label": "Select Server"
+                },
+                {
+                  "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "discoveryPeriod",
+                  "label": "Period",
+                  "type": 4,
+                  "typeSettings": {
+                    "selectableValues": [
+                      {
+                        "durationMs": 300000
+                      },
+                      {
+                        "durationMs": 900000
+                      },
+                      {
+                        "durationMs": 1800000
+                      },
+                      {
+                        "durationMs": 3600000
+                      },
+                      {
+                        "durationMs": 14400000
+                      },
+                      {
+                        "durationMs": 43200000
+                      },
+                      {
+                        "durationMs": 86400000
+                      },
+                      {
+                        "durationMs": 172800000
+                      },
+                      {
+                        "durationMs": 259200000
+                      },
+                      {
+                        "durationMs": 604800000
+                      },
+                      {
+                        "durationMs": 1209600000
+                      },
+                      {
+                        "durationMs": 2419200000
+                      }
+                    ]
+                  },
+                  "value": {
+                    "durationMs": 172800000
+                  }
+                }
+              ],
+              "style": "above",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discData"
+            },
+            "name": "param-discovery-period"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "CustomDiscovery_CL\n| extend Computer=split(_ResourceId,'/')[8]//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n//| where Computer == 'server2'\n| project Computer,type,name,platform,othertype,vendor\n| where Computer == '{Computer}'",
+              "size": 0,
+              "title": "All Discovery Data",
+              "timeContextFromParameter": "discoveryPeriod",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "gridSettings": {
+                "rowLimit": 1000,
+                "filter": true
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discData"
+            },
+            "name": "query - discovery - all"
           },
           {
             "type": 3,
@@ -4132,6 +4439,11 @@
                   "sortOrder": 1
                 }
               ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discVMApps"
             },
             "name": "query - vmapplications",
             "styleSettings": {
@@ -4188,7 +4500,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

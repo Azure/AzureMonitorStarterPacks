@@ -3,7 +3,23 @@ using namespace System.Net
 
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
-
+$Request=@"
+{
+    "Body": {
+        "Action": "AddTag",
+        "Resources": [
+          {
+            "Resource": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/AMonStarterPacks/providers/Microsoft.HybridCompute/machines/WIN-012O0PRF1EN",
+            "Resource Group": "amonstarterpacks",
+            "OS": "windows",
+            "Location": "eastus",
+            "Subscription": "JF-AIRS-Internal"
+          }
+        ],
+        "Pack": "VMI"
+      }
+    }
+"@ | ConvertFrom-Json
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
 function Install-azMonitorAgent {
@@ -19,8 +35,9 @@ function Install-azMonitorAgent {
         [Parameter(Mandatory=$true)]
         [string]$ExtensionName, #  AzureMonitorWindowsAgent or AzureMonitorLinuxAgent
         [Parameter(Mandatory=$true)]
-        [string]$ExtensionTypeHandlerVersion #1.2 for windows, 1.27 for linux
+        [string]$ExtensionTypeHandlerVersion #1.2 for windows, 1.27 for linux,
     )
+    "Subscription Id: $subscriptionId"
     # Identity 
     $URL="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName"+"?api-version=2018-06-01"
     $Method="PATCH"
@@ -81,6 +98,112 @@ function Config-AVD {
 
     # Do your thing!
 }
+function Add-Tag {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$resource,
+        [Parameter(Mandatory=$true)]
+        [string]$TagName,
+        [Parameter(Mandatory=$true)]
+        [string]$TagValue
+    )
+    $resourceName=$resource.split('/')[8]
+    "Resource: $resource"
+    "Running $action for $resourceName resource. TagValue: $TagValue"
+    #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
+    $tag=(get-aztag -ResourceId $resource).Properties.TagsProperty
+    #"Current tags: $($tag)"
+    if ($null -eq $tag) { # initializes if no tag is there.
+        $tag = @{}
+    }
+    if ($tag.Keys -notcontains $TagName) { # doesn´t have the monitoring tag
+        $tag.Add($TagName, $TagValue)
+        Update-AzTag -ResourceId $resource -Tag $tag -Operation Replace
+        #Check if agent exists. If not, install it.
+    }
+    else { #Monitoring Tag exists  
+        if ($tag.$tagName.Split(',') -notcontains $TagValue) {
+            $tag[$TagName] += ",$TagValue"
+            #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
+            Update-AzTag -ResourceId $resource -Tag $tag -Operation Replace
+        }
+        else {
+            "$TagName already has the $TagValue value"
+        }
+    }
+}
+function Add-Agent {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$resource,
+        [Parameter(Mandatory=$true)]
+        [string]$ResourceOS
+    )
+    $resourceName=$resource.split('/')[8]
+    $resourceGroupName=$resource.Split('/')[4]
+    # VM Extension setup
+    $resourceSubcriptionId=$resource.split('/')[2]
+
+    "Adding agent to $resourceName in $resourceGroupName RG in $resourceSubcriptionId sub. Checking if it's already installed..."
+    if ($ResourceOS -eq 'Linux') {
+        if ($resource.split('/')[7] -eq 'virtualMachines') {
+            $agentstatus=Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
+        }
+        else {
+           $agentstatus=Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue 
+        }
+    }
+    else {
+        if ($resource.split('/')[7] -eq 'virtualMachines') {
+            $agentstatus=Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
+        }
+        else {
+            $agentstatus=Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
+        }
+    }
+    if ($agentstatus) {
+        "Agent already installed."
+    }
+    else {
+        "Agent not installed. Installing..."
+        if ($ResourceOS -eq 'Linux') { # 
+            if ($resource.split('/')[7] -eq 'virtualMachines') {
+                # Virtual machine - add extension
+                
+                install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $resource.Location `
+                -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27" 
+                #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -EnableAutomaticUpgrade $true
+            }
+            else {
+                # Arc machine -add extension
+                Set-AzContext -SubscriptionId $resourceSubcriptionId
+                $tags=get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName| Select-Object -ExpandProperty tags | ConvertTo-Json
+                $agent= New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade -Tag $tags
+            }
+        }
+        else { # Windows
+            if ($resource.split('/')[7] -eq 'virtualMachines') {
+                # Virtual machine - add extension
+                install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $resource.Location `
+                -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2"
+                #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
+            }
+            else {
+                # Arc machine -add extension
+                Set-AzContext -SubscriptionId $resourceSubcriptionId
+                $tags=get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
+                $agent=New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade -Tag $tags
+            }
+        }
+        if ($agent) {
+            "Agent installed."
+        }
+        else {
+            "Agent not installed."
+        }
+    }
+    #End of agent installation
+}
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
@@ -102,78 +225,12 @@ if ($resources) {
         'AddTag' {
             foreach ($TagValue in $TagList) {
                 foreach ($resource in $resources) {
-                    $resourceName=$resource.Resource.split('/')[8]
-                    $resourceSubcriptionId=$resource.Resource.split('/')[2]
-                    "Running $action for $resourceName resource. TagValue: $TagValue"
-                    #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
-                    $tag=(get-aztag -ResourceId $resource.Resource).Properties.TagsProperty
-                    #"Current tags: $($tag)"
-                    if ($null -eq $tag) { # initializes if no tag is there.
-                        $tag = @{}
+                    # Tagging
+                    Add-Tag -resource $resource.Resource -TagName $TagName -TagValue $TagValue
+                    # Add Agent
+                    if ($TagValue -eq 'VMI') {
+                        Add-Agent -resource $resource.Resource -ResourceOS $resource.OS
                     }
-                    if ($tag.Keys -notcontains $TagName) { # doesn´t have the monitoring tag
-                        $tag.Add($TagName, $TagValue)
-                        Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
-                        #Check if agent exists. If not, install it.
-                    }
-                    else { #Monitoring Tag exists  
-                        if ($tag.$tagName.Split(',') -notcontains $TagValue) {
-                            $tag[$TagName] += ",$TagValue"
-                            #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
-                            Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
-                        }
-                        else {
-                            "$TagName already has the $TagValue value"
-                        }
-                    }
-                    if ($resource.OS -eq 'Linux') {
-                        $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
-                    }
-                    else {
-                        $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
-                    }
-                    if ($agentstatus) {
-                        "Agent already installed."
-                    }
-                    else {
-                        "Agent not installed. Installing..."
-                        if ($resource.OS -eq 'Linux') { # 
-                            if ($resource.Resource.split('/')[7] -eq 'virtualMachines') {
-                                # Virtual machine - add extension
-                                
-                                install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.Location `
-                                -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27"
-                                #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -EnableAutomaticUpgrade $true
-                            }
-                            else {
-                                # Arc machine -add extension
-                                Set-AzContext -SubscriptionId $subscriptionId
-                                $tags=get-azvm -Name $resourceName -ResourceGroupName $resource.resourceGroup | Select-Object -ExpandProperty tags | ConvertTo-Json
-                                $agent= New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade -Tag $tags
-                            }
-                        }
-                        else { # Windows
-                            if ($resource.Resource.split('/')[7] -eq 'virtualMachines') {
-                                # Virtual machine - add extension
-                                install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resource.'Resource Group' -vmName $resourceName -location $resource.Location `
-                                -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2"
-                                #$agent=Set-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
-                            }
-                            else {
-                                # Arc machine -add extension
-                                Set-AzContext -SubscriptionId $subscriptionId
-                                $tags=get-azvm -Name $resourceName -ResourceGroupName $resource.resourceGroup | Select-Object -ExpandProperty tags | ConvertTo-Json
-                                $agent=New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.Location -EnableAutomaticUpgrade -Tag $tags
-                            }
-                        }
-                        if ($agent) {
-                            "Agent installed."
-                        }
-                        else {
-                            "Agent not installed."
-                        }
-                    }
-                    # End of agent installation
                     # Add Tag Based condition.
                     if ($TagValue -eq 'AVD') {
                         # Create AVD alerts function.
@@ -227,7 +284,7 @@ if ($resources) {
                                         $tag[$tagName]=$tagarray -join ','
                                         Update-AzTag -ResourceId $resource.Resource -Tag $tag -Operation Replace
                                     }
-                                    if ($PackType -ne 'Paas') {
+                                    if ($PackType -eq 'IaaS') {
                                         # Remove association for the rule with the monitoring pack. PlaceHolder. Function will need to have monitoring contributor role.
                                         # Find the specific rule by the tag with ARG
                                         # Find association with the monitoring pack and that resource
