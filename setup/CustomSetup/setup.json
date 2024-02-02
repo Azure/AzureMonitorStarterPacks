@@ -263,81 +263,6 @@
                             "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
                         },
                         {
-                            "name": "AVDLawSeperate",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Seperate Log Analytics for AVD",
-                            "toolTip": "Select this option if you have or plan to deploy a seperate Log Analytics Workspace for Azure Virtual Desktop.",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy or conifgure packs for the AVD environment."
-                            }
-                        },
-                        {
-                            "name": "SectionAVDLAW",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Azure Virtual Desktop Log Analytics Workspace",
-                            "elements": [
-                                {
-                                    "name": "LAWStatusAVD",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "label": "Use New or Existing AVD Log Analytics Workspace",
-                                    "toolTip": "This will be the log analytics workspace from which data will be read and stored.",
-                                    "defaultValue": "Existing",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "New",
-                                                "value": "New"
-                                            },
-                                            {
-                                                "label": "Existing",
-                                                "value": "Existing"
-                                            }
-                                        ],
-                                        "required": true
-                                    },
-                                    "visible": true
-                                },
-                                {
-                                    "name": "LogAnalyticsWorkspaceResourceAVDNew",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Log Analytics Workspace Name for AVD Insights.",
-                                    "subLabel": "",
-                                    "defaultValue": "Monster-LA-AVD",
-                                    "toolTip": "Log Analytics Workspace Name for AVD Insights.",
-                                    "constraints": {
-                                        "required": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]",
-                                        "regex": "",
-                                        "validationMessage": ""
-                                    },
-                                    "visible": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]"
-                                },
-                                {
-                                    "name": "LogAnalyticsWorkspaceAVDResource",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Log Analytics Workspace for AVD",
-                                    "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
-                                    "resourceType": "Microsoft.OperationalInsights/workspaces",
-                                    "constraints": {
-                                        "required": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'Existing')]"
-                                    },
-                                    "infoMessages": [],
-                                    "visible": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'Existing')]"
-                                }
-                            ],
-                            "visible": "[equals(steps('Configuration').AVDLawSeperate, true)]"
-                        },
-                        {
-                            "name": "AVDInfoBox",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                              "style": "Info",
-                              "text": "Selecting the option ABOVE will allow you to choose between an existing or new workspace for Azure Virtual Desktop. Selecting New will conifgure it in the same manner as the AVD Insights Configuration workbook. Often AVD Inisights is configured separately from the rest of the environment to allow for different retention periods and performance. Using a seperate Log Analytics Workspace is recommended. This deployment will then create the alerts targeted to the separate workspace.",
-                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/insights?tabs=monitor"
-                            }
-                        },
-                        {
                             "name": "assignmentLevel",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Assign Policies to ManagementGroup or Subscription",
@@ -929,10 +854,6 @@
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
-                "seperateLAWforAVD": "[steps('Configuration').AVDLawSeperate]",
-                "existingLogAnalyticsWSIdAVD": "[steps('Configuration').SectionAVDLAW.LogAnalyticsWorkspaceAVDResource.id]",
-                "createNewLogAnalyticsWSAVD": "[equals(steps('Configuration').SectionAVDLAW.LAWStatusAVD, 'New')]",
-                "newLogAnalyticsWSNameAVD": "[steps('Configuration').SectionAVDLAW.LogAnalyticsWorkspaceResourceAVDNew]",
                 "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
                 "deployAllPacks": "[steps('Packs').deployPacks]",
                 "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
