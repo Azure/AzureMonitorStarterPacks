@@ -380,16 +380,36 @@
                             "visible": true
                         },
                         {
+                            "name": "useGrafana",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Use Azure Managed Grafana",
+                            "toolTip": "Select to deploy Azure Managed Grafana based dashboards..",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the Azure Managed Grafana dashboards."
+                            }
+                        },
+                        {
+                            "name": "infoBoxGrafana",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('Configuration').useGrafana, true)]",
+                            "options": {
+                                "icon": "None",
+                                "text": "When Enabled, Azure Managed Grafana will be used to deploy dashboards.",
+                                "uri": "https://www.microsoft.com"
+                            }
+                        },
+                        {
                             "name": "ExistingGrafanaInstance",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "label": "Azure Managed Grafana",
                             "toolTip": "Existing Azure Managed Grafana",
                             "resourceType": "Microsoft.Dashboard/grafana",
                             "constraints": {
-                                "required": true
+                                "required": "[equals(steps('Configuration').useGrafana, true)]"
                             },
                             "infoMessages": [],
-                            "visible": true
+                            "visible": "[equals(steps('Configuration').useGrafana, true)]"
                         },
                         {
                             "name": "ExistingApplicationGallery",
@@ -446,7 +466,7 @@
                 "userManagedIdentityResourceId":"[steps('Configuration').userManagedIdentitiesId]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",                
                 "actionGroupName":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').NewActionGroupName, last(split(steps('Configuration').existingAG,'/')))]",
-                "grafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
+                "grafanaResourceId": "[if(steps('Configuration').useGrafana,steps('Configuration').ExistingGrafanaInstance.id,'')]",
                 "customerTags": "[steps('tags').tagsByResource]",
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "deployIaaSPacks": "[steps('Configuration').deployIaaSPacks]",
@@ -457,7 +477,8 @@
                 "instanceName": "[steps('Configuration').instanceName]",
                 "emailreceiver":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiver,'')]",
                 "emailreiceversemail":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), steps('Configuration').emailreceiversemail,'')]",
-                "existingActionGroupResourceId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]"
+                "existingActionGroupResourceId":"[if(equals(steps('Configuration').ActionGroupStatus, 'New'), '', steps('Configuration').existingAG)]",
+                "deployGrafana": "[steps('Configuration').useGrafana]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

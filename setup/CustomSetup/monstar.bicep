@@ -28,6 +28,7 @@ param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 param instanceName string
+param deployGrafana bool
 
 // Packs` stuff
 @description('Name of the Action Group to be used or created.')
@@ -158,7 +159,7 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
   }
 }
 
-module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
+module amg '../backend/code/modules/grafana.bicep' = if (newGrafana && deployGrafana) {
   name: 'azureManagedGrafana-${instanceName}'
   dependsOn: [
     resourgeGroup
@@ -220,7 +221,7 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
-    grafanaResourceId: newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId
+    grafanaResourceId: deployGrafana ? ( newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId) : ''
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     existingActionGroupResourceId: existingActionGroupId
@@ -230,5 +231,6 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     storageAccountName: storageAccountName
     imageGalleryName: ImageGalleryName
     instanceName: instanceName
+    deployGrafana: deployGrafana
   }
 }

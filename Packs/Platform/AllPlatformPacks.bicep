@@ -17,15 +17,15 @@ param location string //= resourceGroup().location
 param workspaceId string
 param solutionTag string
 param solutionVersion string
-@description('Full resource ID of the data collection endpoint to be used for the deployment.')
-param dceId string
+// @description('Full resource ID of the data collection endpoint to be used for the deployment.')
+// param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-param grafanaName string
+//param grafanaName string
 param customerTags object 
 param instanceName string
 
@@ -82,7 +82,7 @@ module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
     packtag: 'ALB'
     solutionVersion: solutionVersion
     //dceId: dceId
-    grafanaName: grafanaName
+    //grafanaName: grafanaName
     customerTags: customerTags
     instanceName: instanceName
   }

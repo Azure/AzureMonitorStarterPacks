@@ -19,7 +19,7 @@ param userManagedIdentityResourceId string
 param mgname string 
 param assignmentLevel string
 param resourceGroupId string
-param grafanaName string
+//param grafanaName string
 param customerTags object 
 param instanceName string
 var tempTags ={

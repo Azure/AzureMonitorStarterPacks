@@ -604,6 +604,26 @@
                             "visible": "true"
                         },
                         {
+                            "name": "deployGrafana",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy Azure Managed Grafana",
+                            "toolTip": "Select to deploy Azure Managed Grafana.",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the Azure Managed Grafana."
+                            }
+                        },
+                        {
+                            "name": "infoBoxGrafana",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('Configuration').deployGrafana, true)]",
+                            "options": {
+                                "icon": "None",
+                                "text": "When Enabled, a new Azure Managed Grafana will be deployed to the selected subscription. The Grafana will be used to visualize the data from the MonStar Packs. If not enabled, some visuals for certain Packs won't be available.",
+                                "uri": "https://www.microsoft.com"
+                            }
+                        },
+                        {
                             "name": "GrafanaStatus",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Use New or Existing Grafana",
@@ -619,9 +639,9 @@
                                         "value": "Existing"
                                     }
                                 ],
-                                "required": true
+                                "required": "[equals(steps('Configuration').deployGrafana, true)]"
                             },
-                            "visible": true
+                            "visible": "[equals(steps('Configuration').deployGrafana, true)]"
                         },
                         {
                             "name": "NewGrafanaName",
@@ -928,7 +948,9 @@
                 "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
                 "deployDiscovery": "[steps('Configuration').deployDiscovery]",
-				"instanceName":  "[steps('Configuration').instanceName]"
+				"instanceName":  "[steps('Configuration').instanceName]",
+                "deployGrafana": "[steps('Configuration').deployGrafana]"
+
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

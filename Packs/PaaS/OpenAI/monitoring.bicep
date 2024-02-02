@@ -18,7 +18,7 @@ param userManagedIdentityResourceId string
 param mgname string 
 param assignmentLevel string
 param resourceGroupId string
-param grafanaName string
+//param grafanaName string
 param instanceName string
 var resourceType = 'Microsoft.CognitiveServices/accounts'
 //var resourceShortType = split(resourceType, '/')[1]

@@ -22,7 +22,7 @@ param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
 param assignmentLevel string
-param grafanaResourceId string
+param grafanaResourceId string = ''
 param customerTags object
 param existingActionGroupResourceId string
 param deployIaaSPacks bool
@@ -31,6 +31,7 @@ param deployPlatformPacks bool
 param storageAccountName string
 param imageGalleryName string
 param instanceName string
+param deployGrafana bool
 
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
@@ -73,7 +74,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     dceId: dceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     assignmentLevel: assignmentLevel
-    grafanaResourceId: grafanaResourceId
+    //grafanaResourceId: grafanaResourceId
     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
     customerTags: customerTags
     mgname: mgname
@@ -96,10 +97,10 @@ module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
     //workspaceIdAVD: workspaceIdAVD
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    dceId: dceId
+    //dceId: dceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     assignmentLevel: assignmentLevel
-    grafanaName: 'grafana'
+    //grafanaName: 'grafana'
     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
     customerTags: customerTags
     mgname: mgname
@@ -117,15 +118,32 @@ module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatform
     workspaceId: workspaceId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    dceId: dceId
+    //dceId: dceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     assignmentLevel: assignmentLevel
     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
-    grafanaName: 'grafana'
+    //grafanaName: 'grafana'
     mgname: mgname
     resourceGroupId: resourceGroupId
     subscriptionId: subscriptionId
     customerTags: customerTags
+    instanceName: instanceName
+  }
+}
+
+// Grafana upload and install
+module grafana './ds.bicep' = if (deployGrafana) {
+  name: 'grafana'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    fileName: 'grafana.zip'
+    grafanaResourceId: grafanaResourceId
+    location: location
+    resourceGroupName: resourceGroupName
+    customerTags: customerTags
+    packsManagedIdentityResourceId: userManagedIdentityResourceId
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
     instanceName: instanceName
   }
 }

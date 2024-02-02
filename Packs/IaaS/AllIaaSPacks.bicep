@@ -22,7 +22,7 @@ param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
 param assignmentLevel string
-param grafanaResourceId string
+//param grafanaResourceId string
 param customerTags object
 param actionGroupResourceId string
 param storageAccountName string
@@ -203,22 +203,6 @@ module Nginx './Nginx/monitoring.bicep' = {
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
-    instanceName: instanceName
-  }
-}
-// Grafana upload and install
-module grafana 'ds.bicep' = {
-  name: 'grafana'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    fileName: 'grafana.zip'
-    grafanaResourceId: grafanaResourceId
-    location: location
-    resourceGroupName: resourceGroupName
-    customerTags: customerTags
-    packsManagedIdentityResourceId: userManagedIdentityResourceId
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
     instanceName: instanceName
   }
 }
