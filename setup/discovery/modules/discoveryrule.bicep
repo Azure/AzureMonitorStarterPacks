@@ -36,7 +36,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
                   recordStartTimestampFormat: 'ISO 8601'
               }
             }
-            name: tableName
+            name: streamName
         }
       ]
     }
