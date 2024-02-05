@@ -104,15 +104,15 @@ module logicapp './modules/logicapp.bicep' = {
     subscriptionId: subscriptionId
   }
 }
-module workbook './modules/workbook.bicep' = {
-  name: 'workbookdeployment'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    lawresourceid: lawresourceid
-    location: location
-    Tags: Tags
-  }
-}
+// module workbook './modules/workbook.bicep' = {
+//   name: 'workbookdeployment'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   params: {
+//     lawresourceid: lawresourceid
+//     location: location
+//     Tags: Tags
+//   }
+// }
 
 module extendedWorkbook './modules/extendedworkbook.bicep' = {
   name: 'workbook2deployment'

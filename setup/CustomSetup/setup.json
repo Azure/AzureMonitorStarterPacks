@@ -191,7 +191,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Name for the new Storage Account. Must be unique globally!",
                             "defaultValue": "amonsterpacksxxxx",
-                            "toolTip": "Use only allowed characters. Change xxxx to randon characters",
+                            "toolTip": "Use only allowed characters. Change xxxx to random characters",
                             "constraints": {
                                 "required": true,
                                 "regex": "^[a-z0-9A-Z]{1,30}$",
@@ -574,7 +574,7 @@
                             "label": "Name for the new Grafana environment.",
                             "subLabel": "",
                             "defaultValue": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                            "toolTip": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit.",
+                            "toolTip": "TBD",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
                                 "regex": "",
@@ -715,7 +715,7 @@
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs (Preview).",
+                            "label": "Deploy All PaaS Packs (Preview)",
                             "toolTip": "Select to deploy all PaaS packs.",
                             "defaultValue": false,
                             "constraints": {
@@ -727,7 +727,7 @@
                         {
                             "name": "deployPlatformPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs (Preview).",
+                            "label": "Deploy All Platform Packs (Preview)",
                             "toolTip": "Select to deploy all Platform packs.",
                             "defaultValue": false,
                             "visible": "[equals(steps('Packs').deployPacks, false)]",
@@ -792,14 +792,16 @@
                             "defaultValue": "",
                             "toolTip": "",
                             "constraints": {
-                                "required": true
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z]{1,12}$",
+                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
                             },
                             "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceiver",
                             "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver(s)",
+                            "label": "Email Receiver",
                             "subLabel": "",
                             "defaultValue": "",
                             "toolTip": "",

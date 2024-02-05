@@ -195,9 +195,7 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca"
-                  ]
+                  "value": []
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -1184,9 +1182,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "VMI"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1346,9 +1342,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "PrivZones"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1525,9 +1519,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "PrivZones"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -4263,9 +4255,7 @@
                               },
                               "queryType": 1,
                               "resourceType": "microsoft.resources/tenants",
-                              "value": [
-                                "LxDisc"
-                              ]
+                              "value": []
                             }
                           ],
                           "style": "pills",

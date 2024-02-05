@@ -84,7 +84,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
     zoneRedundant: false
   }
 }
-resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
+resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
   name: '${functionname}'
   location: location
   kind: 'functionapp'
@@ -151,7 +151,12 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
       redundancyMode: 'None'
       storageAccountRequired: false
       keyVaultReferenceIdentity: 'SystemAssigned'
-
+      cors: {
+        allowedOrigins: [
+            'https://portal.azure.com'
+        ]
+        supportCredentials: true
+      }
   }
 }
 
@@ -171,6 +176,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     MSI_CLIENT_ID: userManagedIdentityClientId
     PacksUserManagedId: packsUserManagedId
+    
   }
 }
 
