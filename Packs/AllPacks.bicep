@@ -145,5 +145,6 @@ module grafana './ds.bicep' = if (deployGrafana) {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     instanceName: instanceName
+    subscriptionId: subscriptionId
   }
 }

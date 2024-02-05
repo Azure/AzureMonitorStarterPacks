@@ -7,6 +7,8 @@ param customerTags object
 param solutionTag string
 param solutionVersion string
 param instanceName string
+param subscriptionId string
+
 var grafanaName = split(grafanaResourceId, '/')[8]
 
 var tempfilename = '${fileName}.tmp'
@@ -18,6 +20,7 @@ solutionVersion: solutionVersion
   solutionVersion: solutionVersion
   instanceName: instanceName
 },customerTags.All)
+
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-Grafana'
   tags: Tags
@@ -39,6 +42,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: loadFileAsBase64('./Grafana.zip')
       }
     ]
-    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az extension add --name amg && az login --identity && unzip ${fileName} && for file in *.json; do az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --definition "$file" --overwrite true;done'
+    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${fileName} && az extension add --name amg && az login --identity && unzip ${fileName} && for file in *.json; do az grafana dashboard import -g ${resourceGroupName} -n ${grafanaName} --subscription ${subscriptionId} --definition "$file" --overwrite true;done'
   }
 }
