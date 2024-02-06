@@ -44,7 +44,7 @@ var appName = '${packtag}-collection'
 var appDescription = '${packtag} Collection - ${instanceName}'
 var OS = 'Windows'
 
-var tableNameToUse = '${tableName}'
+var tableNameToUse = tableName
 var xPathQueries=[ 
 ]
 // The performance counters define which counters are collected

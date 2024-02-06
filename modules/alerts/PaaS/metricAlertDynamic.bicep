@@ -525,7 +525,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                     type: 'String'
                                                 }
                                                 numberOfEvaluationPeriods: {
-                                                    type: 'Integer'
+                                                    type: 'Int'
                                                 }
                                                 alertSensitivity: {
                                                     type: 'String'
