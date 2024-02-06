@@ -276,7 +276,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                 defaultValue: minFailingPeriodsToAlert
             }
             numberOfEvaluationPeriods: {
-                type: 'Int'
+                type: 'Integer'
                 metadata: {
                     displayName: 'Number Of Evaluation Periods'
                     description: 'Number Of Evaluation Periods for the alert'
@@ -423,7 +423,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                         type: 'String'
                                     }
                                     numberOfEvaluationPeriods: {
-                                        type: 'Int'
+                                        type: 'Integer'
                                     }
                                     minFailingPeriodsToAlert: {
                                         type: 'String'
@@ -525,7 +525,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                     type: 'String'
                                                 }
                                                 numberOfEvaluationPeriods: {
-                                                    type: 'Int'
+                                                    type: 'Integer'
                                                 }
                                                 alertSensitivity: {
                                                     type: 'String'

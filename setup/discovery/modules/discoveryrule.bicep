@@ -11,7 +11,7 @@ param packtype string
 param endpointResourceId string
 param instanceName string
 
-var streamName= 'Custom-${tableName}'
+var streamName= tableName
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
