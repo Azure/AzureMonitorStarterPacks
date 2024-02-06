@@ -365,7 +365,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://amp-prod-6c64f9ed-function.azurewebsites.net/api/config?Action=getAllServiceTags\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
               "size": 0,
               "queryType": 10
             },
@@ -3900,7 +3900,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://amp-prod-6c64f9ed-function.azurewebsites.net/api/config?Action=getDiscoveryMappings\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getDiscoveryMappings\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
               "size": 0,
               "queryType": 10
             },

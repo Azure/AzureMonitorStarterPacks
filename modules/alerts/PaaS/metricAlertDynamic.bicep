@@ -24,7 +24,7 @@ param metricName string
 param operator string
 param timeAggregation string
 param minFailingPeriodsToAlert string
-param numberOfEvaluationPeriods string
+param numberOfEvaluationPeriods int
 param alertSensitivity string
 param initiativeMember bool
 
@@ -276,7 +276,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                 defaultValue: minFailingPeriodsToAlert
             }
             numberOfEvaluationPeriods: {
-                type: 'String'
+                type: 'Int'
                 metadata: {
                     displayName: 'Number Of Evaluation Periods'
                     description: 'Number Of Evaluation Periods for the alert'
@@ -423,7 +423,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                         type: 'String'
                                     }
                                     numberOfEvaluationPeriods: {
-                                        type: 'String'
+                                        type: 'Int'
                                     }
                                     minFailingPeriodsToAlert: {
                                         type: 'String'
@@ -525,7 +525,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                     type: 'String'
                                                 }
                                                 numberOfEvaluationPeriods: {
-                                                    type: 'String'
+                                                    type: 'Int'
                                                 }
                                                 alertSensitivity: {
                                                     type: 'String'

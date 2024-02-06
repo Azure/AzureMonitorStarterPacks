@@ -416,7 +416,7 @@ module Alert12  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT5M'
       alertSensitivity: 'Low'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '4'
+      numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesByte'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
@@ -553,7 +553,7 @@ module Alert16  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT5M'
       alertSensitivity: 'Low'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '4'
+      numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesHand'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
@@ -690,7 +690,7 @@ module Alert20  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '4'
+      numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesGen2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
@@ -725,7 +725,7 @@ module Alert21  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '4'
+      numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesGen0'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
@@ -760,7 +760,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '4'
+      numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesGen1'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'

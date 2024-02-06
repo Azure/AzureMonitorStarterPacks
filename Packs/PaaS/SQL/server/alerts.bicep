@@ -178,7 +178,7 @@ module Alert5  '../../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT5M'
       alertSensitivity: 'Low'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '5'
+      numberOfEvaluationPeriods: 5
       assignmentSuffix: 'Metservers5'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'

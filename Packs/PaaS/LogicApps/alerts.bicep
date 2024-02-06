@@ -280,7 +280,7 @@ module Alert8  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parWindowSize: 'PT1H'
       alertSensitivity: 'Medium'
       minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
-      numberOfEvaluationPeriods: '4'
+      numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetworkflowsRuns3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
