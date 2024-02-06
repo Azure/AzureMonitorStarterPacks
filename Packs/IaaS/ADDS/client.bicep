@@ -28,7 +28,7 @@ param appDescription string
 param OS string
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
-var tableNameToUse = 'Custom${tableName}_CL'
+var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(workspaceId,'/')[8]
 
 // VM Application to collect the data - this would be ideally an extension
