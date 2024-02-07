@@ -268,7 +268,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                 defaultValue: AGId
             }
             minFailingPeriodsToAlert: {
-                type: 'String'
+                type: 'Integer'
                 metadata: {
                     displayName: 'Min Failing Periods To Alert'
                     description: 'Min Failing Periods To Alert for the alert'
