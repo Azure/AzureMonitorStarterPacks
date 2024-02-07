@@ -72,7 +72,7 @@ The AMA Policy Set is an initiative that contains all the policies required for 
 
 ![Alt text](image-17.png)
 
-Basic Solution Components (Backend)
+### Basic Solution Components (Backend)
 
 The basic solution is composed of the following components:
 
