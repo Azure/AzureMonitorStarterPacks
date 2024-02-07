@@ -78,7 +78,7 @@ module vWanPacketEgressDropCountAlert '../../../../modules/alerts/PaaS/metricAle
       parEvaluationFrequency: 'PT15M'
       parPolicyEffect: 'deployIfNotExists'
       parWindowSize: 'PT15M'
-      minFailingPeriodsToAlert: '4'
+      minFailingPeriodsToAlert: 4
       numberOfEvaluationPeriods: 4
       alertSensitivity: 'Medium'
       assignmentSuffix: 'ActVPNGWEDC'

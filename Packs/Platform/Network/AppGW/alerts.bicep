@@ -42,7 +42,7 @@ module Alert1  '../../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: '2'
+      minFailingPeriodsToAlert: 2
       numberOfEvaluationPeriods: 2
       assignmentSuffix: 'MetapplicationGateways1'
       parAutoMitigate: 'false'
@@ -77,7 +77,7 @@ module Alert2  '../../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: '2'
+      minFailingPeriodsToAlert: 2
       numberOfEvaluationPeriods: 2
       assignmentSuffix: 'MetapplicationGateways2'
       parAutoMitigate: 'false'
@@ -211,7 +211,7 @@ module Alert6  '../../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: '2'
+      minFailingPeriodsToAlert: 2
       numberOfEvaluationPeriods: 2
       assignmentSuffix: 'MetapplicationGateways6'
       parAutoMitigate: 'false'
@@ -246,7 +246,7 @@ module Alert7  '../../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: '2'
+      minFailingPeriodsToAlert: 2
       numberOfEvaluationPeriods: 2
       assignmentSuffix: 'MetapplicationGateways7'
       parAutoMitigate: 'false'

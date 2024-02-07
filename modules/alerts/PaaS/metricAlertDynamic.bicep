@@ -23,7 +23,7 @@ param AGId string
 param metricName string
 param operator string
 param timeAggregation string
-param minFailingPeriodsToAlert string
+param minFailingPeriodsToAlert int
 param numberOfEvaluationPeriods int
 param alertSensitivity string
 param initiativeMember bool
@@ -423,10 +423,10 @@ module metricAlert '../../alz/deploy.bicep' = {
                                         type: 'String'
                                     }
                                     numberOfEvaluationPeriods: {
-                                        type: 'Integer'
+                                        type: 'Int'
                                     }
                                     minFailingPeriodsToAlert: {
-                                        type: 'String'
+                                        type: 'Int'
                                     }
                                     alertSensitivity: {
                                         type: 'String'
@@ -522,7 +522,7 @@ module metricAlert '../../alz/deploy.bicep' = {
                                                     type: 'string'
                                                 }
                                                 minFailingPeriodsToAlert: {
-                                                    type: 'String'
+                                                    type: 'Int'
                                                 }
                                                 numberOfEvaluationPeriods: {
                                                     type: 'Int'

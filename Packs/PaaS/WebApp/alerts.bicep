@@ -415,7 +415,7 @@ module Alert12  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Low'
-      minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
+      minFailingPeriodsToAlert: 2
       numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesByte'
       parAutoMitigate: 'false'
@@ -552,7 +552,7 @@ module Alert16  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Low'
-      minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
+      minFailingPeriodsToAlert: 2
       numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesHand'
       parAutoMitigate: 'false'
@@ -689,7 +689,7 @@ module Alert20  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
+      minFailingPeriodsToAlert: 1
       numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesGen2'
       parAutoMitigate: 'false'
@@ -724,7 +724,7 @@ module Alert21  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
+      minFailingPeriodsToAlert: 1
       numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesGen0'
       parAutoMitigate: 'false'
@@ -759,7 +759,7 @@ module Alert22  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
+      minFailingPeriodsToAlert: 1
       numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetsitesGen1'
       parAutoMitigate: 'false'

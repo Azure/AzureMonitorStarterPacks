@@ -279,7 +279,7 @@ module Alert8  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
       parEvaluationFrequency: 'PT1H'   
       parWindowSize: 'PT1H'
       alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: 'minFailingPeriodsToAlert'
+      minFailingPeriodsToAlert: 4
       numberOfEvaluationPeriods: 4
       assignmentSuffix: 'MetworkflowsRuns3'
       parAutoMitigate: 'false'
