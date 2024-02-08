@@ -195,7 +195,9 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": []
+                  "value": [
+                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e"
+                  ]
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -220,7 +222,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -236,7 +238,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-prod-6c64f9ed-Function"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -271,7 +273,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -294,7 +296,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP123"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPFTA1"
                 }
               ],
               "style": "above",
@@ -385,6 +387,21 @@
         "value": "backend"
       },
       "name": "ConfigStatusGroup"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+        "size": 0,
+        "queryType": 10
+      },
+      "conditionalVisibility": {
+        "parameterName": "showHidden",
+        "comparison": "isEqualTo",
+        "value": "yes"
+      },
+      "name": "queryServiceTags - Global"
     },
     {
       "type": 1,
@@ -849,6 +866,71 @@
               "value": "alerts"
             },
             "name": "groupDashAlerts"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags&Type=PaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+              "size": 0,
+              "queryType": 10
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "dashTab",
+                "comparison": "isEqualTo",
+                "value": "paas"
+              },
+              {
+                "parameterName": "showHidden",
+                "comparison": "isEqualTo",
+                "value": "yes"
+              }
+            ],
+            "name": "queryServiceTags"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources | where isnotempty(tags.MonitorStarterPacks)\n| where ['type'] <> 'microsoft.compute/virtualmachines' and ['type'] <> 'microsoft.hybridcompute/machines'\n| summarize count() by ['type']\n",
+              "size": 0,
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ]
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "showHidden",
+                "comparison": "isEqualTo",
+                "value": "yes"
+              },
+              {
+                "parameterName": "dashTab",
+                "comparison": "isEqualTo",
+                "value": "paas"
+              }
+            ],
+            "name": "query - pass - resourcestomerge"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"queryServiceTags\",\"rightTable\":\"query - pass - resourcestomerge\",\"leftColumn\":\"nameSpace\",\"rightColumn\":\"type\"}],\"projectRename\":[{\"originalName\":\"[queryServiceTags].nameSpace\",\"mergedName\":\"nameSpace\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[queryServiceTags].type\",\"mergedName\":\"type\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - pass - resourcestomerge].count_\",\"mergedName\":\"count_\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - 18].type\"},{\"originalName\":\"[query - pass - resourcestomerge].type\"},{\"originalName\":\"[queryServiceTags].tag\"}]}",
+              "size": 0,
+              "queryType": 7,
+              "visualization": "piechart"
+            },
+            "conditionalVisibility": {
+              "parameterName": "dashTab",
+              "comparison": "isEqualTo",
+              "value": "paas"
+            },
+            "showPin": false,
+            "name": "query - 17"
           }
         ]
       },
@@ -1182,7 +1264,9 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": []
+                        "value": [
+                          "VMI"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1674,7 +1758,9 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": []
+                        "value": [
+                          "LogicApps"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1779,7 +1865,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools',\n    'microsoft.logic/workflows',\n    'microsoft.ql/managedinstances',\n    'microsoft.sql/servers/databases'\n) or (\n    tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic'\n)\nor (\n    tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'\n)\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n| where tolower(type) in (\n    'microsoft.storage/storageaccounts',\n    'microsoft.desktopvirtualization/hostpools',\n    'microsoft.logic/workflows',\n    'microsoft.ql/managedinstances',\n    'microsoft.sql/servers/databases'\n) or (\n    tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic'\n)\nor (\n    tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'\n)\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type=tolower(type),resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored PaaS",
                     "exportMultipleValues": true,
@@ -1835,9 +1921,6 @@
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
-                        "multiSelect": true,
-                        "quote": "",
-                        "delimiter": ",",
                         "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='PaaS'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
@@ -1851,7 +1934,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": []
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -2030,7 +2113,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "DNS2016"
+                  "value": "Storage"
                 }
               ],
               "style": "pills",
@@ -3841,7 +3924,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "CustomDiscovery_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project timestamp,Computer,type,name,platform,othertype,vendor",
+              "query": "addsmonitoring_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend name=tostring(fields[3])\n| extend othertype=tostring(fields[4])\n| extend vendor=tostring(fields[5])\n| project timestamp,Computer,type,name,platform,othertype,vendor",
               "size": 0,
               "timeContext": {
                 "durationMs": 172800000
@@ -4255,7 +4338,9 @@
                               },
                               "queryType": 1,
                               "resourceType": "microsoft.resources/tenants",
-                              "value": []
+                              "value": [
+                                "WinDisc"
+                              ]
                             }
                           ],
                           "style": "pills",

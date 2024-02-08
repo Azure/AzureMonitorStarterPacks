@@ -20,10 +20,6 @@ var appName = '${instanceName}-windiscovery'
 var appDescription = 'Windows Workload discovery'
 var OS = 'Windows'
 var appVersionName = '1.0.0'
-//var resourceGroupName = split(resourceGroupId, '/')[4]
-
-//var tableNameToUse = 'Custom${tableName}_CL'
-// var lawFriendlyName = split(lawResourceId,'/')[8]
 
 // VM Application to collect the data - this would be ideally an extension
 module windowsDiscoveryApp '../modules/aigapp.bicep' = {

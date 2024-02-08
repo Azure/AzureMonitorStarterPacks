@@ -16,7 +16,7 @@ param dceId string
 param Tags object
 param instanceName string
 // Table to receive the data
-var tableNameToUse = 'Custom${tableName}_CL'
+var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 module table '../../modules/LAW/table.bicep' = {

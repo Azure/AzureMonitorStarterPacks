@@ -172,13 +172,6 @@ module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpo
     resourceType: rt
     initiativeMember: false
     packtype: 'PaaS'
-    // assignmentLevel: assignmentLevel
-    // assignmentSuffix: ''
-    // instanceName: instanceName
-    // mgname: mgname
-    // policyLocation: location
-    // subscriptionId: subscriptionId
-    // userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }]
 module policyassignment '../../../modules/policies/mg/policiesDiag.bicep' = [for (rt,i) in resourceTypes: {
