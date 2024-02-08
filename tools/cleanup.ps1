@@ -81,7 +81,7 @@ if ($RemoveDiscovery -or $RemoveAll) {
     | where ruleId =~
 '@
     # Remove DCRs and associations
-    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tags.MonitoringPackType -eq "Discovery"} -ErrorAction SilentlyContinue
+    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tag.MonitoringPackType -eq "Discovery"} -ErrorAction SilentlyContinue
     foreach ($DCR in $DCRs)
     {
         $searchQuery=$query + "'$($DCR.Id)'"
@@ -150,29 +150,65 @@ if ($RemoveDiscovery -or $RemoveAll) {
     
     # uninstall VM Apps
     # find the gallery
+
     Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
-        $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
-        foreach ($ga in $galleryApps) {
-            $gavs=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
-            foreach ($gav in $gavs) {
-                # Find vms with that app
-                $vms=Get-AzVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
-                foreach ($vm in $vms) {
-                    # Remove Application from VM - Remove-AzVMGalleryApplication
-                    Remove-AzVMGalleryApplication -VM $vm -Name $ga.Name -Version $gav.Name -ResourceGroupName $RG
-                }
-                # Remove Application Version - Remove-AzGalleryApplicationVersion
-                Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -Name $gav.Name -ResourceGroupName $RG
+    "Finding apps..."
+    $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
+    "Found $($galleryApps.Count) apps."
+    foreach ($ga in $galleryApps) {
+        $gavs=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
+        "Found $($gavs.Count) versions of $($ga.Name)"
+        "Finding VMs with $($ga.Name)"
+        foreach ($gav in $gavs) {
+            # Find vms with that app
+            $vms=Get-AzVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
+            foreach ($vm in $vms) {
+                # Remove Application from VM - Remove-AzVMGalleryApplication
+                "Removing $($ga.Name) from $($vm.Name)"
+                Remove-AzVMGalleryApplication -VM $vm -Name $ga.Name -Version $gav.Name -ResourceGroupName $vm.ResourceGroupName
             }
-            # Find VMs with that app
-            #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
-            # Remove Application from VM - Remove-AzVMGalleryApplication
             # Remove Application Version - Remove-AzGalleryApplicationVersion
-            #Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
-            # Remove Application - Remove-AzGalleryApplication
-            #remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
+            "Removing $($gav.Name) from $($ga.Name)"
+            Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -Name $gav.Name -ResourceGroupName $RG
         }
+        # Remove Application - Remove-AzGalleryApplication
+        "Removing $($ga.Name) from gallery."
+        Remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG
+        # Find VMs with that app
+        #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
+        # Remove Application from VM - Remove-AzVMGalleryApplication
+        # Remove Application Version - Remove-AzGalleryApplicationVersion
+        #Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
+        # Remove Application - Remove-AzGalleryApplication
+        #remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
     }
+    #Remove Gallery
+    "Removing gallery $($_.Name)"
+    Remove-AzGallery -Name $_.Name -ResourceGroupName $RG
+    }
+    # Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
+    #     $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
+    #     foreach ($ga in $galleryApps) {
+    #         $gavs=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
+    #         foreach ($gav in $gavs) {
+    #             # Find vms with that app
+    #             $vms=Get-AzVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
+    #             foreach ($vm in $vms) {
+    #                 # Remove Application from VM - Remove-AzVMGalleryApplication
+    #                 Remove-AzVMGalleryApplication -VM $vm -Name $ga.Name -Version $gav.Name -ResourceGroupName $RG
+    #             }
+    #             # Remove Application Version - Remove-AzGalleryApplicationVersion
+    #             Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -Name $gav.Name -ResourceGroupName $RG
+    #         }
+    #         # Find VMs with that app
+    #         #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
+    #         # Remove Application from VM - Remove-AzVMGalleryApplication
+    #         # Remove Application Version - Remove-AzGalleryApplicationVersion
+    #         #Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
+    #         # Remove Application - Remove-AzGalleryApplication
+    #         #remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
+    #     }
+    # }
 }
 #region Packs
 # Remove policy assignments and policies
@@ -256,14 +292,16 @@ if ($RemovePacks -or $RemoveAll) {
             }
         }
     }
-        # If something remains, clear all dead assignments in the current subscription
-        #Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where-object {$_.ObjectType -eq 'unknown'}  | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
-        # remove DCR associations
-        $dcrs=Get-AzDataCollectionRule -ResourceGroupName $RG | Where-Object {$_.tags.MonitorStarterPacks -ne $null} 
-        # retrive unique list of packs installed
-        $packs=$dcrs.tags.MonitorStarterPacks | Select-Object -Unique
-    foreach ($pack in $packs) {
-        $query=@'
+    # If something remains, clear all dead assignments in the current subscription
+    #Get-AzRoleAssignment -scope "/subscriptions/$((Get-AzContext).Subscription)" | where-object {$_.ObjectType -eq 'unknown'}  | where-object {$_.Scope -eq "/subscriptions/$((Get-AzContext).Subscription)"} | Remove-AzRoleAssignment
+    # remove DCR associations
+    $dcrs=Get-AzDataCollectionRule -ResourceGroupName $RG | Where-Object {($_.tag | convertfrom-json).MonitorStarterPacks -ne $null} 
+    # retrive unique list of packs installed
+    if ($dcrs) {
+        $packs=($dcrs.tag | convertfrom-json).MonitorStarterPacks | select -Unique
+        foreach ($pack in $packs) {
+            "Removing pack $pack from DCRs."
+            $query=@'
 insightsresources
 | where type == "microsoft.insights/datacollectionruleassociations"
 | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]
@@ -271,30 +309,37 @@ insightsresources
 | project rulename=split(properties.dataCollectionRuleId,"/")[8],resourceName=split(resourceId,"/")[8],resourceId, ruleId=properties.dataCollectionRuleId, name
 | where ruleId =~
 '@
-        $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tags.MonitorStarterPacks -eq $pack}
-        # if ($RemoveTag) {
-        #     $DCRs=$DCRs | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
-        # }
-        foreach ($DCR in $DCRs)
-        {
-            $searchQuery=$query + "'$($DCR.Id)'"
-            $dcras=Search-AzGraph -Query $searchQuery -UseTenantScope
-            foreach ($dcra in $dcras) {
-                "Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
-                Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.resourceId -AssociationName $dcra.name
+            $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {($_.Tag | convertfrom-json).MonitorStarterPacks -eq $pack}
+            "Found $($DCRs.count) for $pack pack."
+            foreach ($DCR in $DCRs)
+            {
+                "Working on $($DCR.name)"
+                $searchQuery=$query + "'$($DCR.Id)'"
+                "Looking for associations."
+                $dcras=Search-AzGraph -Query $searchQuery -UseTenantScope
+                "Found $($dcras.count) for $($DCR.Name)."
+                foreach ($dcra in $dcras) {
+                    "Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
+                    Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.resourceId -AssociationName $dcra.name
+                }
+                "Removing DCR $($DCR.Name)"
+                Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
             }
-            Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
+            # remove DCRs
+            #Get-AzDataCollectionRule -ResourceGroupName $RG | Remove-AzDataCollectionRule
+            # remove Tags from VMs.
+            # remove monitor extensions (optional)
+            # remove alert rules
+            $Alerts=Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -eq $pack}
+            # if ($RemoveTag) {
+            #     $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
+            # }
+            "Found $($Alerts.count) alerts for pack $pack"
+            $Alerts | Remove-AzResource -Force -AsJob
         }
-        # remove DCRs
-        #Get-AzDataCollectionRule -ResourceGroupName $RG | Remove-AzDataCollectionRule
-        # remove Tags from VMs.
-        # remove monitor extensions (optional)
-        # remove alert rules
-        $Alerts=Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -eq $pack}
-        # if ($RemoveTag) {
-        #     $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
-        # }
-        $Alerts | Remove-AzResource -Force -AsJob
+    }
+    else {
+        "No DCRs found in $RG resource group."
     }
 }
 else {
