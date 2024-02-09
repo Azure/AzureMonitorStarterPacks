@@ -682,7 +682,19 @@
                                 "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
                             },
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                        }
+                        },
+						{
+							"name": "collectTelemetry",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Collect deployment telemetry.",
+							"toolTip": "Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.",
+							"constraints": {
+								"required": false,
+								"validationMessage": "Please acknowledge the legal conditions."
+							},
+							"defaultValue": true
+							
+						}
                     ]
                 },
                 {
@@ -872,8 +884,8 @@
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
                 "deployDiscovery": "[steps('Configuration').deployDiscovery]",
 				"instanceName":  "[steps('Configuration').instanceName]",
-                "deployGrafana": "[steps('Configuration').deployGrafana]"
-
+                "deployGrafana": "[steps('Configuration').deployGrafana]",
+				"collectTelemetry": "[steps('Configuration').collectTelemetry]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

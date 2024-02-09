@@ -273,7 +273,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -1934,7 +1934,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "LogicApps"
                       }
                     ],
                     "style": "pills",

@@ -17,6 +17,7 @@ param subscriptionId string
 param resourceGroupName string
 param mgname string
 param imageGalleryName string
+param collectTelemetry bool
 
 var packPolicyRoleDefinitionIds=[
   // '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
@@ -41,6 +42,14 @@ var backendFunctionRoleDefinitionIds = [
 var logicappRequiredRoleassignments = [
   '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
 ]
+
+var telemetryInfo = json(loadTextContent('./telemetry.json'))
+
+module telemetry './nested_telemetry.bicep' =  if (collectTelemetry) {
+  name: telemetryInfo.customerUsageAttribution.SolutionIdentifier
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {}
+}
 //var subscriptionId = subscription().subscriptionId
 // var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
 // var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'

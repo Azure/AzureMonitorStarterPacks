@@ -44,6 +44,8 @@ param deployPaaSPacks bool = false
 param deployPlatformPacks bool = false
 param deployDiscovery bool = false
 
+param collectTelemetry bool = true
+
 var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
@@ -55,6 +57,9 @@ var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var functionName = 'AMP-${instanceName}-${split(subscriptionId,'-')[0]}-Function'
 var logicAppName = 'AMP-${instanceName}-LogicApp'
 var ImageGalleryName = 'AMP${instanceName}Gallery'
+
+
+
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
@@ -192,6 +197,7 @@ module backend '../backend/code/backend.bicep' = {
     imageGalleryName: ImageGalleryName
     logicappname: logicAppName
     instanceName: instanceName
+    collectTelemetry: collectTelemetry
   }
 }
 

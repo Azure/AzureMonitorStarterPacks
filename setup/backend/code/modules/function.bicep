@@ -138,7 +138,13 @@ resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
           http20Enabled: false
           functionAppScaleLimit: 200
           minimumElasticInstanceCount: 0
-          minTlsVersion: '1.2'       
+          minTlsVersion: '1.2'
+          cors: {
+              allowedOrigins: [
+                  'https://portal.azure.com'
+              ]
+              supportCredentials: true
+          }  
       }
       scmSiteAlsoStopped: false
       clientAffinityEnabled: false
@@ -151,12 +157,6 @@ resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
       redundancyMode: 'None'
       storageAccountRequired: false
       keyVaultReferenceIdentity: 'SystemAssigned'
-      cors: {
-        allowedOrigins: [
-            'https://portal.azure.com'
-        ]
-        supportCredentials: true
-      }
   }
 }
 

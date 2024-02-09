@@ -92,7 +92,7 @@ The basic solution is composed of the following components:
 
 7. For Discovery of workloads, a VM Application is deployed to Azure VMs to generate the discovery data and DCR collects the data, which is shown in the Admin Workbook. VM Applications can be also used by packs that require richer data.
 
-8. For PaaS and platform services, when tagged, policies will generate the required alerts following the guidance from the AMBA documentation.
+8. For PaaS and platform services, when tagged, policies will generate the required alerts following the guidance from the [AMBA](https://aka.ms/amba) documentation.
 
 9. For PaaS and platform services, Alerts are usually created by the policies themselves. Policies can, if required, deploy diagnostics settings, which will send data to the log analytics workspace.
 

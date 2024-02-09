@@ -33,7 +33,7 @@ Review Packs documentation [here](./Packs/README.md).
 
 ## Grafana Dashboards
 
-Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed along with each pack.
+Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed as a package during the packs deployment. Using Grafana is optional but will limit the visuazliation capabilities of the solution.
 In order for the current user to have access to the Grafana environment, the user needs to be added to the Grafana Admins group. This can be done by running the following these instructions.
 
 1. Navigate the recently deployed Grafana environment and click on Access Control (IAM) and click on Add role assignment.
@@ -77,6 +77,15 @@ Example:
 ```powershell
 remove-AzOperationalInsightsWorkspace -ResourceGroupName <Resource Group> -Name <Workspace name> -ForceDelete -force
 ```
+
+## Telemetry
+
+Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.
+
+If you don't wish to send usage data to Microsoft, you can disable telemetry during setup. 
+
+Project Bicep collects telemetry in some scenarios as part of improving the product.
+
 
 ## Authoring Guide
 
