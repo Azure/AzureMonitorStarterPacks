@@ -44,7 +44,6 @@ var appName = '${packtag}-collection'
 var appDescription = '${packtag} Collection - ${instanceName}'
 var OS = 'Windows'
 
-var tableNameToUse = tableName
 var xPathQueries=[ 
 ]
 // The performance counters define which counters are collected
@@ -97,7 +96,7 @@ module client 'client.bicep' = {
     resourceGroupId: resourceGroupId
     storageAccountname: storageAccountname
     subscriptionId: subscriptionId
-    tableName: tableNameToUse
+    tableName: tableName //no _CL suffix
     tags: tags
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId

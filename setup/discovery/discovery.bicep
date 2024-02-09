@@ -31,6 +31,9 @@ module table '../../modules/LAW/table.bicep' = {
 
 module WindowsDiscovery './Windows/discovery.bicep' = {
   name: 'WindowsDiscovery-${instanceName}'
+  dependsOn: [
+    table
+  ]
   params: {
     location: location
     solutionTag: solutionTag
@@ -51,6 +54,7 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
 module LinuxDiscovery 'Linux/discovery.bicep' = {
   name: 'LinuxDiscovery-${instanceName}'
   dependsOn: [
+    table
   ]
   params: {
     location: location
