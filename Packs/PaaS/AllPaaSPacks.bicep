@@ -34,14 +34,6 @@ param assignmentLevel string
 param customerTags object 
 param instanceName string
 
-//var solutionTagComponents='MonitorStarterPacksComponents'
-// var tempTags= {
-//   '${solutionTagComponents}': 'BackendComponent'
-//   solutionVersion: solutionVersion
-//   instanceName: instanceName
-// }
-//var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
-
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {

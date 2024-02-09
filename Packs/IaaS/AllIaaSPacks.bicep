@@ -31,7 +31,7 @@ param instanceName string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
 var tempTags= {
-  '${solutionTagComponents}': 'BackendComponent'
+  '${solutionTag}': 'BackendComponent'
   solutionVersion: solutionVersion
   instanceName: instanceName
   MonitoringPackType: 'IaaS'
