@@ -184,7 +184,7 @@ if ($RemoveDiscovery -or $RemoveAll) {
     }
     #Remove Gallery
     "Removing gallery $($_.Name)"
-    Remove-AzGallery -Name $_.Name -ResourceGroupName $RG
+    Remove-AzGallery -Name $_.Name -ResourceGroupName $RG -Force
     }
     # Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
     #     $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
@@ -218,7 +218,7 @@ if ($RemovePacks -or $RemoveAll) {
     $pols=Get-AzPolicyDefinition | Where-Object {$_.properties.Metadata.MonitorStarterPacks -ne $null} 
     # retrive unique list of packs installed
     $packs=$pols.properties.Metadata.MonitorStarterPacks | Select-Object -Unique
-    "Found $($packs.count) packs with DCRs: $packs"
+    "Found $($packs.count) packs from policies: $packs"
     # if ($RemoveTag) {
     #     "Removing packs with tag $RemoveTag."
     #     $pols=$pols | where-object {$_.properties.Metadata.MonitorStarterPacks -eq $RemoveTag}
