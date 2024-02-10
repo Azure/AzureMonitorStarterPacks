@@ -29,9 +29,12 @@ var tempTags ={
   MonitoringPackType: 'IaaS'
   solutionVersion: solutionVersion
 }
+var filePatterns = [
+  '/var/log/nginx/access.log'
+  '/var/log/nginx/error.log'
+]
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
-
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var facilityNames = [
@@ -48,8 +51,8 @@ var logLevels =[
   'Emergency'
 ]
 
-module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = {
-  name: 'filecollectionrule-${packtag}'
+module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = [for (fp,i) in filePatterns: {
+  name: 'filecollectionrule-${packtag}-${i}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
@@ -57,8 +60,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
     Tags: Tags
     ruleName: rulename
     filepatterns: [
-      '/var/log/nginx/access.log'
-    //'/var/log/nginx/error.log'
+      fp
     ]
     lawResourceId:workspaceId
     tableName: 'NginxLogs'
@@ -66,8 +68,9 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
     logLevels: logLevels
     syslogDataSourceName: 'NginxLogs-1238219'
   }
-}
-module Alerts './nginxalerts.bicep' = {
+}]
+
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -79,10 +82,10 @@ module Alerts './nginxalerts.bicep' = {
     instanceName: instanceName
   }
 }
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
+module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) in filePatterns:{
+  name: 'policysetup-${packtag}-${i}'
   params: {
-    dcrId: fileCollectionRule.outputs.ruleId
+    dcrId: fileCollectionRule[i].outputs.ruleId
     packtag: packtag
     solutionTag: solutionTag
     rulename: rulename
@@ -94,18 +97,4 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     subscriptionId: subscriptionId
     instanceName: instanceName
   }
-}
-// // Grafana upload and install
-// module grafana 'ds.bicep' = {
-//   name: 'grafana'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   params: {
-//     fileName: 'grafana.json'
-//     grafanaName: grafanaName
-//     location: location
-//     resourceGroupName: resourceGroupName
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     packsManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
+}]

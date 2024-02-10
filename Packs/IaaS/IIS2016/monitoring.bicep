@@ -123,7 +123,7 @@ var performanceCounters=[
   '\\SMTP Server(SMTP 1)\\Total Messages Submitted'
 ]
 
-module Alerts './WinIIS2016Alerts.bicep' = {
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
