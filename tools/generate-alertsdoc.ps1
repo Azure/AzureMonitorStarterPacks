@@ -42,7 +42,7 @@ weight: 50
         "|DisplayName||Type|Description|"
         "|---|---|---|---|"
         foreach ($alert in $alerts) {
-            "|[$($alert.alertRuleName)](#$($alert.alertRuleDisplayName.Replace(' ','-').tolower()))|Log| $($alert.alertRuleDescription)|"
+            "|[$($alert.alertRuleName)](#$($alert.alertRuleDisplayName.Replace(' ','-').tolower().replace('.','')))|Log| $($alert.alertRuleDescription)|"
             }
 
         $i=0

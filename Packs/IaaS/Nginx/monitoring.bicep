@@ -21,6 +21,12 @@ param resourceGroupId string
 param assignmentLevel string
 param customerTags object
 param instanceName string
+var tableName = 'NginxLogs'
+
+var tableNameToUse = '${tableName}_CL'
+
+var lawFriendlyName = split(workspaceId,'/')[8]
+
 var rulename = 'AMP-${instanceName}-${packtag}'
 var ruleshortname = 'AMP-${instanceName}-${packtag}'
 
@@ -36,6 +42,7 @@ var filePatterns = [
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var resourceGroupName = split(resourceGroupId, '/')[4]
+var lawResourceGroup = split(workspaceId, '/')[4]
 
 var facilityNames = [
   'daemon'
@@ -51,9 +58,22 @@ var logLevels =[
   'Emergency'
 ]
 
+module table '../../../modules/LAW/table.bicep' = {
+  name: tableName
+  scope: resourceGroup(subscriptionId, lawResourceGroup)
+  params: {
+    parentname: lawFriendlyName
+    tableName: tableNameToUse //that will be created. This will be the table name that will be used in the DCR, not the stream name.
+    retentionDays: 31
+  }
+}
+
 module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = [for (fp,i) in filePatterns: {
   name: 'filecollectionrule-${packtag}-${i}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
+  dependsOn: [
+    table
+  ]
   params: {
     location: location
     endpointResourceId: dceId
@@ -63,7 +83,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
       fp
     ]
     lawResourceId:workspaceId
-    tableName: 'NginxLogs'
+    tableName: tableNameToUse
     facilityNames: facilityNames
     logLevels: logLevels
     syslogDataSourceName: 'NginxLogs-1238219'

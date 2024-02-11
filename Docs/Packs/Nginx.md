@@ -10,7 +10,7 @@ weight: 50
 ## Alerts
 |DisplayName||Type|Description|
 |---|---|---|---|
-|[AlertRule-Nginx-1](#nginx-service-stopped.)|Log| Nginx stopped.|
+|[AlertRule-Nginx-1](#nginx-service-stopped)|Log| Nginx stopped.|
 ### Nginx service stopped.
 
 |Property | Value |
