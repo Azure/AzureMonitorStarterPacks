@@ -78,7 +78,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
     location: location
     endpointResourceId: dceId
     Tags: Tags
-    ruleName: rulename
+    ruleName: '${rulename}-${i}'
     filepatterns: [
       fp
     ]
