@@ -61,7 +61,7 @@ $tagMapping=@"
       "type": "Platform"
     },
     {
-      "tag": "LB",
+      "tag": "ALB",
       "nameSpace": "Microsoft.Network/loadBalancers",
       "type": "Platform"
     },
