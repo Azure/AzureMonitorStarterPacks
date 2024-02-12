@@ -148,6 +148,7 @@ function Add-Agent {
     }
     #End of agent installation
 }
+
 function Add-Tag {
     param (
         [Parameter(Mandatory = $true)]
@@ -326,6 +327,7 @@ function Config-AVD {
         [string]$LogAnalyticsWSAVD
     )
     $hostPoolName = $hostPoolName.ToLower()  # ensures case sensitivity with search
+    $LogAnalyticsWS = $Request.Body.AltLAW
 
     # Graph Query to map host pool resources (App Group, Workspace, VMs, etc)
     "AVD - Perform an Azure Graph Query to map Host Pool's App Group, Workspace and VM resources and status. ($hostPoolName)"
