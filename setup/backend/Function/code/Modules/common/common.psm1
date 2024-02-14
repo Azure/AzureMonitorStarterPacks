@@ -288,20 +288,20 @@ function Remove-Tag {
                     # Find association with the monitoring pack and that resource
                     # Remove association
                     # find rule
-                    if ($PackType -eq 'IaaS') {
+                    if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
                         Remove-DCR -resourceId $resourceId -TagValue $TagValue
                     }
-                    elseif ($TagName -ne 'Avd') {
-                        "Paas Pack. No need to remove association."
-                        $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
-                        if ($diagnosticConfig) {
-                            "Found diagnostic setting. Removing..."
-                            Remove-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
-                        }
-                        else {
-                            "No diagnostic setting found."
-                        }
-                    }
+                    # elseif ($TagName -ne 'Avd') {
+                    #     "Paas Pack. No need to remove association."
+                    #     $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
+                    #     if ($diagnosticConfig) {
+                    #         "Found diagnostic setting. Removing..."
+                    #         Remove-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
+                    #     }
+                    #     else {
+                    #         "No diagnostic setting found."
+                    #     }
+                    # }
                 }
                 #Update-AzTag -ResourceId $resource.Resource -Tag $tag
             }

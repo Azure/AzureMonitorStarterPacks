@@ -222,7 +222,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -238,7 +238,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-prod-bd4d88c1-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -296,7 +296,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPFTA1"
+                  "value": null
                 }
               ],
               "style": "above",
@@ -1094,7 +1094,8 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"
+                        "resourceType": "microsoft.resourcegraph/resources",
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1264,9 +1265,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "VMI"
-                        ]
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1369,6 +1368,12 @@
                         "parameterName": "taggedPlatform",
                         "parameterType": 5,
                         "quote": ""
+                      },
+                      {
+                        "fieldName": "tag",
+                        "parameterName": "PlatformLeftTagsOnly",
+                        "parameterType": 1,
+                        "quote": ""
                       }
                     ],
                     "queryType": 1,
@@ -1452,6 +1457,7 @@
                         "linkTarget": "ArmAction",
                         "linkLabel": "Remove Monitoring for {PackTagsLeftPlatform} Pack(s).",
                         "preText": "",
+                        "postText": "{PlatformLeftTagsOnly}",
                         "style": "primary",
                         "linkIsContextBlade": true,
                         "armActionContext": {
@@ -1463,46 +1469,10 @@
                               "value": "removeTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"{PackTagsLeftPlatform}\",\n    \"PackType\": \"Platform\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"{PlatformLeftTagsOnly}\",\n    \"PackType\": \"Platform\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftPlatform} Pack(s) \n\nServers:\n\n{taggedPlatform}",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Add Monitoring for {PackTagsLeftPlatform} Pack",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"{PackTagsLeftPlatform}\",\n    \"PackType\": \"Platform\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Add Monitoring",
-                          "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeftPlatform} Pack(s)",
-                          "actionName": "AddMonitoringPack",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "3b1af630-47ab-43e9-a5b2-d2f2e21880d0",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Remove All Monitoring for Service",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPlatform}],\n    \"Pack\": \"All\",\n    \"PackType\": \"Platform\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Remove All Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeftPlatform} Pack(s)",
-                          "actionName": "RemoveAllMonitoring",
+                          "description": "# Please confirm the change.\n\nRemove Monitoring for {PlatformLeftTagsOnly} Pack(s) \n\nResource(s):\n\n{taggedPlatform}",
                           "runLabel": "Confirm"
                         }
                       }
@@ -1587,9 +1557,6 @@
                         "label": "Select Pack to Enable",
                         "type": 2,
                         "isGlobal": true,
-                        "multiSelect": true,
-                        "quote": "",
-                        "delimiter": ",",
                         "query": "policyresources\n| where type =~ 'Microsoft.Authorization/policyDefinitions'\n| where  isnotempty(properties.metadata.MonitorStarterPacks) and properties.metadata.MonitoringPackType=='Platform'\n| extend Pack=tostring(properties.metadata.MonitorStarterPacks)\n| extend policyType=properties.policyRule.then.details.type\n| where policyType !~ 'Microsoft.Insights/dataCollectionRuleAssociations'\n| summarize by Pack",
                         "crossComponentResources": [
                           "value::tenant"
@@ -1603,7 +1570,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": []
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1697,9 +1664,14 @@
                     "exportMultipleValues": true,
                     "exportedParameters": [
                       {
-                        "fieldName": "",
                         "parameterName": "taggedPaaS",
                         "parameterType": 5,
+                        "quote": ""
+                      },
+                      {
+                        "fieldName": "tag",
+                        "parameterName": "PaaSLeftTagsOnly",
+                        "parameterType": 1,
                         "quote": ""
                       }
                     ],
@@ -1784,8 +1756,9 @@
                         "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                         "cellValue": "",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Remove Monitoring for {PackTagsLeftPaaS} Pack(s)",
+                        "linkLabel": "Remove Monitoring for {taggedPaaS:$.tag} Pack(s)",
                         "preText": "",
+                        "postText": "",
                         "style": "primary",
                         "linkIsContextBlade": true,
                         "armActionContext": {
@@ -1797,46 +1770,10 @@
                               "value": "removeTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PackTagsLeftPaaS}\",\n    \"PackType\": \"PaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PaaSLeftTagsOnly}\",\n    \"PackType\": \"PaaS\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftPaaS} Pack(s)\n\nServers:\n\n{taggedPaaS}",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Add Monitoring for {PackTagsLeftPaaS} Pack",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PackTagsLeftPaaS}\",\n    \"PackType\": \"PaaS\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Add Monitoring",
-                          "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeftPaaS} Pack(s)",
-                          "actionName": "AddMonitoringPack",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "3b1af630-47ab-43e9-a5b2-d2f2e21880d0",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Remove All Monitoring for Service",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"All\",\n    \"PackType\": \"PaaS\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Remove All Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove All Monitoring for resource(s):\n\n{taggedPaaS}",
-                          "actionName": "RemoveAllMonitoring",
+                          "description": "# Please confirm the change.\n\nRemove Monitoring for {PaaSLeftTagsOnly} Pack(s).\n\nResources:\n\n{taggedPaaS:$.Resource}",
                           "runLabel": "Confirm"
                         }
                       }
@@ -2113,7 +2050,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "Storage"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -3918,7 +3855,7 @@
               "comparison": "isEqualTo",
               "value": "yes"
             },
-            "name": "discoveryQuery"
+            "name": "discoveryQueryOldHardcoded"
           },
           {
             "type": 3,
@@ -4180,7 +4117,10 @@
                                 "durationMs": 86400000
                               },
                               "queryType": 1,
-                              "resourceType": "microsoft.resourcegraph/resources"
+                              "resourceType": "microsoft.resourcegraph/resources",
+                              "value": [
+                                "WinDisc"
+                              ]
                             }
                           ],
                           "style": "pills",
@@ -4217,7 +4157,7 @@
                                     "value": "removeTag"
                                   }
                                 ],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\",\n    \"PackType\":\"Discovery\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Remove Monitoring",
                                 "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftDiscovery} Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
@@ -4234,7 +4174,7 @@
                                 "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                                 "headers": [],
                                 "params": [],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{\"taggedVMsDiscovery\"}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{\"taggedVMsDiscovery\"}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\",\n    \"PackType\":\"Discovery\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Add Monitoring",
                                 "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeftDiscovery} Pack(s)\n\nto VMs:\n\n{taggedVMsDiscovery}\n",
@@ -4267,7 +4207,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' or MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+                          "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
                           "size": 0,
                           "title": "Non-monitored Machines",
                           "exportMultipleValues": true,
@@ -4376,7 +4316,7 @@
                                     "value": "addTag"
                                   }
                                 ],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"Pack\": \"{PackTagsDiscovery}\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"Pack\": \"{PackTagsDiscovery}\",\n    \"PackType\": \"Discovery\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Enable Monitoring Packs",
                                 "description": "# This will enable the pack for the following servers:\n{vmstotagDiscovery}\n\nby adding the {PackTagsDiscovery} Pack(s) to the resource(s).",
@@ -4575,7 +4515,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null,
+                  "value": "azfta-web01",
                   "label": "Select Server"
                 },
                 {
@@ -4625,7 +4565,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 172800000
+                    "durationMs": 3600000
                   }
                 }
               ],

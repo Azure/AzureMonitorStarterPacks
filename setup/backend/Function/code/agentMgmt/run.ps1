@@ -126,12 +126,6 @@ if ($resources) {
                             $agent=New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resource.'Resource Group' -MachineName $resourceName -Location $resource.location -EnableAutomaticUpgrade -Tag $tags
                         }
                     }
-                    if ($agent) {
-                        "Agent installed."
-                    }
-                    else {
-                        "Agent not installed."
-                    }
                 }
                 #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
             }

@@ -25,11 +25,31 @@ The Main solution can be deployed by clicking the link below.
 
 [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fsetup.json)
 
+## Initial Configuration
+
+Once the deployment is completed, the following steps need to be completed:
+
+- Navigate to the recently deployed resource group and find the workbook name "Azure Monitor Starter Packs Extended". Open the workbook and click on the "Configuration" tab. This will open a new tab with the configuration page.
+
+![alt text](image.png)
+
+Once the parameters are configured, make sure to save the workbook.
+
+The first time certain areas are accessed, the following configuration will need to be accepted:
+
+![alt text](image-1.png)
+
 ## Monitoring Packs
 
 Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
 
 Review Packs documentation [here](./Packs/README.md).
+
+## Multi-region Considerations
+
+If you are deploying the solution in multiple regions, a few additional steps are required. The following steps need to be completed:
+- For discovery and VM Application dependent components (ADDS), the VM Application versions need to have a replica in each region where VMs will be monitored.
+- For the Data Collection rules, a data collection endpoint needs to be created in each region. The data collection endpoint allows for the agent to receive configuration in the specific region. The data collection endpoint is assigned after the data collection rule association has been created.
 
 ## Grafana Dashboards
 
