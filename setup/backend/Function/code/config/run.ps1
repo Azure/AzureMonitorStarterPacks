@@ -63,7 +63,8 @@ $tagMapping=@"
     {
       "tag": "ALB",
       "nameSpace": "Microsoft.Network/loadBalancers",
-      "type": "Platform"
+      "type": "Platform",
+      "sku": "Standard"
     },
     {
       "tag": "AA",
@@ -99,6 +100,11 @@ $tagMapping=@"
       "tag": "NSG",
       "nameSpace": "Microsoft.Network/networkSecurityGroups",
       "type": "Platform"
+    },
+    {
+      "tag": "KeyVault",
+      "nameSpace": "microsoft.keyvault/vaults",
+      "type": "Platform"
     }
     ]
 }
@@ -113,48 +119,80 @@ $discoveringMappings=@{
    "Nginx"="nginx-core"
 }
 switch ($Action) {
+    # Returns the tag based on the nameSpace provided
     'getTagbyService' {
         $svc=$Request.body.metricNamespace
-if ($svc) {
-    $tag=$tagMapping.tags | ? { $_.nameSpace -eq $svc } 
-}
-else {
-    $tag='Undetermined'
-}
-$body=@"
-    {
-        "tag":"$($tag.tag)",
-        "nameSpace":"$($tag.nameSpace)",
-        "type":"$($tag.type)"
-    }
+        if ($svc) {
+            $tag=$tagMapping.tags | ? { $_.nameSpace -eq $svc } 
+        }
+        else {
+            $tag='Undetermined'
+        }
+        $body=@"
+        {
+            "tag":"$($tag.tag)",
+            "nameSpace":"$($tag.nameSpace)",
+            "type":"$($tag.type)"
+        }
 "@ | convertfrom-json
-
     }
+    # Gets a list of tags (all) or for a specific type (PaaS or Platform)
     'getAllServiceTags' {
+        $type=$Request.Query.Type
         if ([string]::IsNullOrEmpty($type)) {
-            $body=$tagMapping.tags  | select tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
+            $body=$tagMapping.tags  | Select-Object tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
         }
         else {
             "Type"
-            $type=$Request.Query.Type
-            $body=$tagMapping.tags  | .where-object {$_.type -eq $type} | select tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json
+            $body=$tagMapping.tags  | where-object {$_.type -eq $type} | Select-Object tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json
             
         }
     }
+    # returns a list of discovery mapping directions.
     'getDiscoveryMappings' {
-        $body=$discoveringMappings.Keys | Select @{l='tag';e={$_}},@{l='application';e={$discoveringMappings.$_}}
+        $body=$discoveringMappings.Keys | Select-Object @{l='tag';e={$_}},@{l='application';e={$discoveringMappings.$_}}
+    }
+    'getPaaSquery' {
+        $body=@"
+        {
+            "Query": "
+        | where tolower(type) in (
+          'microsoft.storage/storageaccounts',
+          'microsoft.desktopvirtualization/hostpools',
+          'microsoft.logic/workflows',
+          'microsoft.ql/managedinstances',
+          'microsoft.sql/servers/databases'
+      )
+      or (
+          tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
+      )"
+      }
+"@
+    }
+    'getPlatformquery' {
+        $body=@'
+        {
+            "Query":"
+        | where tolower(type) in (
+          'microsoft.network/vpngateways',
+          'microsoft.network/virtualnetworkgateways',
+          'microsoft.keyvault/vaults',
+          'microsoft.network/networksecuritygroups',
+          'microsoft.network/publicipaddresses',
+          'microsoft.network/privatednszones',
+          'microsoft.network/frontdoors',
+          'microsoft.network/azurefirewalls',
+          'microsoft.network/applicationgateways'
+      ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+    }
+'@
     }
     default {$body=''}
 }
-
-#$body = "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-
-# # if ($name) {
-# #     $body = "Hello, $name. This HTTP triggered function executed successfully."
-# # }
 
 # # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = [HttpStatusCode]::OK
     Body = $body
 })
+

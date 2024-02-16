@@ -1,3 +1,4 @@
+
 param location string
 param workspaceId string
 param AGId string
@@ -6,79 +7,228 @@ param Tags object
 param instanceName string
 //var moduleprefix = 'AMSP-Win-VMI'
 var moduleprefix = 'AMP-${instanceName}-${packtag}'
-// Since ARG queries from LAW is not fully cooked, we have to break the alerts into 2 parts (VMs and Arc).
-// The ones in this file cover Windows VMs and Arc.
-// Alert list
-var alertlist = [
+
+param deploymentRoleDefinitionIds array = [
+    '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
+// param parResourceGroupTags object = {
+//     environment: 'test'
+// }
+param parAlertState string = 'true'
+var alertlist = [  
   {
-    alertRuleDescription: 'Alert for Memory over 90%'
-    alertRuleDisplayName:'Memory over 90%'
-    alertRuleName:'MemoveryOverPercentWarning'
-    alertRuleSeverity:2 //warning
-    autoMitigate: true
-    evaluationFrequency: 'PT15M'
-    windowSize: 'PT15M'
-    alertType: 'Aggregated'
-    metricMeasureColumn: 'AvgMemUse'
-    operator: 'GreaterThan'
-    threshold: 90
-    query: 'InsightsMetrics | where Namespace == "Memory" and Name == "AvailableMB" | extend memorySizeMB = todouble(parse_json(Tags).["vm.azm.ms/memorySizeMB"]) | extend PercentageBytesinUse = Val/memorySizeMB*100    | summarize AvgMemUse = avg(PercentageBytesinUse) by bin(TimeGenerated, 15m), _ResourceId,Computer'  
-  }
-  {
-    alertRuleDescription: 'Alert for disk space under 10%'
-    alertRuleDisplayName:'Disk space under 10%'
-    alertRuleName:'DiskSpaceUnderPercentWarning'
-    alertRuleSeverity:2 //warning
-    autoMitigate: true
-    evaluationFrequency: 'PT15M'
-    windowSize: 'PT15M'
-    alertType: 'rows'
-    query: 'InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 10 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
-  }
-  {
-    alertRuleDescription: 'Alert for disk space under 5%'
-    alertRuleDisplayName:'Disk space under 5%'
-    alertRuleName:'DiskSpaceUnderPercentCritical'
-    alertRuleSeverity:1 //critical
-    autoMitigate: true
-    evaluationFrequency: 'PT15M'
-    windowSize: 'PT15M'
-    alertType: 'rows'
-    query: 'InsightsMetrics\n| where Namespace == \'LogicalDisk\'\n    and Name == \'FreeSpacePercentage\'\n    and Origin == "vm.azm.ms"\n| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])\n| where Val < 5 //would use a low value...\n| summarize by _ResourceId,Computer, Disk, Val\n| where Disk notcontains "snap"\n\n'
-  }
-  {
-    alertRuleDescription: 'Heartbeat alert for VMs - 5 minutes'
-    alertRuleDisplayName:'Heartbeat alert for VMs'
-    alertRuleName:'HeartbeatAlert'
-    alertRuleSeverity:2 //warning
+    alertRuleDescription: 'Log Alert for Virtual Machine Data Disk Read Latency (ms)'
+    alertRuleDisplayName: 'Data Disk Read Latency (ms)'
+    alertRuleName:'DataDiskReadLatency(ms)'
+    alertRuleSeverity: 2
     autoMitigate: true
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT5M'
-    alertType: 'rows'
-    query: 'InsightsMetrics| where Namespace == \'Computer\' and Name == \'Heartbeat\'| summarize arg_max(TimeGenerated, *) by _ResourceId, Computer| where TimeGenerated < ago(5m)'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 30
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "LogicalDisk" and Name == "ReadLatencyMs"
+| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
+| where Disk !in ('C:','/')
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk
+
+    '''
   }
   {
-    alertRuleDescription: 'Alert for CPU usage over 90%'
-    alertRuleDisplayName:'CPU usage over 90%'
-    alertRuleName:'CPUUsageOverPercentWarning'
-    alertRuleSeverity:2 //warning
+    alertRuleDescription: 'Log Alert for Virtual Machine Data Disk Free Space Percentage'
+    alertRuleDisplayName: 'Data Disk Free Space Percentage'
+    alertRuleName:'DataDiskFreeSpacePercentage'
+    alertRuleSeverity: 2
     autoMitigate: true
-    evaluationFrequency: 'PT15M'
+    evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
-    alertType: 'rows'
-    query: 'InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 90 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'LessThan'
+    threshold: 10
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "LogicalDisk"and Name == "FreeSpacePercentage"
+| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
+| where Disk !in ('C:','/')
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk
+
+    '''
   }
   {
-    alertRuleDescription: 'Alert for CPU usage over 95%'
-    alertRuleDisplayName:'CPU usage over 95%'
-    alertRuleName:'CPUUsageOverPercentcritical'
-    alertRuleSeverity:1 //critical
+    alertRuleDescription: 'Log Alert for Virtual Machine Data Disk Write Latency (ms)'
+    alertRuleDisplayName: 'Data Disk Write Latency (ms)'
+    alertRuleName:'DataDiskWriteLatency(ms)'
+    alertRuleSeverity: 2
     autoMitigate: true
-    evaluationFrequency: 'PT15M'
+    evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
-    alertType: 'rows'
-    query: 'InsightsMetrics\n| where Namespace == \'Processor\'\n    and Name == \'UtilizationPercentage\'\n    and Origin == "vm.azm.ms"\n| extend Computer=tostring(todynamic(Tags)["vm.azm.ms/computer"])\n| where Val > 95 //would use a low value...\n| summarize by _ResourceId,Computer, Val\n\n'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 30
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "LogicalDisk" and Name == "WriteLatencyMs"
+| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
+| where Disk !in ('C:','/')
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk
+
+    '''
   }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine Network Read (bytes/sec)'
+    alertRuleDisplayName: 'Network Read (bytes/sec)'
+    alertRuleName:'NetworkRead(bytes/sec)'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 10000000
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "Network" and Name == "ReadBytesPerSecond"
+| extend NetworkInterface=tostring(todynamic(Tags)["vm.azm.ms/networkDeviceId"])
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface
+
+    '''
+  }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine Network Write (bytes/sec)'
+    alertRuleDisplayName: 'Network Write (bytes/sec)'
+    alertRuleName:'NetworkWrite(bytes/sec)'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 10000000
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "Network" and Name == "WriteBytesPerSecond"
+| extend NetworkInterface=tostring(todynamic(Tags)["vm.azm.ms/networkDeviceId"])
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface
+
+    '''
+  }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine Data OS Read Latency (ms)'
+    alertRuleDisplayName: 'OS Disk Read Latency (ms)'
+    alertRuleName:'OSDiskReadLatency(ms)'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 30
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "LogicalDisk" and Name == "ReadLatencyMs"
+| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk
+
+    '''
+  }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine OS Disk Free Space Percentage'
+    alertRuleDisplayName: 'OS Disk Free Space Percentage'
+    alertRuleName:'OSDiskFreeSpacePercentage'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'LessThan'
+    threshold: 10
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "LogicalDisk" and Name == "FreeSpacePercentage"
+| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk
+
+    '''
+  }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine OS Disk Write Latency (ms)'
+    alertRuleDisplayName: 'OS Disk Write Latency (ms)'
+    alertRuleName:'OSDiskWriteLatency(ms)'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 50
+    query: '''
+    InsightsMetrics| where Origin == "vm.azm.ms"
+| where Namespace == "LogicalDisk" and Name == "WriteLatencyMs"
+| extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk
+
+    '''
+  }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine Processor Utilization Percentage'
+    alertRuleDisplayName: 'Processor Utilization Percentage'
+    alertRuleName:'ProcessorUtilizationPercentage'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'GreaterThan'
+    threshold: 85
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "Processor" and Name == "UtilizationPercentage"
+| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId
+
+    '''
+  }
+  {
+    alertRuleDescription: 'Log Alert for Virtual Machine Available Memory Percentage'
+    alertRuleDisplayName: 'Available Memory Percentage'
+    alertRuleName:'AvailableMemoryPercentage'
+    alertRuleSeverity: 2
+    autoMitigate: true
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    alertType: 'Aggregated'
+    metricMeasureColumn: 'AggregatedValue'
+    operator: 'LessThan'
+    threshold: 10
+    query: '''
+    InsightsMetrics
+| where Origin == "vm.azm.ms"
+| where Namespace == "Memory" and Name == "AvailableMB"
+| extend TotalMemory = toreal(todynamic(Tags)["vm.azm.ms/memorySizeMB"])
+| extend AvailableMemoryPercentage = (toreal(Val) / TotalMemory) * 100.0
+| summarize AggregatedValue = avg(AvailableMemoryPercentage) by bin(TimeGenerated, 15m), Computer, _ResourceId
+
+    '''
+  }
+
 ]
 module alertsnew '../../../modules/alerts/alerts.bicep' = {
   name: '${moduleprefix}-Alerts'
@@ -92,3 +242,4 @@ module alertsnew '../../../modules/alerts/alerts.bicep' = {
     workspaceId: workspaceId
   }
 }
+

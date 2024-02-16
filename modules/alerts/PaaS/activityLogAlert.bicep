@@ -213,6 +213,13 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                         description: 'Name of the resource'
                                     }
                                 }
+                                resourceId: {
+                                    type: 'String'
+                                    metadata: {
+                                        displayName: 'resourceId'
+                                        description: 'Resource ID of the resource emitting the metric that will be used for the comparison'
+                                    }
+                                }
                                 alertResourceGroupTags: {
                                     type: 'object'
                                 }
@@ -300,7 +307,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                           description: '[parameters(\'alertDescription\')]'
                                                           enabled: '[parameters(\'enabled\')]'
                                                           scopes: [
-                                                              '[subscription().id]'
+                                                              '[parameters(\'resourceId\')]'
                                                           ]
                                                           condition: {
                                                               allOf: [
@@ -398,6 +405,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                             }
                             actionGroupResourceId: {
                                 value: '[parameters(\'actionGroupResourceId\')]'
+                            }
+                            resourceId: {
+                                value: '[field(\'id\')]'
                             }
                             operationName: {
                                 value: '[parameters(\'operationName\')]'
