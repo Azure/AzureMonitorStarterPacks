@@ -10,7 +10,6 @@ param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param instanceName string
-param solutionVersion string
 
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -43,11 +42,11 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT1M'
       parThreshold: '0'
       assignmentSuffix: 'Metworkflows1'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -76,11 +75,11 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT5M'
       parThreshold: '0'
       assignmentSuffix: 'Metworkflows2'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -109,11 +108,11 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT5M'
       parThreshold: '0'
       assignmentSuffix: 'Metworkflows3'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -142,11 +141,11 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT5M'
       parThreshold: '99999'
       assignmentSuffix: 'Metworkflows4'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -175,11 +174,11 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT1H'
       parThreshold: '50'
       assignmentSuffix: 'Metworkflows5'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -208,11 +207,11 @@ module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT1M'
       parThreshold: '15'
       assignmentSuffix: 'Metworkflows6'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -241,11 +240,11 @@ module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT1M'
       parThreshold: '15'
       assignmentSuffix: 'Metworkflows7'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Average'
@@ -274,11 +273,11 @@ module Alert8 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT1M'
       parThreshold: '0'
       assignmentSuffix: 'Metworkflows8'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -307,11 +306,11 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parWindowSize: 'PT1M'
       parThreshold: '0'
       assignmentSuffix: 'Metworkflows9'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -340,11 +339,11 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parWindowSize: 'PT1H'
       parThreshold: '5'
       assignmentSuffix: 'Metworkflows10'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Count'
@@ -373,11 +372,11 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parWindowSize: 'PT1M'
       parThreshold: '0'
       assignmentSuffix: 'Metworkflows11'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
@@ -406,68 +405,13 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parWindowSize: 'PT5M'
       parThreshold: '1'
       assignmentSuffix: 'Metworkflows12'
-      parAutoMitigate: 'false'
+      parAutoMitigate: 'False.tolower)'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: true
+      initiativeMember: false
       packtype: 'PaaS'
       instanceName: instanceName
       timeAggregation: 'Total'
-    }
-  }
-  module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
-    name: '${packTag}-PolicySet'
-    params: {
-        initiativeDescription: 'AMP-Policy Set to deploy ${resourceType} monitoring policies'
-        initiativeDisplayName: 'AMP-${resourceType} monitoring policies'
-        initiativeName: '${packTag}-PolicySet'
-        solutionTag: solutionTag
-        category: 'Monitoring'
-        version: solutionVersion
-        assignmentLevel: assignmentLevel
-        location: policyLocation
-        subscriptionId: subscriptionId
-        packtag: packTag
-        userManagedIdentityResourceId: userManagedIdentityResourceId
-        instanceName: instanceName
-        policyDefinitions: [
-          {
-              policyDefinitionId: Alert1.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert2.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert3.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert4.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert5.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert6.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert7.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert8.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert9.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert10.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert11.outputs.policyId
-          }
-          {
-              policyDefinitionId: Alert12.outputs.policyId
-          }
-        ]
     }
   }

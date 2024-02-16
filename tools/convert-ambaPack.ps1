@@ -17,7 +17,7 @@ param (
 
 )
 if ([string]::IsNullOrEmpty($subfolder)) {
-  $pathFileFolder="./$packType/$packTag"
+  $pathFileFolder="./Packs/$packType/$packTag"
   $packFolder="./$packtag/alerts.bicep"
 }
 else {
@@ -28,6 +28,14 @@ else {
 $alertsFile=Invoke-WebRequest -Uri $alertsFileURL | Select-Object -ExpandProperty Content | Out-String
 $alertst=ConvertFrom-Yaml $alertsFile
 $alerts=ConvertTo-Yaml -JsonCompatible $alertst | ConvertFrom-Json
+
+if ($alerts.Count -gt 1) {
+  $initiativeMember='true'
+}
+else {
+  $initiativeMember='false'
+}
+ 
 
 $packContent=@"
 targetScope = 'managementGroup'
@@ -42,6 +50,7 @@ param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param instanceName string
+param solutionVersion string
 
 param deploymentRoleDefinitionIds array = [
     '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -89,11 +98,11 @@ module Alert${i} '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep'
       parWindowSize: '$($_.Properties.windowSize)'
       parThreshold: '$($_.Properties.threshold)'
       assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])${i}'
-      parAutoMitigate: '$($_.Properties.autoMitigate).tolower)'
+      parAutoMitigate: '$($_.Properties.autoMitigate ? 'true' : 'false')'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: $initiativeMember
       packtype: '$packType'
       instanceName: instanceName
       timeAggregation: '$($_.Properties.timeAggregation)'
@@ -130,11 +139,11 @@ if ($_.Properties.criterionType -eq 'DynamicThresholdCriterion') {
       minFailingPeriodsToAlert: '$($_.properties.failingPeriods.minFailingPeriodsToAlert)'
       numberOfEvaluationPeriods: '$($_.properties.failingPeriods.numberOfEvaluationPeriods)'
       assignmentSuffix: 'Met$($_.properties.metricNamespace.split("/")[1])${i}'
-      parAutoMitigate: '$($_.Properties.autoMitigate).tolower)'
+      parAutoMitigate: '$($_.Properties.autoMitigate ? 'true' : 'false')'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
       parAlertState: parAlertState
-      initiativeMember: false
+      initiativeMember: $initiativeMember
       packtype: '$packType'
       instanceName: instanceName
       timeAggregation: '$($_.Properties.timeAggregation)'
@@ -164,7 +173,7 @@ if ($_.type -eq 'ActivityLog') {
         alertDescription: '$($_.description)'
         assignmentSuffix: 'Act$($resourceType.split("/")[1])${i}'
         AGId: AGId
-        initiativeMember: true
+        initiativeMember: $initiativeMember
         operationName: '$operation'
         packtype: '$packType'
         instanceName: instanceName
@@ -203,6 +212,46 @@ module $packTag '$packfolder' = {
   }
 }
 "@
+
+# Adds initiative block if more than one alert is present
+if ($initiativeMember) {
+  $packContent+=@'
+
+  module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
+    name: '${packTag}-PolicySet'
+    params: {
+        initiativeDescription: 'AMP-Policy Set to deploy ${resourceType} monitoring policies'
+        initiativeDisplayName: 'AMP-${resourceType} monitoring policies'
+        initiativeName: '${packTag}-PolicySet'
+        solutionTag: solutionTag
+        category: 'Monitoring'
+        version: solutionVersion
+        assignmentLevel: assignmentLevel
+        location: policyLocation
+        subscriptionId: subscriptionId
+        packtag: packTag
+        userManagedIdentityResourceId: userManagedIdentityResourceId
+        instanceName: instanceName
+        policyDefinitions: [
+'@
+foreach ($i in 1..($alerts | Where-Object {$_.visible -eq $true} ).Count) {
+  $packContent+=@"
+
+          {
+              policyDefinitionId: Alert$i.outputs.policyId
+          }
+"@
+}
+$packContent+=@"
+
+        ]
+    }
+  }
+"@
+  
+}
+
+
 if (!(Test-Path -Path $pathFileFolder)) {
   New-Item -Path $pathFileFolder -ItemType Directory 
 }

@@ -200,3 +200,27 @@ module WebApps './WebApp/monitoring.bicep' = {
 
 
 
+module LogicApp './LogicApp/alerts.bicep' = {
+  name: 'LogicAppAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'LogicApp'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    //solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Logic/workflows'
+  }
+}
