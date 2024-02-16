@@ -330,17 +330,19 @@ insightsresources
             # remove Tags from VMs.
             # remove monitor extensions (optional)
             # remove alert rules
-            $Alerts=Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -eq $pack}
-            # if ($RemoveTag) {
-            #     $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
-            # }
-            "Found $($Alerts.count) alerts for pack $pack"
-            $Alerts | Remove-AzResource -Force -AsJob
+
         }
     }
     else {
         "No DCRs found in $RG resource group."
     }
+    "Removing alerts."
+    $Alerts=Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -eq $pack}
+    # if ($RemoveTag) {
+    #     $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
+    # }
+    "Found $($Alerts.count) alerts for pack $pack"
+    $Alerts | Remove-AzResource -Force -AsJob
 }
 else {
     "Skipping packs removal. Use -RemovePacks to remove packs."
