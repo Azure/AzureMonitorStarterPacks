@@ -64,7 +64,7 @@ $packContent+=@"
   {
     alertRuleDescription: '$($_.description)'
     alertRuleDisplayName: '$($_.Name)'
-    alertRuleName:'$($_.Name.replace(' ',''))'
+    alertRuleName:'$($_.Name.replace(' ','').replace('/','-'))'
     alertRuleSeverity: $($_.Properties.severity)
     autoMitigate: $($_.Properties.autoMitigate.tostring().tolower())
     evaluationFrequency: '$($_.Properties.evaluationFrequency)'

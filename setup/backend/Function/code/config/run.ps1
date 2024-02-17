@@ -160,7 +160,7 @@ switch ($Action) {
           'microsoft.storage/storageaccounts',
           'microsoft.desktopvirtualization/hostpools',
           'microsoft.logic/workflows',
-          'microsoft.ql/managedinstances',
+          'microsoft.sql/managedinstances',
           'microsoft.sql/servers/databases'
       )
       or (

@@ -8,13 +8,6 @@ param instanceName string
 //var moduleprefix = 'AMSP-Win-VMI'
 var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
-param deploymentRoleDefinitionIds array = [
-    '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-]
-// param parResourceGroupTags object = {
-//     environment: 'test'
-// }
-param parAlertState string = 'true'
 var alertlist = [  
   {
     alertRuleDescription: 'Log Alert for Virtual Machine Data Disk Read Latency (ms)'
@@ -35,8 +28,7 @@ var alertlist = [
 | extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
 | where Disk !in ('C:','/')
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine Data Disk Free Space Percentage'
@@ -57,8 +49,7 @@ var alertlist = [
 | extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
 | where Disk !in ('C:','/')
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine Data Disk Write Latency (ms)'
@@ -79,13 +70,12 @@ var alertlist = [
 | extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
 | where Disk !in ('C:','/')
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk
-
-    '''
+'''
   }
   {
-    alertRuleDescription: 'Log Alert for Virtual Machine Network Read (bytes/sec)'
-    alertRuleDisplayName: 'Network Read (bytes/sec)'
-    alertRuleName:'NetworkRead(bytes/sec)'
+    alertRuleDescription: 'Log Alert for Virtual Machine Network Read (bytes-sec)'
+    alertRuleDisplayName: 'Network Read (bytes-sec)'
+    alertRuleName:'NetworkRead(bytes-sec)'
     alertRuleSeverity: 2
     autoMitigate: true
     evaluationFrequency: 'PT5M'
@@ -100,13 +90,12 @@ var alertlist = [
 | where Namespace == "Network" and Name == "ReadBytesPerSecond"
 | extend NetworkInterface=tostring(todynamic(Tags)["vm.azm.ms/networkDeviceId"])
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface
-
-    '''
+'''
   }
   {
-    alertRuleDescription: 'Log Alert for Virtual Machine Network Write (bytes/sec)'
-    alertRuleDisplayName: 'Network Write (bytes/sec)'
-    alertRuleName:'NetworkWrite(bytes/sec)'
+    alertRuleDescription: 'Log Alert for Virtual Machine Network Write (bytes-sec)'
+    alertRuleDisplayName: 'Network Write (bytes-sec)'
+    alertRuleName:'NetworkWrite(bytes-sec)'
     alertRuleSeverity: 2
     autoMitigate: true
     evaluationFrequency: 'PT5M'
@@ -121,8 +110,7 @@ var alertlist = [
 | where Namespace == "Network" and Name == "WriteBytesPerSecond"
 | extend NetworkInterface=tostring(todynamic(Tags)["vm.azm.ms/networkDeviceId"])
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine Data OS Read Latency (ms)'
@@ -142,8 +130,7 @@ var alertlist = [
 | where Namespace == "LogicalDisk" and Name == "ReadLatencyMs"
 | extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine OS Disk Free Space Percentage'
@@ -163,8 +150,7 @@ var alertlist = [
 | where Namespace == "LogicalDisk" and Name == "FreeSpacePercentage"
 | extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine OS Disk Write Latency (ms)'
@@ -183,8 +169,7 @@ var alertlist = [
 | where Namespace == "LogicalDisk" and Name == "WriteLatencyMs"
 | extend Disk=tostring(todynamic(Tags)["vm.azm.ms/mountId"])
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine Processor Utilization Percentage'
@@ -203,8 +188,7 @@ var alertlist = [
 | where Origin == "vm.azm.ms"
 | where Namespace == "Processor" and Name == "UtilizationPercentage"
 | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId
-
-    '''
+'''
   }
   {
     alertRuleDescription: 'Log Alert for Virtual Machine Available Memory Percentage'
@@ -225,8 +209,7 @@ var alertlist = [
 | extend TotalMemory = toreal(todynamic(Tags)["vm.azm.ms/memorySizeMB"])
 | extend AvailableMemoryPercentage = (toreal(Val) / TotalMemory) * 100.0
 | summarize AggregatedValue = avg(AvailableMemoryPercentage) by bin(TimeGenerated, 15m), Computer, _ResourceId
-
-    '''
+'''
   }
 
 ]
