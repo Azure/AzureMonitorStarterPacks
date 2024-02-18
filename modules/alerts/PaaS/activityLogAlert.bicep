@@ -298,7 +298,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                   {
                                                       type: 'microsoft.insights/activityLogAlerts'
                                                       apiVersion: '2020-10-01'
-                                                      name: '[parameters(\'alertname\')]'
+                                                      name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
                                                       location: 'global'
                                                       tags: {
                                                          '[parameters(\'solutionTag\')]': '[parameters(\'packTag\')]'

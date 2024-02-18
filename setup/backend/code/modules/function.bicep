@@ -204,6 +204,7 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
     WorkspaceResourceId: lawresourceid
+    
   }
 }
 
