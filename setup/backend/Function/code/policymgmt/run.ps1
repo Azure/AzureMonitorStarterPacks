@@ -49,8 +49,8 @@ switch ($action) {
                 $policiesInSet=$init.Properties.PolicyDefinitions | Select-Object -ExpandProperty policyDefinitionReferenceId
                 #$policiesInSet
                 foreach ($pol in $policiesInSet) {
-                    "Starting remediation for $($assignment.PolicyAssignmentId)"
-                    #Start-AzPolicyRemediation -Name "$($pol) remediation" -PolicyAssignmentId $assignment.PolicyAssignmentId -PolicyDefinitionReferenceId $pol # -ResourceDiscoveryMode ExistingNonCompliant
+                    "Starting remediation for $($assignment.PolicyAssignmentId) policy $pol"
+                    Start-AzPolicyRemediation -Name "$($pol) remediation" -PolicyAssignmentId $assignment.PolicyAssignmentId -PolicyDefinitionReferenceId $pol # -ResourceDiscoveryMode ExistingNonCompliant
                 }
             }
         }

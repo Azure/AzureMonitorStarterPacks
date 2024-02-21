@@ -120,7 +120,8 @@ geekdocCollapseSection: true
 weight: 50
 ---
 
-
+| Pack | Description |
+|---|---|
 "@ | Out-File -FilePath $indexfilename -Encoding "UTF8"
 
 foreach ($alertfile in $alertfiles) {
@@ -128,7 +129,20 @@ foreach ($alertfile in $alertfiles) {
         New-Item -ItemType Directory -Path "../../Docs/Packs/$packtype"
     }
     new-markdown -indexfilename $indexfilename -alertfile $alertfile.FullName | Out-File -FilePath "../../Docs/Packs/$packtype/$($alertfile.Directory.Name).md" -Encoding "UTF8"
-    "Pack: [$($alertfile.Directory.Name)](./$($alertfile.Directory.Name))" | Out-File -FilePath $indexfilename -Append
-    "" | Out-File -FilePath $indexfilename -Append
+    # Check if there is an info.json file in the current pack folder and read info from it
+    $infofile="$($alertfile.Directory.FullName)/info.json"
+    if (Get-Item $infofile -ErrorAction SilentlyContinue) {
+        $info=Get-Content $infofile | ConvertFrom-Json
+        $packDescription=$info.Pack.Description
+        $packType=$info.Pack.Type
+        $packname=$info.Pack.Name
+    }
+    else {
+        $packname=$alertfile.Directory.Name
+        $packtype=$packType
+    }
+    
+    "| [$packname](./$($alertfile.Directory.Name)) | $packDescription|" | Out-File -FilePath $indexfilename -Append
+    #"" | Out-File -FilePath $indexfilename -Append
 }
 

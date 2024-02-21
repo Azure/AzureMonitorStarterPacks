@@ -32,7 +32,7 @@ foreach ($init in $inits) {
         #$policiesInSet
         foreach ($pol in $policiesInSet) {
             "Starting remediation for $($assignment.PolicyAssignmentId)"
-            #Start-AzPolicyRemediation -Name "$($pol) remediation" -PolicyAssignmentId $assignment.PolicyAssignmentId -PolicyDefinitionReferenceId $pol # -ResourceDiscoveryMode ExistingNonCompliant
+            Start-AzPolicyRemediation -Name "$($pol) remediation" -PolicyAssignmentId $assignment.PolicyAssignmentId -PolicyDefinitionReferenceId $pol # -ResourceDiscoveryMode ExistingNonCompliant
         }
     }
 }
