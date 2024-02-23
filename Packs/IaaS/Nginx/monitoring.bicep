@@ -108,7 +108,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) i
     dcrId: fileCollectionRule[i].outputs.ruleId
     packtag: packtag
     solutionTag: solutionTag
-    rulename: rulename
+    rulename: '${rulename}-${i}'
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
