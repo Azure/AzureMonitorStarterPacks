@@ -15,10 +15,10 @@ foreach ($file in $mainMonstarPacksFiles) {
     Set-Location $currentFolder  
 }
 # Grafana Dashaboards
+Set-Location "./Packs"
 $DestinationPath='./Grafana.zip'
-Set-Location $currentFolder  
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
-$grafanaFiles = Get-ChildItem -Path './Packs/' -Recurse -Include 'grafana*.json'
+$grafanaFiles = Get-ChildItem -Path './' -Recurse -Include 'grafana*.json'
 foreach ($file in $grafanaFiles) {
     Compress-Archive -Path $file.FullName -DestinationPath $DestinationPath -Update
 }

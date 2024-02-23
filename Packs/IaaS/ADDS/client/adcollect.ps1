@@ -45,6 +45,7 @@ $tags=@"
 {"vm.azm.ms/mountId":"$($volinfo.driveletter):","vm.azm.ms/logFilePath":"$sPathLog"}
 "@
 "$runTime,ADDitFileSize,$fileSize,$tags" | Out-File "$monitoringfolder\$ADMetricLogfile" -Append -Encoding utf8
+
 # Gets L&F items
 $oRoot = [adsi]"LDAP://rootdse"
 $strDNSDomain=$oRoot.defaultNamingContext
@@ -63,3 +64,16 @@ $tags=@"
 {"vm.azm.ms/ADLFDomain":"$strDNSDomain"}
 "@
 "$runTime,ADDSLFObjCount,$RecordCount,$tags" | Out-File "$monitoringfolder\$ADMetricLogfile" -Append -Encoding utf8
+
+# Get lsass process performance over 5 seconds
+$cpu=0
+for ($i =0; $i -lt 5; $i++) {
+    $cpu+=[math]::round((Get-Process lsass -ComputerName . | Select-Object -ExpandProperty CPU))
+    Start-Sleep -Seconds 1
+}
+$totalcpu=$cpu/5
+$totalcpu
+$tags=@"
+{"vm.azm.ms/ADlsasscpu":"$strDNSDomain"}
+"@
+"$runTime,ADDSlsassCPU,$totalcpu,$tags" | Out-File "$monitoringfolder\$ADMetricLogfile" -Append -Encoding utf8

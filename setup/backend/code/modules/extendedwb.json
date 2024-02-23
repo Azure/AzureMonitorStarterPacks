@@ -106,7 +106,7 @@
             "id": "7499a88f-a536-41d7-9b58-9ebae1b5290e",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Alert Setup",
+            "linkLabel": "Alert Mgmt",
             "subTarget": "alertmanagement",
             "style": "link"
           },
@@ -135,19 +135,19 @@
             "style": "link"
           },
           {
-            "id": "e1f636a4-1593-49ef-bf35-abf708e2be48",
-            "cellValue": "tabSelection",
-            "linkTarget": "parameter",
-            "linkLabel": "Configuration",
-            "subTarget": "backend",
-            "style": "link"
-          },
-          {
             "id": "afec2944-3bd3-4bd3-8afa-6dc39d0b623a",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
             "linkLabel": "Discovery (Preview)",
             "subTarget": "autodiscovery",
+            "style": "link"
+          },
+          {
+            "id": "e1f636a4-1593-49ef-bf35-abf708e2be48",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Configuration",
+            "subTarget": "backend",
             "style": "link"
           }
         ]
@@ -165,10 +165,15 @@
           {
             "type": 1,
             "content": {
-              "json": "## General Parameters",
+              "json": "## General Parameters\n\n### Subscriptions\n\nSelect the Subscriptions that will be used in the Configuration\n\n### Logic App\n\nSelect the logic app to be used. Typically the shoulbe a single one but if more instances exist, select the one for the instance you want to use.\n\n### Function Apps\n\nSelect the Backend Function to be used. Typically the shoulbe a single one but if more instances exist, select the one for the instance you want to use.\n\n### Config Function Key\n\nThis field will be automatically populated once the function is selected.\n\n### Workspace\n\nSelect the Log Analytics Workspace to be used for this instance.\n\n### Azure Managed Grafana\n\nSelect the Azure Managed Grafana if you have deployed one along with the solution.",
               "style": "info"
             },
-            "name": "text - 3"
+            "conditionalVisibility": {
+              "parameterName": "showHelp",
+              "comparison": "isEqualTo",
+              "value": "yes"
+            },
+            "name": "text - Configuration "
           },
           {
             "type": 9,
@@ -514,6 +519,19 @@
               "groupType": "editable",
               "items": [
                 {
+                  "type": 1,
+                  "content": {
+                    "json": "## IaaS Information\n\nThe summary below shows details related to the IaaS Monitoring packs.",
+                    "style": "info"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "showHelp",
+                    "comparison": "isEqualTo",
+                    "value": "yes"
+                  },
+                  "name": "text - Summary - IaaS"
+                },
+                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
@@ -765,6 +783,19 @@
               "groupType": "editable",
               "items": [
                 {
+                  "type": 1,
+                  "content": {
+                    "json": "## Active Alerts List\n\nThis tab shows all Monitoring Packs related alerts that are currently active.",
+                    "style": "info"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "showHelp",
+                    "comparison": "isEqualTo",
+                    "value": "yes"
+                  },
+                  "name": "text - Summary - Active Alerts"
+                },
+                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
@@ -986,7 +1017,7 @@
               "version": "KqlItem/1.0",
               "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"queryServiceTags\",\"rightTable\":\"query - resourcestomerge - nonIaaS\",\"leftColumn\":\"nameSpace\",\"rightColumn\":\"nameSpace\"}],\"projectRename\":[{\"originalName\":\"[queryServiceTags].tag\",\"mergedName\":\"tag\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[queryServiceTags].type\",\"mergedName\":\"type\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - resourcestomerge - nonIaaS].Total\",\"mergedName\":\"Total\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - 18].type\"},{\"originalName\":\"[query - pass - resourcestomerge].type\"},{\"originalName\":\"[queryServiceTags].tag\"},{\"originalName\":\"[query - resourcestomerge - nonIaaS].nameSpace\"},{\"originalName\":\"[queryServiceTags].nameSpace\"}]}",
               "size": 0,
-              "title": "PaaS Monitored Services",
+              "title": "Monitored PaaS Services",
               "queryType": 7,
               "visualization": "piechart"
             },
@@ -1004,7 +1035,7 @@
               "version": "KqlItem/1.0",
               "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"query - resourcestomerge - nonIaaS\",\"rightTable\":\"queryServiceTags - Platform\",\"leftColumn\":\"nameSpace\",\"rightColumn\":\"nameSpace\"}],\"projectRename\":[{\"originalName\":\"[query - resourcestomerge - nonIaaS].nameSpace\",\"mergedName\":\"nameSpace\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - resourcestomerge - nonIaaS].Total\",\"mergedName\":\"Total\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[queryServiceTags - Platform].tag\",\"mergedName\":\"tag\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[queryServiceTags - Platform].nameSpace\",\"mergedName\":\"nameSpace1\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[queryServiceTags - Platform].type\",\"mergedName\":\"type\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - 18].type\"},{\"originalName\":\"[query - pass - resourcestomerge].type\"},{\"originalName\":\"[queryServiceTags].tag\"},{\"originalName\":\"[query - resourcestomerge - nonIaaS].nameSpace\"},{\"originalName\":\"[queryServiceTags].nameSpace\"}]}",
               "size": 0,
-              "title": "Platform Monitored Services",
+              "title": "Monitored Platform Services",
               "queryType": 7,
               "visualization": "piechart"
             },
@@ -1435,6 +1466,19 @@
         "title": "Platform Services",
         "items": [
           {
+            "type": 1,
+            "content": {
+              "json": "## Platform Monitoring Setup\n\nSelect service on the right to assign a pack. Once the backend is done with the assigning, the service will show on the left side grid.\n\nOn the left side grid, the monitoring can be updated to remove a specific pack from the service.",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "showHelp",
+              "comparison": "isEqualTo",
+              "value": "yes"
+            },
+            "name": "text - Monitoring - Platform"
+          },
+          {
             "type": 12,
             "content": {
               "version": "NotebookGroup/1.0",
@@ -1734,6 +1778,19 @@
         "groupType": "editable",
         "title": "PaaS Services",
         "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## PaaS Monitoring Setup\n\nSelect service on the right to assign a pack. Once the backend is done with the assigning, the service will show on the left side grid.\n\nOn the left side grid, the monitoring can be updated to remove a specific pack from the service.",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "showHelp",
+              "comparison": "isEqualTo",
+              "value": "yes"
+            },
+            "name": "text - Monitoring - PaaS"
+          },
           {
             "type": 12,
             "content": {
@@ -2082,7 +2139,6 @@
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
-        "title": "Alert Management - MonStar Alerts",
         "items": [
           {
             "type": 11,
@@ -2094,7 +2150,7 @@
                   "id": "355de2ec-11fb-4db8-9813-2e0bf7cdb3d0",
                   "cellValue": "alertTab",
                   "linkTarget": "parameter",
-                  "linkLabel": "Packs` Alerts",
+                  "linkLabel": "Packs' Alerts",
                   "subTarget": "packs",
                   "style": "link"
                 },
@@ -2109,6 +2165,19 @@
               ]
             },
             "name": "links - 18"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Alerts Configuration\n\n### Select a pack on the left to visualize the alerts rules related to those packs. Select the Other Alerts tab to visualiza any other alert rule that is not related to the packs.",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "showHelp",
+              "comparison": "isEqualTo",
+              "value": "yes"
+            },
+            "name": "text - Alert - Packs Alerts"
           },
           {
             "type": 9,
@@ -2205,7 +2274,7 @@
                 {
                   "type": 1,
                   "content": {
-                    "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.\n\n# Update Action Group\n## Select a list of alerts on the left and a new Action Group to assign to the alert.",
+                    "json": "# Enable or Disable alerts. \n\n## By selecting a list of alerts on the left, the buttons will disable or enable the alert rules in Azure Monitor.\n\n# Update Action Group\n## Select a list of alerts on the left and a new Action Group to assign to the alert.\n\n# Delete Alert rules\n## Select a list of alert rules to be deleted.",
                     "style": "info"
                   },
                   "conditionalVisibility": {
@@ -3164,6 +3233,26 @@
               ]
             },
             "name": "links - 8"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Policy Management - Compliance\n\nThis dialog allows to verify the status of the pack policies as well as Remediate the policies.\n\nA background process remediates policies that are not compliant every 6 hours as well.",
+              "style": "info"
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "showHelp",
+                "comparison": "isEqualTo",
+                "value": "yes"
+              },
+              {
+                "parameterName": "policyTab",
+                "comparison": "isEqualTo",
+                "value": "compliance"
+              }
+            ],
+            "name": "text - Policy - Compliance"
           },
           {
             "type": 3,

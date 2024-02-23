@@ -5,7 +5,6 @@ function new-markdown {
     param (
         [string]$packfolder
     )
-    #$packfolder="./Packs/IaaS/IIS"
     $packname=$packfolder.Split("/")[-1]
     $alertfile="$packfolder/alerts.bicep"
     $monitorsfile="$packfolder/monitoring.bicep"
@@ -82,6 +81,16 @@ weight: 50
             "|$pattern|"
         }
     }
+    # Add custom client monitoring documentation
+    # TBD.
+    # test if there is a client folder
+    # $clientfile="$packfolder/client.bicep"
+    # if (get-item $clientfile -ErrorAction SilentlyContinue) {
+    #     # Compile the bicep for the client and find the name of the script to run
+    #     bicep build $clientfile /tmp/client.json
+    #     $client=Get-Content /tmp/client.json | ConvertFrom-Json 
+    #     # look for speficic comments in the script to document what it does
+    # }
 }
 $packFolderList=Get-ChildItem * -Directory
 
