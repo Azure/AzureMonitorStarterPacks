@@ -112,7 +112,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) i
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
-    ruleshortname: ruleshortname
+    ruleshortname: '${rulename}-${i}'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
     instanceName: instanceName
