@@ -220,22 +220,22 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
     dceId: dceId
   }
 }
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  params: {
-    dcrId: dcrbasicvmMonitoring.outputs.dcrId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: '${ruleshortname}-1'
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
+// module policysetup '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   params: {
+//     dcrId: dcrbasicvmMonitoring.outputs.dcrId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: '${ruleshortname}-1'
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }
 // // Grafana upload and install
 // module grafana 'ds.bicep' = {
 //   name: 'grafana'

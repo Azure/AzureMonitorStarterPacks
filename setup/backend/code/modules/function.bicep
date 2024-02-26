@@ -176,6 +176,8 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     MSI_CLIENT_ID: userManagedIdentityClientId
     PacksUserManagedId: packsUserManagedId
+    InstanceName: instanceName
+    servicesBaseURL: 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'
   }
 }
 

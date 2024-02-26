@@ -94,20 +94,20 @@ module InsightsAlerts './alerts.bicep' = {
   }
 }
 
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  scope: managementGroup(mgname)
-  params: {
-    dcrId: vmInsightsDCR.outputs.VMIRuleId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: ruleshortname
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
+// module policysetup '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   scope: managementGroup(mgname)
+//   params: {
+//     dcrId: vmInsightsDCR.outputs.VMIRuleId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: ruleshortname
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }

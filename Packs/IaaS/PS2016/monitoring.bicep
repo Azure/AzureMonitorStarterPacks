@@ -76,22 +76,22 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   }
 }
 // Policy setup - the module below creates the policy and the policy assignment
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  params: {
-    dcrId: dcrbasicvmMonitoring.outputs.dcrId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: '${ruleshortname}-1'
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
+// module policysetup '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   params: {
+//     dcrId: dcrbasicvmMonitoring.outputs.dcrId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: '${ruleshortname}-1'
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }
 // Alerts - the module below creates the alerts and associates them with the action group
 module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'

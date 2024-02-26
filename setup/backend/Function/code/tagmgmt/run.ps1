@@ -3,11 +3,14 @@ using namespace System.Net
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
 $RepoUrl = $env:repoURL
+$instanceName = $env:InstanceName
+#$servicesBaseURL= $env:servicesBaseURL
 
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
+$resources
 $action = $Request.Body.Action
 $TagList = $Request.Body.Pack.split(',')
 $PackType = $Request.Body.PackType
@@ -27,17 +30,18 @@ if ($resources) {
             foreach ($TagValue in $TagList) {
                 foreach ($resource in $resources) {
                     # Tagging
-                    Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue
+                    Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -instanceName $instanceName `
+                    -packType $PackType -actionGroupId $env:actionGroupId
                     # Add Agent
                     if ($PackType -in ('IaaS', 'Discovery')) {
-                        Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.location
+                        Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
                     }
                     # Add Tag Based condition.
                     if ($TagValue -eq 'Avd') {
                         # Create AVD alerts function.
                         $hostPoolName = ($resource.Resource -split '/')[8]
                         $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                        Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.location -TagName $TagName `
+                        Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
                         -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
                     }
                 } # End of resource loop
@@ -53,7 +57,7 @@ if ($resources) {
                     $hostPoolName = ($resource.Resource -split '/')[8]
                     $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
                     $LogAnalyticsWS = $Request.Body.AltLAW
-                    Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.location -TagName $TagName -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWS
+                    Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWS
                 }
             }
         }

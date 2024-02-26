@@ -156,11 +156,18 @@ function Add-Tag {
         [Parameter(Mandatory = $true)]
         [string]$TagName,
         [Parameter(Mandatory = $true)]
-        [string]$TagValue
+        [string]$TagValue,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName,
+        [Parameter(Mandatory = $true)]
+        [string]$packType,
+        [Parameter(Mandatory = $false)]
+        [string]$actionGroupId
     )
     $resourceName = $resourceId.split('/')[8]
     "Resource: $resourceId"
     "Running $action for $resourceName resource. TagValue: $TagValue"
+    $resourceGroupName = $env:resourceGroup
     #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
     $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
     #"Current tags: $($tag)"
@@ -169,25 +176,192 @@ function Add-Tag {
         $tag = @{}
     }
     if ($tag.Keys -notcontains $TagName) {
-        # doesn´t have the monitoring tag
+        # doesn´t have the monitoring tag - Adding a new tag and value
         $tag.Add($TagName, $TagValue)
-        Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-        #Check if agent exists. If not, install it.
-    }
-    else {
-        #Monitoring Tag exists  
-        if ($tag.$tagName.Split(',') -notcontains $TagValue) {
-            $tag[$TagName] += ",$TagValue"
-            #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
+        if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
+            if (New-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
+                Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+            }
+        }
+        else {
+            new-PaaSAlert -packTag $TagValue -packType $packType -TagName $TagName -resourceId $resourceId -actionGroupId $actionGroupId -resourceGroupName $resourceGroupName `
+                -serviceFolder (get-AmbaPackFolder $TagValue) -instanceName $instanceName
+            Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+        }
+        if (New-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
             Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
         }
         else {
-            "$TagName already has the $TagValue value"
+            "Error adding association for $TagValue. Not adding tag."
+        }
+    }
+    else {
+        #Monitoring Tag exists - Adding a new tag value
+        if ($tag.$tagName.Split(',') -notcontains $TagValue) {
+            $tag[$TagName] += ",$TagValue"
+            #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
+            if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
+                if (New-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
+                    Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+                }
+            }
+            else {
+                new-PaaSAlert -packTag $TagValue -packType $packType -TagName $TagName -resourceId $resourceId -actionGroupId $actionGroupId -resourceGroupName `
+                -serviceFolder (get-AmbaPackFolder $TagValue) -instanceName $instanceName
+                Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+            }
+        }
+        else {
+            "$TagName already has the $TagValue value."
+            if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
+                "Trying adding the DCRa anyway in case it is missing."
+                New-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+            }
+            # Add a test to see if the alerts actually exist
+
         }
     }
 }
 
-function Remove-DCR {
+function get-AmbaPackFolder {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$packName
+    )
+    $packName = $packName.ToLower()
+    # Hashatable with packname and folder in the amba repo
+    $packs = @{
+        "KeyVault" = "/KeyVault/vaults"
+        "LogicApps" = "/Logic/workflows"
+        "ServiceBus" = "/ServiceBus/namespaces"
+        "Storage" = "/Storage/storageAccounts"
+        "WebApps" = "/Web/sites"
+        "SQL"= "/Sql/servers"
+        "SQLMI" = "/Sql/managedInstances"
+        "WebServer"= "/Web/serverFarms"
+        "AppGW"='/Network/applicationGateways'
+        "AzFW"='/Network/azureFirewalls'
+        'PrivZones'='/Network/PrivateDnsZones'
+        'PIP'= '/Network/publicIPAddresses'
+        'UDR'='/Network/routeTables'
+        'AA'='/Automation/automationAccounts'
+        'NSG'='/Network/networkSecurityGroups'
+        'AzFD'= '/Network/frontodoors'
+        'ALB'= '/Network/loadBalancers'
+
+    }
+    if ($packs.ContainsKey($packName)) {
+        return $packs[$packName]
+    }
+    else {
+        return $null
+    }
+}
+function new-PaaSAlert {
+    param (
+    [Parameter(Mandatory=$true)]
+    [string]
+    $packTag,
+    [Parameter(Mandatory=$true)]
+    [string]
+    $packType,
+    [Parameter(Mandatory=$true)]
+    [string]$TagName,
+    [Parameter(Mandatory=$true)]
+    [string]$resourceId,
+    [Parameter(Mandatory=$true)]
+    [string]$actionGroupId,
+    [Parameter(Mandatory=$true)]
+    [string]$resourceGroupName,
+    [Parameter(Mandatory=$true)]
+    [string]$serviceFolder,
+    [Parameter(Mandatory=$true)]
+    [string]$instanceName
+)
+    $resourceName=($resourceId -split '/')[8]
+    $servicesBaseURL= $env:servicesBaseURL
+    $alertfile='/alerts.yaml'
+    $alertsFileURL="$servicesBaseURL$serviceFolder$alertfile"
+    # $resourceGroupName='rg-Monstarpacks'
+    $location='global'
+    $alertsFile=Invoke-WebRequest -Uri $alertsFileURL | Select-Object -ExpandProperty Content | Out-String
+    $alertst=ConvertFrom-Yaml $alertsFile
+    $alerts=ConvertTo-Yaml -JsonCompatible $alertst | ConvertFrom-Json
+
+    if (($alerts | Where-Object {$_.visible -eq $true}).count -eq 0) {
+    Write-Host "No visible alerts found in the file"
+    exit
+    }
+    foreach ($alert in ($alerts | Where-Object {$_.visible -eq $true}) ) {
+        if ($alert.type -eq 'metric') {
+            $alertType=$alert.Properties.criterionType
+            switch ($alertType) {
+                'StaticThresholdCriterion' {
+                    $condition=New-AzMetricAlertRuleV2Criteria -MetricName $alert.Properties.metricName `
+                                                            -MetricNamespace $alert.Properties.metricNameSpace `
+                                                            -Operator $alert.Properties.operator `
+                                                            -Threshold $alert.Properties.threshold `
+                                                            -TimeAggregation $alert.Properties.timeAggregation
+                    $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
+                                            -ResourceGroupName $resourceGroupName `
+                                            -TargetResourceId $resourceId `
+                                            -Description $alert.description `
+                                            -Severity $alert.Properties.severity `
+                                            -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
+                                            -Condition $condition `
+                                            -AutoMitigate $alert.Properties.autoMitigate `
+                                            -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
+                                            -ActionGroupId $actionGroupId `
+                                            -Verbose
+                                            $tag = @{$tagName=$packtag}
+                                            Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
+                }
+                'DynamicThresholdCriterion' {
+                    $condition=New-AzMetricAlertRuleV2Criteria  -MetricName $alert.Properties.metricName `
+                                                                -MetricNamespace $alert.Properties.metricNameSpace `
+                                                                -Operator $alert.Properties.operator `
+                                                                -DynamicThreshold `
+                                                                -TimeAggregation $alert.Properties.timeAggregation `
+                                                                -ViolationCount $alert.properties.failingPeriods.minFailingPeriodsToAlert `
+                                                                -ThresholdSensitivity $alert.Properties.alertSensitivity 
+                    $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
+                                                    -ResourceGroupName $resourceGroupName `
+                                                    -TargetResourceId $resourceId `
+                                                    -Description $alert.description `
+                                                    -Severity $alert.Properties.severity `
+                                                    -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
+                                                    -Condition $condition `
+                                                    -AutoMitigate $alert.Properties.autoMitigate `
+                                                    -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
+                                                    -ActionGroupId $actionGroupId 
+                    #update rule with new tags
+                    $tag = @{$tagName=$packTag}
+                    Update-AzTag -ResourceId $newRule.Id -Tag $tag  -Operation Replace
+                }
+                default {
+                    Write-Host "Unknown criterion type"
+                }
+            }
+        }
+        #Activity Log
+        if ($alert.type -eq 'ActivityLog') {       
+            $condition1=New-AzActivityLogAlertAlertRuleAnyOfOrLeafConditionObject -Equal Administrative -Field category
+            $any1=New-AzActivityLogAlertAlertRuleLeafConditionObject -Field properties.status -Equal "$($alert.properties.status)"
+            $any2=New-AzActivityLogAlertAlertRuleLeafConditionObject -Equal "$($alert.properties.operationName)" -Field operationName
+            $condition2=New-AzActivityLogAlertAlertRuleAnyOfOrLeafConditionObject -AnyOf $any1,$any2
+            $actiongroup=New-AzActivityLogAlertActionGroupObject -Id $actionGroupId
+            New-AzActivityLogAlert -Name "AMP-$instanceName-$resourceName-$($alert.Name)" `
+                                -ResourceGroupName $resourceGroupName `
+                                -Description $alert.description `
+                                -Scope $resourceId `
+                                -Action $actiongroup `
+                                -Condition @($condition1,$condition2) `
+                                -Tag @{$tagName=$packTag} `
+                                -Location $location                              
+        }
+    }
+}
+function Remove-DCRa {
     param (
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
@@ -202,11 +376,12 @@ resources
 | where MPs=~'$TagValue'
 | summarize by name, id
 "@
-    $DCR = Search-AzGraph -Query $DCRQuery
-    "Found rule $($DCR.name)."
-    "DCR id : $($DCR.id)"
+    $DCRlist = Search-AzGraph -Query $DCRQuery
+    "Found $($DCRlist.count) rule(s) with $TagValue pack."
+    # "DCR id : $($DCR.id)"
     "resource: $resourceId"
-    $associationQuery = @"
+    foreach ($DCR in $DCRlist) {
+        $associationQuery = @"
 insightsresources
 | where type == "microsoft.insights/datacollectionruleassociations"
 | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
@@ -214,19 +389,76 @@ insightsresources
 | where resourceId =~ '$resourceId' and
 ruleId =~ '$($DCR.id)'
 "@
-    $associationQuery
-    $association = Search-AzGraph -Query $associationQuery
-    "Found association $($association.name). Removing..."
-    if ($association.count -gt 0) {
-        Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
+        $associationQuery
+        $association = Search-AzGraph -Query $associationQuery
+        "Found association $($association.name). Removing..."
+        if ($association.count -gt 0) {
+            Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
+        }
+        else {
+            "No association Found."
+        }
+    }
+}
+function New-DCRa {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId,
+        [Parameter(Mandatory = $true)]
+        [string]$TagValue,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
+    )
+    $resourceName=$resourceId.split('/')[8]
+    $DCRQuery = @"
+resources
+| where type == "microsoft.insights/datacollectionrules"
+| extend MPs=tostring(['tags'].MonitorStarterPacks)
+| where MPs=~'$TagValue'
+| summarize by name, id
+"@
+    $DCR = Search-AzGraph -Query $DCRQuery
+    if ($DCR -ne $null) {
+        "Found rule $($DCR.name)."
+        "DCR id : $($DCR.id)"
+        "resource: $resourceId"
+        $associationQuery = @"
+insightsresources
+| where type == "microsoft.insights/datacollectionruleassociations"
+| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
+| where isnotnull(properties.dataCollectionRuleId)
+| where resourceId =~ '$resourceId' and
+ruleId =~ '$($DCR.id)'
+"@
+        $associationQuery
+        $association = Search-AzGraph -Query $associationQuery
+        if ($association.count -eq 0) {
+            "No association Found. Adding..."
+            # Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
+            # try {
+                foreach ($DCRrule in $DCR) {
+                    $associationName="$($DCRrule.name)-$resourceName"
+                    New-AzDataCollectionRuleAssociation -AssociationName $associationName -Description "associating $TagValue pack with resource $resourceName" -TargetResourceId $resourceId -RuleId $DCRrule.id # -TargetResourceId $resourceId -DataCollectionRuleId $DCR.id
+                }
+                return "Association(s) added for $TagValue."
+            # }
+            # catch {
+            #     "Error adding association for $TagValue."
+            #     return $null
+            # }
+        }
+        else {
+            return "Found association $($association.name). No need to add..."
+        }   
     }
     else {
-        "No association Found."
+        "No rule found for $TagValue"
+        return $null
     }
 }
 
 
-# Depends on Function Remove-DCR
+# Depends on Function Remove-DCRa
 function Remove-Tag {
     param (
         [Parameter(Mandatory = $true)]
@@ -257,6 +489,12 @@ function Remove-Tag {
                 #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
                 #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
                 $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+                $taglist=$tag.$tagName.split(',')
+                "Removing all associations for $taglist."
+                foreach ($tagv in $taglist) {
+                    "Removing association for $tagv. on $resourceId."
+                    Remove-DCRa -resourceId $resourceId -TagValue $tagv
+                }
                 $tag.Remove($tagName)
                 if ($tag.count -ne 0) {
                     Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
@@ -289,7 +527,7 @@ function Remove-Tag {
                     # Remove association
                     # find rule
                     if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
-                        Remove-DCR -resourceId $resourceId -TagValue $TagValue
+                        Remove-DCRa -resourceId $resourceId -TagValue $TagValue
                     }
                     elseif ($TagName -ne 'Avd') {
                         "Paas Pack. No need to remove association."
@@ -314,7 +552,7 @@ function Remove-Tag {
         }
     }
 }
-# Depends on Functions Add-Tag, Add-Agent, Remove-DCR
+# Depends on Functions Add-Tag, Add-Agent, Remove-DCRa
 function Config-AVD {
     param (
         [Parameter(Mandatory = $true)]
@@ -419,7 +657,7 @@ resources
             "AVD - Removing Tag from VM ($vmName)"
             Update-AzTag -ResourceId $AVDResources[0].id -Tag $Tag -Operation Delete
             # Update DCR for each VM
-            Remove-DCR -resourceId $vmInfo.VMResId -TagValue $TagValue
+            Remove-DCRa -resourceId $vmInfo.VMResId -TagValue $TagValue
         }
     }
     # Create Host Pool Specific Alerts

@@ -107,22 +107,22 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   }
 }
 
-module policysetupDCR '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  params: {
-    dcrId: dcrbasicvmMonitoring.outputs.dcrId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: '${ruleshortname}-1'
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
+// module policysetupDCR '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   params: {
+//     dcrId: dcrbasicvmMonitoring.outputs.dcrId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: '${ruleshortname}-1'
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }
 
 module client 'client.bicep' = {
    name: 'client-${instanceName}-${packtag}'
