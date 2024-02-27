@@ -1,6 +1,6 @@
-############################
-# Tagging Functions
-############################
+#######################################################################
+# Common functions used in the Monitoring Packs backend functions.
+#######################################################################
 
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
@@ -148,7 +148,6 @@ function Add-Agent {
     }
     #End of agent installation
 }
-
 function Add-Tag {
     param (
         [Parameter(Mandatory = $true)]
@@ -222,7 +221,6 @@ function Add-Tag {
         }
     }
 }
-
 function get-AmbaPackFolder {
     param (
         [Parameter(Mandatory = $true)]
@@ -231,25 +229,51 @@ function get-AmbaPackFolder {
     $packName = $packName.ToLower()
     # Hashatable with packname and folder in the amba repo
     $packs = @{
-        "KeyVault" = "/KeyVault/vaults"
-        "LogicApps" = "/Logic/workflows"
-        "ServiceBus" = "/ServiceBus/namespaces"
-        "Storage" = "/Storage/storageAccounts"
-        "WebApps" = "/Web/sites"
-        "SQL"= "/Sql/servers"
-        "SQLMI" = "/Sql/managedInstances"
-        "WebServer"= "/Web/serverFarms"
-        "AppGW"='/Network/applicationGateways'
-        "AzFW"='/Network/azureFirewalls'
-        'PrivZones'='/Network/PrivateDnsZones'
-        'PIP'= '/Network/publicIPAddresses'
-        'UDR'='/Network/routeTables'
-        'AA'='/Automation/automationAccounts'
-        'NSG'='/Network/networkSecurityGroups'
-        'AzFD'= '/Network/frontodoors'
-        'ALB'= '/Network/loadBalancers'
-
+        "KeyVault" = "KeyVault.vaults"
+        "LogicApps" = "Logic.workflows"
+        "ServiceBus" = "ServiceBus.namespaces"
+        "Storage" = "Storage.storageAccounts"
+        "WebApps" = "Web.sites"
+        "SQL"= "Sql.servers"
+        "SQLMI" = "Sql.managedInstances"
+        "WebServer"= "Web.serverFarms"
+        "AppGW"='Network.applicationGateways'
+        "AzFW"='Network.azureFirewalls'
+        'PrivZones'='Network.PrivateDnsZones'
+        'PIP'= 'Network.publicIPAddresses'
+        'UDR'='Network.routeTables'
+        'AA'='Automation.automationAccounts'
+        'NSG'='Network.networkSecurityGroups'
+        'AzFD'= 'Network.frontodoors'
+        'ALB'= 'Network.loadBalancers'
+        'Bastion' = 'Network.bastionHosts'
+        'VPNG'= 'Network.vpnGateways'
+        'VnetGW'= 'Network.virtualNetworkGateways'
+        'VNET'= 'Network.virtualNetworks'
     }
+    # $packs = @{
+    #     "KeyVault" = "/KeyVault/vaults"
+    #     "LogicApps" = "/Logic/workflows"
+    #     "ServiceBus" = "/ServiceBus/namespaces"
+    #     "Storage" = "/Storage/storageAccounts"
+    #     "WebApps" = "/Web/sites"
+    #     "SQL"= "/Sql/servers"
+    #     "SQLMI" = "/Sql/managedInstances"
+    #     "WebServer"= "/Web/serverFarms"
+    #     "AppGW"='/Network/applicationGateways'
+    #     "AzFW"='/Network/azureFirewalls'
+    #     'PrivZones'='/Network/PrivateDnsZones'
+    #     'PIP'= '/Network/publicIPAddresses'
+    #     'UDR'='/Network/routeTables'
+    #     'AA'='/Automation/automationAccounts'
+    #     'NSG'='/Network/networkSecurityGroups'
+    #     'AzFD'= '/Network/frontodoors'
+    #     'ALB'= '/Network/loadBalancers'
+    #     'Bastion' = '/Network/bastionHosts'
+    #     'VPNG'= '/Network/vpnGateways'
+    #     'VnetGW'= '/Network/virtualNetworkGateways'
+    #     'VNET'= '/Network/virtualNetworks'
+    # }
     if ($packs.ContainsKey($packName)) {
         return $packs[$packName]
     }
@@ -279,7 +303,7 @@ function new-PaaSAlert {
     [string]$instanceName
 )
     $resourceName=($resourceId -split '/')[8]
-    $servicesBaseURL= $env:servicesBaseURL
+    $servicesBaseURL= 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'# $env:servicesBaseURL
     $alertfile='/alerts.yaml'
     $alertsFileURL="$servicesBaseURL$serviceFolder$alertfile"
     # $resourceGroupName='rg-Monstarpacks'
@@ -456,8 +480,6 @@ ruleId =~ '$($DCR.id)'
         return $null
     }
 }
-
-
 # Depends on Function Remove-DCRa
 function Remove-Tag {
     param (

@@ -50,7 +50,7 @@ $tagMapping=@"
     }
     ,
     {
-      "tag": "VPNgw",
+      "tag": "VPNG",
       "nameSpace": "Microsoft.Network/vpngateways",
       "type": "Platform"
     }
@@ -104,6 +104,11 @@ $tagMapping=@"
     {
       "tag": "KeyVault",
       "nameSpace": "microsoft.keyvault/vaults",
+      "type": "Platform"
+    },
+    {
+      "tag": "VnetGW",
+      "nameSpace": "Microsoft.Network/virtualnetworkgateways",
       "type": "Platform"
     }
     ]

@@ -4,7 +4,7 @@ using namespace System.Net
 param($Request, $TriggerMetadata)
 $RepoUrl = $env:repoURL
 $instanceName = $env:InstanceName
-#$servicesBaseURL= $env:servicesBaseURL
+$servicesBaseURL= $env:servicesBaseURL
 
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
@@ -31,7 +31,7 @@ if ($resources) {
                 foreach ($resource in $resources) {
                     # Tagging
                     Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -instanceName $instanceName `
-                    -packType $PackType -actionGroupId $env:actionGroupId
+                    -packType $PackType -actionGroupId $resource.DefaultAG
                     # Add Agent
                     if ($PackType -in ('IaaS', 'Discovery')) {
                         Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
