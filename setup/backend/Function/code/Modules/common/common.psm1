@@ -251,29 +251,6 @@ function get-AmbaPackFolder {
         'VnetGW'= 'Network.virtualNetworkGateways'
         'VNET'= 'Network.virtualNetworks'
     }
-    # $packs = @{
-    #     "KeyVault" = "/KeyVault/vaults"
-    #     "LogicApps" = "/Logic/workflows"
-    #     "ServiceBus" = "/ServiceBus/namespaces"
-    #     "Storage" = "/Storage/storageAccounts"
-    #     "WebApps" = "/Web/sites"
-    #     "SQL"= "/Sql/servers"
-    #     "SQLMI" = "/Sql/managedInstances"
-    #     "WebServer"= "/Web/serverFarms"
-    #     "AppGW"='/Network/applicationGateways'
-    #     "AzFW"='/Network/azureFirewalls'
-    #     'PrivZones'='/Network/PrivateDnsZones'
-    #     'PIP'= '/Network/publicIPAddresses'
-    #     'UDR'='/Network/routeTables'
-    #     'AA'='/Automation/automationAccounts'
-    #     'NSG'='/Network/networkSecurityGroups'
-    #     'AzFD'= '/Network/frontodoors'
-    #     'ALB'= '/Network/loadBalancers'
-    #     'Bastion' = '/Network/bastionHosts'
-    #     'VPNG'= '/Network/vpnGateways'
-    #     'VnetGW'= '/Network/virtualNetworkGateways'
-    #     'VNET'= '/Network/virtualNetworks'
-    # }
     if ($packs.ContainsKey($packName)) {
         return $packs[$packName]
     }
@@ -302,20 +279,33 @@ function new-PaaSAlert {
     [Parameter(Mandatory=$true)]
     [string]$instanceName
 )
+    #Register-PackageSource -Name Nuget.Org -Provider NuGet -Location "https://api.nuget.org/v3/index.json"
+    $ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+    $ambaAlerts=Invoke-WebRequest -Uri $ambaJsonURL | Select-Object -ExpandProperty Content | Out-String | convertfrom-json
+    
     $resourceName=($resourceId -split '/')[8]
-    $servicesBaseURL= 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'# $env:servicesBaseURL
-    $alertfile='/alerts.yaml'
-    $alertsFileURL="$servicesBaseURL$serviceFolder$alertfile"
-    # $resourceGroupName='rg-Monstarpacks'
-    $location='global'
-    $alertsFile=Invoke-WebRequest -Uri $alertsFileURL | Select-Object -ExpandProperty Content | Out-String
-    $alertst=ConvertFrom-Yaml $alertsFile
-    $alerts=ConvertTo-Yaml -JsonCompatible $alertst | ConvertFrom-Json
-
+    # $servicesBaseURL= 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'# $env:servicesBaseURL
+    # $alertfile='/alerts.yaml'
+    # $alertsFileURL="$servicesBaseURL$serviceFolder$alertfile"
+    # "URL:"
+    # $alertsFileURL
+    # # $resourceGroupName='rg-Monstarpacks'
+    # $location='global'
+    # $alertsFile=Invoke-WebRequest -Uri $alertsFileURL | Select-Object -ExpandProperty Content | Out-String
+    # # "Alerts File:"
+    # # $alertsFile
+    # $alertst=ConvertFrom-Yaml $alertsFile
+    # # "Alertst:"
+    # # $alertst
+    # # "Before trying to create alerts, just converto-yaml json whatever..."
+    # # ConvertTo-Yaml -JsonCompatible $alertst
+    # $alerts=ConvertTo-Yaml -JsonCompatible $alertst | ConvertFrom-Json
+    $alerts=$ambaAlerts.$($serviceFolder.split('.')[0]).$($serviceFolder.split('.')[1])
     if (($alerts | Where-Object {$_.visible -eq $true}).count -eq 0) {
     Write-Host "No visible alerts found in the file"
     exit
     }
+    "Total Alerts found in the file: $($alerts.count)."
     foreach ($alert in ($alerts | Where-Object {$_.visible -eq $true}) ) {
         if ($alert.type -eq 'metric') {
             $alertType=$alert.Properties.criterionType

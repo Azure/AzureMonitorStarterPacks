@@ -15,6 +15,7 @@ $action = $Request.Body.Action
 $TagList = $Request.Body.Pack.split(',')
 $PackType = $Request.Body.PackType
 $LogAnalyticsWSAVD = $Request.Body.AVDLAW
+$defaultAG=$Request.Body.DefaultAG
 
 if ($resources) {
     #$TagName='MonitorStarterPacks'
@@ -31,7 +32,7 @@ if ($resources) {
                 foreach ($resource in $resources) {
                     # Tagging
                     Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -instanceName $instanceName `
-                    -packType $PackType -actionGroupId $resource.DefaultAG
+                    -packType $PackType -actionGroupId $defaultAG
                     # Add Agent
                     if ($PackType -in ('IaaS', 'Discovery')) {
                         Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location

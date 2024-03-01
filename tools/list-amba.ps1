@@ -4,8 +4,7 @@ $Categories=$aaa.psobject.properties.Name
 foreach ($cat in $Categories) {
     $svcs=$aaa.$($cat).psobject.properties.Name
     foreach ($svc in $svcs) {
-        if ($aaa.$cat.$svc.name -ne $null) {
-            
+        if ($aaa.$cat.$svc.name -ne $null) {   
             Write-Host "$cat.$svc - $($aaa.$cat.$svc[0].properties.metricNamespace)"
         }
     }
