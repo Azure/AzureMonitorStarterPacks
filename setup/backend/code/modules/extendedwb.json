@@ -227,7 +227,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -244,7 +244,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-prod-bd4d88c1-Function"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -279,7 +279,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -302,7 +302,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP2233"
                 }
               ],
               "style": "above",
@@ -1380,8 +1380,8 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "ADDS",
-                          "VMI"
+                          "VMI",
+                          "IIS"
                         ]
                       }
                     ],
@@ -1700,7 +1700,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "vWan"
+                        "value": "KeyVault"
                       }
                     ],
                     "style": "pills",
@@ -2041,9 +2041,9 @@
                         "version": "KqlParameterItem/1.0",
                         "name": "AvdLAWPaaS",
                         "label": "Select AVD Log Analytics Workspace",
-                        "type": 2,
+                        "type": 5,
                         "isGlobal": true,
-                        "query": "resources\n| where type =~ \"Microsoft.OperationalInsights/workspaces\"\n| summarize by name",
+                        "query": "resources\n| where type =~ \"Microsoft.OperationalInsights/workspaces\"\n",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -2056,7 +2056,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
                       }
                     ],
                     "style": "pills",
@@ -2099,10 +2099,10 @@
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\"\n    \"AVDLAW\": \"{AvdLAWPaaS}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
-                          "description": "# This will enable the pack for the following servers:\n{paastotag}\n\nby adding the {PackTagsPaaS} Pack(s) to the resource(s).",
+                          "description": "# This will enable the pack for the following servers:\n{paastotag}\n\nby adding the {PackTagsPaaS} Pack(s) to the resource(s).\n\nAVD LAW (if any): {AvdLAWPaaS:name}",
                           "actionName": "EnableMonitoring",
                           "runLabel": "Confirm"
                         }
@@ -2205,7 +2205,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "KeyVault"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -3633,7 +3633,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',''), Uninstall=iff(ExtensionName<>'N/A','Uninstall','')\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1\n| order by id",
+              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), State,subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',iff(State<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (State == 'succeeded'),'Uninstall',iff(State <> 'succeeded','Warning',''))\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1\n| order by id",
               "size": 0,
               "title": "Agent Install Status",
               "exportMultipleValues": true,
@@ -3711,6 +3711,12 @@
                           "text": "Ok"
                         },
                         {
+                          "operator": "==",
+                          "thresholdValue": "Unhealthy",
+                          "representation": "2",
+                          "text": "{0}{1}"
+                        },
+                        {
                           "operator": "Default",
                           "thresholdValue": null,
                           "representation": "Add",
@@ -3742,6 +3748,12 @@
                           "operator": "is Empty",
                           "representation": "3",
                           "text": "Not Installed"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Warning",
+                          "representation": "1",
+                          "text": "{0}{1}"
                         },
                         {
                           "operator": "Default",
@@ -4685,7 +4697,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "azfta-web01",
+                  "value": null,
                   "label": "Select Server"
                 },
                 {
