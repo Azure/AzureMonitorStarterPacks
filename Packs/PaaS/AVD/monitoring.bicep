@@ -5,17 +5,17 @@ targetScope = 'managementGroup'
 // modules/alerts/PaaS/alerts.json from within the script. Thus the dependancy on the ARM/JSON version of alerts.json.
 
 
-@description('Location of needed scripts to deploy solution.')
-param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/HostPoolDeployment/master/'
+// @description('Location of needed scripts to deploy solution.')
+// param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/HostPoolDeployment/master/'
 
-@description('SaS token if needed for script location.')
-@secure()
-param _ArtifactsLocationSasToken string = ''
-param ruleshortname string = 'AVD'
-param actionGroupResourceId string
-param packtag string = 'AVD'
+// @description('SaS token if needed for script location.')
+// @secure()
+// param _ArtifactsLocationSasToken string = ''
+// param ruleshortname string
+// param actionGroupResourceId string
+param packtag string
 param solutionTag string
-param solutionVersion string 
+// param solutionVersion string 
 // param actionGroupResourceId string
 // @description('Name of the DCR rule to be created')
 // param rulename string = ''
@@ -26,7 +26,7 @@ param workspaceId string
 
 // @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
-param parResourceGroupName string
+// param parResourceGroupName string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param resourceGroupId string
 param subscriptionId string
@@ -34,24 +34,22 @@ param userManagedIdentityResourceId string
 param mgname string 
 param assignmentLevel string
 // param grafanaName string
-param customerTags object 
+// param customerTags object 
 param instanceName string
-var rulename = 'AMP-${instanceName}-${packtag}'
-var tempTags ={
-  '${solutionTag}': packtag
-  MonitoringPackType: 'PaaS'
-  solutionVersion: solutionVersion
-}
-// if the customer has provided tags, then use them, otherwise use the default tags
-var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
-var avdLogAlertsUri = '${_artifactsLocation}Packs/PaaS/AVD/LogAlertsHostPool.json${_ArtifactsLocationSasToken}'
-var primaryScriptUri = '${_artifactsLocation}Packs/PaaS/AVD/AVDHostPoolMapAlerts.ps1${_ArtifactsLocationSasToken}'
-var templateUri = '${_artifactsLocation}modules/alerts/alerts.json${_ArtifactsLocationSasToken}'
+var rulename = 'AMP-${instanceName}-${packtag}'
+
+// if the customer has provided tags, then use them, otherwise use the default tags
+// var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+
+// var avdLogAlertsUri = '${_artifactsLocation}Packs/PaaS/AVD/LogAlertsHostPool.json${_ArtifactsLocationSasToken}'
+// var primaryScriptUri = '${_artifactsLocation}Packs/PaaS/AVD/AVDHostPoolMapAlerts.ps1${_ArtifactsLocationSasToken}'
+// var templateUri = '${_artifactsLocation}modules/alerts/alerts.json${_ArtifactsLocationSasToken}'
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 
+// var moduleprefix = 'AMP-${instanceName}-${packtag}'
 
 // the xpathqueries define which counters are collected
 var xPathQueries=[
@@ -92,6 +90,7 @@ var performanceCounters60 = [
 
 var resourceTypes = [
   'Microsoft.DesktopVirtualization/workspaces'
+  'Microsoft.DesktopVirtualization/applicationGroups'
   'Microsoft.DesktopVirtualization/hostpools'
 ]
 // var tempTags ={
@@ -105,24 +104,22 @@ var resourceTypes = [
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
-module Alerts 'alerts.bicep' = {
-  name: 'Alerts-${packtag}'
+/* module dsAVDHostPoolMapAlerts 'dsAVDHostMapping.bicep' = {
+  name: 'linked_ds-AVDHostMapping-${uniqueString(deployment().name)}'
+  scope: resourceGroup(subscriptionId, parResourceGroupName)
   params: {
-    location: location
     avdLogAlertsUri: avdLogAlertsUri
-    instanceName: instanceName
-    workspaceId: workspaceId
     AGId: actionGroupResourceId
-    templateUri: templateUri
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    location: location
+    moduleprefix: moduleprefix
     packtag: packtag
     primaryScriptUri: primaryScriptUri
+    templateUri: templateUri
+    workspaceId: workspaceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
     Tags: Tags
-    parResourceGroupName: parResourceGroupName
-    subscriptionId: subscriptionId
   }
-}
-
+} */
 
 // DCRs
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
@@ -153,7 +150,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
-    ruleshortname: '${ruleshortname}-1'
+    ruleshortname: rulename
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
     instanceName: instanceName
