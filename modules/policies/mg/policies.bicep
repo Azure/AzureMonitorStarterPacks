@@ -49,7 +49,7 @@ module policyARC './associacionpolicyARC.bicep' = {
 //module policyAssignment {}
 // param policyAssignmentName string = 'audit-vm-manageddisks'
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment './assignment.bicep' = if(assignmentLevel == 'managementGroup') {
+module arcassignment './assignment.bicep' = if((assignmentLevel == 'managementGroup') && (packtag != 'Avd')) {
   dependsOn: [
     policyARC
   ]
@@ -94,7 +94,7 @@ module vmassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel !
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module arcassignmentsub '../subscription/assignment.bicep' = if((assignmentLevel != 'managementGroup') && (packtag != 'Avd')) {
   dependsOn: [
     policyARC
   ]

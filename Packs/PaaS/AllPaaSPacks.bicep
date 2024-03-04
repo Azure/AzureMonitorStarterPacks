@@ -18,12 +18,12 @@ param actionGroupResourceId string
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-//@description('Full resource ID of the log analytics AVD workspace to be used for the deployment IF seperate.')
-//param workspaceIdAVD string
+@description('Full resource ID of the log analytics AVD workspace to be used for the deployment IF seperate.')
+param workspaceIdAVD string
 param solutionTag string
 param solutionVersion string
-//@description('Full resource ID of the data collection endpoint to be used for the deployment.')
-//param dceId string
+@description('Full resource ID of the data collection endpoint to be used for the deployment.')
+param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
 param mgname string // this the last part of the management group id
@@ -74,29 +74,25 @@ module OpenAI './OpenAI/monitoring.bicep' = {
     solutionVersion: solutionVersion
   }
 }
-// module AVD './AVD/monitoring.bicep' = {
-//   name: 'AvdAlerts'
-//   params: {
-//     _artifactsLocation: _artifactsLocation
-//     _ArtifactsLocationSasToken: _artifactsLocationSasToken
-//     assignmentLevel: assignmentLevel
-//     location: location
-//     mgname: mgname
-//     resourceGroupId: resourceGroupId
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     actionGroupResourceId: actionGroupResourceId
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     workspaceId: workspaceIdAVD != '' ? workspaceIdAVD : workspaceId
-//     packtag: 'Avd'
-//     //grafanaName: grafanaName
-//     dceId: dceId
-//     customerTags: customerTags
-//     instanceName: instanceName
-//     parResourceGroupName: split(resourceGroupId, '/')[4]
-//     solutionVersion: solutionVersion
-//   }
-// }
+
+module AVD './AVD/monitoring.bicep' = {
+  name: 'AvdAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    location: location
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    packtag: 'Avd'
+    //grafanaName: grafanaName
+    instanceName: instanceName
+    dceId: dceId
+    workspaceId: workspaceIdAVD
+  }
+}
+
 // No logs for this pack, so going straight to alerts
 module LogicApps './LogicApps/alerts.bicep' = {
   name: 'LogicAppsAlerts'

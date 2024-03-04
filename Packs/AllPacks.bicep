@@ -4,7 +4,7 @@ targetScope = 'managementGroup'
 // param _artifactsLocation string
 // @secure()
 // param _artifactsLocationSasToken string
-// param workspaceIdAVD string
+param workspaceIdAVD string
 
 param mgname string // this the last part of the management group id
 param subscriptionId string
@@ -94,10 +94,10 @@ module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
     // _artifactsLocationSasToken: _artifactsLocationSasToken
     location: location
     workspaceId: workspaceId
-    //workspaceIdAVD: workspaceIdAVD
+    workspaceIdAVD: workspaceIdAVD
     solutionTag: solutionTag
     solutionVersion: solutionVersion
-    //dceId: dceId
+    dceId: dceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     assignmentLevel: assignmentLevel
     //grafanaName: 'grafana'

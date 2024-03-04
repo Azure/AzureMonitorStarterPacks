@@ -27,7 +27,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     instanceName: instanceName
   }
 }
-module policyARC './associacionpolicyARC.bicep' = {
+module policyARC './associacionpolicyARC.bicep' = if(packtag != 'Avd') {
   name: 'AssocPolARC-${dcrName}'
   scope: subscription()
   params: {
@@ -44,7 +44,7 @@ module policyARC './associacionpolicyARC.bicep' = {
 //module policyAssignment {}
 // param policyAssignmentName string = 'audit-vm-manageddisks'
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment './assignment.bicep' = {
+module arcassignment './assignment.bicep' = if(packtag != 'Avd') {
   dependsOn: [
     policyARC
   ]

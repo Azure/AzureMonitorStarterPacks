@@ -102,25 +102,6 @@ var resourceTypes = [
 // var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 // var resourceGroupName = split(resourceGroupId, '/')[4]
 
-// Alerts - the module below creates the alerts and associates them with the action group
-
-/* module dsAVDHostPoolMapAlerts 'dsAVDHostMapping.bicep' = {
-  name: 'linked_ds-AVDHostMapping-${uniqueString(deployment().name)}'
-  scope: resourceGroup(subscriptionId, parResourceGroupName)
-  params: {
-    avdLogAlertsUri: avdLogAlertsUri
-    AGId: actionGroupResourceId
-    location: location
-    moduleprefix: moduleprefix
-    packtag: packtag
-    primaryScriptUri: primaryScriptUri
-    templateUri: templateUri
-    workspaceId: workspaceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    Tags: Tags
-  }
-} */
-
 // DCRs
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcravdMonitoring '../../../modules/DCRs/dcr-AVD.bicep' = {
