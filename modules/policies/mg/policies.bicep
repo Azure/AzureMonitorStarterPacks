@@ -32,7 +32,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     instanceName: instanceName
   }
 }
-module policyARC './associacionpolicyARC.bicep' = {
+module policyARC './associacionpolicyARC.bicep' = if(packtag != 'Avd'){
   name: 'AssocPolArc-${dcrName}'
   scope: managementGroup(mgname)
   params: {
