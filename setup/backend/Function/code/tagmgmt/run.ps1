@@ -52,11 +52,10 @@ if ($resources) {
                 if ($TagValue -eq 'Avd') {
                     $hostPoolName = ($resource.Resource -split '/')[8]
                     $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                    $LogAnalyticsWS = $Request.Body.AltLAW
                     Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName `
                                 -location $resource.location -TagName $TagName -TagValue $TagValue `
                                 -action $action `
-                                -LogAnalyticsWSAVD $LogAnalyticsWS
+                                -LogAnalyticsWSAVD $LogAnalyticsWSAVD
                 }
             }
         }

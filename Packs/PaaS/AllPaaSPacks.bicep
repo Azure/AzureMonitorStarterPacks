@@ -18,8 +18,8 @@ param actionGroupResourceId string
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
 param workspaceId string
-@description('Full resource ID of the log analytics AVD workspace to be used for the deployment IF seperate.')
-param workspaceIdAVD string
+//@description('Full resource ID of the log analytics AVD workspace to be used for the deployment IF seperate.')
+//param workspaceIdAVD string
 param solutionTag string
 param solutionVersion string
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
@@ -89,7 +89,7 @@ module AVD './AVD/monitoring.bicep' = {
     //grafanaName: grafanaName
     instanceName: instanceName
     dceId: dceId
-    workspaceId: workspaceIdAVD
+    workspaceId: workspaceId
   }
 }
 
