@@ -122,7 +122,7 @@ $discoveringMappings = @{
   "IIS"   = "Web-Server"
   "STSVC" = "Storage-Services"
   "Nginx" = "nginx-core"
-  "Avd"   = "AVD-hostpool"
+  "Avd"   = "Avd-hostpool"
 }
 switch ($Action) {
   # Returns the tag based on the nameSpace provided
