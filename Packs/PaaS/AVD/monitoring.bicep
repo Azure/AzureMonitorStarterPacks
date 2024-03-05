@@ -15,7 +15,7 @@ targetScope = 'managementGroup'
 // param actionGroupResourceId string
 param packtag string
 param solutionTag string
-// param solutionVersion string 
+param solutionVersion string 
 // param actionGroupResourceId string
 // @description('Name of the DCR rule to be created')
 // param rulename string = ''
@@ -34,13 +34,10 @@ param userManagedIdentityResourceId string
 param mgname string 
 param assignmentLevel string
 // param grafanaName string
-// param customerTags object 
+param customerTags object 
 param instanceName string
 
 var rulename = 'AMP-${instanceName}-${packtag}'
-
-// if the customer has provided tags, then use them, otherwise use the default tags
-// var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 // var avdLogAlertsUri = '${_artifactsLocation}Packs/PaaS/AVD/LogAlertsHostPool.json${_ArtifactsLocationSasToken}'
 // var primaryScriptUri = '${_artifactsLocation}Packs/PaaS/AVD/AVDHostPoolMapAlerts.ps1${_ArtifactsLocationSasToken}'
@@ -93,13 +90,13 @@ var resourceTypes = [
   'Microsoft.DesktopVirtualization/applicationGroups'
   'Microsoft.DesktopVirtualization/hostpools'
 ]
-// var tempTags ={
-//   '${solutionTag}': packtag
-//   MonitoringPackType: 'PaaS'
-//   solutionVersion: solutionVersion
-// }
+var tempTags ={
+   '${solutionTag}': packtag
+   MonitoringPackType: 'PaaS'
+   solutionVersion: solutionVersion
+}
 // if the customer has provided tags, then use them, otherwise use the default tags
-// var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 // var resourceGroupName = split(resourceGroupId, '/')[4]
 
 // DCRs
@@ -116,8 +113,7 @@ module dcravdMonitoring '../../../modules/DCRs/dcr-AVD.bicep' = {
     xPathQueries: xPathQueries
     counterSpecifiers30: performanceCounters30
     counterSpecifiers60: performanceCounters60
-    packtag: packtag
-    solutionTag: solutionTag
+    Tags: Tags
     dceId: dceId
   }
 }

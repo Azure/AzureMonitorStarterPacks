@@ -89,7 +89,6 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
 module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
   name: 'deployPaaSPacks'
   params: {
-    // Tags: Tags
     // _artifactsLocation: _artifactsLocation
     // _artifactsLocationSasToken: _artifactsLocationSasToken
     location: location

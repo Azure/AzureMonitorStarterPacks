@@ -34,6 +34,8 @@ param assignmentLevel string
 param customerTags object 
 param instanceName string
 
+
+
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {
@@ -79,10 +81,12 @@ module AVD './AVD/monitoring.bicep' = {
   name: 'AvdAlerts'
   params: {
     assignmentLevel: assignmentLevel
+    customerTags: customerTags
     location: location
     mgname: mgname
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
+    solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     packtag: 'Avd'
