@@ -34,46 +34,46 @@ param assignmentLevel string
 param customerTags object 
 param instanceName string
 
-module Storage './Storage/monitoring.bicep' = {
-  name: 'StorageAlerts'
-  params: {
-    assignmentLevel: assignmentLevel
-    location: location
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packtag: 'Storage'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    customerTags: customerTags
-    instanceName: instanceName
-    solutionVersion: solutionVersion
-  }
-}
-module OpenAI './OpenAI/monitoring.bicep' = {
-  name: 'OpenAIAlerts'
-  params: {
-    assignmentLevel: assignmentLevel
-    location: location
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packtag: 'OpenAI'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    customerTags: customerTags
-    instanceName: instanceName
-    solutionVersion: solutionVersion
-  }
-}
+// module Storage './Storage/monitoring.bicep' = {
+//   name: 'StorageAlerts'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     location: location
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     actionGroupResourceId: actionGroupResourceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     //workspaceId: workspaceId
+//     packtag: 'Storage'
+//     //grafanaName: grafanaName
+//     //dceId: dceId
+//     customerTags: customerTags
+//     instanceName: instanceName
+//     solutionVersion: solutionVersion
+//   }
+// }
+// module OpenAI './OpenAI/monitoring.bicep' = {
+//   name: 'OpenAIAlerts'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     location: location
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     actionGroupResourceId: actionGroupResourceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     //workspaceId: workspaceId
+//     packtag: 'OpenAI'
+//     //grafanaName: grafanaName
+//     //dceId: dceId
+//     customerTags: customerTags
+//     instanceName: instanceName
+//     solutionVersion: solutionVersion
+//   }
+// }
 // module AVD './AVD/monitoring.bicep' = {
 //   name: 'AvdAlerts'
 //   params: {
@@ -98,102 +98,102 @@ module OpenAI './OpenAI/monitoring.bicep' = {
 //   }
 // }
 // No logs for this pack, so going straight to alerts
-module LogicApps './LogicApps/alerts.bicep' = {
-  name: 'LogicAppsAlerts'
-  params: {
-    assignmentLevel: assignmentLevel
-    //location: location
-    mgname: mgname
-    //resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    //actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packTag: 'LogicApps'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    //customerTags: customerTags
-    instanceName: instanceName
-    AGId: actionGroupResourceId
-    policyLocation: location
-    parResourceGroupName: resourceGroupId
-    solutionVersion: solutionVersion
-    resourceType: 'Microsoft.Logic/workflows'
-  }
-}
+// module LogicApps './LogicApps/alerts.bicep' = {
+//   name: 'LogicAppsAlerts'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     //location: location
+//     mgname: mgname
+//     //resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     //actionGroupResourceId: actionGroupResourceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     //workspaceId: workspaceId
+//     packTag: 'LogicApps'
+//     //grafanaName: grafanaName
+//     //dceId: dceId
+//     //customerTags: customerTags
+//     instanceName: instanceName
+//     AGId: actionGroupResourceId
+//     policyLocation: location
+//     parResourceGroupName: resourceGroupId
+//     solutionVersion: solutionVersion
+//     resourceType: 'Microsoft.Logic/workflows'
+//   }
+// }
 
-// No logs for this pack, so going straight to alerts
-module SQLMI './SQL/SQLMI/alerts.bicep' = {
-  name: 'SQLMIAlerts'
-  params: {
-    assignmentLevel: assignmentLevel
-    //location: location
-    mgname: mgname
-    //resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    //actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packTag: 'SQLMI'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    //customerTags: customerTags
-    instanceName: instanceName
-    solutionVersion: solutionVersion
-    AGId: actionGroupResourceId
-    policyLocation: location
-    parResourceGroupName: resourceGroupId
-    resourceType: 'Microsoft.Sql/managedInstances'
-  }
-}
-module SQLSrv './SQL/server/alerts.bicep' = {                              
-  name: 'SQLSrvAlerts'
-  params: {
-    assignmentLevel: assignmentLevel
-    //location: location
-    mgname: mgname
-    //resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    //actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packTag: 'SQLSrv'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    //customerTags: customerTags
-    instanceName: instanceName
-    solutionVersion: solutionVersion
-    AGId: actionGroupResourceId
-    policyLocation: location
-    parResourceGroupName: resourceGroupId
-    resourceType: 'Microsoft.Sql/servers/databases'
-  }
-}
-module WebApps './WebApp/monitoring.bicep' = {
-  name: 'WebApps'
-  params: {
-    assignmentLevel: assignmentLevel
-    //location: location
-    mgname: mgname
-    //resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    //actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packtag: 'WebApp'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    //customerTags: customerTags
-    instanceName: instanceName
-    solutionVersion: solutionVersion
-    actionGroupResourceId: actionGroupResourceId
-    customerTags: customerTags
-    location: location
-    resourceGroupId: resourceGroupId
-    workspaceId: workspaceId
-  }
-}
+// // No logs for this pack, so going straight to alerts
+// module SQLMI './SQL/SQLMI/alerts.bicep' = {
+//   name: 'SQLMIAlerts'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     //location: location
+//     mgname: mgname
+//     //resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     //actionGroupResourceId: actionGroupResourceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     //workspaceId: workspaceId
+//     packTag: 'SQLMI'
+//     //grafanaName: grafanaName
+//     //dceId: dceId
+//     //customerTags: customerTags
+//     instanceName: instanceName
+//     solutionVersion: solutionVersion
+//     AGId: actionGroupResourceId
+//     policyLocation: location
+//     parResourceGroupName: resourceGroupId
+//     resourceType: 'Microsoft.Sql/managedInstances'
+//   }
+// }
+// module SQLSrv './SQL/server/alerts.bicep' = {                              
+//   name: 'SQLSrvAlerts'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     //location: location
+//     mgname: mgname
+//     //resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     //actionGroupResourceId: actionGroupResourceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     //workspaceId: workspaceId
+//     packTag: 'SQLSrv'
+//     //grafanaName: grafanaName
+//     //dceId: dceId
+//     //customerTags: customerTags
+//     instanceName: instanceName
+//     solutionVersion: solutionVersion
+//     AGId: actionGroupResourceId
+//     policyLocation: location
+//     parResourceGroupName: resourceGroupId
+//     resourceType: 'Microsoft.Sql/servers/databases'
+//   }
+// }
+// module WebApps './WebApp/monitoring.bicep' = {
+//   name: 'WebApps'
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     //location: location
+//     mgname: mgname
+//     //resourceGroupId: resourceGroupId
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId
+//     //actionGroupResourceId: actionGroupResourceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     //workspaceId: workspaceId
+//     packtag: 'WebApp'
+//     //grafanaName: grafanaName
+//     //dceId: dceId
+//     //customerTags: customerTags
+//     instanceName: instanceName
+//     solutionVersion: solutionVersion
+//     actionGroupResourceId: actionGroupResourceId
+//     customerTags: customerTags
+//     location: location
+//     resourceGroupId: resourceGroupId
+//     workspaceId: workspaceId
+//   }
+// }

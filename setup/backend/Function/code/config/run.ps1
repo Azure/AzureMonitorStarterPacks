@@ -14,7 +14,45 @@ $Action = $Request.Query.Action
 "Body"
 $Request.Body
 "EoB"
+$PaaSQuery=@"
+| where tolower(type) in (
+            'microsoft.storage/storageaccounts',
+            'microsoft.desktopvirtualization/hostpools',
+            'microsoft.logic/workflows',
+            'microsoft.sql/managedinstances',
+            'microsoft.sql/servers/databases',
+            'microsoft.containerservice/managedclusters',
+            'microsoft.documentdb/databaseaccounts',
+            'microsoft.apimanagement/service',
+            'microsoft.web/sites',
+            'microsoft.containerregistry/registries',
+            'microsoft.cache/redis'
+      )
+      or (
+          tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
+      )
+"@
 
+$PlatformQuery=@"
+| where tolower(type) in (
+            'microsoft.network/virtualnetworks',
+            'microsoft.network/expressroutecircuits',
+            'microsoft.network/expressrouteports',
+            'microsoft.datafactory/factories',
+            'microsoft.cdn/profiles',
+            'microsoft.eventhub/clusters',
+            'microsoft.eventhub/namespaces',
+            'microsoft.network/vpngateways',
+            'microsoft.network/virtualnetworkgateways',
+            'microsoft.keyvault/vaults',
+            'microsoft.network/networksecuritygroups',
+            'microsoft.network/publicipaddresses',
+            'microsoft.network/privatednszones',
+            'microsoft.network/frontdoors',
+            'microsoft.network/azurefirewalls',
+            'microsoft.network/applicationgateways'
+      ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')
+"@
 $tagMapping=@"
 {
     tags: 
@@ -110,7 +148,13 @@ $tagMapping=@"
       "tag": "VnetGW",
       "nameSpace": "Microsoft.Network/virtualnetworkgateways",
       "type": "Platform"
-    }
+    },
+    {
+      "tag": "AVD",
+      "nameSpace": "Microsoft.DesktopVirtualization/hostpools",
+      "type": "PaaS"
+    },
+    
     ]
 }
 "@ | ConvertFrom-Json
@@ -161,36 +205,156 @@ switch ($Action) {
         $body=@"
         {
             "Query": "
-        | where tolower(type) in (
-          'microsoft.storage/storageaccounts',
-          'microsoft.desktopvirtualization/hostpools',
-          'microsoft.logic/workflows',
-          'microsoft.sql/managedinstances',
-          'microsoft.sql/servers/databases'
-      )
-      or (
-          tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-      )"
+$PaaSQuery"
       }
 "@
     }
     'getPlatformquery' {
-        $body=@'
+        $body=@"
         {
             "Query":"
-        | where tolower(type) in (
-          'microsoft.network/vpngateways',
-          'microsoft.network/virtualnetworkgateways',
-          'microsoft.keyvault/vaults',
-          'microsoft.network/networksecuritygroups',
-          'microsoft.network/publicipaddresses',
-          'microsoft.network/privatednszones',
-          'microsoft.network/frontdoors',
-          'microsoft.network/azurefirewalls',
-          'microsoft.network/applicationgateways'
-      ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+        $PlatformQuery"
     }
-'@
+"@
+    }
+    'listAmbaAlerts' {
+      $aaa=Invoke-WebRequest -uri 'https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json' | convertfrom-json
+      $Categories=$aaa.psobject.properties.Name
+      #$Categories
+      $body=@"
+{
+    "Categories": [
+"@
+    $i=0
+          foreach ($cat in $Categories) {
+              $svcs=$aaa.$($cat).psobject.properties.Name
+              foreach ($svc in $svcs) {
+                  if ($aaa.$cat.$svc.name -ne $null) {                  
+                      if ($aaa.$cat.$svc[0].properties.metricNamespace -ne $null) {
+                          $bodyt=@"
+      {
+        "category" : "$cat",
+        "service" : "$svc",
+        "namespace": "$($aaa.$cat.$svc[0].properties.metricNamespace.tolower())"
+      }
+"@
+                      }
+                      else {
+                          $bodyt=@"
+        {
+            "category" : "$cat",
+          "service" : "$svc",
+          "namespace": "microsoft.$($cat.tolower())/$($svc.tolower())"
+        }
+"@  
+                      }
+                      if ($i -eq 0) {
+                          $body+=@"
+                          $bodyt
+"@
+    
+                          $i++
+                      }
+                      else {
+                          $body+=@"
+    ,
+                          $bodyt
+"@
+                      }
+                  }
+              }
+          }
+        $body+=@"
+        ]
+        }
+"@
+    
+    }
+    "getNonMonitoredPaaS" {
+        $resourceQuery=@"
+        resources
+        $PaaSQuery
+        | where isnotempty(tags.MonitorStarterPacks)
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId
+"@
+        $alertsQuery=@"
+        resources
+        | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+        | where isnotempty(tags.MonitorStarterPacks)
+        | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+"@
+        $resources=Search-AzGraph -Query $resourceQuery
+        $alerts=Search-AzGraph -Query $alertsQuery
+
+        # determine if the resources have alerts and shows total
+        $results="{""Monitored Resources"" : ["
+
+        $results+=foreach ($res in $resources) {
+            if ($res.Resource -in $alerts.Resource) {
+                $totalAlerts=($alerts|where Resource -eq $res.Resource).count
+                "{""Resource"" : ""$($res.Resource)"","
+                """type"" : ""$($res.""type"")"","
+                """tag"" : ""$($res.""tag"")"","
+                """resourceGroup"" : ""$($res.""resourceGroup"")"","
+                """location"" : ""$($res.""location"")"","
+                """subscriptionId"" : ""$($res.""subscriptionId"")"","
+                """Total"" : $totalAlerts},"
+            } else {
+                "{""Resource"" : ""$($res.Resource)"","
+                """type"" : ""$($res.""type"")"","
+                """tag"" : ""$($res.""tag"")"","
+                """resourceGroup"" : ""$($res.""resourceGroup"")"","
+                """location"" : ""$($res.""location"")"","
+                """subscriptionId"" : ""$($res.""subscriptionId"")"","
+                """Total"" : 0 },"
+            }   
+        }
+    $resultsString=$results -join ""
+    $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
+
+    }
+    "getNonMonitoredPlatform" {
+        $resourceQuery=@"
+        resources
+        $PlatformQuery
+        | where isnotempty(tags.MonitorStarterPacks)
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId
+"@
+        $alertsQuery=@"
+        resources
+        | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+        | where isnotempty(tags.MonitorStarterPacks)
+        | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+"@
+        $resources=Search-AzGraph -Query $resourceQuery
+        $alerts=Search-AzGraph -Query $alertsQuery
+
+        # determine if the resources have alerts and shows total
+        $results="{""Monitored Resources"" : ["
+
+        $results+=foreach ($res in $resources) {
+            if ($res.Resource -in $alerts.Resource) {
+                $totalAlerts=($alerts|where Resource -eq $res.Resource).count
+                "{""Resource"" : ""$($res.Resource)"","
+                """type"" : ""$($res.""type"")"","
+                """tag"" : ""$($res.""tag"")"","
+                """resourceGroup"" : ""$($res.""resourceGroup"")"","
+                """location"" : ""$($res.""location"")"","
+                """subscriptionId"" : ""$($res.""subscriptionId"")"","
+                """Total"" : $totalAlerts},"
+            } else {
+                "{""Resource"" : ""$($res.Resource)"","
+                """type"" : ""$($res.""type"")"","
+                """tag"" : ""$($res.""tag"")"","
+                """resourceGroup"" : ""$($res.""resourceGroup"")"","
+                """location"" : ""$($res.""location"")"","
+                """subscriptionId"" : ""$($res.""subscriptionId"")"","
+                """Total"" : 0 },"
+            }   
+        }
+    $resultsString=$results -join ""
+    $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
+
     }
     default {$body=''}
 }

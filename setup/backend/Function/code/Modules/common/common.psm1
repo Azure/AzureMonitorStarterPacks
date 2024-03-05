@@ -71,7 +71,62 @@ function Install-azMonitorAgent {
     }
 }
 
+function Remove-Agent {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId,
+        [Parameter(Mandatory = $true)]
+        [string]$ResourceOS,
+        [Parameter(Mandatory = $true)]
+        [string]$location
+    )
+    $resourceName = $resourceId.split('/')[8]
+    $resourceGroupName = $resourceId.Split('/')[4]
+    # VM Extension setup
+    $resourceSubcriptionId = $resourceId.split('/')[2]
+    if ($ResourceOS -eq 'Linux') {
+        $agentstatus=Get-AzVMExtension -ResourceGroupName $resourceGroupName -VMName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
+    }
+    else {
+        $agentstatus=Get-AzVMExtension -ResourceGroupName $resourceGroupName -VMName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
+    }
+    if (!$agentstatus) {
+        "Agent not installed."
+    }
+    else {
+        "Agent installed. Removing..."
+        if ($ResourceOS -eq 'Linux') { # 
+            if ($resource.id.split('/')[7] -eq 'virtualMachines') {
+                # Virtual machine - remove extension
+                Remove-AzVMExtension -Name AzureMonitorLinuxAgent -ResourceGroupName $resourceGroupName  -VMName $resourceName -Force
+                # install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $resource.location `
+                # -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27"
+                # #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -VMName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.location -EnableAutomaticUpgrade $true
+            }
+            else {
+                # Arc machine - remove extension
+                Set-AzContext -SubscriptionId $resourceSubcriptionId
+                Remove-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ResourceGroupName $resourceGroupName -MachineName $resourceName
+            }
+        }
+        else { # Windows
+            if ($resourceId.split('/')[7] -eq 'virtualMachines') {
+                # Virtual machine - remove extension
+                Remove-AzVMExtension -Name AzureMonitorWindowsAgent -ResourceGroupName $resourceGroupName  -VMName $resourceName -Force
+                # install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $resource.location `
+                # -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2"
+                # #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -VMName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
+            }
+            else {
+                # Arc machine - remove extension
+                Set-AzContext -SubscriptionId $resourceSubcriptionId
+                Remove-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ResourceGroupName $resourceGroupName -MachineName $resourceName
+            }
+        }
+    }
+}
 # Depends on Function Install-azMonitorAgent
+
 function Add-Agent {
     param (
         [Parameter(Mandatory = $true)]
@@ -160,6 +215,8 @@ function Add-Tag {
         [string]$instanceName,
         [Parameter(Mandatory = $true)]
         [string]$packType,
+        [Parameter(Mandatory = $true)]
+        [string]$resourceType,
         [Parameter(Mandatory = $false)]
         [string]$actionGroupId
     )
@@ -184,7 +241,7 @@ function Add-Tag {
         }
         else {
             new-PaaSAlert -packTag $TagValue -packType $packType -TagName $TagName -resourceId $resourceId -actionGroupId $actionGroupId -resourceGroupName $resourceGroupName `
-                -serviceFolder (get-AmbaPackFolder $TagValue) -instanceName $instanceName
+                -serviceFolder (get-AmbaPackFolder $TagValue) -instanceName $instanceName -resourceType $resourceType
             Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
         }
         if (New-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
@@ -234,7 +291,7 @@ function get-AmbaPackFolder {
         "ServiceBus" = "ServiceBus.namespaces"
         "Storage" = "Storage.storageAccounts"
         "WebApps" = "Web.sites"
-        "SQL"= "Sql.servers"
+        "SQLSrv"= "Sql.servers"
         "SQLMI" = "Sql.managedInstances"
         "WebServer"= "Web.serverFarms"
         "AppGW"='Network.applicationGateways'
@@ -258,6 +315,25 @@ function get-AmbaPackFolder {
         return $null
     }
 }
+function get-alertApiVersion (
+    [Parameter(Mandatory = $true)]
+    [string]$alertId
+)
+{
+    # Get the specific resource
+    $resource = Get-AzResource -ResourceId $alertId
+    # Get the resource provider and resource type
+    $providerNamespace = $resource.ResourceType.Split('/')[0]
+    $resourceType = $resource.ResourceType.Split('/')[1]
+    # Get the resource provider
+    $provider = Get-AzResourceProvider -ProviderNamespace $providerNamespace
+    # Get the API versions for the resource type
+    $apiVersions = $provider.ResourceTypes | Where-Object ResourceTypeName -eq $resourceType | Select-Object -ExpandProperty ApiVersions
+    # The most recent API version is the first one in the list
+    $apiVersion = $apiVersions[0]
+    return $apiVersion
+}
+
 function new-PaaSAlert {
     param (
     [Parameter(Mandatory=$true)]
@@ -277,7 +353,10 @@ function new-PaaSAlert {
     [Parameter(Mandatory=$true)]
     [string]$serviceFolder,
     [Parameter(Mandatory=$true)]
-    [string]$instanceName
+    [string]$instanceName,
+    [Parameter(Mandatory=$true)]
+    [string]$resourceType
+
 )
     #Register-PackageSource -Name Nuget.Org -Provider NuGet -Location "https://api.nuget.org/v3/index.json"
     $ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
@@ -306,7 +385,7 @@ function new-PaaSAlert {
     exit
     }
     "Total Alerts found in the file: $($alerts.count)."
-    foreach ($alert in ($alerts | Where-Object {$_.visible -eq $true}) ) {
+    foreach ($alert in ($alerts | Where-Object {$_.visible -eq $true -and $_.Properties.metricNameSpace -eq $resourceType}) ) {
         if ($alert.type -eq 'metric') {
             $alertType=$alert.Properties.criterionType
             switch ($alertType) {
@@ -496,7 +575,7 @@ function Remove-Tag {
         }
         else {
             #Monitoring Tag exists. Good.  
-            if ($TagValue -eq 'All') {
+            if ($TagValue -eq 'All') { #This only applies (should) to IaaS and Discovery packs.
                 # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings. 
                 #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
                 #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
@@ -542,7 +621,8 @@ function Remove-Tag {
                         Remove-DCRa -resourceId $resourceId -TagValue $TagValue
                     }
                     elseif ($TagName -ne 'Avd') {
-                        "Paas Pack. No need to remove association."
+                        "Paas/Platform Pack. No need to remove association."
+                        # Part 1 - Diagnostics settings
                         "Will look for diagnostic settings to remove with specific name. Won't remove if that is not found since it could be for something else."
                         try {
                             $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMP-$TagValue" -ErrorAction SilentlyContinue
@@ -556,6 +636,27 @@ function Remove-Tag {
                         }
                         else {
                             "No diagnostic setting found."
+                        }
+                        # Part 2 - Alerts
+                        "Will look for alerts to remove with specific scope (the resource) and that have the proper tag."
+                        $alertsQuery = @"
+resources
+| where type in~ ("microsoft.insights/metricAlerts", "microsoft.insights/activityLogAlerts")
+| extend alertTags=tostring(['tags'].$TagName), Scope=properties.scopes[0]
+| where alertTags=~'$TagValue' and Scope=~'$resourceId'
+| project name, id, resourceGroup
+"@
+"Query: $alertsQuery"
+                        $alerts = Search-AzGraph -Query $alertsQuery
+                        if ($alerts.count -gt 0) {
+                            "Found $($alerts.count) alert(s) with $TagName tag for $resourceId. Removing..."
+                            foreach ($alert in $alerts) {
+                                "Removing alert $($alert.name)."
+                                Remove-AzAlertRule -Name $alert.name -ResourceGroupName $alert.resourceGroup
+                            }
+                        }
+                        else {
+                            "No alerts found."
                         }
                     }
                 }
