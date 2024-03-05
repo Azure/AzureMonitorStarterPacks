@@ -1228,7 +1228,8 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"
+                        "resourceType": "microsoft.resourcegraph/resources",
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1398,10 +1399,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "VMI",
-                          "ADDS"
-                        ]
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -2291,7 +2289,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "ALB"
+                  "value": "PrivZones"
                 }
               ],
               "style": "pills",
