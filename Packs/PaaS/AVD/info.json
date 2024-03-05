@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "AVD",
-        "Type": "PaaS",
-        "Description": "Azure Virtual Desktop Monitoring Pack"
-    }
-}

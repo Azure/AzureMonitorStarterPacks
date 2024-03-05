@@ -201,7 +201,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e"
+                    "/subscriptions/8a0ecebc-0e1d-4e8f-8cb8-8a92f49455b9"
                   ]
                 },
                 {
@@ -227,7 +227,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
+                  "value": "/subscriptions/8a0ecebc-0e1d-4e8f-8cb8-8a92f49455b9/resourceGroups/rg-eastus2-Monitoring/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -244,7 +244,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
+                  "value": "/subscriptions/8a0ecebc-0e1d-4e8f-8cb8-8a92f49455b9/resourceGroups/rg-eastus2-Monitoring/providers/Microsoft.Web/sites/AMP-prod-8a0ecebc-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -279,7 +279,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
+                  "value": "/subscriptions/8a0ecebc-0e1d-4e8f-8cb8-8a92f49455b9/resourceGroups/rg-eastus2-Monitoring/providers/Microsoft.OperationalInsights/workspaces/law-eus2-monstarpacks"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -302,7 +302,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP2233"
+                  "value": "/subscriptions/8a0ecebc-0e1d-4e8f-8cb8-8a92f49455b9/resourceGroups/rg-eastus2-Monitoring/providers/Microsoft.Dashboard/grafana/AMSP"
                 }
               ],
               "style": "above",
@@ -1149,7 +1149,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"outer\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Associated\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"outer\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Associated\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"}]}",
                     "size": 0,
                     "title": "Monitored Machines",
                     "exportMultipleValues": true,
@@ -1379,10 +1379,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "VMI",
-                          "IIS"
-                        ]
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1801,7 +1798,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PaaSQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,tag=tags.MonitorStarterPacks,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n{PaaSQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,tag=tags.MonitorStarterPacks,resourceGroup, location, subscriptionId, ResourceName=name\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored PaaS",
                     "exportMultipleValues": true,
@@ -1874,7 +1871,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "LogicApps"
+                          "Avd"
                         ]
                       }
                     ],
@@ -1945,7 +1942,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PaaSQuery}\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type=tolower(type),resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n{PaaSQuery}\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type=tolower(type),resourceGroup, location, subscriptionId, ResourceName=name\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored PaaS",
                     "exportMultipleValues": true,
@@ -2014,7 +2011,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "LogicApps"
+                        "value": "Avd"
                       }
                     ],
                     "style": "pills",
@@ -2055,8 +2052,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants",
-                        "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
+                        "resourceType": "microsoft.resources/tenants"
                       }
                     ],
                     "style": "pills",
@@ -2099,10 +2095,10 @@
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\"\n    \"AVDLAW\": \"{AvdLAWPaaS}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\",\n    \"AVDLAW\": \"{AvdLAWPaaS}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
-                          "description": "# This will enable the pack for the following servers:\n{paastotag}\n\nby adding the {PackTagsPaaS} Pack(s) to the resource(s).\n\nAVD LAW (if any): {AvdLAWPaaS:name}",
+                          "description": "# This will enable the pack for the following services:\n***{paastotag:$.ResourceName}***\n\nby adding the **{PackTagsPaaS}** Pack(s) to the resource(s).\n\n_AVD Alternate Log Analytics Workspace (if any):_\n\n{AvdLAWPaaS:name}",
                           "actionName": "EnableMonitoring",
                           "runLabel": "Confirm"
                         }
@@ -4875,7 +4871,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    "/subscriptions/8a0ecebc-0e1d-4e8f-8cb8-8a92f49455b9/resourcegroups/rg-eastus2-monitoring/providers/microsoft.operationalinsights/workspaces/law-eus2-monstarpacks"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

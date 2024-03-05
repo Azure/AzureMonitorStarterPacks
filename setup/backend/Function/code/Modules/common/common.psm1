@@ -333,8 +333,8 @@ function Config-AVD {
         [string]$LogAnalyticsWSAVD
     )
     $hostPoolName = $hostPoolName.ToLower()  # ensures case sensitivity with search
-    $LogAnalyticsWS = $Request.Body.AltLAW
-
+    $RepoUrl = $env:ARTIFACS_LOCATION
+    $RepoSasToken = $env:ARTIFACTS_LOCATION_SAS_TOKEN
     # Graph Query to map host pool resources (App Group, Workspace, VMs, etc)
     "AVD - Perform an Azure Graph Query to map Host Pool's App Group, Workspace and VM resources and status. ($hostPoolName)"
     $MapResourcesQuery = @"
@@ -424,7 +424,7 @@ resources
     }
     # Create Host Pool Specific Alerts
     "AVD - Getting Alerts from Repo and Creating Host Pool Specific Alerts for $hostPoolName"
-    $AlertListSchedQueryJson = $RepoUrl + "Packs/PaaS/AVD/LogAlertsHostPool.json"
+    $AlertListSchedQueryJson = $RepoUrl + "Packs/PaaS/AVD/LogAlertsHostPool.json" + $RepoSasToken
     $AlertListSchedQuery = Invoke-RestMethod -Uri $AlertListSchedQueryJson
     
     foreach ($alert in $AlertListSchedQuery) {
@@ -445,11 +445,11 @@ resources
             "AVD - Creating Query Alert: $alertName"
             if ($alert.autoMitigate -eq "True") {
                 $AlertCreate = New-AzScheduledQueryRule -Name $alertName -ResourceGroupName $resourceGroupName -Location $location -DisplayName $alertDisplayName -Description $alertDescription `
-                    -Scope $LogAnalyticsWS -Severity $alertSeverity -WindowSize $windowSize -EvaluationFrequency $evaluationFreq -CriterionAllOf $criteriaAllof -Tag $Tag -Enabled -AutoMitigate
+                    -Scope $LogAnalyticsWSAVD -Severity $alertSeverity -WindowSize $windowSize -EvaluationFrequency $evaluationFreq -CriterionAllOf $criteriaAllof -Tag $Tag -Enabled -AutoMitigate
             }
             else {
                 $AlertCreate = New-AzScheduledQueryRule -Name $alertName -ResourceGroupName $resourceGroupName -Location $location -DisplayName $alertDisplayName -Description $alertDescription `
-                    -Scope $LogAnalyticsWS -Severity $alertSeverity -WindowSize $windowSize -EvaluationFrequency $evaluationFreq -CriterionAllOf $criteriaAllof -Tag $Tag -Enabled
+                    -Scope $LogAnalyticsWSAVD -Severity $alertSeverity -WindowSize $windowSize -EvaluationFrequency $evaluationFreq -CriterionAllOf $criteriaAllof -Tag $Tag -Enabled
             }
         }
         If ($action -eq 'RemoveTag') {

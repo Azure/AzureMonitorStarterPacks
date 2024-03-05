@@ -263,6 +263,16 @@
                             "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
                         },
                         {
+                            "name": "AVDInfoBox",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "style": "Info",
+                              "text": "AVD Insights: If you are using a seperate Log Analytics Workspace for AVD resources, it is assumed that you have already configured it via the AVD Insights and this Log Analytics Workspace is intended for all other resources. It can be used for AVD, however you'll need to ensure you configure the diagnostics and/or utilize the configuration workbook within AVD Insights.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/insights?tabs=monitor"
+                            }
+                        },
+                        {
                             "name": "assignmentLevel",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Assign Policies to ManagementGroup or Subscription",

@@ -1,8 +1,8 @@
 targetScope = 'managementGroup'
 
-// param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/JCore-AVD/'
-// @secure()
-// param _artifactsLocationSasToken string = ''
+param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/AVDMerge/'
+@secure()
+param _artifactsLocationSasToken string = ''
 
 param mgname string
 param subscriptionId string
@@ -60,7 +60,6 @@ var ImageGalleryName = 'AMP${instanceName}Gallery'
 
 
 
-
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
   scope: subscription(subscriptionId)
@@ -104,20 +103,6 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
     createNewLogAnalyticsWS: createNewLogAnalyticsWS
   }
 }
-
-// module logAnalyticsAVD '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWSAVD) {
-//   name: 'logAnalytics-AVD-Deployment'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   dependsOn: [
-//     resourgeGroup
-//   ]
-//   params: {
-//     location: location
-//     logAnalyticsWorkspaceName: newLogAnalyticsWSNameAVD
-//     Tags: Tags
-//     createNewLogAnalyticsWS: createNewLogAnalyticsWSAVD
-//   }
-// }
 
 // AMA policy - conditionally deploy it
 module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
@@ -183,6 +168,8 @@ module backend '../backend/code/backend.bicep' = {
     resourgeGroup
   ]
   params: {
+    _artifactsLocation: _artifactsLocation
+    _artifactsLocationSasToken: _artifactsLocationSasToken
     appInsightsLocation: location
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
