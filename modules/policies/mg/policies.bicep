@@ -10,7 +10,7 @@ param mgname string
 param assignmentLevel string = 'managementGroup'
 param subscriptionId string
 param instanceName string
-param skipArc bool = false
+param arcEnabled bool = true
 
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -33,7 +33,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     instanceName: instanceName
   }
 }
-module policyARC './associacionpolicyARC.bicep' = if(skipArc == false) {
+module policyARC './associacionpolicyARC.bicep' = if(arcEnabled == true) {
   name: 'AssocPolArc-${dcrName}'
   scope: managementGroup(mgname)
   params: {
@@ -50,7 +50,7 @@ module policyARC './associacionpolicyARC.bicep' = if(skipArc == false) {
 //module policyAssignment {}
 // param policyAssignmentName string = 'audit-vm-manageddisks'
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment './assignment.bicep' = if((assignmentLevel == 'managementGroup') && (skipArc == false)) {
+module arcassignment './assignment.bicep' = if((assignmentLevel == 'managementGroup') && (arcEnabled == true)) {
   dependsOn: [
     policyARC
   ]
@@ -95,7 +95,7 @@ module vmassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel !
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module arcassignmentsub '../subscription/assignment.bicep' = if((assignmentLevel != 'managementGroup') && (skipArc == false)) {
+module arcassignmentsub '../subscription/assignment.bicep' = if((assignmentLevel != 'managementGroup') && (arcEnabled == true)) {
   dependsOn: [
     policyARC
   ]

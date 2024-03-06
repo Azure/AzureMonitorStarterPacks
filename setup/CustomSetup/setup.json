@@ -443,7 +443,7 @@
 								"allowedValues": "[steps('Configuration').grafanaLocationsAPI.transformed.list]",
 								"required": true
 							},
-							"visible": true
+							"visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
 						},
 												
 						{

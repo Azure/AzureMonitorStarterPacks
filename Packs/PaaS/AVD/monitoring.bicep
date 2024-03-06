@@ -131,7 +131,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
     instanceName: instanceName
-    skipArc: true
+    arcEnabled: false
   }
 }
 // Diagnostic settings policies
