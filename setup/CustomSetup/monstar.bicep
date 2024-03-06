@@ -25,6 +25,7 @@ param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 param instanceName string
 param deployGrafana bool
+param appInsightsLocation string
 
 // Packs` stuff
 @description('Name of the Action Group to be used or created.')
@@ -170,7 +171,7 @@ module backend '../backend/code/backend.bicep' = {
   params: {
     _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
-    appInsightsLocation: location
+    appInsightsLocation: appInsightsLocation
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId

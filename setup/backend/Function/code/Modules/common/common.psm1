@@ -314,6 +314,25 @@ function Remove-Tag {
         }
     }
 }
+
+function get-alertApiVersion (
+    [Parameter(Mandatory = $true)]
+    [string]$alertId
+)
+{
+    # Get the specific resource
+    $resource = Get-AzResource -ResourceId $alertId
+    # Get the resource provider and resource type
+    $providerNamespace = $resource.ResourceType.Split('/')[0]
+    $resourceType = $resource.ResourceType.Split('/')[1]
+    # Get the resource provider
+    $provider = Get-AzResourceProvider -ProviderNamespace $providerNamespace
+    # Get the API versions for the resource type
+    $apiVersions = $provider.ResourceTypes | Where-Object ResourceTypeName -eq $resourceType | Select-Object -ExpandProperty ApiVersions
+    # The most recent API version is the first one in the list
+    $apiVersion = $apiVersions[0]
+    return $apiVersion
+}
 # Depends on Functions Add-Tag, Add-Agent, Remove-DCR
 function Config-AVD {
     param (
