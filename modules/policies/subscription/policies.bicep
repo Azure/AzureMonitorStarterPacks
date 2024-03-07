@@ -28,7 +28,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     instanceName: instanceName
   }
 }
-module policyARC './associacionpolicyARC.bicep' = if(arcEnabled != true) {
+module policyARC './associacionpolicyARC.bicep' = if(arcEnabled == true) {
   name: 'AssocPolARC-${dcrName}'
   scope: subscription()
   params: {
