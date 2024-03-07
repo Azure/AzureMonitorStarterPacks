@@ -33,38 +33,6 @@ module policyVM './associacionpolicyVM.bicep' = {
     instanceName: instanceName
   }
 }
-module policyARC './associacionpolicyARC.bicep' = if(arcEnabled == true) {
-  name: 'AssocPolArc-${dcrName}'
-  scope: managementGroup(mgname)
-  params: {
-    packtag: packtag
-    policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the ${rulename} DCR to ARC Servers. Tag: ${packtag}'
-    policyName: 'Associate-${rulename}-${packtag}-arc'
-    DCRId: dcrId
-    solutionTag: solutionTag
-    roledefinitionIds: roledefinitionIds
-    instanceName: instanceName
-  }
-}
-//module policyAssignment {}
-// param policyAssignmentName string = 'audit-vm-manageddisks'
-// param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment './assignment.bicep' = if((assignmentLevel == 'managementGroup') && (arcEnabled == true)) {
-  dependsOn: [
-    policyARC
-  ]
-  name: 'Assignment-${packtag}-${ruleshortname}-arc'
-  scope: managementGroup(mgname)
-  params: {
-    policyDefinitionId: policyARC.outputs.policyId
-    location: location
-    assignmentName: 'AMP-Assign-${ruleshortname}-arc'
-    //roledefinitionIds: roledefinitionIds
-    solutionTag: solutionTag
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-  }
-}
 module vmassignment './assignment.bicep' = if(assignmentLevel == 'managementGroup') {
   dependsOn: [
     policyVM
@@ -95,18 +63,68 @@ module vmassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel !
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module arcassignmentsub '../subscription/assignment.bicep' = if((assignmentLevel != 'managementGroup') && (arcEnabled == true)) {
-  dependsOn: [
-    policyARC
-  ]
-  name: 'AssigSub-${packtag}-${ruleshortname}-arc'
-  scope: subscription(subscriptionId)
+module ARCPolicies './policiesARC.bicep' = if (arcEnabled) {
+  name: 'AssocPoliciesArc-${dcrName}'
+  scope: managementGroup(mgname)
   params: {
-    policyDefinitionId: policyARC.outputs.policyId
-    location: location
-    assignmentName: 'AMP-Assign-${ruleshortname}-arc'
-    //roledefinitionIds: roledefinitionIds
+    packtag: packtag
+    dcrId: dcrId
     solutionTag: solutionTag
+    instanceName: instanceName
+    location: location
+    mgname: mgname
+    rulename: rulename
+    ruleshortname: ruleshortname
+    subscriptionId: subscriptionId
     userManagedIdentityResourceId: userManagedIdentityResourceId
+    assignmentLevel: assignmentLevel
   }
 }
+// module policyARC './associacionpolicyARC.bicep' = if (arcEnabled) {
+//   name: 'AssocPolArc-${dcrName}'
+//   scope: managementGroup(mgname)
+//   params: {
+//     packtag: packtag
+//     policyDescription: 'Policy to associate the ${rulename} DCR with the ARC Servers tagged with ${packtag} tag.'
+//     policyDisplayName: 'Associate the ${rulename} DCR to ARC Servers. Tag: ${packtag}'
+//     policyName: 'Associate-${rulename}-${packtag}-arc'
+//     DCRId: dcrId
+//     solutionTag: solutionTag
+//     roledefinitionIds: roledefinitionIds
+//     instanceName: instanceName
+//   }
+// }
+// //module policyAssignment {}
+// // param policyAssignmentName string = 'audit-vm-manageddisks'
+// // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+// module arcassignment './assignment.bicep' = if(assignmentLevel == 'managementGroup' && arcEnabled == true) {
+//   dependsOn: [
+//     policyARC
+//   ]
+//   name: 'Assignment-${packtag}-${ruleshortname}-arc'
+//   scope: managementGroup(mgname)
+//   params: {
+//     policyDefinitionId: policyARC.outputs.policyId
+//     location: location
+//     assignmentName: 'AMP-Assign-${ruleshortname}-arc'
+//     //roledefinitionIds: roledefinitionIds
+//     solutionTag: solutionTag
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }
+
+// module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'managementGroup' && arcEnabled) {
+//   dependsOn: [
+//     policyARC
+//   ]
+//   name: 'AssigSub-${packtag}-${ruleshortname}-arc'
+//   scope: subscription(subscriptionId)
+//   params: {
+//     policyDefinitionId: policyARC.outputs.policyId
+//     location: location
+//     assignmentName: 'AMP-Assign-${ruleshortname}-arc'
+//     //roledefinitionIds: roledefinitionIds
+//     solutionTag: solutionTag
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }
