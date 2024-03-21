@@ -1,4 +1,6 @@
-# FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
+# Azure Monitoring Packs
+
+FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
 
 ## Objectives
 
@@ -19,7 +21,7 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 
 ## Setup
 
-The Main solution can be deployed by clicking the link below.
+The Main solution can be deployed by clicking the link below to the respective cloud.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fsetup.json)
 
@@ -64,6 +66,18 @@ In order for the current user to have access to the Grafana environment, the use
 
 2. Select the proper user or users. The process may take a few minutes to assign the proper permissions.
 
+## Network Isolation (Private Endpoints)
+
+The solution can work with network isolation. By default, the components are deployed with public endpoints. The following components can be isolated (click the links for details):
+- [Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security) 
+- [Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security)
+- [Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-private-endpoints)
+- [Azure Function](https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-vnet) - The function will require a higher SKU in order to work with network isolation.
+- [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/private-link-service)
+- [Azure Managed Grafana](https://learn.microsoft.com/en-us/azure/managed-grafana/how-to-set-up-private-access?tabs=azure-portal)
+
+The Compute Gallery and the VM Application Gallery are not supported with network isolation. 
+
 ## Removing the solution
 
 In order to remove the solution, you can run the following script in this [link](https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1). The script will remove all the resources created by the solution.
@@ -86,7 +100,9 @@ Once completed, some resources will remain in the resource group. These resource
 
 - Storage Account
 - Log Analytics Workspace
-- Application Gallery
+- Action Group(s)
+
+Note: If the gallery is not removed in the first run, please run the command again.
 
 Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
 
