@@ -336,26 +336,13 @@ insightsresources
     else {
         "No DCRs found in $RG resource group."
     }
-    "Removing Scheduled query alerts."
+    "Removing alerts."
     $Alerts=Get-AzResource -ResourceType "microsoft.insights/scheduledqueryrules" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -ne $null}
     # if ($RemoveTag) {
     #     $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
     # }
-    "Found $($Alerts.count) scheduled query alerts."
+    "Found $($Alerts.count) alerts for pack $pack"
     $Alerts | Remove-AzResource -Force -AsJob
-    # metric alerts
-    "Removing metric alerts."
-    $Alerts=Get-AzResource -ResourceType "Microsoft.Insights/metricAlerts" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -ne $null}
-    # if ($RemoveTag) {
-    #     $Alerts=$Alerts | where-object {$_.Tags.MonitorStarterPacks -eq $RemoveTag}
-    # }
-    "Found $($Alerts.count) metric alerts."
-    $Alerts | Remove-AzResource -Force -AsJob
-    # remove activity log alerts
-    "Removing activity log alerts."
-    $Alerts=Get-AzResource -ResourceType "microsoft.insights/activityLogAlerts" -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacks -ne $null}
-    "found $($Alerts.count) activity log alerts."
-
 }
 else {
     "Skipping packs removal. Use -RemovePacks to remove packs."

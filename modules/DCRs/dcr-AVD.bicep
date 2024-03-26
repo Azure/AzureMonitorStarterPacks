@@ -7,8 +7,7 @@ param xPathQueries array = []
 param counterSpecifiers30 array = []
 param counterSpecifiers60 array = []
 // param samplingFrequencyInSeconds int = 300
-param packtag string
-param solutionTag string
+param Tags object
 param dceId string
 
 /*
@@ -23,9 +22,7 @@ param dceId string
 resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: rulename
   location: location
-  tags: {
-    '${solutionTag}': packtag
-  }
+  tags: Tags
   kind: kind
   properties: {
     dataCollectionEndpointId: dceId

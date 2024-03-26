@@ -1,5 +1,8 @@
 targetScope = 'managementGroup'
 
+@secure()
+param _artifactsLocationSasToken string
+param _artifactsLocation string
 @description('The name for the function app that you wish to create')
 param functionname string
 param logicappname string
@@ -95,6 +98,8 @@ module backendFunction 'modules/function.bicep' = {
     packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
     solutionTag: solutionTag
     instanceName: instanceName
+    _artifactsLocation: _artifactsLocation
+    _artifactsLocationSasToken: _artifactsLocationSasToken
   }
 }
 

@@ -1,817 +1,817 @@
 [
-    {
-      "alertRuleName": "HP-Cap-85Prcnt-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-Capacity 85 Percent (xHostPoolNamex)",
-      "alertRuleDescription": "This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad",
-      "alertRuleSeverity": 2,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "PT30M",
-      "alertType": "rows",
-      "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend _ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95\r\n          | where HostPoolName =~ 'xHostPoolNamex'\r\n           ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsTotal",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsDisconnected",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsActive",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsAvailable",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolPercentLoad",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-Cap-50Prcnt-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-Capacity 50 Percent (xHostPoolNamex)",
-      "alertRuleDescription": "This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad",
-      "alertRuleSeverity": 3,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "PT30M",
-      "alertType": "rows",
-      "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend _ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85\r\n          | where HostPoolName =~ 'xHostPoolNamex'         \r\n           ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsTotal",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsDisconnected",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsActive",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsAvailable",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolPercentLoad",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-Cap-95Prcnt-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-Capacity 95 Percent (xHostPoolNamex)",
-      "alertRuleDescription": "This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "PT30M",
-      "alertType": "rows",
-      "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend _ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 95 \r\n          | where HostPoolName =~ 'xHostPoolNamex'        \r\n           ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsTotal",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsDisconnected",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsActive",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserSessionsAvailable",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolPercentLoad",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-NoResAvail-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-No Resources Available (xHostPoolNamex)",
-      "alertRuleDescription": "Catastrophic Event! Indicates potential problems with dependencies, diagnose and resolve for xHostPoolNamex.",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT15M",
-      "windowSize": "PT15M",
-      "alertType": "rows",
-      "query": "WVDConnections \n| where TimeGenerated > ago (15m) \n| where _ResourceId contains \"xHostPoolNamex\" \n| project-away TenantId,SourceSystem  \n| summarize arg_max(TimeGenerated, *), StartTime =  min(iff(State== 'Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State== 'Connected', TimeGenerated , datetime(null) ))   by CorrelationId  \n| join kind=leftouter (WVDErrors\n    |summarize Errors=makelist(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  \n    ) on CorrelationId\n| join kind=leftouter (WVDCheckpoints\n    | summarize Checkpoints=makelist(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  \n    | mv-apply Checkpoints on (  \n        order by todatetime(Checkpoints['Time']) asc\n        | summarize Checkpoints=makelist(Checkpoints)\n        )\n    ) on CorrelationId  \n| project-away CorrelationId1, CorrelationId2  \n| order by TimeGenerated desc\n| where Errors[0].CodeSymbolic == \"ConnectionFailedNoHealthyRdshAvailable\"\n\n",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "SessionHostName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-DiscUser24Hrs-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-Disconnected User over 24 Hours (xHostPoolNamex)",
-      "alertRuleDescription": "Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.",
-      "alertRuleSeverity": 2,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT1H",
-      "windowSize": "PT1H",
-      "alertType": "rows",
-      "query": "WVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\" \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(24:00:00)\n| sort by Duration desc",
-      "dimensions": [
-        {
-          "name": "UserName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "SessionHostName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-DiscUser72Hrs-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-Disconnected User over 72 Hours (xHostPoolNamex)",
-      "alertRuleDescription": "Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT1H",
-      "windowSize": "PT1H",
-      "alertType": "rows",
-      "query": "WVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\"  \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(72:00:00)\n| sort by Duration desc",
-      "dimensions": [
-        {
-          "name": "UserName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "SessionHostName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-LocDskFree10Prcnt-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-Local Disk Free Space 10 Percent (xHostPoolNamex)",
-      "alertRuleDescription": "Disk space Moderately Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.",
-      "alertRuleSeverity": 2,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT15M",
-      "windowSize": "PT15M",
-      "alertType": "rows",
-      "query": "            Perf\r\n            | where TimeGenerated > ago(15m)\r\n            | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n            | where InstanceName !contains \"D:\"\r\n            | where InstanceName  !contains \"_Total\"| where CounterValue <= 10.00\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n            (\r\n                WVDAgentHealthStatus\r\n                | where TimeGenerated > ago(15m)\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName\r\n                | project VMresourceGroup, ComputerName, HostPool, _ResourceId\r\n                ) on ComputerName\r\n            ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-LocDskFree5Prcnt-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-Local Disk Free Space 5 Percent (xHostPoolNamex)",
-      "alertRuleDescription": "Disk space Critically Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT15M",
-      "windowSize": "PT15M",
-      "alertType": "rows",
-      "query": "            Perf\r\n            | where TimeGenerated > ago(15m)\r\n            | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n            | where InstanceName !contains \"D:\"\r\n            | where InstanceName  !contains \"_Total\"| where CounterValue <= 5.00\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n            (\r\n                WVDAgentHealthStatus\r\n                | where TimeGenerated > ago(15m)\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName\r\n                | project VMresourceGroup, ComputerName, HostPool, _ResourceId\r\n                ) on ComputerName\r\n            ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf5PrcntFree-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Less Than 5 Percent Free Space (xHostPoolNamex)",
-      "alertRuleDescription": "User Profiles Service logged Event ID 33. Expand User's Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.",
-      "alertRuleSeverity": 2,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "PT5M",
-      "alertType": "rows",
-      "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n            | where EventLevelName == \"Warning\"\r\n            | where EventID == 34\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
-      "dimensions": [
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf2PrcntFree-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Less Than 2 Percent Free Space (xHostPoolNamex)",
-      "alertRuleDescription": "User Profiles Service logged Event ID 34. Expand User's Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "PT5M",
-      "alertType": "rows",
-      "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n            | where EventLevelName == \"Error\"\r\n            | where EventID == 33\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
-      "dimensions": [
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf-NetwrkIssue-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Failed due to Network Issue (xHostPoolNamex)",
-      "alertRuleDescription": "User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "P1D",
-      "alertType": "rows",
-      "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n            | where EventLevelName == \"Error\"\r\n            | where EventID == 43\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
-      "dimensions": [
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf-FailAttVHD-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Disk Failed to Attach (xHostPoolNamex)",
-      "alertRuleDescription": "User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason regarding xHostPoolNamex.",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "P1D",
-      "alertType": "rows",
-      "query": "          Event\r\n          | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n          | where EventLevelName == \"Error\"\r\n          | where EventID == 52 or EventID == 40\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | extend ComputerName=tolower(ComputerName)\r\n          | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n              (\r\n                WVDAgentHealthStatus\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                | project VMresourceGroup, ComputerName, HostPool    \r\n              ) on ComputerName\r\n          ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf-SvcDisabled-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Service Disabled (xHostPoolNamex)",
-      "alertRuleDescription": "User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "P1D",
-      "alertType": "rows",
-      "query": "          Event\r\n          | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n          | where EventLevelName == \"Warning\"\r\n          | where EventID == 60\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | extend ComputerName=tolower(ComputerName)\r\n          | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n              (\r\n                WVDAgentHealthStatus\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                | project VMresourceGroup, ComputerName, HostPool    \r\n              ) on ComputerName\r\n              ",
-      "dimensions": [
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf-DskCmpFail-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Disk Compaction Failed (xHostPoolNamex)",
-      "alertRuleDescription": "User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.",
-      "alertRuleSeverity": 2,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "P1D",
-      "alertType": "rows",
-      "query": "          Event\r\n          | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n          | where EventLevelName == \"Error\"\r\n          | where EventID == 62 or EventID == 63\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | extend ComputerName=tolower(ComputerName)\r\n          | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n              (\r\n                WVDAgentHealthStatus\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                | project VMresourceGroup, ComputerName, HostPool    \r\n              ) on ComputerName\r\n          ",
-      "dimensions": [
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-FSLgxProf-DskInUse-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Disk Attached to another VM (xHostPoolNamex)",
-      "alertRuleDescription": "User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile. Regarding xHostPoolNamex.",
-      "alertRuleSeverity": 2,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "P1D",
-      "alertType": "rows",
-      "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Operational\"\r\n            | where EventLevelName == \"Warning\"\r\n            | where EventID == 51\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
-      "dimensions": [
-        {
-          "name": "ComputerName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "RenderedDescription",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "VMresourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-HlthChkFailure-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-Health Check Failure (xHostPoolNamex)",
-      "alertRuleDescription": "VM is available for use but one of the dependent resources is in a failed state for hostpool xHostPoolNamex",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT15M",
-      "windowSize": "PT15M",
-      "alertType": "rows",
-      "query": "// HealthChecks of SessionHost \n// Renders a summary of SessionHost health status. \nlet MapToDesc = (idx: long) {\n    case(idx == 0, \"DomainJoin\",\n    idx == 1, \"DomainTrust\",\n    idx == 2, \"FSLogix\",\n    idx == 3, \"SxSStack\",\n    idx == 4, \"URLCheck\",\n    idx == 5, \"GenevaAgent\",\n    idx == 6, \"DomainReachable\",\n    idx == 7, \"WebRTCRedirector\",\n    idx == 8, \"SxSStackEncryption\",\n    idx == 9, \"IMDSReachable\",\n    idx == 10, \"MSIXPackageStaging\",\n    \"InvalidIndex\")\n};\nWVDAgentHealthStatus\n| where TimeGenerated > ago(10m)\n| where Status != 'Available'\n| where AllowNewSessions = True\n| extend CheckFailed = parse_json(SessionHostHealthCheckResult)\n| mv-expand CheckFailed\n| where CheckFailed.AdditionalFailureDetails.ErrorCode != 0\n| extend HealthCheckName = tolong(CheckFailed.HealthCheckName)\n| extend HealthCheckResult = tolong(CheckFailed.HealthCheckResult)\n| extend HealthCheckDesc = MapToDesc(HealthCheckName)\n| where HealthCheckDesc != 'InvalidIndex'\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" HostPoolResourceGroup \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n| parse SessionHostResourceId with \"/subscriptions/\" HostSubscription \"/resourceGroups/\" SessionHostRG \"/providers/Microsoft.Compute/virtualMachines/\" SessionHostName\n",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "SessionHostName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HealthCheckDesc",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "SessionHostRG",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-VM-PersnlAssigndUnhlthy-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-VM-Personal Assigned Health Check Failure (xHostPoolNamex)",
-      "alertRuleDescription": "VM is assigned to a user but one of the dependent resources is in a failed state for hostpool xHostPoolNamex",
-      "alertRuleSeverity": 1,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT5M",
-      "windowSize": "PT5M",
-      "alertType": "rows",
-      "query": "            // Personal Session Host where Health status is NOT healthy and the VM is assigned\r\n            AzureDiagnostics \r\n            | where Category has \"JobStreams\"\r\n                and StreamType_s == \"Output\"\r\n                and RunbookName_s == \"AvdHostPoolLogData\"\r\n            | sort by TimeGenerated\r\n            | where TimeGenerated > ago(15m)\r\n            | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n            | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n            | extend Type=tostring(split(ResultDescription, '|')[2])\r\n            | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n            | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n            | extend NumPersonalUnhealthy=toint(split(ResultDescription, '|')[10])\r\n            | extend PersonalSessionHost=extract_json(\"$.SessionHost\", tostring(split(ResultDescription, '|')[11]), typeof(string))\r\n            | extend PersonalAssignedUser=extract_json(\"$.AssignedUser\", tostring(split(ResultDescription, '|')[11]), typeof(string))\r\n            | where HostPoolName =~ 'xHostPoolNamex'\r\n            | where Type == 'Personal'\r\n            | where NumPersonalUnhealthy > 0        \r\n            ",
-      "dimensions": [
-        {
-          "name": "_ResourceId",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "HostPoolName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "PersonalSessionHost",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "PersonalAssignedUser",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    },
-    {
-      "alertRuleName": "HP-Usr-ConnctnFailed-xHostPoolNamex",
-      "alertRuleDisplayName": "HostPool-User-Connection Failed (xHostPoolNamex)",
-      "alertRuleDescription": "While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms. Regarding xHostPoolNamex.",
-      "alertRuleSeverity": 3,
-      "autoMitigate": true,
-      "evaluationFrequency": "PT15M",
-      "windowSize": "PT15M",
-      "alertType": "rows",
-      "query": "          // Connection Errors \r\n          // List connection checkpoints and errors for each connection attempt, along with detailed information across all users. \r\n          //You can also uncomment the where clause to filter to a specific user if you are troubleshooting an issue. \r\n          WVDConnections \r\n          //| where UserName == \"upn.here@contoso.com\" \r\n          | project-away TenantId,SourceSystem  \r\n          | summarize arg_max(TimeGenerated, *), StartTime = min(iff(State=='Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State=='Connected', TimeGenerated , datetime(null) )) by CorrelationId  \r\n          | join kind=leftouter \r\n          (\r\n              WVDErrors\r\n              |summarize Errors=make_list(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  \r\n          ) on CorrelationId\r\n          | join kind=leftouter \r\n          (\r\n              WVDCheckpoints\r\n              | summarize Checkpoints=make_list(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  \r\n              | mv-apply Checkpoints on\r\n              (  \r\n                  order by todatetime(Checkpoints['Time']) asc\r\n                  | summarize Checkpoints=make_list(Checkpoints)\r\n              )\r\n          ) on CorrelationId  \r\n          | project-away CorrelationId1, CorrelationId2\r\n          | order by TimeGenerated desc\r\n          | where TimeGenerated > ago(15m)\r\n          | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])\r\n          | extend HostPool=tostring(split(_ResourceId, '/')[8])\r\n          | where HostPool =~ 'xHostPoolNamex'\r\n          | extend ErrorShort=tostring(Errors[0].CodeSymbolic)\r\n          | extend ErrorMessage=tostring(Errors[0].Message)\r\n          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, ErrorShort, ErrorMessage      \r\n          ",
-      "dimensions": [
-        {
-          "name": "HostPool",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ResourceGroup",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "UserName",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ClientOS",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ClientVersion",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ClientSideIPAddress",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ConnectionType",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ErrorShort",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        },
-        {
-          "name": "ErrorMessage",
-          "operator": "Include",
-          "values": [
-            "*"
-          ]
-        }
-      ]
-    }
-  ]
+  {
+    "alertRuleName": "HP-Cap-85Prcnt-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-Capacity 85 Percent (xHostPoolNamex)",
+    "alertRuleDescription": "This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad",
+    "alertRuleSeverity": 2,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "PT30M",
+    "alertType": "rows",
+    "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend _ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95\r\n          | where HostPoolName =~ 'xHostPoolNamex'\r\n           ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsTotal",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsDisconnected",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsActive",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsAvailable",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolPercentLoad",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-Cap-50Prcnt-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-Capacity 50 Percent (xHostPoolNamex)",
+    "alertRuleDescription": "This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad",
+    "alertRuleSeverity": 3,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "PT30M",
+    "alertType": "rows",
+    "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend _ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85\r\n          | where HostPoolName =~ 'xHostPoolNamex'         \r\n           ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsTotal",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsDisconnected",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsActive",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsAvailable",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolPercentLoad",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-Cap-95Prcnt-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-Capacity 95 Percent (xHostPoolNamex)",
+    "alertRuleDescription": "This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "PT30M",
+    "alertType": "rows",
+    "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend _ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 95 \r\n          | where HostPoolName =~ 'xHostPoolNamex'        \r\n           ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsTotal",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsDisconnected",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsActive",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserSessionsAvailable",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolPercentLoad",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-NoResAvail-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-No Resources Available (xHostPoolNamex)",
+    "alertRuleDescription": "Catastrophic Event! Indicates potential problems with dependencies, diagnose and resolve for xHostPoolNamex.",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT15M",
+    "windowSize": "PT15M",
+    "alertType": "rows",
+    "query": "WVDConnections \n| where TimeGenerated > ago (15m) \n| where _ResourceId contains \"xHostPoolNamex\" \n| project-away TenantId,SourceSystem  \n| summarize arg_max(TimeGenerated, *), StartTime =  min(iff(State== 'Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State== 'Connected', TimeGenerated , datetime(null) ))   by CorrelationId  \n| join kind=leftouter (WVDErrors\n    |summarize Errors=makelist(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  \n    ) on CorrelationId\n| join kind=leftouter (WVDCheckpoints\n    | summarize Checkpoints=makelist(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  \n    | mv-apply Checkpoints on (  \n        order by todatetime(Checkpoints['Time']) asc\n        | summarize Checkpoints=makelist(Checkpoints)\n        )\n    ) on CorrelationId  \n| project-away CorrelationId1, CorrelationId2  \n| order by TimeGenerated desc\n| where Errors[0].CodeSymbolic == \"ConnectionFailedNoHealthyRdshAvailable\"\n\n",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "SessionHostName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-DiscUser24Hrs-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-Disconnected User over 24 Hours (xHostPoolNamex)",
+    "alertRuleDescription": "Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.",
+    "alertRuleSeverity": 2,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT1H",
+    "windowSize": "PT1H",
+    "alertType": "rows",
+    "query": "WVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\" \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(24:00:00)\n| sort by Duration desc",
+    "dimensions": [
+      {
+        "name": "UserName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "SessionHostName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-DiscUser72Hrs-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-Disconnected User over 72 Hours (xHostPoolNamex)",
+    "alertRuleDescription": "Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT1H",
+    "windowSize": "PT1H",
+    "alertType": "rows",
+    "query": "WVDConnections \n| where TimeGenerated > ago(24h) \n| where State == \"Connected\" \n| where _ResourceId contains \"xHostPoolNamex\"  \n| project CorrelationId , UserName, ConnectionType, StartTime=TimeGenerated, SessionHostName\n| join (WVDConnections  \n    | where State == \"Completed\"  \n    | project EndTime=TimeGenerated, CorrelationId)  \n    on CorrelationId  \n| project Duration = EndTime - StartTime, ConnectionType, UserName, SessionHostName\n| where Duration >= timespan(72:00:00)\n| sort by Duration desc",
+    "dimensions": [
+      {
+        "name": "UserName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "SessionHostName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-LocDskFree10Prcnt-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-Local Disk Free Space 10 Percent (xHostPoolNamex)",
+    "alertRuleDescription": "Disk space Moderately Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.",
+    "alertRuleSeverity": 2,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT15M",
+    "windowSize": "PT15M",
+    "alertType": "rows",
+    "query": "            Perf\r\n            | where TimeGenerated > ago(15m)\r\n            | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n            | where InstanceName !contains \"D:\"\r\n            | where InstanceName  !contains \"_Total\"| where CounterValue <= 10.00\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n            (\r\n                WVDAgentHealthStatus\r\n                | where TimeGenerated > ago(15m)\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName\r\n                | project VMresourceGroup, ComputerName, HostPool, _ResourceId\r\n                ) on ComputerName\r\n            ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-LocDskFree5Prcnt-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-Local Disk Free Space 5 Percent (xHostPoolNamex)",
+    "alertRuleDescription": "Disk space Critically Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT15M",
+    "windowSize": "PT15M",
+    "alertType": "rows",
+    "query": "            Perf\r\n            | where TimeGenerated > ago(15m)\r\n            | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n            | where InstanceName !contains \"D:\"\r\n            | where InstanceName  !contains \"_Total\"| where CounterValue <= 5.00\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n            (\r\n                WVDAgentHealthStatus\r\n                | where TimeGenerated > ago(15m)\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName\r\n                | project VMresourceGroup, ComputerName, HostPool, _ResourceId\r\n                ) on ComputerName\r\n            ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf5PrcntFree-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Less Than 5 Percent Free Space (xHostPoolNamex)",
+    "alertRuleDescription": "User Profiles Service logged Event ID 33. Expand User's Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.",
+    "alertRuleSeverity": 2,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "PT5M",
+    "alertType": "rows",
+    "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n            | where EventLevelName == \"Warning\"\r\n            | where EventID == 34\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
+    "dimensions": [
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf2PrcntFree-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Less Than 2 Percent Free Space (xHostPoolNamex)",
+    "alertRuleDescription": "User Profiles Service logged Event ID 34. Expand User's Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "PT5M",
+    "alertType": "rows",
+    "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n            | where EventLevelName == \"Error\"\r\n            | where EventID == 33\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
+    "dimensions": [
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf-NetwrkIssue-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Failed due to Network Issue (xHostPoolNamex)",
+    "alertRuleDescription": "User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "P1D",
+    "alertType": "rows",
+    "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n            | where EventLevelName == \"Error\"\r\n            | where EventID == 43\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
+    "dimensions": [
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf-FailAttVHD-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Disk Failed to Attach (xHostPoolNamex)",
+    "alertRuleDescription": "User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason regarding xHostPoolNamex.",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "P1D",
+    "alertType": "rows",
+    "query": "          Event\r\n          | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n          | where EventLevelName == \"Error\"\r\n          | where EventID == 52 or EventID == 40\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | extend ComputerName=tolower(ComputerName)\r\n          | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n              (\r\n                WVDAgentHealthStatus\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                | project VMresourceGroup, ComputerName, HostPool    \r\n              ) on ComputerName\r\n          ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf-SvcDisabled-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Service Disabled (xHostPoolNamex)",
+    "alertRuleDescription": "User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "P1D",
+    "alertType": "rows",
+    "query": "          Event\r\n          | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n          | where EventLevelName == \"Warning\"\r\n          | where EventID == 60\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | extend ComputerName=tolower(ComputerName)\r\n          | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n              (\r\n                WVDAgentHealthStatus\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                | project VMresourceGroup, ComputerName, HostPool    \r\n              ) on ComputerName\r\n              ",
+    "dimensions": [
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf-DskCmpFail-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Disk Compaction Failed (xHostPoolNamex)",
+    "alertRuleDescription": "User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.",
+    "alertRuleSeverity": 2,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "P1D",
+    "alertType": "rows",
+    "query": "          Event\r\n          | where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n          | where EventLevelName == \"Error\"\r\n          | where EventID == 62 or EventID == 63\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | extend ComputerName=tolower(ComputerName)\r\n          | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n              (\r\n                WVDAgentHealthStatus\r\n                | where _ResourceId contains \"xHostPoolNamex\"\r\n                | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                | extend ComputerName=tolower(ComputerName)\r\n                | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                | project VMresourceGroup, ComputerName, HostPool    \r\n              ) on ComputerName\r\n          ",
+    "dimensions": [
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-FSLgxProf-DskInUse-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-FSLogix Profile Disk Attached to another VM (xHostPoolNamex)",
+    "alertRuleDescription": "User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile. Regarding xHostPoolNamex.",
+    "alertRuleSeverity": 2,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "P1D",
+    "alertType": "rows",
+    "query": "            Event\r\n            | where EventLog == \"Microsoft-FSLogix-Apps/Operational\"\r\n            | where EventLevelName == \"Warning\"\r\n            | where EventID == 51\r\n            | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n            | extend ComputerName=tolower(ComputerName)\r\n            | project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\r\n            | join kind = leftouter\r\n                (\r\n                  WVDAgentHealthStatus\r\n                  | where _ResourceId contains \"xHostPoolNamex\"\r\n                  | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n                  | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n                  | extend ComputerName=tolower(ComputerName)\r\n                  | summarize arg_max(TimeGenerated,*) by ComputerName            \r\n                  | project VMresourceGroup, ComputerName, HostPool    \r\n                ) on ComputerName\r\n            ",
+    "dimensions": [
+      {
+        "name": "ComputerName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "RenderedDescription",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "VMresourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-HlthChkFailure-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-Health Check Failure (xHostPoolNamex)",
+    "alertRuleDescription": "VM is available for use but one of the dependent resources is in a failed state for hostpool xHostPoolNamex",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT15M",
+    "windowSize": "PT15M",
+    "alertType": "rows",
+    "query": "// HealthChecks of SessionHost \n// Renders a summary of SessionHost health status. \nlet MapToDesc = (idx: long) {\n    case(idx == 0, \"DomainJoin\",\n    idx == 1, \"DomainTrust\",\n    idx == 2, \"FSLogix\",\n    idx == 3, \"SxSStack\",\n    idx == 4, \"URLCheck\",\n    idx == 5, \"GenevaAgent\",\n    idx == 6, \"DomainReachable\",\n    idx == 7, \"WebRTCRedirector\",\n    idx == 8, \"SxSStackEncryption\",\n    idx == 9, \"IMDSReachable\",\n    idx == 10, \"MSIXPackageStaging\",\n    \"InvalidIndex\")\n};\nWVDAgentHealthStatus\n| where TimeGenerated > ago(10m)\n| where Status != 'Available'\n| where AllowNewSessions = True\n| extend CheckFailed = parse_json(SessionHostHealthCheckResult)\n| mv-expand CheckFailed\n| where CheckFailed.AdditionalFailureDetails.ErrorCode != 0\n| extend HealthCheckName = tolong(CheckFailed.HealthCheckName)\n| extend HealthCheckResult = tolong(CheckFailed.HealthCheckResult)\n| extend HealthCheckDesc = MapToDesc(HealthCheckName)\n| where HealthCheckDesc != 'InvalidIndex'\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" HostPoolResourceGroup \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n| parse SessionHostResourceId with \"/subscriptions/\" HostSubscription \"/resourceGroups/\" SessionHostRG \"/providers/Microsoft.Compute/virtualMachines/\" SessionHostName\n",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "SessionHostName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HealthCheckDesc",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "SessionHostRG",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-VM-PersnlAssigndUnhlthy-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-VM-Personal Assigned Health Check Failure (xHostPoolNamex)",
+    "alertRuleDescription": "VM is assigned to a user but one of the dependent resources is in a failed state for hostpool xHostPoolNamex",
+    "alertRuleSeverity": 1,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT5M",
+    "windowSize": "PT5M",
+    "alertType": "rows",
+    "query": "            // Personal Session Host where Health status is NOT healthy and the VM is assigned\r\n            AzureDiagnostics \r\n            | where Category has \"JobStreams\"\r\n                and StreamType_s == \"Output\"\r\n                and RunbookName_s == \"AvdHostPoolLogData\"\r\n            | sort by TimeGenerated\r\n            | where TimeGenerated > ago(15m)\r\n            | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n            | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n            | extend Type=tostring(split(ResultDescription, '|')[2])\r\n            | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n            | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n            | extend NumPersonalUnhealthy=toint(split(ResultDescription, '|')[10])\r\n            | extend PersonalSessionHost=extract_json(\"$.SessionHost\", tostring(split(ResultDescription, '|')[11]), typeof(string))\r\n            | extend PersonalAssignedUser=extract_json(\"$.AssignedUser\", tostring(split(ResultDescription, '|')[11]), typeof(string))\r\n            | where HostPoolName =~ 'xHostPoolNamex'\r\n            | where Type == 'Personal'\r\n            | where NumPersonalUnhealthy > 0        \r\n            ",
+    "dimensions": [
+      {
+        "name": "_ResourceId",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "HostPoolName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "PersonalSessionHost",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "PersonalAssignedUser",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "alertRuleName": "HP-Usr-ConnctnFailed-xHostPoolNamex",
+    "alertRuleDisplayName": "HostPool-User-Connection Failed (xHostPoolNamex)",
+    "alertRuleDescription": "While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms. Regarding xHostPoolNamex.",
+    "alertRuleSeverity": 3,
+    "autoMitigate": true,
+    "evaluationFrequency": "PT15M",
+    "windowSize": "PT15M",
+    "alertType": "rows",
+    "query": "          // Connection Errors \r\n          // List connection checkpoints and errors for each connection attempt, along with detailed information across all users. \r\n          //You can also uncomment the where clause to filter to a specific user if you are troubleshooting an issue. \r\n          WVDConnections \r\n          //| where UserName == \"upn.here@contoso.com\" \r\n          | project-away TenantId,SourceSystem  \r\n          | summarize arg_max(TimeGenerated, *), StartTime = min(iff(State=='Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State=='Connected', TimeGenerated , datetime(null) )) by CorrelationId  \r\n          | join kind=leftouter \r\n          (\r\n              WVDErrors\r\n              |summarize Errors=make_list(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  \r\n          ) on CorrelationId\r\n          | join kind=leftouter \r\n          (\r\n              WVDCheckpoints\r\n              | summarize Checkpoints=make_list(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  \r\n              | mv-apply Checkpoints on\r\n              (  \r\n                  order by todatetime(Checkpoints['Time']) asc\r\n                  | summarize Checkpoints=make_list(Checkpoints)\r\n              )\r\n          ) on CorrelationId  \r\n          | project-away CorrelationId1, CorrelationId2\r\n          | order by TimeGenerated desc\r\n          | where TimeGenerated > ago(15m)\r\n          | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])\r\n          | extend HostPool=tostring(split(_ResourceId, '/')[8])\r\n          | where HostPool =~ 'xHostPoolNamex'\r\n          | extend ErrorShort=tostring(Errors[0].CodeSymbolic)\r\n          | extend ErrorMessage=tostring(Errors[0].Message)\r\n          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, ErrorShort, ErrorMessage      \r\n          ",
+    "dimensions": [
+      {
+        "name": "HostPool",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ResourceGroup",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "UserName",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ClientOS",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ClientVersion",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ClientSideIPAddress",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ConnectionType",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ErrorShort",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      },
+      {
+        "name": "ErrorMessage",
+        "operator": "Include",
+        "values": [
+          "*"
+        ]
+      }
+    ]
+  }
+]

@@ -1,8 +1,8 @@
 targetScope = 'managementGroup'
 
-// param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/JCore-AVD/'
-// @secure()
-// param _artifactsLocationSasToken string = ''
+param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/AVDMerge/'
+@secure()
+param _artifactsLocationSasToken string = ''
 
 param mgname string
 param subscriptionId string
@@ -25,6 +25,7 @@ param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 param instanceName string
 param deployGrafana bool
+param appInsightsLocation string
 
 // Packs` stuff
 @description('Name of the Action Group to be used or created.')
@@ -57,7 +58,6 @@ var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var functionName = 'AMP-${instanceName}-${split(subscriptionId,'-')[0]}-Function'
 var logicAppName = 'AMP-${instanceName}-LogicApp'
 var ImageGalleryName = 'AMP${instanceName}Gallery'
-
 
 
 
@@ -104,20 +104,6 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
     createNewLogAnalyticsWS: createNewLogAnalyticsWS
   }
 }
-
-// module logAnalyticsAVD '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWSAVD) {
-//   name: 'logAnalytics-AVD-Deployment'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   dependsOn: [
-//     resourgeGroup
-//   ]
-//   params: {
-//     location: location
-//     logAnalyticsWorkspaceName: newLogAnalyticsWSNameAVD
-//     Tags: Tags
-//     createNewLogAnalyticsWS: createNewLogAnalyticsWSAVD
-//   }
-// }
 
 // AMA policy - conditionally deploy it
 module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
@@ -183,7 +169,9 @@ module backend '../backend/code/backend.bicep' = {
     resourgeGroup
   ]
   params: {
-    appInsightsLocation: location
+    _artifactsLocation: _artifactsLocation
+    _artifactsLocationSasToken: _artifactsLocationSasToken
+    appInsightsLocation: appInsightsLocation
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId

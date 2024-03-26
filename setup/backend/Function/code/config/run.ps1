@@ -15,10 +15,15 @@ $Action = $Request.Query.Action
 $Request.Body
 "EoB"
 
-$tagMapping=@"
+$tagMapping = @"
 {
     tags: 
     [
+      {
+        "tag": "Avd",
+        "nameSpace": "Microsoft.Compute/hostpools",
+        "type": "PaaS"
+      },
     {
       "tag": "LogicApps",
       "nameSpace": "Microsoft.Logic/workflows",
@@ -110,50 +115,51 @@ $tagMapping=@"
 }
 "@ | ConvertFrom-Json
 
-$discoveringMappings=@{
-   "ADDS"="AD-Domain-Services"
-   "DNS"="DNS"
-   "FS"="FS-FileServer"
-   "IIS"="Web-Server"
-   "STSVC"="Storage-Services"
-   "Nginx"="nginx-core"
+$discoveringMappings = @{
+  "ADDS"  = "AD-Domain-Services"
+  "DNS"   = "DNS"
+  "FS"    = "FS-FileServer"
+  "IIS"   = "Web-Server"
+  "STSVC" = "Storage-Services"
+  "Nginx" = "nginx-core"
+  "Avd"   = "Avd-hostpool"
 }
 switch ($Action) {
-    # Returns the tag based on the nameSpace provided
-    'getTagbyService' {
-        $svc=$Request.body.metricNamespace
-        if ($svc) {
-            $tag=$tagMapping.tags | ? { $_.nameSpace -eq $svc } 
-        }
-        else {
-            $tag='Undetermined'
-        }
-        $body=@"
+  # Returns the tag based on the nameSpace provided
+  'getTagbyService' {
+    $svc = $Request.body.metricNamespace
+    if ($svc) {
+      $tag = $tagMapping.tags | ? { $_.nameSpace -eq $svc } 
+    }
+    else {
+      $tag = 'Undetermined'
+    }
+    $body = @"
         {
             "tag":"$($tag.tag)",
             "nameSpace":"$($tag.nameSpace)",
             "type":"$($tag.type)"
         }
 "@ | convertfrom-json
+  }
+  # Gets a list of tags (all) or for a specific type (PaaS or Platform)
+  'getAllServiceTags' {
+    $type = $Request.Query.Type
+    if ([string]::IsNullOrEmpty($type)) {
+      $body = $tagMapping.tags  | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
     }
-    # Gets a list of tags (all) or for a specific type (PaaS or Platform)
-    'getAllServiceTags' {
-        $type=$Request.Query.Type
-        if ([string]::IsNullOrEmpty($type)) {
-            $body=$tagMapping.tags  | Select-Object tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
-        }
-        else {
-            "Type"
-            $body=$tagMapping.tags  | where-object {$_.type -eq $type} | Select-Object tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json
+    else {
+      "Type"
+      $body = $tagMapping.tags  | where-object { $_.type -eq $type } | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json
             
-        }
     }
-    # returns a list of discovery mapping directions.
-    'getDiscoveryMappings' {
-        $body=$discoveringMappings.Keys | Select-Object @{l='tag';e={$_}},@{l='application';e={$discoveringMappings.$_}}
-    }
-    'getPaaSquery' {
-        $body=@"
+  }
+  # returns a list of discovery mapping directions.
+  'getDiscoveryMappings' {
+    $body = $discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
+  }
+  'getPaaSquery' {
+    $body = @"
         {
             "Query": "
         | where tolower(type) in (
@@ -168,9 +174,9 @@ switch ($Action) {
       )"
       }
 "@
-    }
-    'getPlatformquery' {
-        $body=@'
+  }
+  'getPlatformquery' {
+    $body = @'
         {
             "Query":"
         | where tolower(type) in (
@@ -186,13 +192,13 @@ switch ($Action) {
       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
     }
 '@
-    }
-    default {$body=''}
+  }
+  default { $body = '' }
 }
 
 # # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = [HttpStatusCode]::OK
-    Body = $body
-})
+    Body       = $body
+  })
 

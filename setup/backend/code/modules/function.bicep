@@ -1,3 +1,6 @@
+param _artifactsLocation string
+@secure()
+param _artifactsLocationSasToken string
 param functionname string
 param location string
 param Tags object
@@ -176,6 +179,8 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     MSI_CLIENT_ID: userManagedIdentityClientId
     PacksUserManagedId: packsUserManagedId
+    ARTIFACS_LOCATION: _artifactsLocation
+    ARTIFACTS_LOCATION_SAS_TOKEN: _artifactsLocationSasToken
   }
 }
 
