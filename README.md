@@ -2,6 +2,15 @@
 
 FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
 
+## V2 Release (April 2024)
+
+The Monitoring Starter Packs have been updated to version 2. The new version includes the following changes:
+
+- Coverage for more services and workloads
+- New monitoring capabilities
+- Augmented monitoring and discovery capabilities (Preview)
+- AMBA integration (aka.ms/amba)
+
 ## Objectives
 
 - Minimize the initial ramp up required for customers, in multiple aspects of the Azure technologies to deploy basic monitoring.
