@@ -1,6 +1,5 @@
 targetScope='managementGroup'
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-DNS2016-Server'
+// @description('Name of the DCR rule to be created')
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -18,15 +17,18 @@ param solutionTag string
 param solutionVersion string
 param customerTags object
 param actionGroupResourceId string
-
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var tempTags ={
   '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion
+}
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'DNS2016'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 
@@ -190,7 +192,7 @@ var performanceCounters=[
 
 // Alerts - the module below creates the alerts and associates them with the action group
 
-module Alerts './WinDns2016Alerts.bicep' = {
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -199,6 +201,7 @@ module Alerts './WinDns2016Alerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
@@ -230,6 +233,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-1'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 // // Grafana upload and install

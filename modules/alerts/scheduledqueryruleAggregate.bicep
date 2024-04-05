@@ -10,6 +10,7 @@ param windowSize string = 'PT15M'
 param evaluationFrequency string = 'PT15M'
 param autoMitigate bool = false
 param query string
+param dimensions array
 //param starterPackName string
 param threshold int
 param metricMeasureColumn string
@@ -51,16 +52,8 @@ resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
               query: query
               timeAggregation: 'Average'
               metricMeasureColumn: metricMeasureColumn
-              dimensions: [
-                {
-                  name: 'Computer'
-                  operator: 'Include'
-                  values: [
-                    '*'
-                  ]
-                }
-              ]
-              resourceIdColumn: '_ResourceId'
+              dimensions: dimensions
+              resourceIdColumn: empty(dimensions) ? '_ResourceId' : null
               operator: operator
               threshold: threshold
               failingPeriods: {

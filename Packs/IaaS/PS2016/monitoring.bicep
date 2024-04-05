@@ -1,7 +1,7 @@
 targetScope='managementGroup'
 //Pack Specific parameters
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-Windows-PS2016'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-Windows-PS2016'
 @description('The tag to be used for the solution.')
 param packtag string = 'PS2016'
 
@@ -22,15 +22,19 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
-
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 //Variables
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
+var tempTags ={
   '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion
+}
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'PS2016'
+//var ruleshortname = 'PS2016'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 
@@ -85,6 +89,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-1'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 // Alerts - the module below creates the alerts and associates them with the action group
@@ -97,5 +102,6 @@ module Alerts './alerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }

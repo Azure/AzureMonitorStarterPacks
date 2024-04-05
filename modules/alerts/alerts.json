@@ -1,0 +1,532 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "14360914330328314924"
+    }
+  },
+  "parameters": {
+    "alertlist": {
+      "type": "array"
+    },
+    "location": {
+      "type": "string"
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "AGId": {
+      "type": "string"
+    },
+    "packtag": {
+      "type": "string"
+    },
+    "Tags": {
+      "type": "object"
+    },
+    "moduleprefix": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "copy": {
+        "name": "Alerts",
+        "count": "[length(parameters('alertlist'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Alert-{1}', parameters('packtag'), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "actionGroupResourceId": {
+            "value": "[parameters('AGId')]"
+          },
+          "alertRuleDescription": {
+            "value": "[parameters('alertlist')[copyIndex()].alertRuleDescription]"
+          },
+          "alertRuleDisplayName": {
+            "value": "[format('{0}-{1}', parameters('moduleprefix'), parameters('alertlist')[copyIndex()].alertRuleDisplayName)]"
+          },
+          "alertRuleName": {
+            "value": "[format('{0}-{1}', parameters('moduleprefix'), parameters('alertlist')[copyIndex()].alertRuleName)]"
+          },
+          "alertRuleSeverity": {
+            "value": "[parameters('alertlist')[copyIndex()].alertRuleSeverity]"
+          },
+          "autoMitigate": {
+            "value": "[parameters('alertlist')[copyIndex()].autoMitigate]"
+          },
+          "evaluationFrequency": {
+            "value": "[parameters('alertlist')[copyIndex()].evaluationFrequency]"
+          },
+          "windowSize": {
+            "value": "[parameters('alertlist')[copyIndex()].windowSize]"
+          },
+          "scope": {
+            "value": "[parameters('workspaceId')]"
+          },
+          "query": {
+            "value": "[parameters('alertlist')[copyIndex()].query]"
+          },
+          "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
+          "packtag": {
+            "value": "[parameters('packtag')]"
+          },
+          "Tags": {
+            "value": "[parameters('Tags')]"
+          },
+          "alertType": {
+            "value": "[parameters('alertlist')[copyIndex()].alertType]"
+          },
+          "metricMeasureColumn": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].metricMeasureColumn), createObject('value', null()))]",
+          "operator": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].operator), createObject('value', null()))]",
+          "threshold": "[if(equals(parameters('alertlist')[copyIndex()].alertType, 'Aggregated'), createObject('value', parameters('alertlist')[copyIndex()].threshold), createObject('value', null()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.24.24.22086",
+              "templateHash": "16978214315872862550"
+            }
+          },
+          "parameters": {
+            "alertType": {
+              "type": "string",
+              "allowedValues": [
+                "rows",
+                "Aggregated"
+              ]
+            },
+            "alertRuleName": {
+              "type": "string"
+            },
+            "alertRuleDisplayName": {
+              "type": "string"
+            },
+            "alertRuleDescription": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string"
+            },
+            "actionGroupResourceId": {
+              "type": "string"
+            },
+            "alertRuleSeverity": {
+              "type": "int"
+            },
+            "location": {
+              "type": "string"
+            },
+            "windowSize": {
+              "type": "string",
+              "defaultValue": "PT15M"
+            },
+            "evaluationFrequency": {
+              "type": "string",
+              "defaultValue": "PT15M"
+            },
+            "autoMitigate": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "query": {
+              "type": "string"
+            },
+            "packtag": {
+              "type": "string"
+            },
+            "Tags": {
+              "type": "object"
+            },
+            "threshold": {
+              "type": "int",
+              "defaultValue": 0
+            },
+            "metricMeasureColumn": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "dimensions": {
+              "type": "array",
+              "defaultValue": [
+                {
+                  "name": "Computer",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                }
+              ]
+            },
+            "operator": {
+              "type": "string",
+              "defaultValue": "GreaterThan",
+              "allowedValues": [
+                "GreaterThan",
+                "GreaterThanOrEqual",
+                "LessThan",
+                "LessThanOrEqual",
+                "Equal",
+                "NotEqual"
+              ]
+            }
+          },
+          "resources": [
+            {
+              "condition": "[equals(parameters('alertType'), 'rows')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('rowAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "alertRuleName": {
+                    "value": "[parameters('alertRuleName')]"
+                  },
+                  "alertRuleDisplayName": {
+                    "value": "[parameters('alertRuleDisplayName')]"
+                  },
+                  "alertRuleDescription": {
+                    "value": "[parameters('alertRuleDescription')]"
+                  },
+                  "scope": {
+                    "value": "[parameters('scope')]"
+                  },
+                  "dimensions": {
+                    "value": "[parameters('dimensions')]"
+                  },
+                  "actionGroupResourceId": {
+                    "value": "[parameters('actionGroupResourceId')]"
+                  },
+                  "alertRuleSeverity": {
+                    "value": "[parameters('alertRuleSeverity')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "windowSize": {
+                    "value": "[parameters('windowSize')]"
+                  },
+                  "evaluationFrequency": {
+                    "value": "[parameters('evaluationFrequency')]"
+                  },
+                  "autoMitigate": {
+                    "value": "[parameters('autoMitigate')]"
+                  },
+                  "query": {
+                    "value": "[parameters('query')]"
+                  },
+                  "Tags": {
+                    "value": "[parameters('Tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.24.24.22086",
+                      "templateHash": "16390321905682596172"
+                    }
+                  },
+                  "parameters": {
+                    "alertRuleName": {
+                      "type": "string"
+                    },
+                    "alertRuleDisplayName": {
+                      "type": "string"
+                    },
+                    "alertRuleDescription": {
+                      "type": "string"
+                    },
+                    "scope": {
+                      "type": "string"
+                    },
+                    "actionGroupResourceId": {
+                      "type": "string"
+                    },
+                    "alertRuleSeverity": {
+                      "type": "int"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "windowSize": {
+                      "type": "string",
+                      "defaultValue": "PT15M"
+                    },
+                    "evaluationFrequency": {
+                      "type": "string",
+                      "defaultValue": "PT15M"
+                    },
+                    "autoMitigate": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "dimensions": {
+                      "type": "array"
+                    },
+                    "Tags": {
+                      "type": "object"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/scheduledQueryRules",
+                      "apiVersion": "2023-03-15-preview",
+                      "name": "[parameters('alertRuleName')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('Tags')]",
+                      "properties": {
+                        "description": "[parameters('alertRuleDescription')]",
+                        "ruleResolveConfiguration": {},
+                        "displayName": "[parameters('alertRuleDisplayName')]",
+                        "enabled": true,
+                        "scopes": [
+                          "[parameters('scope')]"
+                        ],
+                        "targetResourceTypes": [
+                          "Microsoft.OperationalInsights/workspaces"
+                        ],
+                        "windowSize": "[parameters('windowSize')]",
+                        "evaluationFrequency": "[parameters('evaluationFrequency')]",
+                        "severity": "[parameters('alertRuleSeverity')]",
+                        "criteria": {
+                          "allOf": [
+                            {
+                              "query": "[parameters('query')]",
+                              "timeAggregation": "Count",
+                              "dimensions": "[parameters('dimensions')]",
+                              "resourceIdColumn": "[if(empty(parameters('dimensions')), '_ResourceId', null())]",
+                              "operator": "GreaterThan",
+                              "threshold": 0,
+                              "failingPeriods": {
+                                "numberOfEvaluationPeriods": 1,
+                                "minFailingPeriodsToAlert": 1
+                              }
+                            }
+                          ]
+                        },
+                        "autoMitigate": "[parameters('autoMitigate')]",
+                        "actions": {
+                          "actionGroups": [
+                            "[parameters('actionGroupResourceId')]"
+                          ],
+                          "customProperties": {}
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "condition": "[equals(parameters('alertType'), 'Aggregated')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('AggregateAlert-{0}-{1}', parameters('packtag'), parameters('alertRuleName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "alertRuleName": {
+                    "value": "[parameters('alertRuleName')]"
+                  },
+                  "alertRuleDisplayName": {
+                    "value": "[parameters('alertRuleDisplayName')]"
+                  },
+                  "alertRuleDescription": {
+                    "value": "[parameters('alertRuleDescription')]"
+                  },
+                  "scope": {
+                    "value": "[parameters('scope')]"
+                  },
+                  "dimensions": {
+                    "value": "[parameters('dimensions')]"
+                  },
+                  "actionGroupResourceId": {
+                    "value": "[parameters('actionGroupResourceId')]"
+                  },
+                  "alertRuleSeverity": {
+                    "value": "[parameters('alertRuleSeverity')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "windowSize": {
+                    "value": "[parameters('windowSize')]"
+                  },
+                  "evaluationFrequency": {
+                    "value": "[parameters('evaluationFrequency')]"
+                  },
+                  "autoMitigate": {
+                    "value": "[parameters('autoMitigate')]"
+                  },
+                  "query": {
+                    "value": "[parameters('query')]"
+                  },
+                  "Tags": {
+                    "value": "[parameters('Tags')]"
+                  },
+                  "threshold": {
+                    "value": "[parameters('threshold')]"
+                  },
+                  "metricMeasureColumn": {
+                    "value": "[parameters('metricMeasureColumn')]"
+                  },
+                  "operator": {
+                    "value": "[parameters('operator')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.24.24.22086",
+                      "templateHash": "3889684486127695540"
+                    }
+                  },
+                  "parameters": {
+                    "alertRuleName": {
+                      "type": "string"
+                    },
+                    "alertRuleDisplayName": {
+                      "type": "string"
+                    },
+                    "alertRuleDescription": {
+                      "type": "string"
+                    },
+                    "scope": {
+                      "type": "string"
+                    },
+                    "actionGroupResourceId": {
+                      "type": "string"
+                    },
+                    "alertRuleSeverity": {
+                      "type": "int"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "windowSize": {
+                      "type": "string",
+                      "defaultValue": "PT15M"
+                    },
+                    "evaluationFrequency": {
+                      "type": "string",
+                      "defaultValue": "PT15M"
+                    },
+                    "autoMitigate": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "dimensions": {
+                      "type": "array"
+                    },
+                    "threshold": {
+                      "type": "int"
+                    },
+                    "metricMeasureColumn": {
+                      "type": "string"
+                    },
+                    "Tags": {
+                      "type": "object"
+                    },
+                    "operator": {
+                      "type": "string",
+                      "allowedValues": [
+                        "GreaterThan",
+                        "GreaterThanOrEqual",
+                        "LessThan",
+                        "LessThanOrEqual",
+                        "Equal",
+                        "NotEqual"
+                      ]
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/scheduledQueryRules",
+                      "apiVersion": "2023-03-15-preview",
+                      "name": "[parameters('alertRuleName')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('Tags')]",
+                      "properties": {
+                        "description": "[parameters('alertRuleDescription')]",
+                        "ruleResolveConfiguration": {},
+                        "displayName": "[parameters('alertRuleDisplayName')]",
+                        "enabled": true,
+                        "scopes": [
+                          "[parameters('scope')]"
+                        ],
+                        "targetResourceTypes": [
+                          "Microsoft.OperationalInsights/workspaces"
+                        ],
+                        "windowSize": "[parameters('windowSize')]",
+                        "evaluationFrequency": "[parameters('evaluationFrequency')]",
+                        "severity": "[parameters('alertRuleSeverity')]",
+                        "criteria": {
+                          "allOf": [
+                            {
+                              "query": "[parameters('query')]",
+                              "timeAggregation": "Average",
+                              "metricMeasureColumn": "[parameters('metricMeasureColumn')]",
+                              "dimensions": "[parameters('dimensions')]",
+                              "resourceIdColumn": "[if(empty(parameters('dimensions')), '_ResourceId', null())]",
+                              "operator": "[parameters('operator')]",
+                              "threshold": "[parameters('threshold')]",
+                              "failingPeriods": {
+                                "numberOfEvaluationPeriods": 1,
+                                "minFailingPeriodsToAlert": 1
+                              }
+                            }
+                          ]
+                        },
+                        "autoMitigate": "[parameters('autoMitigate')]",
+                        "actions": {
+                          "actionGroups": [
+                            "[parameters('actionGroupResourceId')]"
+                          ],
+                          "customProperties": {}
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -4,6 +4,9 @@ param solutionTag string
 param rulename string
 param location string
 param userManagedIdentityResourceId string
+param instanceName string
+param arcEnabled bool = true
+
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
   '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
@@ -12,7 +15,7 @@ var roledefinitionIds=[
 var dcrName = split (dcrId,'/')[8]
 
 module policyVM './associacionpolicyVM.bicep' = {
-  name: 'associationpolicyVM-${packtag}-${dcrName}'
+  name: 'AssocPolVM-${dcrName}'
   scope: subscription()
   params: {
     packtag: packtag
@@ -22,37 +25,7 @@ module policyVM './associacionpolicyVM.bicep' = {
     DCRId: dcrId
     solutionTag: solutionTag
     roledefinitionIds: roledefinitionIds
-  }
-}
-module policyARC './associacionpolicyARC.bicep' = {
-  name: 'associationpolicyARC-${packtag}-${dcrName}'
-  scope: subscription()
-  params: {
-    packtag: packtag
-    policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the ${rulename} DCR to ARC Servers. Tag: ${packtag}'
-    policyName: 'Associate-${rulename}-${packtag}-arc'
-    DCRId: dcrId
-    solutionTag: solutionTag
-    roledefinitionIds: roledefinitionIds
-  }
-}
-//module policyAssignment {}
-// param policyAssignmentName string = 'audit-vm-manageddisks'
-// param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment './assignment.bicep' = {
-  dependsOn: [
-    policyARC
-  ]
-  name: 'Assignment-${packtag}-${rulename}-arc'
-  scope: subscription()
-  params: {
-    policyDefinitionId: policyARC.outputs.policyId
-    location: location
-    assignmentName: 'Assignment-${packtag}-${rulename}-arc'
-    //roledefinitionIds: roledefinitionIds
-    solutionTag: solutionTag
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    instanceName: instanceName
   }
 }
 module vmassignment './assignment.bicep' = {
@@ -63,10 +36,43 @@ module vmassignment './assignment.bicep' = {
   scope: subscription()
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'Assignment-${packtag}-${rulename}-vm'
+    assignmentName: 'AMP-assig-${rulename}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
+// module policyARC './associacionpolicyARC.bicep' = if(arcEnabled == true) {
+//   name: 'AssocPolARC-${dcrName}'
+//   scope: subscription()
+//   params: {
+//     packtag: packtag
+//     policyDescription: 'Policy to associate the ${rulename} DCR with the VMs tagged with ${packtag} tag.'
+//     policyDisplayName: 'Associate the ${rulename} DCR to ARC Servers. Tag: ${packtag}'
+//     policyName: 'Associate-${rulename}-${packtag}-arc'
+//     DCRId: dcrId
+//     solutionTag: solutionTag
+//     roledefinitionIds: roledefinitionIds
+//     instanceName: instanceName
+//   }
+// }
+// //module policyAssignment {}
+// // param policyAssignmentName string = 'audit-vm-manageddisks'
+// // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+// module arcassignment './assignment.bicep' = if(arcEnabled == true) {
+//   dependsOn: [
+//     policyARC
+//   ]
+//   name: 'Assignment-${packtag}-${rulename}-arc'
+//   scope: subscription()
+//   params: {
+//     policyDefinitionId: policyARC.outputs.policyId
+//     location: location
+//     assignmentName: 'AMP-assig-${rulename}-arc'
+//     //roledefinitionIds: roledefinitionIds
+//     solutionTag: solutionTag
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+//}
+

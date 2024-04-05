@@ -27,15 +27,11 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
         {
           workspaceResourceId: workspaceId
           name: wsfriendlyname
-      //   tableNames: [
-      //     'EventLogs'
-      //   ]
-      // }
         }
       ]
     }
     dataSources: {
-      windowsEventLogs: empty(xPathQueries) ? json('null'): [
+      windowsEventLogs: empty(xPathQueries) ? null: [
         {
             streams: [
                 'Microsoft-Event'

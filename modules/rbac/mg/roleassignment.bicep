@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+  targetScope = 'managementGroup'
 
 param resourcename string
 param solutionTag string

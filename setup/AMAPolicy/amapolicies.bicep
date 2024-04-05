@@ -46,7 +46,7 @@ module assignment '../../modules/policies/subscription/assignment.bicep' = {
   params: {
     policyDefinitionId: amaPolicy.outputs.policySetDefId
     location: location
-    assignmentName: 'assign-${rulename}'
+    assignmentName: 'AMP-Assign-${rulename}'
     solutionTag: solutionTag
     userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
   }

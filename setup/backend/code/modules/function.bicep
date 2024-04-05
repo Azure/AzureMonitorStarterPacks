@@ -1,3 +1,6 @@
+param _artifactsLocation string
+@secure()
+param _artifactsLocationSasToken string
 param functionname string
 param location string
 param Tags object
@@ -14,6 +17,7 @@ var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 param apiManagementKey string= base64(newGuid())
 param solutionTag string
+param instanceName string
 
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -29,7 +33,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existin
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-MonstarPacks'
+  name: 'deployscript-Function-${instanceName}'
   dependsOn: [
     azfunctionsiteconfig
   ]
@@ -83,7 +87,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
     zoneRedundant: false
   }
 }
-resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
+resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
   name: functionname
   location: location
   kind: 'functionapp'
@@ -137,7 +141,13 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
           http20Enabled: false
           functionAppScaleLimit: 200
           minimumElasticInstanceCount: 0
-          minTlsVersion: '1.2'       
+          minTlsVersion: '1.2'
+          cors: {
+              allowedOrigins: [
+                  'https://portal.azure.com'
+              ]
+              supportCredentials: true
+          }  
       }
       scmSiteAlsoStopped: false
       clientAffinityEnabled: false
@@ -150,7 +160,6 @@ resource azfunctionsite 'Microsoft.Web/sites@2021-03-01' = {
       redundancyMode: 'None'
       storageAccountRequired: false
       keyVaultReferenceIdentity: 'SystemAssigned'
-
   }
 }
 
@@ -170,6 +179,8 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     MSI_CLIENT_ID: userManagedIdentityClientId
     PacksUserManagedId: packsUserManagedId
+    ARTIFACS_LOCATION: _artifactsLocation
+    ARTIFACTS_LOCATION_SAS_TOKEN: _artifactsLocationSasToken
   }
 }
 
@@ -198,6 +209,7 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
     WorkspaceResourceId: lawresourceid
+    
   }
 }
 

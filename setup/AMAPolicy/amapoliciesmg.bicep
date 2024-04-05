@@ -50,7 +50,7 @@ module assignment '../../modules/policies/mg/assignment.bicep' = if (assignmentL
   params: {
     policyDefinitionId: amaPolicyMG.outputs.policySetDefId
     location: location
-    assignmentName: '[AMSP]AMA-Policies'
+    assignmentName: 'AMP-AMA-Policies'
     solutionTag: solutionTag
     userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
     // roledefinitionIds: [
@@ -68,7 +68,7 @@ module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if
   params: {
     policyDefinitionId: amaPolicyMG.outputs.policySetDefId
     location: location
-    assignmentName: 'assign-${rulename}'
+    assignmentName: 'AMP-Assign-${rulename}'
     solutionTag: solutionTag
     userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
     // roledefinitionIds: [

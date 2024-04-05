@@ -10,8 +10,9 @@ param windowSize string = 'PT15M'
 param evaluationFrequency string = 'PT15M'
 param autoMitigate bool = false
 param query string
+param dimensions array
 //param starterPackName string
-param packtag string
+//param packtag string
 param Tags object
 
 resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
@@ -39,16 +40,8 @@ resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
           {
               query: query
               timeAggregation: 'Count'
-              dimensions: [
-                {
-                  name: 'Computer'
-                  operator: 'Include'
-                  values: [
-                    '*'
-                  ]
-                }
-              ]
-              resourceIdColumn: '_ResourceId'
+              dimensions: dimensions
+              resourceIdColumn: empty(dimensions) ? '_ResourceId' : null
               operator: 'GreaterThan'
               threshold: 0
               failingPeriods: {
