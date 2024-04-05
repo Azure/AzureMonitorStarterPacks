@@ -56,26 +56,6 @@ module Storage './Storage/monitoring.bicep' = {
     solutionVersion: solutionVersion
   }
 }
-module OpenAI './OpenAI/monitoring.bicep' = {
-  name: 'OpenAIAlerts'
-  params: {
-    assignmentLevel: assignmentLevel
-    location: location
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    actionGroupResourceId: actionGroupResourceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    //workspaceId: workspaceId
-    packtag: 'OpenAI'
-    //grafanaName: grafanaName
-    //dceId: dceId
-    customerTags: customerTags
-    instanceName: instanceName
-    solutionVersion: solutionVersion
-  }
-}
 
 module AVD './AVD/monitoring.bicep' = {
   name: 'AvdAlerts'
