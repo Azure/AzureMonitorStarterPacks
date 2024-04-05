@@ -3,6 +3,7 @@ param Tags object
 param location string
 param keyvaultid string
 param subscriptionId string
+param logicAppName string
 
 var keyVaultName = split(keyvaultid, '/')[8]
 
@@ -10,7 +11,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functioname
 }
 resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
-  name: 'MonitorStarterPacks-Backend'
+  name: logicAppName
   // dependsOn: [
   //   logicappConnection
   // ]
@@ -138,7 +139,25 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                     }
                   }
                 }
-              }           
+              }
+              Case_4: {
+                case: 'agentMgmt'
+                actions: {
+                  agentMgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                      body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                      function: {
+                        id: '${azfunctionsite.id}/functions/agentmgmt'
+                      }
+                      headers: {
+                        'x-functions-key': '@body(\'Get_secret\')?[\'value\']'
+                      }
+                    }
+                  }
+                }
+              }            
             }
             default: {
               actions: {}

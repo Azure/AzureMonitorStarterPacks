@@ -1,12 +1,14 @@
-# FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
+# Azure Monitoring Packs
+
+FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
 
 ## Objectives
 
 - Minimize the initial ramp up required for customers, in multiple aspects of the Azure technologies to deploy basic monitoring.
 
-- Minimize the need for the Customer tto determine the minimal monitoring items for a certain type of workload 
+- Minimize the need for the Customer to determine the minimal monitoring items for a certain type of workload 
 
-- Provide best practices out of the box on items that need monitoring for different workloads 
+- Provide best practices out of the box on items that need monitoring for different workloads. The Monitoring Packs work closely wit the Azure Monitor Baseline Alerts [AMBA](http://aka.ms/amba) and the Azure Monitor teams to provide an comprehensive and aligned monitoring solution.
 
 - Create a framework for collaboration that will make it easy to add new monitored technologies. 
 
@@ -19,19 +21,41 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 
 ## Setup
 
-The Main solution can be deployed by clicking the link below.
+The Main solution can be deployed by clicking the link below to the respective cloud.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fsetup.json)
 
-## Starter Packs
+[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FAVDMerge%2Fsetup%2FCustomSetup%2Fsetup.json)
 
-Packs can also be deployed individually or all at the same time.
+## Initial Configuration
+
+Once the deployment is completed, the following steps need to be completed:
+
+- Navigate to the recently deployed resource group and find the workbook name "Azure Monitor Starter Packs Extended". Open the workbook and click on the "Configuration" tab. This will open a new tab with the configuration page.
+
+![alt text](./Docs/media/image.png)
+
+Once the parameters are configured, make sure to save the workbook.
+
+The first time certain areas are accessed, the following configuration will need to be accepted:
+
+![alt text](./Docs/media/image-1.png)
+
+## Monitoring Packs
+
+Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
 
 Review Packs documentation [here](./Packs/README.md).
 
+## Multi-region Considerations
+
+If you are deploying the solution in multiple regions, a few additional steps are required. The following steps need to be completed:
+- For discovery and VM Application dependent components (ADDS), the VM Application versions need to have a replica in each region where VMs will be monitored.
+- For the Data Collection rules, a data collection endpoint needs to be created in each region. The data collection endpoint allows for the agent to receive configuration in the specific region. The data collection endpoint is assigned after the data collection rule association has been created.
+
 ## Grafana Dashboards
 
-Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed along with each pack.
+Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed as a package during the packs deployment. Using Grafana is optional but will limit the visuazliation capabilities of the solution.
 In order for the current user to have access to the Grafana environment, the user needs to be added to the Grafana Admins group. This can be done by running the following these instructions.
 
 1. Navigate the recently deployed Grafana environment and click on Access Control (IAM) and click on Add role assignment.
@@ -42,24 +66,43 @@ In order for the current user to have access to the Grafana environment, the use
 
 2. Select the proper user or users. The process may take a few minutes to assign the proper permissions.
 
+## Network Isolation (Private Endpoints)
+
+The solution can work with network isolation. By default, the components are deployed with public endpoints. The following components can be isolated (click the links for details):
+- [Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security) 
+- [Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security)
+- [Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-private-endpoints)
+- [Azure Function](https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-vnet) - The function will require a higher SKU in order to work with network isolation.
+- [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/private-link-service)
+- [Azure Managed Grafana](https://learn.microsoft.com/en-us/azure/managed-grafana/how-to-set-up-private-access?tabs=azure-portal)
+
+The Compute Gallery and the VM Application Gallery are not supported with network isolation. 
+
 ## Removing the solution
 
-In order to remove the solution, you can run the following script. The script will remove all the resources created by the solution.
+In order to remove the solution, you can run the following script in this [link](https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1). The script will remove all the resources created by the solution.
+
+- Open the Azure CLI with PowerShell:
 
 ```powershell
-./setup/cleanup/cleanup.ps1 -RG <Resource Group Name> -RemoveAll
+wget https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1
+./cleanup.ps1 -RG <Resource Group Name> -RemoveAll
 ```
 
 Alternatively, you can select to remove specific components of the solution by using the following parameters:
 
 - RemovePacks : Removes all the packs deployed by the solution
 - RemoveAMAPolicySet : Removes the policy set deployed by the solution
-- RemoveMainSolution : Removes the main solution deployed by the solution
+- RemoveMainSolution : Removes the main components of the deployed solution
+- RemoveDiscovery : Removes the discovery deployed by the solution
 
 Once completed, some resources will remain in the resource group. These resources are not removed by the script and need to be removed manually. The resources are:
 
 - Storage Account
 - Log Analytics Workspace
+- Action Group(s)
+
+Note: If the gallery is not removed in the first run, please run the command again.
 
 Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
 
@@ -70,6 +113,15 @@ Example:
 ```powershell
 remove-AzOperationalInsightsWorkspace -ResourceGroupName <Resource Group> -Name <Workspace name> -ForceDelete -force
 ```
+
+## Telemetry
+
+Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.
+
+If you don't wish to send usage data to Microsoft, you can disable telemetry during setup. 
+
+Project Bicep collects telemetry in some scenarios as part of improving the product.
+
 
 ## Authoring Guide
 

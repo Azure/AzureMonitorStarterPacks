@@ -10,7 +10,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functionName
 }
 
-resource monstarvault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
+resource vault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   name: kvName
   location: location
   tags: Tags
@@ -36,7 +36,7 @@ resource monstarvault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
 resource kvsecret1 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: 'FunctionKey'
   tags: Tags
-  parent: monstarvault
+  parent: vault
   properties: {
     attributes: {
       enabled: true
@@ -46,4 +46,4 @@ resource kvsecret1 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   }
 }
 
-output kvResourceId string = monstarvault.id
+output kvResourceId string = vault.id

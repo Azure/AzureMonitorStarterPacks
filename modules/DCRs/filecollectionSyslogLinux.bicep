@@ -19,27 +19,12 @@ param facilityNames array
 param logLevels array
 param syslogDataSourceName string = 'sysLogsDataSource-1688419672'
 
-var tableNameToUse = 'CustomAzMA${tableName}_CL'
-var streamName= 'Custom-${tableNameToUse}'
+var streamName= 'Custom-${tableName}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
-var lawResourceGroup = split(lawResourceId,'/')[4]
-
-module table '../LAW/table.bicep' = {
-  name: tableNameToUse
-  scope: resourceGroup(lawResourceGroup)
-  params: {
-    parentname: lawFriendlyName
-    tableName: tableNameToUse
-    retentionDays: 31
-  }
-}
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: ruleName
   location: location
-  dependsOn: [
-    table
-  ]
   tags: Tags
   kind: 'Linux'
   properties: {
@@ -66,7 +51,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
                   recordStartTimestampFormat: 'ISO 8601'
               }
             }
-            name: tableNameToUse
+            name: tableName
         }
       ]
     }

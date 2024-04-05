@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Azure SQL",
+        "Type": "PaaS",
+        "Description": "Azure SQL Monitoring Pack"
+    }
+}

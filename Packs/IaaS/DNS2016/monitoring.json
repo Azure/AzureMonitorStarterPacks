@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "2114410730523550356"
+      "templateHash": "7858557047429151387"
     }
   },
   "parameters": {
-    "rulename": {
-      "type": "string",
-      "defaultValue": "AMSP-DNS2016-Server",
-      "metadata": {
-        "description": "Name of the DCR rule to be created"
-      }
-    },
     "location": {
       "type": "string",
       "metadata": {
@@ -67,10 +60,19 @@
     },
     "actionGroupResourceId": {
       "type": "string"
+    },
+    "instanceName": {
+      "type": "string"
     }
   },
   "variables": {
-    "Tags": "[if(equals(parameters('customerTags'), createObject()), createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), union(createObject(format('{0}', parameters('solutionTag')), parameters('packtag'), 'solutionVersion', parameters('solutionVersion')), parameters('customerTags').All))]",
+    "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+    "tempTags": {
+      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+      "MonitoringPackType": "IaaS",
+      "solutionVersion": "[parameters('solutionVersion')]"
+    },
+    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
     "ruleshortname": "DNS2016",
     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
@@ -239,6 +241,9 @@
           },
           "Tags": {
             "value": "[variables('Tags')]"
+          },
+          "instanceName": {
+            "value": "[parameters('instanceName')]"
           }
         },
         "template": {
@@ -248,7 +253,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "3090517007237896765"
+              "templateHash": "17068741638345352495"
             }
           },
           "parameters": {
@@ -267,12 +272,12 @@
             "Tags": {
               "type": "object"
             },
-            "moduleprefix": {
-              "type": "string",
-              "defaultValue": "AMSP-DNS2016"
+            "instanceName": {
+              "type": "string"
             }
           },
           "variables": {
+            "moduleprefix": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
             "alertlist": [
               {
                 "alertRuleDescription": "Service.DependencyFailed",
@@ -874,7 +879,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Alerts', parameters('moduleprefix'))]",
+              "name": "[format('{0}-Alerts', variables('moduleprefix'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -891,7 +896,7 @@
                     "value": "[parameters('location')]"
                   },
                   "moduleprefix": {
-                    "value": "[parameters('moduleprefix')]"
+                    "value": "[variables('moduleprefix')]"
                   },
                   "packtag": {
                     "value": "[parameters('packtag')]"
@@ -910,7 +915,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "75933667383542312"
+                      "templateHash": "499576576386413037"
                     }
                   },
                   "parameters": {
@@ -1004,7 +1009,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.20.4.51522",
-                              "templateHash": "1955376536405090411"
+                              "templateHash": "16431236836762143778"
                             }
                           },
                           "parameters": {
@@ -1123,9 +1128,6 @@
                                   "query": {
                                     "value": "[parameters('query')]"
                                   },
-                                  "packtag": {
-                                    "value": "[parameters('packtag')]"
-                                  },
                                   "Tags": {
                                     "value": "[parameters('Tags')]"
                                   }
@@ -1137,7 +1139,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.20.4.51522",
-                                      "templateHash": "5611522469594456278"
+                                      "templateHash": "15025113715005484383"
                                     }
                                   },
                                   "parameters": {
@@ -1175,9 +1177,6 @@
                                       "defaultValue": false
                                     },
                                     "query": {
-                                      "type": "string"
-                                    },
-                                    "packtag": {
                                       "type": "string"
                                     },
                                     "Tags": {
@@ -1454,7 +1453,7 @@
             "value": "[parameters('location')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "workspaceId": {
             "value": "[parameters('workspaceId')]"
@@ -1485,7 +1484,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "15586190674869500289"
+              "templateHash": "10387281639106552930"
             }
           },
           "parameters": {
@@ -1545,7 +1544,7 @@
                   ]
                 },
                 "dataSources": {
-                  "windowsEventLogs": "[if(empty(parameters('xPathQueries')), json('null'), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
+                  "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
                   "performanceCounters": [
                     {
                       "streams": [
@@ -1601,7 +1600,7 @@
             "value": "[parameters('solutionTag')]"
           },
           "rulename": {
-            "value": "[parameters('rulename')]"
+            "value": "[variables('rulename')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1629,7 +1628,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12301075469741441796"
+              "templateHash": "9383939515637391234"
             }
           },
           "parameters": {
@@ -1676,7 +1675,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+              "name": "[format('AssocPolVM-{0}', variables('dcrName'))]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
               "location": "[deployment().location]",
               "properties": {
@@ -1714,7 +1713,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "7060261485268467714"
+                      "templateHash": "18200540089679187126"
                     }
                   },
                   "parameters": {
@@ -1748,10 +1747,10 @@
                     {
                       "type": "Microsoft.Authorization/policyDefinitions",
                       "apiVersion": "2021-06-01",
-                      "name": "[parameters('policyName')]",
+                      "name": "[format('AMP-{0}', parameters('policyName'))]",
                       "properties": {
-                        "description": "[parameters('policyDescription')]",
-                        "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
+                        "description": "[format('AMP-{0}', parameters('policyDescription'))]",
+                        "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
                         "metadata": {
                           "category": "Monitoring",
                           "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
@@ -1889,7 +1888,7 @@
                   "outputs": {
                     "policyId": {
                       "type": "string",
-                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', parameters('policyName'))]"
+                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
                     }
                   }
                 }
@@ -1898,7 +1897,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('associationpolicyARC-{0}-{1}', parameters('packtag'), variables('dcrName'))]",
+              "name": "[format('AssocPolArc-{0}', variables('dcrName'))]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
               "location": "[deployment().location]",
               "properties": {
@@ -1936,7 +1935,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13782378815920433053"
+                      "templateHash": "14744458748003087749"
                     }
                   },
                   "parameters": {
@@ -1970,10 +1969,10 @@
                     {
                       "type": "Microsoft.Authorization/policyDefinitions",
                       "apiVersion": "2021-06-01",
-                      "name": "[parameters('policyName')]",
+                      "name": "[format('AMP-{0}', parameters('policyName'))]",
                       "properties": {
-                        "description": "[parameters('policyDescription')]",
-                        "displayName": "[format('[AMSP]-{0}', parameters('policyDisplayName'))]",
+                        "description": "[format('AMP-{0}', parameters('policyDescription'))]",
+                        "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
                         "metadata": {
                           "category": "Monitoring",
                           "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]"
@@ -2111,7 +2110,7 @@
                   "outputs": {
                     "policyId": {
                       "type": "string",
-                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', parameters('policyName'))]"
+                      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
                     }
                   }
                 }
@@ -2131,7 +2130,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "policyDefinitionId": {
-                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyARC-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -2201,7 +2200,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyARC-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
               ]
             },
             {
@@ -2218,7 +2217,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "policyDefinitionId": {
-                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                   },
                   "assignmentName": {
                     "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -2288,7 +2287,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
               ]
             },
             {
@@ -2305,7 +2304,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "policyDefinitionId": {
-                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                   },
                   "assignmentName": {
                     "value": "[format('{0}-{1}-vm', parameters('packtag'), parameters('ruleshortname'))]"
@@ -2375,7 +2374,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyVM-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolVM-{0}', variables('dcrName')))]"
               ]
             },
             {
@@ -2392,7 +2391,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "policyDefinitionId": {
-                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyARC-{0}-{1}', parameters('packtag'), variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
+                    "value": "[reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName'))), '2022-09-01').outputs.policyId.value]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -2462,7 +2461,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('associationpolicyARC-{0}-{1}', parameters('packtag'), variables('dcrName')))]"
+                "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('mgname')), 'Microsoft.Resources/deployments', format('AssocPolArc-{0}', variables('dcrName')))]"
               ]
             }
           ]

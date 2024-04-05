@@ -1,7 +1,7 @@
 targetScope='managementGroup'
 
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-IIS2016-Server'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-IIS2016-Server'
 param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
@@ -9,7 +9,7 @@ param location string //= resourceGroup().location
 param workspaceId string
 param packtag string = 'IIS2016'
 param solutionTag string = 'MonitorStarterPacks'
-param solutionVersion string = '0.1.0'
+param solutionVersion string 
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
@@ -18,15 +18,19 @@ param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
-
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 param customerTags object
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
+var tempTags ={
   '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion
+}
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'IIS2016'
+
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 
@@ -119,26 +123,7 @@ var performanceCounters=[
   '\\SMTP Server(SMTP 1)\\Total Messages Submitted'
 ]
 
-// Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-// module ag '../../../modules/actiongroups/ag.bicep' = {
-//   name: 'ag-deployment'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
-
-// Alerts - the module below creates the alerts and associates them with the action group
-
-module Alerts './WinIIS2016Alerts.bicep' = {
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -147,6 +132,7 @@ module Alerts './WinIIS2016Alerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
@@ -178,6 +164,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-1'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 
@@ -190,7 +177,7 @@ module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' =
     lawResourceId: workspaceId
     Tags: Tags
     endpointResourceId: dceId
-    tableName: 'IISLogs'
+    //tableName: 'IISLogs'
   }
 }
 module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
@@ -207,6 +194,7 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-2'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 

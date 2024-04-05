@@ -19,7 +19,7 @@ if ($alerts) {
         $TagName='MonitorStarterPacks'
         "Missing TagName. Please set the TagName environment variable. Setting to Default"
     }
-    "Working on $($alerts.count) server(s). Action: $action. "
+    "Working on $($alerts.count) alerts(s). Action: $action. "
     switch ($action) {
         'Enable' {
             $bodyAction=@"
@@ -29,16 +29,10 @@ if ($alerts) {
                 }
             }
 "@
-<#
-{"id":"/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/Amonstarterpacks3/providers/microsoft.insights/activityLogAlerts/Deploy_activitylog_KeyVault_Delete","MP":"Keyvault","Enabled":true,"Description":"AMSP policy to Deploy Activity Log Key Vault Delete Alert","Action Group":"VMAdmins","location":"global","Target":"6c64f9ed-88d2-4598-8de6-7a9527dc16ca"}#>
             foreach ($alert in $alerts) {
-                
                 $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group, 6 will be alert type, #8 is alert name
                 "Running $action for $($alertinfo[8]) alert."
-                $apiversion="2023-03-15-preview"
-                if ($alertinfo[7] -eq 'activityLogAlerts') {
-                    $apiversion="2020-10-01"
-                }
+                $apiversion=get-alertApiVersion -alertId $alert.id
                 $patchURL="https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/providers/Microsoft.Insights/{3}/{2}?api-version=$apiversion" -f $alertinfo[2],$alertinfo[4], $alertinfo[8], $alertinfo[7]
                 Invoke-AzRestMethod -Method PATCH -Uri $patchURL -Payload $bodyAction
             }
@@ -53,10 +47,10 @@ if ($alerts) {
 "@
             foreach ($alert in $alerts) {
                 $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group, 6 will be alert type, #8 is alert name
-                $apiversion="2023-03-15-preview"
-                if ($alertinfo[7] -eq 'activityLogAlerts') {
-                    $apiversion="2020-10-01"
-                }
+                $apiversion=get-alertApiVersion -alertId $alert.id
+                # if ($alertinfo[7] -eq 'activityLogAlerts') {
+                #     $apiversion="2020-10-01"
+                # }
                 "Running $action for $($alertinfo[8]) alert."
                 $patchURL="https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/providers/Microsoft.Insights/{3}/{2}?api-version=$apiversion" -f $alertinfo[2],$alertinfo[4], $alertinfo[8],$alertinfo[7]
                 Invoke-AzRestMethod -Method PATCH -Uri $patchURL -Payload $bodyAction
@@ -68,14 +62,14 @@ if ($alerts) {
             # $Request.Body
             foreach ($alert in $alerts) {
                 $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group, 6 will be alert type, #8 is alert name
-                $apiversion="2023-03-15-preview"
-                if ($alertinfo[7] -eq 'activityLogAlerts') {
-                    $apiversion="2020-10-01"
-                }
-                "Running $action for $($alertinfo[8]) alert. AG Id: $actionGroupId"
+                $apiversion=get-alertApiVersion -alertId $alert.id
+                # if ($alertinfo[7] -eq 'activityLogAlerts') {
+                #     $apiversion="2020-10-01"
+                # }
+                # "Running $action for $($alertinfo[8]) alert. AG Id: $actionGroupId"
                 switch ($alertinfo[7]) {
                     'activityLogAlerts' {
-                        $apiversion="2020-10-01"
+                        # $apiversion="2020-10-01"
                         # have to first get the alert to get the current action group list
                         $getURL="https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/providers/{2}/{3}/{4}?api-version=$apiversion" -f $alertinfo[2],$alertinfo[4], $alertinfo[6], $alertinfo[7], $alertinfo[8]
                         $alertConfig=(Invoke-AzRestMethod -Method GET -Uri $getURL).Content | convertfrom-json
@@ -88,7 +82,7 @@ if ($alerts) {
                         Invoke-AzRestMethod -Method PUT -Uri $putURL -Payload $bodyAction
                     }
                     'metricAlerts' {
-                        $apiversion="2018-03-01"
+                        # $apiversion="2018-03-01"
                         $patchURL="https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/providers/{2}/{3}/{4}?api-version=$apiversion" -f $alertinfo[2],$alertinfo[4], $alertinfo[6], $alertinfo[7], $alertinfo[8]
                         $bodyAction=@"
                         {
@@ -106,6 +100,13 @@ if ($alerts) {
                     }
                 }
                 
+            }
+        }
+        'Delete' {
+            foreach ($alert in $alerts) {
+                $alertinfo=$alert.id.split("/") #2 is subscription, 4 is resource group, 6 will be alert type, #8 is alert name
+                "Running $action for $($alertinfo[8]) alert."
+                Remove-AzResource -ResourceId $alert.id -Force
             }
         }
         default {

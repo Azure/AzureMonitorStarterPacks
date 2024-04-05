@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-Linux-Nginx'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-Linux-Nginx'
 
 param actionGroupResourceId string
 @description('location for the deployment.')
@@ -20,14 +20,29 @@ param subscriptionId string
 param resourceGroupId string
 param assignmentLevel string
 param customerTags object
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
-  '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
-var ruleshortname = 'Nginx'
+param instanceName string
+var tableName = 'NginxLogs'
 
+var tableNameToUse = '${tableName}_CL'
+
+var lawFriendlyName = split(workspaceId,'/')[8]
+
+var rulename = 'AMP-${instanceName}-${packtag}'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
+
+var tempTags ={
+  '${solutionTag}': packtag
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion
+}
+var filePatterns = [
+  '/var/log/nginx/access.log'
+  '/var/log/nginx/error.log'
+]
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var resourceGroupName = split(resourceGroupId, '/')[4]
+var lawResourceGroup = split(workspaceId, '/')[4]
 
 var facilityNames = [
   'daemon'
@@ -43,43 +58,39 @@ var logLevels =[
   'Emergency'
 ]
 
-// Action Group
-// module ag '../../../modules/actiongroups/ag.bicep' =  {
-//   name: 'actionGroup'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
+module table '../../../modules/LAW/table.bicep' = {
+  name: tableName
+  scope: resourceGroup(subscriptionId, lawResourceGroup)
+  params: {
+    parentname: lawFriendlyName
+    tableName: tableNameToUse //that will be created. This will be the table name that will be used in the DCR, not the stream name.
+    retentionDays: 31
+  }
+}
 
-module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = {
-  name: 'filecollectionrule-${packtag}'
+module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep' = [for (fp,i) in filePatterns: {
+  name: 'filecollectionrule-${packtag}-${i}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
+  dependsOn: [
+    table
+  ]
   params: {
     location: location
     endpointResourceId: dceId
     Tags: Tags
-    ruleName: rulename
+    ruleName: '${rulename}-${i}'
     filepatterns: [
-      '/var/log/nginx/access.log'
-    //'/var/log/nginx/error.log'
+      fp
     ]
     lawResourceId:workspaceId
-    tableName: 'NginxLogs'
+    tableName: tableNameToUse
     facilityNames: facilityNames
     logLevels: logLevels
     syslogDataSourceName: 'NginxLogs-1238219'
   }
-}
-module Alerts './nginxalerts.bicep' = {
+}]
+
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -88,35 +99,22 @@ module Alerts './nginxalerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
-    
+    instanceName: instanceName
   }
 }
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
+module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) in filePatterns:{
+  name: 'policysetup-${packtag}-${i}'
   params: {
-    dcrId: fileCollectionRule.outputs.ruleId
+    dcrId: fileCollectionRule[i].outputs.ruleId
     packtag: packtag
     solutionTag: solutionTag
-    rulename: rulename
+    rulename: '${rulename}-${i}'
     location: location
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
-    ruleshortname: ruleshortname
+    ruleshortname: '${rulename}-${i}'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
-}
-// // Grafana upload and install
-// module grafana 'ds.bicep' = {
-//   name: 'grafana'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   params: {
-//     fileName: 'grafana.json'
-//     grafanaName: grafanaName
-//     location: location
-//     resourceGroupName: resourceGroupName
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     packsManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
+}]

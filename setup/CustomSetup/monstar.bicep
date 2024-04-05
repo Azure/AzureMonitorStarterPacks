@@ -1,5 +1,9 @@
 targetScope = 'managementGroup'
 
+param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/AVDMerge/'
+@secure()
+param _artifactsLocationSasToken string = ''
+
 param mgname string
 param subscriptionId string
 param resourceGroupName string
@@ -11,17 +15,19 @@ param createNewLogAnalyticsWS bool
 param existingLogAnalyticsWSId string = ''
 param deployAMApolicy bool
 //param currentUserIdObject string // This is to automatically assign permissions to Grafana.
-param functionName string
+//param functionName string
 param grafanaLocation string = ''
-param grafanaName string =''
+param grafanaName string = ''
 param newGrafana bool
 param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param resourceGroupId string = ''
+param instanceName string
+param deployGrafana bool
+param appInsightsLocation string
 
 // Packs` stuff
-param deployPacks bool = false
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
@@ -33,15 +39,27 @@ param useExistingAG bool = false
 param customerTags object
 param existingActionGroupId string = ''
 
+param deployAllPacks bool
+param deployIaaSPacks bool = false
+param deployPaaSPacks bool = false
+param deployPlatformPacks bool = false
+param deployDiscovery bool = false
 
+param collectTelemetry bool = true
+
+var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
-var Tags = (customerTags=={}) ? {'${solutionTagComponents}': 'BackendComponent'
-'solutionVersion': solutionVersion} : union({
-  '${solutionTagComponents}': 'BackendComponent'
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+var tempTags={'${solutionTagComponents}': 'BackendComponent'
+solutionVersion: solutionVersion
+instanceName: instanceName}
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+var functionName = 'AMP-${instanceName}-${split(subscriptionId,'-')[0]}-Function'
+var logicAppName = 'AMP-${instanceName}-LogicApp'
+var ImageGalleryName = 'AMP${instanceName}Gallery'
+
+
 
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
@@ -52,6 +70,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
     Tags: Tags
   }
 }
+
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
   name:'newstorage-deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -61,6 +80,13 @@ module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (cr
   params: {
     location: location
     Tags: Tags
+    storageAccountName: storageAccountName
+  }
+}
+module existingStorageAccount '../backend/code/modules/mg/storageAccountBlobs.bicep' = if (!createNewStorageAccount) {
+  name:'existingstorage-deployment'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
     storageAccountName: storageAccountName
   }
 }
@@ -96,8 +122,32 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
   }
 }
 
-module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
-  name: 'azureManagedGrafana'
+module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
+  name: 'DeployDiscovery-${instanceName}'
+  dependsOn: [
+    backend
+  ]
+  params: {
+    assignmentLevel: assignmentLevel
+    location: location
+    resourceGroupName: resourceGroupName
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    subscriptionId: subscriptionId
+    dceId: backend.outputs.dceId
+    imageGalleryName: ImageGalleryName
+    lawResourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
+    mgname: mgname
+    storageAccountname: storageAccountName
+    tableName: 'Discovery'
+    userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
+    Tags: Tags
+    instanceName: instanceName
+  }
+}
+
+module amg '../backend/code/modules/grafana.bicep' = if (newGrafana && deployGrafana) {
+  name: 'azureManagedGrafana-${instanceName}'
   dependsOn: [
     resourgeGroup
     logAnalytics
@@ -114,12 +164,14 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana) {
 }
 
 module backend '../backend/code/backend.bicep' = {
-  name: 'MonitoringPacks-backend'
+  name: 'MonitoringPacks-backend-${instanceName}'
   dependsOn: [
     resourgeGroup
   ]
   params: {
-    appInsightsLocation: location
+    _artifactsLocation: _artifactsLocation
+    _artifactsLocationSasToken: _artifactsLocationSasToken
+    appInsightsLocation: appInsightsLocation
 //    currentUserIdObject: currentUserIdObject
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
@@ -130,15 +182,21 @@ module backend '../backend/code/backend.bicep' = {
     storageAccountName: storageAccountName
     subscriptionId: subscriptionId
     solutionTag: solutionTag
+    imageGalleryName: ImageGalleryName
+    logicappname: logicAppName
+    instanceName: instanceName
+    collectTelemetry: collectTelemetry
   }
 }
 
-module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
+module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
   name: 'DeployAllPacks'
   dependsOn: [
     backend
   ]
   params: {
+    // _artifactsLocation: _artifactsLocation
+    // _artifactsLocationSasToken: _artifactsLocationSasToken
     assignmentLevel: assignmentLevel
     location: location
     dceId: backend.outputs.dceId
@@ -148,13 +206,21 @@ module AllPacks '../../Packs/IaaS/AllIaaSPacks.bicep' = if (deployPacks) {
     useExistingAG: useExistingAG
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     workspaceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
+    //workspaceIdAVD: seperateLAWforAVD ? (createNewLogAnalyticsWSAVD ? logAnalyticsAVD.outputs.lawresourceid : existingLogAnalyticsWSIdAVD) : ''
     actionGroupName: actionGroupName
     resourceGroupId: createNewResourceGroup ? resourgeGroup.outputs.newResourceGroupId : resourceGroupId
     emailreceiver: emailreceiver
     emailreiceversemail: emailreiceversemail
-    grafanaResourceId: newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId
+    grafanaResourceId: deployGrafana ? ( newGrafana ? amg.outputs.grafanaId : existingGrafanaResourceId) : ''
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     existingActionGroupResourceId: existingActionGroupId
+    deployIaaSPacks: deployIaaSPacks || deployAllPacks
+    deployPaaSPacks: deployPaaSPacks || deployAllPacks
+    deployPlatformPacks: deployPlatformPacks || deployAllPacks
+    storageAccountName: storageAccountName
+    imageGalleryName: ImageGalleryName
+    instanceName: instanceName
+    deployGrafana: deployGrafana
   }
 }

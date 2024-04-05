@@ -1,7 +1,7 @@
 targetScope='managementGroup'
 
-@description('Name of the DCR rule to be created')
-param rulename string = 'AMSP-IIS-Server'
+// @description('Name of the DCR rule to be created')
+// param rulename string = 'AMSP-IIS-Server'
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
@@ -19,21 +19,23 @@ param resourceGroupId string
 param assignmentLevel string
 param customerTags object
 param actionGroupResourceId string
-
-var Tags = (customerTags=={}) ? {'${solutionTag}': packtag
-'solutionVersion': solutionVersion} : union({
+param instanceName string
+var rulename = 'AMP-${instanceName}-${packtag}'
+var tempTags ={
   '${solutionTag}': packtag
-  'solutionVersion': solutionVersion
-},customerTags['All'])
+  MonitoringPackType: 'IaaS'
+  solutionVersion: solutionVersion
+}
+// if the customer has provided tags, then use them, otherwise use the default tags
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'IIS1'
+var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 
 // the xpathqueries define which counters are collected
 var xPathQueries=[
-  'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2216)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2221)]]'
   'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5152)]]'
   'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5010 or EventID=5011 or EventID=5012 or EventID=5013)]]'
@@ -61,10 +63,11 @@ var xPathQueries=[
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2233)]]'
   'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2226 or EventID=2230 or EventID=2231 or EventID=2232)]]'
   'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5174 or EventID=5179 or EventID=5180)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5085)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5054 or EventID=5091)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5063)]]'
-  'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5058)]]'
+  // 'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5085)]]'
+  // 'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5054 or EventID=5091)]]'
+  // 'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5063)]]'
+  // 'System!*[System[Provider[@Name=\'Microsoft-Windows-WAS\'] and (EventID=5058)]]'
+  // 'Application!*[System[Provider[@Name=\'Microsoft-Windows-IIS-W3SVC-WP\'] and (EventID=2216)]]'
 ]
 // The performance counters define which counters are collected
 var performanceCounters=[
@@ -100,26 +103,8 @@ var performanceCounters=[
   '\\SMTP Server(SMTP 1)\\Total Messages Submitted'
 ]
 
-// Action Group - the action group is either created or can reference an existing action group, depending on the useExistingAG parameter
-// module ag '../../../modules/actiongroups/ag.bicep' = {
-//   name: 'actionGroupName-deployment'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//   }
-// }
-
 // Alerts - the module below creates the alerts and associates them with the action group
-
-module Alerts './WinIISAlerts.bicep' = {
+module Alerts './alerts.bicep' = {
   name: 'Alerts-${packtag}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -128,6 +113,7 @@ module Alerts './WinIISAlerts.bicep' = {
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
+    instanceName: instanceName
   }
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
@@ -159,6 +145,7 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-1'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
 
@@ -171,7 +158,7 @@ module dcrIISLogsMonitoring '../../../modules/DCRs/filecollectionWinIIS.bicep' =
     lawResourceId: workspaceId
     Tags: Tags
     endpointResourceId: dceId
-    tableName: 'IISLogs'
+    //tableName: 'IISLogs'
   }
 }
 module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
@@ -188,20 +175,6 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
     ruleshortname: '${ruleshortname}-2'
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
+    instanceName: instanceName
   }
 }
-
-// // Grafana upload and install
-// module grafana 'ds.bicep' = {
-//   name: 'grafana'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   params: {
-//     fileName: 'grafana.json'
-//     grafanaName: grafanaName
-//     location: location
-//     resourceGroupName: resourceGroupName
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-//     packsManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
