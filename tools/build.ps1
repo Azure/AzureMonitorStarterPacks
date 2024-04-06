@@ -46,3 +46,8 @@ Set-Location ./Packs/IaaS/ADDS/client
 Compress-Archive -Path ./* -DestinationPath ../addscollection.zip -Update
 Set-Location $currentFolder
 
+foreach ($file in $mainMonstarPacksFiles) {
+    Set-Location -Path $file.Folder
+    bicep build $file.File
+    Set-Location $currentFolder  
+}
