@@ -38,14 +38,16 @@ weight: 50
     }
     if ($alerts) {
         "## Alerts"
-        "|DisplayName||Type|Description|"
-        "|---|---|---|---|"
+        ""
+        "|DisplayName|Type|Description|"
+        "|---|---|---|"
         foreach ($alert in $alerts) {
             "|[$($alert.alertRuleName)](#$($alert.alertRuleDisplayName.Replace(' ','-').tolower().replace('.','')))|Log| $($alert.alertRuleDescription)|"
             }
 
         $i=0
         foreach ($alert in $alerts) {
+            ""
             "### $($alert.alertRuleDisplayName)"
             ""
             "|Property | Value |"
@@ -64,6 +66,7 @@ weight: 50
         }
     }
     if ($performanceCounters) {
+        ""
         "## Performance Counters"
         ""
         "|Performance Counter|"
@@ -73,6 +76,7 @@ weight: 50
         }
     }
     if ($filePatterns) {
+        ""
         "## File Patterns"
         ""
         "|File Pattern|"

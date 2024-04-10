@@ -53,7 +53,7 @@ weight: 50
     # ""
     if ($alerts) {
         "[Alerts](#alerts)"
-        ""    
+        ""
     }
 
     # if ($performanceCounters) {
@@ -66,6 +66,7 @@ weight: 50
     # }
     if ($alerts) {
         "## Alerts"
+        ""
         "|DisplayName|Type|Description|"
         "|---|---|---|"
         foreach ($alert in $alerts) {
@@ -75,31 +76,34 @@ weight: 50
         foreach ($alert in $alerts) {
         $i=0
         $alerttype=$alert.template.resources.properties.parameters.policyRule.value.then.details.type   
+        ""
         "### $($alert.parameters.alertDisplayName.value)"
         ""
         "|Property | Value |"
         "|---|---|"
         "|Alert Type                    | $alerttype |"
         "|Alert Name                    |$($alert.parameters.alertname.value)|"
-        "|Alert DisplayName             |$($alert.parameters.alertDisplayName.value)| |"
-        "|Alert Description             |$($alert.parameters.alertDescription.value)| |"
-        "|Metric Namespace             |$($alert.parameters.metricNamespace.value)| |"
-        "|Severity                    |$($alert.parameters.parAlertSeverity.value)| |"
-        "|Metric Name                  |$($alert.parameters.metricName.value)| |"
-        "|Operator                     |$($alert.parameters.operator.value)| |"
-        "|Evaluation Frequency       |$($alert.parameters.parEvaluationFrequency.value)| |"
-        "|Windows Size                |$($alert.parameters.parWindowSize.value)| |"
-        "|Threshold                 |$($alert.parameters.parThreshold.value)| |"
-        "|Auto Mitigate              |$($alert.parameters.parAutoMitigate.value)| |"
-        "|Initiative Member             |$($alert.parameters.initiativeMember.value)| |"
-        "|Pack Type                     |$($alert.parameters.packtype.value)| |"
-        "|Time Aggregation              |$($alert.parameters.timeAggregation.value)| |"
+        "|Alert DisplayName             |$($alert.parameters.alertDisplayName.value)|"
+        "|Alert Description             |$($alert.parameters.alertDescription.value)|"
+        "|Metric Namespace             |$($alert.parameters.metricNamespace.value)|"
+        "|Severity                    |$($alert.parameters.parAlertSeverity.value)|"
+        "|Metric Name                  |$($alert.parameters.metricName.value)|"
+        "|Operator                     |$($alert.parameters.operator.value)|"
+        "|Evaluation Frequency       |$($alert.parameters.parEvaluationFrequency.value)|"
+        "|Windows Size                |$($alert.parameters.parWindowSize.value)|"
+        "|Threshold                 |$($alert.parameters.parThreshold.value)|"
+        "|Auto Mitigate              |$($alert.parameters.parAutoMitigate.value)|"
+        "|Initiative Member             |$($alert.parameters.initiativeMember.value)|"
+        "|Pack Type                     |$($alert.parameters.packtype.value)|"
+        "|Time Aggregation              |$($alert.parameters.timeAggregation.value)|"
         }
         $i++
     }
     # Diagnostic Settings policies
     if ($diags) {
+        ""
         "## Diagnostic Settings"
+        ""
         "|Diagnostics Log|"
         "|---|"
         foreach ($diag in $diags) {
