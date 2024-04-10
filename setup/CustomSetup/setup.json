@@ -100,6 +100,16 @@
                             }
                         },
                         {
+                            "name": "subscriptionInfoBox",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "style": "Info",
+                              "text": "Make sure the subscription selected below is under the Management Group hierarchy selected in the previous step. If not the setup will fail.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+                            }
+                        },
+                        {
                             "name": "subscriptionId",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Select Subscription",
@@ -259,7 +269,7 @@
                             "toolTip": "Log Analytics Workspace Name for MonStar Packs.",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').LAWStatus, 'New')]",
-                                "regex": "",
+                                "regex": "^[a-zA-Z0-9][a-zA-Z0-9-]{0,21}[a-zA-Z0-9]$",
                                 "validationMessage": ""
                             },
                             "visible": "[equals(steps('Configuration').LAWStatus, 'New')]"
@@ -412,7 +422,7 @@
                             "toolTip": "TBD",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
-                                "regex": "",
+                                "regex": "^[a-zA-Z][a-zA-Z0-9-]{0,21}[a-zA-Z0-9]$",
                                 "validationMessage": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit."
                             },
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
@@ -490,7 +500,7 @@
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs (Preview)",
+                            "label": "Deploy All PaaS Packs",
                             "toolTip": "Select to deploy all PaaS packs.",
                             "defaultValue": false,
                             "constraints": {
@@ -502,7 +512,7 @@
                         {
                             "name": "deployPlatformPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs (Preview)",
+                            "label": "Deploy All Platform Packs",
                             "toolTip": "Select to deploy all Platform packs.",
                             "defaultValue": false,
                             "visible": "[equals(steps('Packs').deployPacks, false)]",
@@ -569,7 +579,7 @@
                             "constraints": {
                                 "required": true,
                                 "regex": "^[a-z0-9A-Z]{1,12}$",
-                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-12 characters long."
                             },
                             "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },

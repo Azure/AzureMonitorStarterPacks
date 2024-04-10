@@ -85,7 +85,7 @@ In order to remove the solution, you can run the following script in this [link]
 - Open the Azure CLI with PowerShell:
 
 ```powershell
-wget https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1
+wget https://raw.githubusercontent.com/Azure/AzureMonitorStarterPacks/main/tools/cleanup.ps1
 ./cleanup.ps1 -RG <Resource Group Name> -RemoveAll
 ```
 
