@@ -52,7 +52,7 @@ module assignment '../../modules/policies/subscription/assignment.bicep' = {
   }
 }
 // This module creates a user managed identity for the packs to use.
-module AMAUserManagedIdentity '../backend/code/modules/userManagedIdentity.bicep' = {
+module AMAUserManagedIdentity '../backend/bicep/modules/userManagedIdentity.bicep' = {
   name: 'AMAUserManagedIdentity'
   params: {
     location: location

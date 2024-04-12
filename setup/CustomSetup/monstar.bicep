@@ -58,10 +58,7 @@ var functionName = 'AMP-${instanceName}-${split(subscriptionId,'-')[0]}-Function
 var logicAppName = 'AMP-${instanceName}-LogicApp'
 var ImageGalleryName = 'AMP${instanceName}Gallery'
 
-
-
-
-module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
+module resourgeGroup '../backend/bicep/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
   scope: subscription(subscriptionId)
   params: {
@@ -71,7 +68,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
   }
 }
 
-module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
+module storageAccount '../backend/bicep/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
   name:'newstorage-deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
@@ -83,7 +80,7 @@ module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (cr
     storageAccountName: storageAccountName
   }
 }
-module existingStorageAccount '../backend/code/modules/mg/storageAccountBlobs.bicep' = if (!createNewStorageAccount) {
+module existingStorageAccount '../backend/bicep/modules/mg/storageAccountBlobs.bicep' = if (!createNewStorageAccount) {
   name:'existingstorage-deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -160,7 +157,7 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
   }
 }
 
-module amg '../backend/code/modules/grafana.bicep' = if (newGrafana && deployGrafana) {
+module amg '../backend/bicep/modules/grafana.bicep' = if (newGrafana && deployGrafana) {
   name: 'azureManagedGrafana-${instanceName}'
   dependsOn: [
     resourgeGroup
@@ -177,7 +174,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana && deployGra
   }
 }
 
-module backend '../backend/code/backend.bicep' = {
+module backend '../backend/bicep/backend.bicep' = {
   name: 'MonitoringPacks-backend-${instanceName}'
   dependsOn: [
     resourgeGroup
