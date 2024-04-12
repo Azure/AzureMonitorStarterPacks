@@ -187,7 +187,7 @@ function Add-Tag {
     }
 }
 
-function Remove-DCR {
+function Remove-DCRa {
     param (
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
@@ -202,11 +202,12 @@ resources
 | where MPs=~'$TagValue'
 | summarize by name, id
 "@
-    $DCR = Search-AzGraph -Query $DCRQuery
-    "Found rule $($DCR.name)."
-    "DCR id : $($DCR.id)"
+    $DCRs = Search-AzGraph -Query $DCRQuery
+    "Found rule(s) $($DCRs.name)."
+    "DCR id (s): $($DCRs.id)"
     "resource: $resourceId"
-    $associationQuery = @"
+    foreach ($DCR in $DCRs) {
+        $associationQuery = @"
 insightsresources
 | where type == "microsoft.insights/datacollectionruleassociations"
 | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
@@ -214,19 +215,20 @@ insightsresources
 | where resourceId =~ '$resourceId' and
 ruleId =~ '$($DCR.id)'
 "@
-    $associationQuery
-    $association = Search-AzGraph -Query $associationQuery
-    "Found association $($association.name). Removing..."
-    if ($association.count -gt 0) {
-        Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
-    }
-    else {
-        "No association Found."
+        $associationQuery
+        $association = Search-AzGraph -Query $associationQuery
+        if ($association.count -gt 0) {
+            "Found association $($association.name). Removing..."
+            Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
+        }
+        else {
+            "No association Found."
+        }
     }
 }
 
 
-# Depends on Function Remove-DCR
+# Depends on Function Remove-DCRa
 function Remove-Tag {
     param (
         [Parameter(Mandatory = $true)]
@@ -252,11 +254,17 @@ function Remove-Tag {
         }
         else {
             #Monitoring Tag exists. Good.  
-            if ($TagValue -eq 'All') {
+            if ($TagValue -eq 'All') { #This only applies (should) to IaaS and Discovery packs.
                 # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings. 
                 #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
                 #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
                 $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+                $taglist=$tag.$tagName.split(',')
+                "Removing all associations $($taglist.count) for $taglist."
+                foreach ($tagv in $taglist) {
+                    "Removing association for $tagv. on $resourceId."
+                    Remove-DCRa -resourceId $resourceId -TagValue $tagv
+                }
                 $tag.Remove($tagName)
                 if ($tag.count -ne 0) {
                     Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
@@ -289,7 +297,8 @@ function Remove-Tag {
                     # Remove association
                     # find rule
                     if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
-                        Remove-DCR -resourceId $resourceId -TagValue $TagValue
+                        "Removing DCR Association."
+                        Remove-DCRa -resourceId $resourceId -TagValue $TagValue
                     }
                     elseif ($TagName -ne 'Avd') {
                         "Paas Pack. No need to remove association."
@@ -333,7 +342,7 @@ function get-alertApiVersion (
     $apiVersion = $apiVersions[0]
     return $apiVersion
 }
-# Depends on Functions Add-Tag, Add-Agent, Remove-DCR
+# Depends on Functions Add-Tag, Add-Agent, Remove-DCRa
 function Config-AVD {
     param (
         [Parameter(Mandatory = $true)]
@@ -438,7 +447,7 @@ resources
             "AVD - Removing Tag from VM ($vmName)"
             Update-AzTag -ResourceId $AVDResources[0].id -Tag $Tag -Operation Delete
             # Update DCR for each VM
-            Remove-DCR -resourceId $vmInfo.VMResId -TagValue $TagValue
+            Remove-DCRa -resourceId $vmInfo.VMResId -TagValue $TagValue
         }
     }
     # Create Host Pool Specific Alerts
