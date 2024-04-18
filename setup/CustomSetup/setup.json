@@ -92,14 +92,6 @@
                             }
                         },
                         {
-                            "name": "StorageAccountsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]"
-                            }
-                        },
-                        {
                             "name": "subscriptionInfoBox",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -189,56 +181,28 @@
                             },
                             "visible": true
                         },
-                        {
-                            "name": "storageAccountStatus",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Use New or Existing Storage Account",
-                            "toolTip": "This will be the Storage Account for the Solution",
-                            "defaultValue": "Existing",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": "New"
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": "Existing"
-                                    }
-                                ],
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
-                            "name": "storageAccountNameNew",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Name for the new Storage Account. Must be unique globally!",
-                            "defaultValue": "amonsterpacksxxxx",
-                            "toolTip": "Use only allowed characters. Change xxxx to random characters",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z]{1,30}$",
-                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
-                            },
-                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'New')]"
-                        },
-                        {
-                            "name": "existingStorageAccount",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Existing Storage Account",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Storage Account to support solution",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Storage Account...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[map(steps('Configuration').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
-                            },
-                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'Existing')]"
-                        },
+						{
+							"name": "storageAccountSelector",
+							"type": "Microsoft.Storage.StorageAccountSelector",
+							"label": "Storage account",
+							"toolTip": "",
+							"defaultValue": {
+								"name": "storageaccount01",
+								"type": "Premium_LRS"
+							},
+							"scope": {
+								"location": "[steps('basics').resourceScope.location.name]",
+								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+								"subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
+							},
+							"constraints": {
+								"allowedTypes": []
+							},
+							"options": {
+								"hideExisting": false
+							},
+							"visible": true
+						},
                         {
                             "name": "LAWStatus",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -634,8 +598,8 @@
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[steps('Configuration').NewGrafanaName]",
-                "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
-                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountStatus,'New')]",
+                "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
+                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
                 "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
