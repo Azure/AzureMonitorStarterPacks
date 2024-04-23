@@ -272,6 +272,8 @@ $PaaSQuery"
 
     }
     "getNonMonitoredPaaS" {
+      $ambaCatalog=(get-AmbaCatalog | ConvertFrom-Json).Categories
+
       $resourceQuery=@"
       resources
       $PaaSQuery
