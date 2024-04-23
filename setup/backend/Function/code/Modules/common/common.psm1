@@ -70,7 +70,6 @@ function Install-azMonitorAgent {
         Write-Host "Error installing agent. $($_.Exception.Message)"
     }
 }
-
 function Remove-Agent {
     param (
         [Parameter(Mandatory = $true)]
@@ -126,7 +125,6 @@ function Remove-Agent {
     }
 }
 # Depends on Function Install-azMonitorAgent
-
 function Add-Agent {
     param (
         [Parameter(Mandatory = $true)]
@@ -278,42 +276,173 @@ function Add-Tag {
         }
     }
 }
+
+function get-AmbaCatalog {
+
+    $ambaJsonURL=$env:ambaJsonURL
+      if ($ambaJsonURL -eq $null) {
+          "No AMBA URL provided"
+          exit
+      }
+      $aaa=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json
+      $Categories=$aaa.psobject.properties.Name
+      #$Categories
+      $body=@"
+{
+    "Categories": [
+"@
+    $i=0
+          foreach ($cat in $Categories) {
+              $svcs=$aaa.$($cat).psobject.properties.Name
+              foreach ($svc in $svcs) {
+                  if ($aaa.$cat.$svc.name -ne $null) {                  
+                      if ($aaa.$cat.$svc[0].properties.metricNamespace -ne $null) {
+                        $namespace=$aaa.$cat.$svc[0].properties.metricNamespace.tolower()
+                        $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+#                        "$namespace $ambafolder"
+                          $bodyt=@"
+      {
+        "category" : "$cat",
+        "service" : "$svc",
+        "namespace": "$namespace",
+        "tag": "$(get-tagForAmbaFolder -nameSpace $ambaFolder)"
+      }
+"@
+                      }
+                      else {
+                        $namespace="microsoft.$($cat.tolower())/$($svc.tolower())"
+                        $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+                        #"$namespace $ambafolder"
+                          $bodyt=@"
+        {
+            "category" : "$cat",
+          "service" : "$svc",
+          "namespace": "$namespace",
+          "tag" : "$(get-tagForAmbaFolder -nameSpace $ambaFolder)"
+        }
+"@  
+                      }
+                      if ($i -eq 0) {
+                          $body+=@"
+                          $bodyt
+"@
+    
+                          $i++
+                      }
+                      else {
+                          $body+=@"
+    ,
+                          $bodyt
+"@
+                      }
+                  }
+              }
+          }
+        $body+=@"
+        ]
+        }
+"@
+    return $body
+}
+function get-packMapping {
+    $packs = @{
+        "KeyVault" = "keyvault.vaults"
+        "LogicApps" = "logic.workflows"
+        "ServiceBus" = "servicebus.namespaces"
+        "Storage" = "storage.storageaccounts"
+        "WebApps" = "web.sites"
+        "SQLSrv"= "sql.servers"
+        "SQLMI" = "sql.managedinstances"
+        "WebServer"= "web.serverfarms"
+        "AppGW"='network.applicationgateways'
+        "AzFW"='network.azurefirewalls'
+        'PrivZones'='network.privatednszones'
+        'PIP'= 'network.publicipaddresses'
+        'UDR'='network.routetables'
+        'AA'='automation.automationaccounts'
+        'NSG'='network.networksecuritygroups'
+        'AzFD'= 'network.frontdoors'
+        'ALB'= 'network.loadbalancers'
+        'Bastion' = 'network.bastionhosts'
+        'VPNG'= 'network.vpngateways'
+        'VnetGW'= 'network.virtualNetworkgateways'
+        'VNET'= 'network.virtualnetworks'
+        "MLWS" = "machinelearningservices.workspaces"
+        "EVNS" = "eventhub.namespaces"
+        "EVCL" = "eventhub.clusters"
+        "MDB" = "dbformariadb.servers"
+        "CDN" = "cdn.profiles"
+        "APIM" = "apimanagement.service"
+        "STOC" = "storagecache.caches"
+        "EGT" = "eventgrid.topics"
+        "EGST" = "eventgrid.systemtopics"
+        "SBNS" = "servicebus.namespaces"
+        "KCL" = "kusto.clusters"
+        "SSS" = "storagesync.storagesyncservices"
+        "NGW" = "network.natgateways"
+        "CON" = "network.connections"
+        "ERC" = "network.expressroutecircuits"
+        "NWCM" = "network.networkwatchers.connectionmonitors"
+        "ERPT" = "network.expressrouteports"
+        "TMPr" = "network.trafficmanagerprofiles"
+        "DNS" = "network.dnszones"
+        "ERGW" = "network.expressroutegateways"
+        "RSV" = "recoveryservices.vaults"
+        "PGFSrv" = "dbforpostgresql.flexibleservers"
+        "PGSrv" = "dbforpostgresql.servers"
+        "CSMC" = "containerservice.managedclusters"
+        "Redis" = "cache.redis"
+        "Batch" = "batch.batchaccounts"
+        "IotH" = "devices.iothubs"
+        "AVD" = "desktopvirtualization.hostpools"
+        "ADF" = "datafactory.factories"
+        "AnSvs" = "analysisservices.servers"
+        "NetApp" = "netapp.netappaccounts.capacitypools.volumes"
+        "COG" = "cognitiveservices.accounts"
+        "Subs" = "resources.subscriptions"
+        "SQLDB" = "sql.servers.databases"
+        "CAPP" = "app.containerapps"
+        "AVS" = "avs.privateclouds"
+        "CRR" = "containerregistry.registries"
+        "PBICap" = "powerbidedicated.capacities"
+        "CICG" = "containerinstance.containergroups"
+        "Stream" = "streamanalytics.streamingjobs"
+        "SynWS" = "synapse.workspaces"
+        "MySQLF" = "dbformysql.flexibleservers"
+        "MySQLS" = "dbformysql.servers"
+        "LAW" = "operationalinsights.workspaces"
+        "Search" = "search.searchservices"
+        "DDB" = "documentdb.databaseaccounts"
+        "Signal" = "signalrservice.signalr"
+        "VMSS" = "compute.virtualmachinescalesets"
+        "VM" = "compute.virtualmachines"
+    }
+    return $packs
+}
 function get-AmbaPackFolder {
     param (
-        [Parameter(Mandatory = $true)]
-        [string]$packName
+        [Parameter(Mandatory = $false)]
+        [string]$packName,
+        [Parameter(Mandatory = $false)]
+        [string]$nameSpace
     )
-    $packName = $packName.ToLower()
+    $packs = get-packMapping
     # Hashatable with packname and folder in the amba repo
-    $packs = @{
-        "KeyVault" = "KeyVault.vaults"
-        "LogicApps" = "Logic.workflows"
-        "ServiceBus" = "ServiceBus.namespaces"
-        "Storage" = "Storage.storageAccounts"
-        "WebApps" = "Web.sites"
-        "SQLSrv"= "Sql.servers"
-        "SQLMI" = "Sql.managedInstances"
-        "WebServer"= "Web.serverFarms"
-        "AppGW"='Network.applicationGateways'
-        "AzFW"='Network.azureFirewalls'
-        'PrivZones'='Network.PrivateDnsZones'
-        'PIP'= 'Network.publicIPAddresses'
-        'UDR'='Network.routeTables'
-        'AA'='Automation.automationAccounts'
-        'NSG'='Network.networkSecurityGroups'
-        'AzFD'= 'Network.frontodoors'
-        'ALB'= 'Network.loadBalancers'
-        'Bastion' = 'Network.bastionHosts'
-        'VPNG'= 'Network.vpnGateways'
-        'VnetGW'= 'Network.virtualNetworkGateways'
-        'VNET'= 'Network.virtualNetworks'
-    }
     if ($packs.ContainsKey($packName)) {
         return $packs[$packName]
     }
     else {
         return $null
     }
+}
+function get-tagForAmbaFolder {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$nameSpace
+    )
+    $packs = get-packMapping
+    $tag=$packs.Keys | Where-Object { $packs[$_] -eq $nameSpace}
+    return $tag
 }
 function get-alertApiVersion (
     [Parameter(Mandatory = $true)]
@@ -333,7 +462,16 @@ function get-alertApiVersion (
     $apiVersion = $apiVersions[0]
     return $apiVersion
 }
-
+function get-ambaAlertsForResourceType {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId,
+        [Parameter(Mandatory = $true)]
+        [string]$serviceFolder)
+    $ambaJsonURL=$env:ambaJsonURL #'https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+    $ambaAlerts=Invoke-WebRequest -Uri $ambaJsonURL | Select-Object -ExpandProperty Content | Out-String | convertfrom-json
+    return $ambaAlerts.$($serviceFolder.split('.')[0]).$($serviceFolder.split('.')[1])
+}
 function new-PaaSAlert {
     param (
     [Parameter(Mandatory=$true)]
@@ -356,30 +494,10 @@ function new-PaaSAlert {
     [string]$instanceName,
     [Parameter(Mandatory=$true)]
     [string]$resourceType
-
 )
     #Register-PackageSource -Name Nuget.Org -Provider NuGet -Location "https://api.nuget.org/v3/index.json"
-    $ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
-    $ambaAlerts=Invoke-WebRequest -Uri $ambaJsonURL | Select-Object -ExpandProperty Content | Out-String | convertfrom-json
-    
     $resourceName=($resourceId -split '/')[8]
-    # $servicesBaseURL= 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'# $env:servicesBaseURL
-    # $alertfile='/alerts.yaml'
-    # $alertsFileURL="$servicesBaseURL$serviceFolder$alertfile"
-    # "URL:"
-    # $alertsFileURL
-    # # $resourceGroupName='rg-Monstarpacks'
-    # $location='global'
-    # $alertsFile=Invoke-WebRequest -Uri $alertsFileURL | Select-Object -ExpandProperty Content | Out-String
-    # # "Alerts File:"
-    # # $alertsFile
-    # $alertst=ConvertFrom-Yaml $alertsFile
-    # # "Alertst:"
-    # # $alertst
-    # # "Before trying to create alerts, just converto-yaml json whatever..."
-    # # ConvertTo-Yaml -JsonCompatible $alertst
-    # $alerts=ConvertTo-Yaml -JsonCompatible $alertst | ConvertFrom-Json
-    $alerts=$ambaAlerts.$($serviceFolder.split('.')[0]).$($serviceFolder.split('.')[1])
+    $alerts=get-ambaAlertsForResourceType -resourceId $resourceId -serviceFolder $serviceFolder
     if (($alerts | Where-Object {$_.visible -eq $true}).count -eq 0) {
     Write-Host "No visible alerts found in the file"
     exit
@@ -395,6 +513,8 @@ function new-PaaSAlert {
                                                             -Operator $alert.Properties.operator `
                                                             -Threshold $alert.Properties.threshold `
                                                             -TimeAggregation $alert.Properties.timeAggregation
+                    $automaticMitigation=$null -eq $alert.Properties.autoMitigate ? $false : $alert.Properties.autoMitigate
+
                     $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
                                             -ResourceGroupName $resourceGroupName `
                                             -TargetResourceId $resourceId `
@@ -402,10 +522,12 @@ function new-PaaSAlert {
                                             -Severity $alert.Properties.severity `
                                             -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
                                             -Condition $condition `
-                                            -AutoMitigate $alert.Properties.autoMitigate `
                                             -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
                                             -ActionGroupId $actionGroupId `
-                                            -Verbose
+                                            -AutoMitigate $automaticMitigation `
+                                            -Verbose                                           
+                                            #
+
                                             $tag = @{$tagName=$packtag}
                                             Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
                 }
@@ -415,7 +537,7 @@ function new-PaaSAlert {
                                                                 -Operator $alert.Properties.operator `
                                                                 -DynamicThreshold `
                                                                 -TimeAggregation $alert.Properties.timeAggregation `
-                                                                -ViolationCount $alert.properties.failingPeriods.minFailingPeriodsToAlert `
+                                                                -ViolationCount $alert.properties.failingPeriods.numberOfEvaluationPeriods `
                                                                 -ThresholdSensitivity $alert.Properties.alertSensitivity 
                     $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
                                                     -ResourceGroupName $resourceGroupName `
@@ -424,7 +546,7 @@ function new-PaaSAlert {
                                                     -Severity $alert.Properties.severity `
                                                     -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
                                                     -Condition $condition `
-                                                    -AutoMitigate $alert.Properties.autoMitigate `
+                                                    -AutoMitigate $automaticMitigation `
                                                     -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
                                                     -ActionGroupId $actionGroupId 
                     #update rule with new tags
@@ -454,6 +576,21 @@ function new-PaaSAlert {
         }
     }
 }
+function get-DCRs {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$TagValue
+    )
+    $DCRQuery = @"
+resources
+| where type == "insights/datacollectionrules"
+| extend MPs=tostring(['tags'].MonitorStarterPacks)
+| where MPs=~'$TagValue'
+| summarize by name, id
+"@
+    $DCRlist = Search-AzGraph -Query $DCRQuery
+    return $DCRlist
+}
 function Remove-DCRa {
     param (
         [Parameter(Mandatory = $true)]
@@ -461,29 +598,30 @@ function Remove-DCRa {
         [Parameter(Mandatory = $true)]
         [string]$TagValue
     )
-
-    $DCRQuery = @"
-resources
-| where type == "microsoft.insights/datacollectionrules"
-| extend MPs=tostring(['tags'].MonitorStarterPacks)
-| where MPs=~'$TagValue'
-| summarize by name, id
-"@
-    $DCRlist = Search-AzGraph -Query $DCRQuery
+#     $DCRQuery = @"
+# resources
+# | where type == "microsoft.insights/datacollectionrules"
+# | extend MPs=tostring(['tags'].MonitorStarterPacks)
+# | where MPs=~'$TagValue'
+# | summarize by name, id
+# "@
+#     $DCRlist = Search-AzGraph -Query $DCRQuery
+    $DCRlist = get-DCRs -TagValue $TagValue
     "Found $($DCRlist.count) rule(s) with $TagValue pack."
     # "DCR id : $($DCR.id)"
     "resource: $resourceId"
     foreach ($DCR in $DCRlist) {
-        $associationQuery = @"
-insightsresources
-| where type == "microsoft.insights/datacollectionruleassociations"
-| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
-| where isnotnull(properties.dataCollectionRuleId)
-| where resourceId =~ '$resourceId' and
-ruleId =~ '$($DCR.id)'
-"@
-        $associationQuery
-        $association = Search-AzGraph -Query $associationQuery
+#         $associationQuery = @"
+# insightsresources
+# | where type == "microsoft.insights/datacollectionruleassociations"
+# | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
+# | where isnotnull(properties.dataCollectionRuleId)
+# | where resourceId =~ '$resourceId' and
+# ruleId =~ '$($DCR.id)'
+# "@
+#         $associationQuery
+#         $association = Search-AzGraph -Query $associationQuery
+        $association = get-DCRassociations -resourceId $resourceId -DCRid $DCR.id
         "Found association $($association.name). Removing..."
         if ($association.count -gt 0) {
             Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
@@ -492,6 +630,25 @@ ruleId =~ '$($DCR.id)'
             "No association Found."
         }
     }
+}
+function get-DCRassociations {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId,
+        [Parameter(Mandatory = $true)]
+        [string]$DCRid
+    )
+    $associationQuery = @"
+    insightsresources
+    | where type == "microsoft.insights/datacollectionruleassociations"
+    | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
+    | where isnotnull(properties.dataCollectionRuleId)
+    | where resourceId =~ '$resourceId' and
+    ruleId =~ '$($DCRid)'
+"@
+    $associationQuery
+    $association = Search-AzGraph -Query $associationQuery
+    return $association
 }
 function New-DCRa {
     param (
@@ -515,16 +672,17 @@ resources
         "Found rule $($DCR.name)."
         "DCR id : $($DCR.id)"
         "resource: $resourceId"
-        $associationQuery = @"
-insightsresources
-| where type == "microsoft.insights/datacollectionruleassociations"
-| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
-| where isnotnull(properties.dataCollectionRuleId)
-| where resourceId =~ '$resourceId' and
-ruleId =~ '$($DCR.id)'
-"@
-        $associationQuery
-        $association = Search-AzGraph -Query $associationQuery
+#         $associationQuery = @"
+# insightsresources
+# | where type == "microsoft.insights/datacollectionruleassociations"
+# | extend resourceId=split(id,'/providers/Microsoft.Insights/')[0], ruleId=properties.dataCollectionRuleId
+# | where isnotnull(properties.dataCollectionRuleId)
+# | where resourceId =~ '$resourceId' and
+# ruleId =~ '$($DCR.id)'
+# "@
+#         $associationQuery
+#         $association = Search-AzGraph -Query $associationQuery
+        $association = get-DCRassociations -resourceId $resourceId -DCRid $DCR.id
         if ($association.count -eq 0) {
             "No association Found. Adding..."
             # Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
@@ -639,15 +797,16 @@ function Remove-Tag {
                         }
                         # Part 2 - Alerts
                         "Will look for alerts to remove with specific scope (the resource) and that have the proper tag."
-                        $alertsQuery = @"
-resources
-| where type in~ ("microsoft.insights/metricAlerts", "microsoft.insights/activityLogAlerts")
-| extend alertTags=tostring(['tags'].$TagName), Scope=properties.scopes[0]
-| where alertTags=~'$TagValue' and Scope=~'$resourceId'
-| project name, id, resourceGroup
-"@
-"Query: $alertsQuery"
-                        $alerts = Search-AzGraph -Query $alertsQuery
+#                         $alertsQuery = @"
+# resources
+# | where type in~ ("microsoft.insights/metricAlerts", "microsoft.insights/activityLogAlerts")
+# | extend alertTags=tostring(['tags'].$TagName), Scope=properties.scopes[0]
+# | where alertTags=~'$TagValue' and Scope=~'$resourceId'
+# | project name, id, resourceGroup
+# "@
+# "Query: $alertsQuery"
+#                         $alerts = Search-AzGraph -Query $alertsQuery
+                        $alerts = get-alertsForResource -resourceId $resourceId -TagName $TagName -TagValue $TagValue
                         if ($alerts.count -gt 0) {
                             "Found $($alerts.count) alert(s) with $TagName tag for $resourceId. Removing..."
                             foreach ($alert in $alerts) {
@@ -664,6 +823,26 @@ resources
             }
         }
     }
+}function get-alertsForResource {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId,
+        [Parameter(Mandatory = $true)]
+        [string]$TagName,
+        [Parameter(Mandatory = $true)]
+        [string]$TagValue
+    )
+
+    $alertsQuery = @"
+resources
+| where type in~ ("microsoft.insights/metricAlerts", "microsoft.insights/activityLogAlerts")
+| extend alertTags=tostring(['tags'].$TagName), Scope=properties.scopes[0]
+| where alertTags=~'$TagValue' and Scope=~'$resourceId'
+| project name, id, resourceGroup
+"@
+    "Query: $alertsQuery"
+    $alerts = Search-AzGraph -Query $alertsQuery
+    return $alerts
 }
 # Depends on Functions Add-Tag, Add-Agent, Remove-DCRa
 function Config-AVD {
