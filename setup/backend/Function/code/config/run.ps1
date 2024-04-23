@@ -3,6 +3,14 @@ using namespace System.Net
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
 
+function get-serviceTag {
+    param (
+        [string]$namespace,
+        [PSCustomObject]$tagMappings
+    )
+    $tag=($tagMappings.tags | Where-Object { $_.nameSpace -eq $namespace }).tag
+    return $tag
+}
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
@@ -218,59 +226,9 @@ $PaaSQuery"
 "@
     }
     'listAmbaAlerts' {
-      $aaa=Invoke-WebRequest -uri 'https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json' | convertfrom-json
-      $Categories=$aaa.psobject.properties.Name
-      #$Categories
-      $body=@"
-{
-    "Categories": [
-"@
-    $i=0
-          foreach ($cat in $Categories) {
-              $svcs=$aaa.$($cat).psobject.properties.Name
-              foreach ($svc in $svcs) {
-                  if ($aaa.$cat.$svc.name -ne $null) {                  
-                      if ($aaa.$cat.$svc[0].properties.metricNamespace -ne $null) {
-                          $bodyt=@"
-      {
-        "category" : "$cat",
-        "service" : "$svc",
-        "namespace": "$($aaa.$cat.$svc[0].properties.metricNamespace.tolower())"
-      }
-"@
-                      }
-                      else {
-                          $bodyt=@"
-        {
-            "category" : "$cat",
-          "service" : "$svc",
-          "namespace": "microsoft.$($cat.tolower())/$($svc.tolower())"
-        }
-"@  
-                      }
-                      if ($i -eq 0) {
-                          $body+=@"
-                          $bodyt
-"@
-    
-                          $i++
-                      }
-                      else {
-                          $body+=@"
-    ,
-                          $bodyt
-"@
-                      }
-                  }
-              }
-          }
-        $body+=@"
-        ]
-        }
-"@
-    
+      $body=get-AmbaCatalog
     }
-    "getNonMonitoredPaaS" {
+    "getMonitoredPaaS" {
         $resourceQuery=@"
         resources
         $PaaSQuery
@@ -313,7 +271,37 @@ $PaaSQuery"
     $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
 
     }
-    "getNonMonitoredPlatform" {
+    "getNonMonitoredPaaS" {
+      $resourceQuery=@"
+      resources
+      $PaaSQuery
+      | where isempty(tags.MonitorStarterPacks)
+      | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId
+"@
+#       $alertsQuery=@"
+#       resources
+#       | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+#       | where isnotempty(tags.MonitorStarterPacks)
+#       | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+# "@
+      $resources=Search-AzGraph -Query $resourceQuery
+      # $alerts=Search-AzGraph -Query $alertsQuery
+
+      # determine if the resources have alerts and shows total
+      $results="{""Monitored Resources"" : ["
+
+      $results+=foreach ($res in $resources) {
+              "{""Resource"" : ""$($res.Resource)"","
+              """type"" : ""$($res.""type"")"","
+              """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
+              """resourceGroup"" : ""$($res.""resourceGroup"")"","
+              """location"" : ""$($res.""location"")"","
+              """subscriptionId"" : ""$($res.""subscriptionId"")""},"
+      }
+      $resultsString=$results -join ""
+      $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
+  }
+    "getMonitoredPlatform" {
         $resourceQuery=@"
         resources
         $PlatformQuery

@@ -12,6 +12,8 @@ param appInsightsLocation string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
+var ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+
 param apiManagementKey string= base64(newGuid())
 param solutionTag string
 param instanceName string
@@ -177,6 +179,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     MSI_CLIENT_ID: userManagedIdentityClientId
     PacksUserManagedId: packsUserManagedId
     InstanceName: instanceName
+    AMBAJsonURL: ambaJsonURL
     servicesBaseURL: 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'
   }
 }
