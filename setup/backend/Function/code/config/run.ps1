@@ -161,6 +161,10 @@ $tagMapping=@"
       "tag": "AVD",
       "nameSpace": "Microsoft.DesktopVirtualization/hostpools",
       "type": "PaaS"
+    },{
+      "tag": "VNet",
+      "nameSpace": "microsoft.network/virtualnetworks",
+      "type": "Platform"
     },
     
     ]
@@ -227,13 +231,77 @@ $PaaSQuery"
     }
     'listAmbaAlerts' {
       $body=get-AmbaCatalog
+#       $ambaJsonURL=$env:ambaJsonURL
+#       if ($ambaJsonURL -eq $null) {
+#           "No AMBA URL provided"
+#           exit
+#       }
+#       $aaa=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json
+#       $Categories=$aaa.psobject.properties.Name
+#       #$Categories
+#       $body=@"
+# {
+#     "Categories": [
+# "@
+#     $i=0
+#           foreach ($cat in $Categories) {
+#               $svcs=$aaa.$($cat).psobject.properties.Name
+#               foreach ($svc in $svcs) {
+#                   if ($aaa.$cat.$svc.name -ne $null) {                  
+#                       if ($aaa.$cat.$svc[0].properties.metricNamespace -ne $null) {
+#                         $namespace=$aaa.$cat.$svc[0].properties.metricNamespace.tolower()
+#                         $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+#                         "$namespace $ambafolder"
+#                           $bodyt=@"
+#       {
+#         "category" : "$cat",
+#         "service" : "$svc",
+#         "namespace": "$namespace",
+#         "tag": "$(get-tagForAmbaFolder -nameSpace $ambaFolder)"
+#       }
+# "@
+#                       }
+#                       else {
+#                         $namespace="microsoft.$($cat.tolower())/$($svc.tolower())"
+#                         $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+#                         "$namespace $ambafolder"
+#                           $bodyt=@"
+#         {
+#             "category" : "$cat",
+#           "service" : "$svc",
+#           "namespace": "$namespace",
+#           "tag" : "$(get-tagForAmbaFolder -nameSpace $ambaFolder)"
+#         }
+# "@  
+#                       }
+#                       if ($i -eq 0) {
+#                           $body+=@"
+#                           $bodyt
+# "@
+    
+#                           $i++
+#                       }
+#                       else {
+#                           $body+=@"
+#     ,
+#                           $bodyt
+# "@
+#                       }
+#                   }
+#               }
+#           }
+#         $body+=@"
+#         ]
+#         }
+# "@
+    
     }
     "getMonitoredPaaS" {
         $resourceQuery=@"
         resources
         $PaaSQuery
         | where isnotempty(tags.MonitorStarterPacks)
-        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
 "@
         $alertsQuery=@"
         resources
@@ -255,6 +323,7 @@ $PaaSQuery"
                 """tag"" : ""$($res.""tag"")"","
                 """resourceGroup"" : ""$($res.""resourceGroup"")"","
                 """location"" : ""$($res.""location"")"","
+                """kind"" : ""$($res.""kind"")"","
                 """subscriptionId"" : ""$($res.""subscriptionId"")"","
                 """Total"" : $totalAlerts},"
             } else {
@@ -263,6 +332,7 @@ $PaaSQuery"
                 """tag"" : ""$($res.""tag"")"","
                 """resourceGroup"" : ""$($res.""resourceGroup"")"","
                 """location"" : ""$($res.""location"")"","
+                """kind"" : ""$($res.""kind"")"","
                 """subscriptionId"" : ""$($res.""subscriptionId"")"","
                 """Total"" : 0 },"
             }   
@@ -272,13 +342,11 @@ $PaaSQuery"
 
     }
     "getNonMonitoredPaaS" {
-      $ambaCatalog=(get-AmbaCatalog | ConvertFrom-Json).Categories
-
       $resourceQuery=@"
       resources
       $PaaSQuery
       | where isempty(tags.MonitorStarterPacks)
-      | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId
+      | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
 "@
 #       $alertsQuery=@"
 #       resources
@@ -287,6 +355,7 @@ $PaaSQuery"
 #       | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
 # "@
       $resources=Search-AzGraph -Query $resourceQuery
+      $resourceQuery
       # $alerts=Search-AzGraph -Query $alertsQuery
 
       # determine if the resources have alerts and shows total
@@ -298,6 +367,7 @@ $PaaSQuery"
               """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
               """resourceGroup"" : ""$($res.""resourceGroup"")"","
               """location"" : ""$($res.""location"")"","
+              """kind"" : ""$($res.""kind"")"","
               """subscriptionId"" : ""$($res.""subscriptionId"")""},"
       }
       $resultsString=$results -join ""
@@ -308,7 +378,7 @@ $PaaSQuery"
         resources
         $PlatformQuery
         | where isnotempty(tags.MonitorStarterPacks)
-        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
 "@
         $alertsQuery=@"
         resources
@@ -320,6 +390,7 @@ $PaaSQuery"
         $alerts=Search-AzGraph -Query $alertsQuery
 
         # determine if the resources have alerts and shows total
+        "Results: $($resources.count)"
         $results="{""Monitored Resources"" : ["
 
         $results+=foreach ($res in $resources) {
@@ -330,6 +401,7 @@ $PaaSQuery"
                 """tag"" : ""$($res.""tag"")"","
                 """resourceGroup"" : ""$($res.""resourceGroup"")"","
                 """location"" : ""$($res.""location"")"","
+                """kind"" : ""$($res.""kind"")"","
                 """subscriptionId"" : ""$($res.""subscriptionId"")"","
                 """Total"" : $totalAlerts},"
             } else {
@@ -338,6 +410,7 @@ $PaaSQuery"
                 """tag"" : ""$($res.""tag"")"","
                 """resourceGroup"" : ""$($res.""resourceGroup"")"","
                 """location"" : ""$($res.""location"")"","
+                """kind"" : ""$($res.""kind"")"","
                 """subscriptionId"" : ""$($res.""subscriptionId"")"","
                 """Total"" : 0 },"
             }   
@@ -346,6 +419,40 @@ $PaaSQuery"
     $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
 
     }
+    "getNonMonitoredPlatform" {
+      $resourceQuery=@"
+      resources
+      $PlatformQuery
+      | where isempty(tags.MonitorStarterPacks)
+      | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+"@
+      $alertsQuery=@"
+      resources
+      | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+      | where isempty(tags.MonitorStarterPacks)
+      | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+"@
+      $resources=Search-AzGraph -Query $resourceQuery
+      $resourceQuery
+      $alerts=Search-AzGraph -Query $alertsQuery
+
+      # determine if the resources have alerts and shows total
+      "Results: $($resources.count)"
+      $results="{""Non-Monitored Resources"" : ["
+
+      $results+=foreach ($res in $resources) {
+        "{""Resource"" : ""$($res.Resource)"","
+        """type"" : ""$($res.""type"")"","
+        """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
+        """resourceGroup"" : ""$($res.""resourceGroup"")"","
+        """location"" : ""$($res.""location"")"","
+        """kind"" : ""$($res.""kind"")"","
+        """subscriptionId"" : ""$($res.""subscriptionId"")""},"
+      }
+  $resultsString=$results -join ""
+  $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
+
+  }
     default {$body=''}
 }
 

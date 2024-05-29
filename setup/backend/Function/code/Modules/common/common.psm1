@@ -778,46 +778,64 @@ function Remove-Tag {
                     if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
                         Remove-DCRa -resourceId $resourceId -TagValue $TagValue
                     }
-                    elseif ($TagName -ne 'Avd') {
-                        "Paas/Platform Pack. No need to remove association."
-                        # Part 1 - Diagnostics settings
-                        "Will look for diagnostic settings to remove with specific name. Won't remove if that is not found since it could be for something else."
-                        try {
-                            $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMP-$TagValue" -ErrorAction SilentlyContinue
-                        }
-                        catch {
-                            $diagnosticConfig = $null
-                        }
-                        if ($diagnosticConfig) {
-                            "Found diagnostic setting. Removing..."
-                            Remove-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
-                        }
-                        else {
-                            "No diagnostic setting found."
-                        }
-                        # Part 2 - Alerts
-                        "Will look for alerts to remove with specific scope (the resource) and that have the proper tag."
-#                         $alertsQuery = @"
-# resources
-# | where type in~ ("microsoft.insights/metricAlerts", "microsoft.insights/activityLogAlerts")
-# | extend alertTags=tostring(['tags'].$TagName), Scope=properties.scopes[0]
-# | where alertTags=~'$TagValue' and Scope=~'$resourceId'
-# | project name, id, resourceGroup
-# "@
-# "Query: $alertsQuery"
-#                         $alerts = Search-AzGraph -Query $alertsQuery
-                        $alerts = get-alertsForResource -resourceId $resourceId -TagName $TagName -TagValue $TagValue
-                        if ($alerts.count -gt 0) {
-                            "Found $($alerts.count) alert(s) with $TagName tag for $resourceId. Removing..."
-                            foreach ($alert in $alerts) {
-                                "Removing alert $($alert.name)."
-                                Remove-AzAlertRule -Name $alert.name -ResourceGroupName $alert.resourceGroup
+                    else { #Pack is PaaS or Platform
+                        if ($TagName -ne 'Avd') {
+                            "Paas/Platform Pack. No need to remove association."
+                            # Part 1 - Diagnostics settings
+                            "Will look for diagnostic settings to remove with specific name. Won't remove if that is not found since it could be for something else."
+                            try {
+                                $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMP-$TagValue" -ErrorAction SilentlyContinue
+                            }
+                            catch {
+                                $diagnosticConfig = $null
+                            }
+                            if ($diagnosticConfig) {
+                                "Found diagnostic setting. Removing..."
+                                Remove-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
+                            }
+                            else {
+                                "No diagnostic setting found."
+                            }
+                            # Part 2 - Alerts
+                            "Will look for alerts to remove with specific scope (the resource) and that have the proper tag."
+    #                         $alertsQuery = @"
+    # resources
+    # | where type in~ ("microsoft.insights/metricAlerts", "microsoft.insights/activityLogAlerts")
+    # | extend alertTags=tostring(['tags'].$TagName), Scope=properties.scopes[0]
+    # | where alertTags=~'$TagValue' and Scope=~'$resourceId'
+    # | project name, id, resourceGroup
+    # "@
+    # "Query: $alertsQuery"
+    #                         $alerts = Search-AzGraph -Query $alertsQuery
+                            $alerts = get-alertsForResource -resourceId $resourceId -TagName $TagName -TagValue $TagValue
+                            if ($alerts.count -gt 0) {
+                                "Found $($alerts.count) alert(s) with $TagName tag for $resourceId. Removing..."
+                                foreach ($alert in $alerts) {
+                                    "Removing alert $($alert.name)."
+                                    Remove-AzAlertRule -Name $alert.name -ResourceGroupName $alert.resourceGroup
+                                }
+                            }
+                            else {
+                                "No alerts found."
                             }
                         }
-                        else {
-                            "No alerts found."
+                        else { # Not AVD.
+                            # Remove all alerts for the specific resource
+                            $alerts = get-alertsForResource -resourceId $resourceId -TagName $TagName -TagValue $TagValue
+                            if ($alerts.count -gt 0) {
+                                "Found $($alerts.count) alert(s) with $TagName tag for $resourceId. Removing..."
+                                foreach ($alert in $alerts) {
+                                    "Removing alert $($alert.name)."
+                                    Remove-AzAlertRule -Name $alert.name -ResourceGroupName $alert.resourceGroup
+                                }
+                            }
+                            else {
+                                "No alerts found."
+                            }
                         }
                     }
+
+                    
                 }
                 #Update-AzTag -ResourceId $resource.Resource -Tag $tag
             }

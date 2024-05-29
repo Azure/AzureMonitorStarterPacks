@@ -226,7 +226,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-dev-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -243,7 +243,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-prod-6c64f9ed-Function"
+                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-dev-6c64f9ed-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -301,7 +301,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP234"
+                  "value": null
                 },
                 {
                   "id": "e41c56cd-8e44-4e55-af0e-d79f9e7b6dee",
@@ -1228,8 +1228,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources",
-                        "value": null
+                        "resourceType": "microsoft.resourcegraph/resources"
                       }
                     ],
                     "style": "pills",
@@ -1399,7 +1398,10 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": null
+                        "value": [
+                          "VMI",
+                          "ADDS"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1544,7 +1546,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getNonMonitoredPlatform\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.Total\",\"columnid\":\"Total\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"}]}}]}",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPlatform\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.Total\",\"columnid\":\"Total\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                     "size": 0,
                     "title": "Monitored Platform",
                     "exportMultipleValues": true,
@@ -1659,57 +1661,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PlatformQuery}\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id,type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
-                    "size": 0,
-                    "title": "Non-monitored Services (old)",
-                    "exportMultipleValues": true,
-                    "exportedParameters": [
-                      {
-                        "fieldName": "",
-                        "parameterName": "platformtotagold",
-                        "parameterType": 1,
-                        "quote": ""
-                      }
-                    ],
-                    "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources",
-                    "crossComponentResources": [
-                      "{Subscriptions}"
-                    ],
-                    "visualization": "table",
-                    "gridSettings": {
-                      "filter": true,
-                      "sortBy": [
-                        {
-                          "itemKey": "type",
-                          "sortOrder": 1
-                        }
-                      ]
-                    },
-                    "sortBy": [
-                      {
-                        "itemKey": "type",
-                        "sortOrder": 1
-                      }
-                    ]
-                  },
-                  "conditionalVisibility": {
-                    "parameterName": "showHidden",
-                    "comparison": "isEqualTo",
-                    "value": "yes"
-                  },
-                  "name": "Non Monitored Platform - hidden",
-                  "styleSettings": {
-                    "margin": "400",
-                    "padding": "400",
-                    "showBorder": true
-                  }
-                },
-                {
-                  "type": 3,
-                  "content": {
-                    "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\",\"mergeType\":\"innerunique\",\"leftTable\":\"queryServiceTags - Global\",\"rightTable\":\"Non Monitored Platform - hidden\",\"leftColumn\":\"nameSpace\",\"rightColumn\":\"type\"}],\"projectRename\":[{\"originalName\":\"[Non Monitored Platform - hidden].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\"},{\"originalName\":\"[Non Monitored Platform - hidden].type\",\"mergedName\":\"type\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\"},{\"originalName\":\"[queryServiceTags - Global].tag\",\"mergedName\":\"tag\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\"},{\"originalName\":\"[Non Monitored Platform - hidden].resourceGroup\",\"mergedName\":\"resourceGroup\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\"},{\"originalName\":\"[Non Monitored Platform - hidden].location\",\"mergedName\":\"location\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\"},{\"originalName\":\"[Non Monitored Platform - hidden].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba63c5\"},{\"originalName\":\"[queryServiceTags - Global].type\"},{\"originalName\":\"[queryServiceTags - Global].nameSpace\"}]}",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getNonMonitoredPlatform\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.Total\",\"columnid\":\"Total\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                     "size": 0,
                     "title": "Non-Monitored Platform",
                     "exportMultipleValues": true,
@@ -1718,15 +1670,64 @@
                         "parameterName": "platformtotag",
                         "parameterType": 1,
                         "quote": ""
+                      },
+                      {
+                        "fieldName": "tag",
+                        "parameterName": "PackTagsPlatform",
+                        "parameterType": 1,
+                        "quote": ""
                       }
                     ],
-                    "queryType": 7,
+                    "queryType": 10,
                     "gridSettings": {
-                      "filter": true
-                    }
+                      "formatters": [
+                        {
+                          "columnMatch": "Total",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": ">=",
+                                "thresholdValue": "1",
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "<",
+                                "thresholdValue": "1",
+                                "representation": "2",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "unknown",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          },
+                          "tooltipFormat": {
+                            "tooltip": "Total number of Alerts assigned to this resource."
+                          }
+                        }
+                      ],
+                      "filter": true,
+                      "sortBy": [
+                        {
+                          "itemKey": "tag",
+                          "sortOrder": 1
+                        }
+                      ]
+                    },
+                    "sortBy": [
+                      {
+                        "itemKey": "tag",
+                        "sortOrder": 1
+                      }
+                    ]
                   },
-                  "showPin": false,
-                  "name": "query - 3",
+                  "name": "query - Non-Monitored Platform - function",
                   "styleSettings": {
                     "showBorder": true
                   }
@@ -1882,7 +1883,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getNonMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.Total\",\"columnid\":\"Total\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"}]}}]}",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.Total\",\"columnid\":\"Total\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"}]}}]}",
                     "size": 0,
                     "title": "Monitored PaaS",
                     "exportMultipleValues": true,
@@ -1997,70 +1998,57 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PaaSQuery}\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type=tolower(type),resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
-                    "size": 0,
-                    "title": "(OLD) Non-monitored PaaS ",
-                    "exportMultipleValues": true,
-                    "exportedParameters": [
-                      {
-                        "fieldName": "",
-                        "parameterName": "paastotag",
-                        "parameterType": 1,
-                        "quote": ""
-                      }
-                    ],
-                    "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources",
-                    "crossComponentResources": [
-                      "{Subscriptions}"
-                    ],
-                    "visualization": "table",
-                    "gridSettings": {
-                      "filter": true,
-                      "sortBy": [
-                        {
-                          "itemKey": "type",
-                          "sortOrder": 1
-                        }
-                      ]
-                    },
-                    "sortBy": [
-                      {
-                        "itemKey": "type",
-                        "sortOrder": 1
-                      }
-                    ]
-                  },
-                  "conditionalVisibility": {
-                    "parameterName": "showHidden",
-                    "comparison": "isEqualTo",
-                    "value": "yes"
-                  },
-                  "name": "Non Monitores PaaS",
-                  "styleSettings": {
-                    "margin": "400",
-                    "padding": "400",
-                    "showBorder": true
-                  }
-                },
-                {
-                  "type": 3,
-                  "content": {
-                    "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\",\"mergeType\":\"innerunique\",\"leftTable\":\"queryServiceTags - Global\",\"rightTable\":\"Non Monitores PaaS\",\"leftColumn\":\"nameSpace\",\"rightColumn\":\"type\"}],\"projectRename\":[{\"originalName\":\"[Non Monitores PaaS].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\"},{\"originalName\":\"[Non Monitores PaaS].type\",\"mergedName\":\"type\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\"},{\"originalName\":\"[queryServiceTags - Global].tag\",\"mergedName\":\"tag\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\"},{\"originalName\":\"[Non Monitores PaaS].resourceGroup\",\"mergedName\":\"resourceGroup\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\"},{\"originalName\":\"[Non Monitores PaaS].location\",\"mergedName\":\"location\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\"},{\"originalName\":\"[Non Monitores PaaS].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"6fd97f6a-73e6-4070-ac67-17b2c6ba6094\"},{\"originalName\":\"[queryServiceTags - Global].nameSpace\"},{\"originalName\":\"[queryServiceTags - Global].type\"}]}",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getNonMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.Total\",\"columnid\":\"Total\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                     "size": 0,
                     "title": "Non-Monitored PaaS",
                     "exportMultipleValues": true,
                     "exportedParameters": [
                       {
-                        "fieldName": "",
                         "parameterName": "paastotag",
+                        "parameterType": 1,
+                        "quote": ""
+                      },
+                      {
+                        "fieldName": "tag",
+                        "parameterName": "PaaSLeftTagsOnly",
                         "parameterType": 1,
                         "quote": ""
                       }
                     ],
-                    "queryType": 7,
+                    "queryType": 10,
                     "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "Total",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": ">=",
+                                "thresholdValue": "1",
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "<",
+                                "thresholdValue": "1",
+                                "representation": "2",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "unknown",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          },
+                          "tooltipFormat": {
+                            "tooltip": "Total number of Alerts assigned to this resource."
+                          }
+                        }
+                      ],
                       "filter": true,
                       "sortBy": [
                         {
@@ -2076,8 +2064,7 @@
                       }
                     ]
                   },
-                  "showPin": false,
-                  "name": "query - merge - non-monitored PaaS",
+                  "name": "query - nonMonitored Paas - Copy",
                   "styleSettings": {
                     "showBorder": true
                   }
@@ -2110,7 +2097,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "LogicApps"
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -2289,7 +2276,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "PrivZones"
+                  "value": "LogicApps"
                 }
               ],
               "style": "pills",
