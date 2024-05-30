@@ -201,8 +201,8 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e",
+                    "/subscriptions/7591e487-7045-43a5-9896-e7a82cb2c602"
                   ]
                 },
                 {
@@ -228,7 +228,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -245,7 +245,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-prod-6c64f9ed-Function"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -280,7 +280,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -303,7 +303,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP6c64f9ed"
+                  "value": null
                 }
               ],
               "style": "above",
@@ -800,9 +800,16 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status,severity=properties.context.context.severity\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks)\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| project ['Alert Name']=name,['Details']=['Alert Id'], Status=status, Resource=resourceId, Sev=severity\n| where Status=='Activated'\n",
+                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status,severity=properties.context.context.severity\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks)\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| project id, ['Alert Name']=name,['Details']=['Alert Id'], Status=status, Resource=resourceId, Sev=severity\n| where Status=='Activated'\n",
                     "size": 0,
                     "title": "Active Alerts",
+                    "exportedParameters": [
+                      {
+                        "fieldName": "Details",
+                        "parameterName": "selectedAlertId",
+                        "parameterType": 5
+                      }
+                    ],
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
                     "crossComponentResources": [
@@ -814,9 +821,14 @@
                           "columnMatch": "Details",
                           "formatter": 7,
                           "formatOptions": {
-                            "linkTarget": "Resource",
+                            "linkTarget": "OpenBlade",
                             "linkLabel": "Details",
-                            "linkIsContextBlade": true
+                            "linkIsContextBlade": true,
+                            "bladeOpenContext": {
+                              "bladeName": "AlertDetails.ReactView",
+                              "extensionName": "Microsoft_Azure_Monitoring_Alerts",
+                              "bladeJsonParameters": "{\n    \"alertId\": \"{selectedAlertId}\",\n    \"invokedFrom\": \"CopyLinkFeature\"\n}"
+                            }
                           }
                         },
                         {
@@ -1583,9 +1595,9 @@
                         "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                         "cellValue": "",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Remove Monitoring for {PlatformLeftTagsOnly} Pack(s).",
+                        "linkLabel": "Remove Monitoring for {PackTagsLeftPlatform} Pack(s).",
                         "preText": "",
-                        "postText": "",
+                        "postText": "{PlatformLeftTagsOnly}",
                         "style": "primary",
                         "linkIsContextBlade": true,
                         "armActionContext": {
@@ -2202,7 +2214,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "ALB"
+                  "value": "IIS"
                 }
               ],
               "style": "pills",
@@ -4872,7 +4884,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monstar-law"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
