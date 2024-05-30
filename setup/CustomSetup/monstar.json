@@ -3440,7 +3440,7 @@
                             "value": "[format('tar -xvf {0} && chmod +x ./install.sh && ./install.sh', variables('appName'))]"
                           },
                           "removeCommands": {
-                            "value": "/opt/microsoft/discovery/uninstall.sh"
+                            "value": "/opt/microsoft/setup/backend/uninstall.sh"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -3959,7 +3959,7 @@
                           },
                           "filepatterns": {
                             "value": [
-                              "/opt/microsoft/discovery/*.csv"
+                              "/opt/microsoft/setup/backend/*.csv"
                             ]
                           },
                           "kind": {
