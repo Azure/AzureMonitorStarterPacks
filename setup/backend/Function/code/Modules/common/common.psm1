@@ -278,12 +278,11 @@ function Add-Tag {
 }
 
 function get-AmbaCatalog {
+param ($ambaJsonURL)
+    if ($ambaJsonURL -eq $null) {
+        $ambaJsonURL=$env:ambaJsonURL
+    } 
 
-    $ambaJsonURL=$env:ambaJsonURL
-      if ($ambaJsonURL -eq $null) {
-          "No AMBA URL provided"
-          exit
-      }
       $aaa=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json
       $Categories=$aaa.psobject.properties.Name
       #$Categories
@@ -841,7 +840,8 @@ function Remove-Tag {
             }
         }
     }
-}function get-alertsForResource {
+}
+function get-alertsForResource {
     param (
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
