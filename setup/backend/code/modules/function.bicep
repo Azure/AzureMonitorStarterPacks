@@ -175,7 +175,7 @@ var functionSystemAssignedIdentityRoles= [
 ]
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =  [for (roledefinitionId, i) in functionSystemAssignedIdentityRoles:  {
-  name: '${functionname}-role-assignment-${i}'
+  name: guid('${functionname}-role-assignment-${i}',resourceGroup().name)
   properties: {
     description: '${functionname}-${functionSystemAssignedIdentityRoles[0]}'
     principalId: azfunctionsite.identity.principalId
@@ -187,6 +187,9 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =  
 resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   name: 'appsettings'
   parent: azfunctionsite
+  dependsOn: [
+    roleAssignment
+  ]
   properties: {
     //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
