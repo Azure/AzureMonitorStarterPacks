@@ -167,11 +167,20 @@ switch ($Action) {
           'microsoft.desktopvirtualization/hostpools',
           'microsoft.logic/workflows',
           'microsoft.sql/managedinstances',
-          'microsoft.sql/servers/databases'
+          'microsoft.sql/servers/databases',
+          'microsoft.network/vpngateways',
+          'microsoft.network/virtualnetworkgateways',
+          'microsoft.keyvault/vaults',
+          'microsoft.network/networksecuritygroups',
+          'microsoft.network/publicipaddresses',
+          'microsoft.network/privatednszones',
+          'microsoft.network/frontdoors',
+          'microsoft.network/azurefirewalls',
+          'microsoft.network/applicationgateways'
       )
       or (
           tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-      )"
+      ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
       }
 "@
   }
