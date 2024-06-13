@@ -101,7 +101,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
   kind: 'functionapp'
   tags: Tags
   identity: {
-      type: 'UserAssigned'
+      type: 'SystemAssigned, UserAssigned'
       userAssignedIdentities: {
           '${userManagedIdentity}': {}
       }
@@ -170,6 +170,20 @@ resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
       keyVaultReferenceIdentity: 'SystemAssigned'
   }
 }
+var functionSystemAssignedIdentityRoles= [
+  '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
+]
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =  [for (roledefinitionId, i) in functionSystemAssignedIdentityRoles:  {
+  name: '${functionname}-role-assignment-${i}'
+  properties: {
+    description: '${functionname}-${functionSystemAssignedIdentityRoles[0]}'
+    principalId: azfunctionsite.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions',roledefinitionId)
+  }
+}]
+
 resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   name: 'appsettings'
   parent: azfunctionsite
