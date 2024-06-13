@@ -101,6 +101,7 @@ module backendFunction 'modules/function.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     functionUserManagedIdentity
+    kvSecrets
   ]
   params: {
     appInsightsLocation: appInsightsLocation
@@ -240,18 +241,30 @@ module kvSecrets './modules/keyvaultsecrets.bicep' = {
   name: 'kvSecrets'
   dependsOn: [
     keyvault
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    kvName: keyvault.outputs.kvName
+    storageAccountName: storageAccountName
+    Tags: Tags
+    SASecretName: SASecretName
+    appInsightsName: appInsightsSecretName
+    appInsightsSecretName: appInsightsSecretName
+  }
+}
+
+module kvSecretsfunction './modules/keyvaultsecretsfunction.bicep' = {
+  name: 'kvSecretsfunction'
+  dependsOn: [
+    keyvault
     backendFunction
   ]
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     functionName: functionname
     kvName: keyvault.outputs.kvName
-    storageAccountName: storageAccountName
     Tags: Tags
     monitoringSecretName: monitoringSecretName
-    SASecretName: SASecretName
-    appInsightsName: appInsightsSecretName
-    appInsightsSecretName: appInsightsSecretName
   }
 }
 
