@@ -121,6 +121,9 @@ module backendFunction 'modules/function.bicep' = {
     SAkvSecretName: SASecretName
     monitoringKeyName: monitoringSecretName
     appInsightsSecretName: appInsightsSecretName
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
+
   }
 }
 
@@ -237,7 +240,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
 //
 // Secrets
 //
-module kvSecrets './modules/keyvaultsecrets.bicep' = {
+module kvSecrets './modules/keyvaultsecretstorage.bicep' = {
   name: 'kvSecrets'
   dependsOn: [
     keyvault
@@ -248,8 +251,6 @@ module kvSecrets './modules/keyvaultsecrets.bicep' = {
     storageAccountName: storageAccountName
     Tags: Tags
     SASecretName: SASecretName
-    appInsightsName: appInsightsSecretName
-    appInsightsSecretName: appInsightsSecretName
   }
 }
 

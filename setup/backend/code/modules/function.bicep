@@ -1,7 +1,6 @@
 param _artifactsLocation string
 @secure()
 param _artifactsLocationSasToken string
-param keyVaultName string
 param SAkvSecretName string
 param appInsightsSecretName string
 param functionname string
@@ -16,6 +15,9 @@ param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param lawresourceid string
 param appInsightsLocation string
 param monitoringKeyName string
+param keyVaultName string
+param subscriptionId string
+param resourceGroupName string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
@@ -236,6 +238,19 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+module kvSecrets '../modules/keyvaultsecretAppInsights.bicep' = {
+  name: 'kvSecrets'
+  dependsOn: [
+    appinsights
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    kvName: keyVaultName
+    Tags: Tags
+    appInsightsName: appInsightsSecretName
+    appInsightsSecretName: appInsightsSecretName
+  }
+}
 resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
   dependsOn: [ 
     azfunctionsiteconfig 
