@@ -10,6 +10,9 @@ param SASecretName string
 resource keyvault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: kvName
 }
+// resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+//   name: storageAccountName
+// }
 // // Add secret from function
 // resource kvsecret1 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
 //   name: monitoringSecretName
@@ -33,6 +36,6 @@ resource kvsecret2 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
       enabled: true
     }
     contentType: 'string'
-    value: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2021-04-01').keys[0].value
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2021-04-01').keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
   }
 }
