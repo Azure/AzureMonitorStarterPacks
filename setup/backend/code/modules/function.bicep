@@ -193,8 +193,8 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     roleAssignment
   ]
   properties: {
-    //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}};EndpointSuffix=${environment().suffixes.storage}'
+    //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
     //AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     AzureWebJobsStorage__accountName: discoveryStorage.name
     WEBSITE_CONTENTSHARE : discoveryStorage.name
