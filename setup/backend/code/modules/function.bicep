@@ -197,6 +197,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
     //AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     AzureWebJobsStorage:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
+    WEBSITE_SKIP_CONTENTSHARE_VALIDATION: '1'
     //AzureWebJobsStorage__accountName: discoveryStorage.name
     WEBSITE_CONTENTSHARE : discoveryStorage.name
     FUNCTIONS_WORKER_RUNTIME:'powershell'
