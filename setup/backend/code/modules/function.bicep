@@ -238,8 +238,8 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-module kvSecrets '../modules/keyvaultsecretAppInsights.bicep' = {
-  name: 'kvSecrets'
+module kvSecretsAppInsights '../modules/keyvaultsecretAppInsights.bicep' = {
+  name: 'kvSecretAppInsights'
   dependsOn: [
     appinsights
   ]
@@ -247,7 +247,7 @@ module kvSecrets '../modules/keyvaultsecretAppInsights.bicep' = {
   params: {
     kvName: keyVaultName
     Tags: Tags
-    appInsightsName: appInsightsSecretName
+    appInsightsName: appinsights.name
     appInsightsSecretName: appInsightsSecretName
   }
 }

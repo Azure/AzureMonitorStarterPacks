@@ -101,7 +101,7 @@ module backendFunction 'modules/function.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     functionUserManagedIdentity
-    kvSecrets
+    kvSecretstorage
   ]
   params: {
     appInsightsLocation: appInsightsLocation
@@ -240,8 +240,8 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
 //
 // Secrets
 //
-module kvSecrets './modules/keyvaultsecretstorage.bicep' = {
-  name: 'kvSecrets'
+module kvSecretstorage './modules/keyvaultsecretstorage.bicep' = {
+  name: 'kvSecretsstorage'
   dependsOn: [
     keyvault
   ]
