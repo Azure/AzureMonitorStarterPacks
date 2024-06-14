@@ -193,24 +193,38 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     roleAssignment
   ]
   properties: {
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
-    //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
-    //AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
-    AzureWebJobsStorage:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
-    WEBSITE_SKIP_CONTENTSHARE_VALIDATION: '1'
-    //AzureWebJobsStorage__accountName: discoveryStorage.name
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+    AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     WEBSITE_CONTENTSHARE : discoveryStorage.name
     FUNCTIONS_WORKER_RUNTIME:'powershell'
     FUNCTIONS_EXTENSION_VERSION:'~4'
     ResourceGroup: resourceGroup().name
     SolutionTag: solutionTag
-    APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsightsSecretName}'
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsightsSecretName}'
+    APPINSIGHTS_INSTRUMENTATIONKEY: reference(appinsights.id, '2020-02-02-preview').InstrumentationKey
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     MSI_CLIENT_ID: userManagedIdentityClientId
     PacksUserManagedId: packsUserManagedId
     ARTIFACS_LOCATION: _artifactsLocation
     ARTIFACTS_LOCATION_SAS_TOKEN: _artifactsLocationSasToken
+    // WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
+    // //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
+    // //AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+    // //AzureWebJobsStorage:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
+    // WEBSITE_SKIP_CONTENTSHARE_VALIDATION: '1'
+    // //AzureWebJobsStorage__accountName: discoveryStorage.name
+    // WEBSITE_CONTENTSHARE : discoveryStorage.name
+    // FUNCTIONS_WORKER_RUNTIME:'powershell'
+    // FUNCTIONS_EXTENSION_VERSION:'~4'
+    // ResourceGroup: resourceGroup().name
+    // SolutionTag: solutionTag
+    // APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsightsSecretName}'
+    // APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsightsSecretName}'
+    // ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+    // MSI_CLIENT_ID: userManagedIdentityClientId
+    // PacksUserManagedId: packsUserManagedId
+    // ARTIFACS_LOCATION: _artifactsLocation
+    // ARTIFACTS_LOCATION_SAS_TOKEN: _artifactsLocationSasToken
   }
 }
 resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
