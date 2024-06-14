@@ -21,7 +21,7 @@ param Tags object
 param threshold int = 0
 param metricMeasureColumn string = ''
 param dimensions array = [{
-  name: '_ResourceId'
+  name: 'Computer'
   operator: 'Include'
   values: [
     '*'
