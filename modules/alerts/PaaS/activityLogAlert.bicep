@@ -26,7 +26,6 @@ var parAlertState = 'true'
 @allowed([
     'IaaS'
     'PaaS'
-    'Platform'
 ])
 param packtype string
 param instanceName string

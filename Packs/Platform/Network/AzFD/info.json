@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "Azure Front Door",
-        "Type": "Platform",
-        "Description": "Azure Front Door Monitoring Pack"
-    }
-}

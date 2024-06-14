@@ -32,7 +32,6 @@ param deploymentRoleDefinitionIds array = [
 @allowed([
     'IaaS'
     'PaaS'
-    'Platform'
 ])
 param packtype string
 

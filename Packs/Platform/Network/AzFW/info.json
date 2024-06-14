@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "Azure Firewall",
-        "Type": "Platform",
-        "Description": "Azure Firewall Monitoring Pack"
-    }
-}

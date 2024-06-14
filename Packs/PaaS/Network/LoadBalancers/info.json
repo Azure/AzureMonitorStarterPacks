@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Load Balancers (Standard)",
+        "Type": "PaaS",
+        "Description": "Load Balancers (Standard) Monitoring Pack"
+    }
+}

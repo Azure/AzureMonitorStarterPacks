@@ -119,12 +119,12 @@
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs (Preview).",
-                            "toolTip": "Select to deploy all PaaS packs.",
+                            "label": "Deploy All Services Packs.",
+                            "toolTip": "Select to deploy all Services packs.",
                             "defaultValue": false,
                             "constraints": {
                                 "required": false,
-                                "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
+                                "validationMessage": "Select to deploy the available Services packs to the selected environment."
                             },
 							"visible": true
                         },
@@ -134,30 +134,7 @@
 							"visible": "[steps('Configuration').deployPaaSPacks]",
 							"options": {
 								"icon": "None",
-								"text": "PaaS packs focus on resources like WebApps, Automation Accounts, AVD, etc.",
-								"uri": "",
-								"style": "Info"
-							}
-						},
-                        {
-                            "name": "deployPlatformPacks",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs (Preview).",
-                            "toolTip": "Select to deploy all Platform packs.",
-                            "defaultValue": false,
-							"visible": true,
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the available Platform packs to the selected environment."
-                            }
-                        },
-						{
-							"name": "infoBoxPlato",
-							"type": "Microsoft.Common.InfoBox",
-							"visible": "[steps('Configuration').deployPlatformPacks]",
-							"options": {
-								"icon": "None",
-								"text": "Platform packs focus on platform resources like Key Vault, Load Balancers, Gateways, etc.",
+								"text": "Services packs focus on resources like WebApps, Automation Accounts, AVD, etc.",
 								"uri": "",
 								"style": "Info"
 							}
@@ -471,7 +448,6 @@
                 "existingGrafanaResourceId": "[steps('Configuration').ExistingGrafanaInstance.id]",
                 "deployIaaSPacks": "[steps('Configuration').deployIaaSPacks]",
                 "deployPaaSPacks": "[steps('Configuration').deployPaaSPacks]",
-				"deployPlatformPacks": "[steps('Configuration').deployPlatformPacks]",
                 "storageAccountName": "[steps('Configuration').ExistingStorageAccount.name]",
                 "imageGalleryName": "[steps('Configuration').ExistingApplicationGallery.name]",
                 "instanceName": "[steps('Configuration').instanceName]",

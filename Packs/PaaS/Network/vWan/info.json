@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "vWan",
+        "Type": "PaaS",
+        "Description": "vWan Monitoring Pack"
+    }
+}

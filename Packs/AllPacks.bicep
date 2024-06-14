@@ -27,7 +27,7 @@ param customerTags object
 param existingActionGroupResourceId string
 param deployIaaSPacks bool
 param deployPaaSPacks bool
-param deployPlatformPacks bool
+// param deployPlatformPacks bool
 param storageAccountName string
 param imageGalleryName string
 param instanceName string
@@ -109,26 +109,26 @@ module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
   }
 }
 
-module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatformPacks) {
-  name: 'deployPlatformPacks'
-  params: {
-    // Tags: Tags
-    location: location
-    workspaceId: workspaceId
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    //dceId: dceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    assignmentLevel: assignmentLevel
-    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
-    //grafanaName: 'grafana'
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    subscriptionId: subscriptionId
-    customerTags: customerTags
-    instanceName: instanceName
-  }
-}
+// module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatformPacks) {
+//   name: 'deployPlatformPacks'
+//   params: {
+//     // Tags: Tags
+//     location: location
+//     workspaceId: workspaceId
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     //dceId: dceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     assignmentLevel: assignmentLevel
+//     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
+//     //grafanaName: 'grafana'
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     subscriptionId: subscriptionId
+//     customerTags: customerTags
+//     instanceName: instanceName
+//   }
+// }
 
 // Grafana upload and install
 module grafana './ds.bicep' = if (deployGrafana) {

@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "Public IPs",
-        "Type": "Platform",
-        "Description": "Public IPs Monitoring Pack"
-    }
-}

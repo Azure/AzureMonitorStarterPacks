@@ -42,12 +42,12 @@ param existingActionGroupId string = ''
 param deployAllPacks bool
 param deployIaaSPacks bool = false
 param deployPaaSPacks bool = false
-param deployPlatformPacks bool = false
+//param deployPlatformPacks bool = false
 param deployDiscovery bool = false
 
 param collectTelemetry bool = true
 
-var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
+var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
@@ -217,7 +217,6 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     existingActionGroupResourceId: existingActionGroupId
     deployIaaSPacks: deployIaaSPacks || deployAllPacks
     deployPaaSPacks: deployPaaSPacks || deployAllPacks
-    deployPlatformPacks: deployPlatformPacks || deployAllPacks
     storageAccountName: storageAccountName
     imageGalleryName: ImageGalleryName
     instanceName: instanceName

@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Application Gateway",
+        "Type": "PaaS",
+        "Description": "Application Gateway Monitoring Pack"
+    }
+}

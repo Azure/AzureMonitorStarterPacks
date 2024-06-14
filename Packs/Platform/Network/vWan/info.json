@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "vWan",
-        "Type": "Platform",
-        "Description": "vWan Monitoring Pack"
-    }
-}
