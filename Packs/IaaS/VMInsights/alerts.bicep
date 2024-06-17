@@ -124,6 +124,22 @@ var alertlist = [
     metricMeasureColumn: 'AggregatedValue'
     operator: 'GreaterThan'
     threshold: 30
+    dimensions: [
+      {
+        name: 'Computer'
+        operator: 'Include'
+        values: [
+          '*'
+        ]
+      }
+      {
+        name: 'Disk'
+        operator: 'Include'
+        values: [
+          '*'
+        ]
+      }
+    ]
     query: '''
     InsightsMetrics
 | where Origin == "vm.azm.ms"
@@ -144,6 +160,22 @@ var alertlist = [
     metricMeasureColumn: 'AggregatedValue'
     operator: 'LessThan'
     threshold: 10
+    dimensions: [
+      {
+        name: 'Computer'
+        operator: 'Include'
+        values: [
+          '*'
+        ]
+      }
+      {
+        name: 'Disk'
+        operator: 'Include'
+        values: [
+          '*'
+        ]
+      }
+    ]
     query: '''
     InsightsMetrics
 | where Origin == "vm.azm.ms"
@@ -164,6 +196,22 @@ var alertlist = [
     metricMeasureColumn: 'AggregatedValue'
     operator: 'GreaterThan'
     threshold: 50
+    dimensions: [
+      {
+        name: 'Computer'
+        operator: 'Include'
+        values: [
+          '*'
+        ]
+      }
+      {
+        name: 'Disk'
+        operator: 'Include'
+        values: [
+          '*'
+        ]
+      }
+    ]
     query: '''
     InsightsMetrics| where Origin == "vm.azm.ms"
 | where Namespace == "LogicalDisk" and Name == "WriteLatencyMs"
