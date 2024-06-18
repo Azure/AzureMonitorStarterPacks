@@ -1540,15 +1540,16 @@
                           "value::tenant"
                         ],
                         "typeSettings": {
-                          "additionalResourceOptions": [],
+                          "additionalResourceOptions": [
+                            "value::all"
+                          ],
                           "showDefault": false
                         },
                         "timeContext": {
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants",
-                        "value": []
+                        "resourceType": "microsoft.resources/tenants"
                       }
                     ],
                     "style": "above",
@@ -1721,15 +1722,16 @@
                           "value::tenant"
                         ],
                         "typeSettings": {
-                          "additionalResourceOptions": [],
+                          "additionalResourceOptions": [
+                            "value::all"
+                          ],
                           "showDefault": false
                         },
                         "timeContext": {
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants",
-                        "value": []
+                        "resourceType": "microsoft.resources/tenants"
                       }
                     ],
                     "style": "above",
@@ -4783,7 +4785,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    "azure monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

@@ -53,7 +53,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                 }
               }
               method: 'get'
-              path: '/secrets/@{encodeURIComponent(\'FunctionKey\')}/value'
+              path: '/secrets/@{encodeURIComponent(\'monitoringKey\')}/value'
             }
           }
           Parse_JSON: {

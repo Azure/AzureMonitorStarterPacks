@@ -30,14 +30,14 @@ if ($resources) {
                     Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue
                     # Add Agent
                     if ($PackType -in ('IaaS', 'Discovery')) {
-                        Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.location
+                        Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
                     }
                     # Add Tag Based condition.
                     if ($TagValue -eq 'Avd') {
                         # Create AVD alerts function.
                         $hostPoolName = ($resource.Resource -split '/')[8]
                         $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                        Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.location -TagName $TagName `
+                        Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
                         -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
                     }
                 } # End of resource loop
@@ -53,7 +53,7 @@ if ($resources) {
                     $hostPoolName = ($resource.Resource -split '/')[8]
                     $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
                     Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName `
-                                -location $resource.location -TagName $TagName -TagValue $TagValue `
+                                -location $resource.Location -TagName $TagName -TagValue $TagValue `
                                 -action $action `
                                 -LogAnalyticsWSAVD $LogAnalyticsWSAVD
                 }
