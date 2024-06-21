@@ -30,6 +30,8 @@ var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(workspaceId,'/')[8]
+var lawResourceGroupName = split(workspaceId,'/')[4]
+var lawSubscriptionId = split(workspaceId,'/')[2]
 
 // VM Application to collect the data - this would be ideally an extension
 module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
@@ -123,7 +125,7 @@ module vmassignmentsub '../../../setup/discovery/modules/sub/assignment.bicep' =
 // Table to receive the data
 module table '../../../modules/LAW/table.bicep' = {
   name: tableNameToUse
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: resourceGroup(lawSubscriptionId, lawResourceGroupName)
   params: {
     parentname: lawFriendlyName
     tableName: tableNameToUse
