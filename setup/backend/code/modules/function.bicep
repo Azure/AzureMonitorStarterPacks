@@ -232,7 +232,6 @@ resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
   dependsOn: [
     deploymentScript
   ]
-  
   name: 'MSDeploy'
   properties: {
     packageUri: '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
