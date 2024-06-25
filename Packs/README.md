@@ -11,8 +11,7 @@ To deploy only packs, click the icon below. The solution must have been deployed
 The packs are divided into three categories: IaaS, PaaS and Platform. Each pack contains a set of rules and alerts that are deployed to the Log Analytics workspace. The packs also contain Grafana dashboards that are deployed to the Grafana environment.
 
 - [IaaS Packs](#iaas-packs): These packs are designed to monitor VMs and other IaaS resources. They are based on the AMA agent.
-- [PaaS Packs](#paas-packs): These packs are designed to monitor PaaS resources. They are based on the Azure Monitor metrics and diagnostics settings (optional).
-- [Platform Packs](#platform-packs): These packs are designed to monitor platform resources. They are based on the Azure Monitor metrics and diagnostics settings (optional).
+- [Services Packs](#services-packs): These packs are designed to monitor Azure native services.
 
 ## IaaS Packs
 
@@ -68,7 +67,7 @@ TBD
 
 TBD
 
-## PaaS Packs
+## Services Packs
 
 ### Storage Account (Storage)
 
@@ -97,8 +96,6 @@ TBD
 ### AVD
 
 [AVD Baseline Alerts](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/brownfield/alerts/readme.md)
-
-## Platform Packs
 
 ### vWan (vWan)
 
