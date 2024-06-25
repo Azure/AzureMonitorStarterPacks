@@ -149,6 +149,14 @@
             "linkLabel": "Configuration",
             "subTarget": "backend",
             "style": "link"
+          },
+          {
+            "id": "295ed7b4-8237-409a-87d2-1efd439bea97",
+            "cellValue": "tabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Logs",
+            "subTarget": "logs",
+            "style": "link"
           }
         ]
       },
@@ -179,6 +187,9 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
               "parameters": [
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -201,8 +212,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e"
                   ]
                 },
                 {
@@ -228,7 +238,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-prod-LogicApp"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -240,12 +250,16 @@
                   "isRequired": true,
                   "isGlobal": true,
                   "query": "resources\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\n| where isnotempty(tags.MonitorStarterPacksComponents)\n| project id",
+                  "crossComponentResources": [
+                    "value::tenant"
+                  ],
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-prod-6c64f9ed-Function"
+                  "resourceType": "microsoft.resources/tenants",
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -280,7 +294,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -303,12 +317,12 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSP6c64f9ed"
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPfta24"
                 }
               ],
               "style": "above",
               "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources"
+              "resourceType": "microsoft.resources/tenants"
             },
             "customWidth": "100",
             "conditionalVisibility": {
@@ -322,6 +336,9 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
               "parameters": [
                 {
                   "id": "e5054aa1-60b0-4050-9f35-f4b2d3ac0d0e",
@@ -348,10 +365,26 @@
                   },
                   "queryType": 10,
                   "id": "9a917e70-be3e-43bb-a44b-85d857762cd9"
+                },
+                {
+                  "id": "03340268-1ac8-4d74-a76e-bc37a4bdd45c",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "appInsightsName",
+                  "type": 5,
+                  "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"",
+                  "crossComponentResources": [
+                    "value::tenant"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": []
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resources/tenants"
                 }
               ],
               "style": "pills",
-              "queryType": 10
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants"
             },
             "conditionalVisibility": {
               "parameterName": "showHidden",
@@ -4832,6 +4865,118 @@
       "name": "AutoDiscoveryGroup"
     },
     {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{appInsightsName}"
+              ],
+              "parameters": [
+                {
+                  "id": "70107de5-d9cd-46ea-9027-43d83053dac3",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "FunctionApp",
+                  "label": "Function App",
+                  "type": 2,
+                  "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    operation_Id,\n    cloud_RoleName,\n    invocationId=customDimensions['InvocationId']\n| where timestamp > ago(30d)\n| where cloud_RoleName =~ 'AMP-fta-bd4d88c1-Function' //and operation_Name =~ 'agentMgmt'\n| order by timestamp desc\n| take 20\n| summarize by Functions=operation_Name\n",
+                  "crossComponentResources": [
+                    "{appInsightsName}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 2592000000
+                  },
+                  "queryType": 0,
+                  "resourceType": "microsoft.insights/components",
+                  "value": "config"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components"
+            },
+            "name": "parameters - 18"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    operation_Id,\n    cloud_RoleName,\n    invocationId=customDimensions['InvocationId']\n| where timestamp > ago(30d)\n| where cloud_RoleName =~ 'AMP-fta-bd4d88c1-Function' and operation_Name =~ '{FunctionApp}'\n| order by timestamp desc\n| take 20",
+              "size": 0,
+              "title": "Invocations",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "exportedParameters": [
+                {
+                  "fieldName": "invocationId",
+                  "parameterName": "invocationid",
+                  "parameterType": 1
+                },
+                {
+                  "fieldName": "operation_Id",
+                  "parameterName": "operationid",
+                  "parameterType": 1
+                }
+              ],
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{appInsightsName}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "id",
+                    "formatter": 5
+                  }
+                ]
+              }
+            },
+            "customWidth": "30",
+            "name": "queryInvocations"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "union traces\n| union exceptions\n| where timestamp > ago(30d)\n| where operation_Id == '{operationid}'\n| where customDimensions['InvocationId'] == '{invocationid}'\n| order by timestamp asc\n| project\n    timestamp,\n    message = iff(message != '', message, iff(innermostMessage != '', innermostMessage, customDimensions.[strcat('prop__{','OriginalFormat}')])),\n    logLevel = customDimensions.['LogLevel']",
+              "size": 0,
+              "title": "Invocation Details",
+              "noDataMessage": "No Invocation Selected",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "exportFieldName": "invocationId",
+              "exportParameterName": "invocationid",
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{appInsightsName}"
+              ]
+            },
+            "customWidth": "70",
+            "name": "queryInvocationDetails"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tabSelection",
+        "comparison": "isEqualTo",
+        "value": "logs"
+      },
+      "name": "groupLogs"
+    },
+    {
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
@@ -4872,7 +5017,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
