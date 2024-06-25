@@ -1516,10 +1516,49 @@
               "groupType": "editable",
               "items": [
                 {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "parameters": [
+                      {
+                        "id": "69e06557-55cc-490c-86d2-892d7817b729",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SelectPlatformType",
+                        "label": "Select Type(s)",
+                        "type": 7,
+                        "multiSelect": true,
+                        "quote": "",
+                        "delimiter": ",",
+                        "query": "resources\n{PlatformQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| summarize by type=tolower(type)",
+                        "crossComponentResources": [
+                          "value::tenant"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resources/tenants",
+                        "value": []
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants"
+                  },
+                  "name": "parameters - service type tagged"
+                },
+                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PlatformQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,tag=tags.MonitorStarterPacks,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n{PlatformQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| where type in (split('{SelectPlatformType}',\",\"))\n| project Resource=id, type,tag=tags.MonitorStarterPacks,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored Services",
                     "exportMultipleValues": true,
@@ -1659,10 +1698,49 @@
               "groupType": "editable",
               "items": [
                 {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "parameters": [
+                      {
+                        "id": "69e06557-55cc-490c-86d2-892d7817b729",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SelectPlatformTypeToTag",
+                        "label": "Select Type(s)",
+                        "type": 7,
+                        "multiSelect": true,
+                        "quote": "",
+                        "delimiter": ",",
+                        "query": "resources\n{PlatformQuery}\n| where isempty(tags.MonitorStarterPacks)\n| summarize by type=tolower(type)",
+                        "crossComponentResources": [
+                          "value::tenant"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resources/tenants",
+                        "value": []
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants"
+                  },
+                  "name": "parameters - service type tagged"
+                },
+                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PlatformQuery}\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id,type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n{PlatformQuery}\n| where isempty(tags.MonitorStarterPacks)\n| where type in (split('{SelectPlatformTypeToTag}',\",\"))\n| project Resource=id,type,resourceGroup, location, subscriptionId\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored Services",
                     "exportMultipleValues": true,
@@ -1731,7 +1809,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "KeyVault"
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1829,10 +1907,49 @@
               "groupType": "editable",
               "items": [
                 {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "parameters": [
+                      {
+                        "id": "69e06557-55cc-490c-86d2-892d7817b729",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SelectPaasType",
+                        "label": "Select Type(s)",
+                        "type": 7,
+                        "multiSelect": true,
+                        "quote": "",
+                        "delimiter": ",",
+                        "query": "resources\n{PaaSQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| summarize by type=tolower(type)",
+                        "crossComponentResources": [
+                          "value::tenant"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resources/tenants",
+                        "value": []
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants"
+                  },
+                  "name": "parameters - service type tagged"
+                },
+                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PaaSQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| project Resource=id, type,tag=tags.MonitorStarterPacks,resourceGroup, location, subscriptionId, ResourceName=name\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n{PaaSQuery}\n| where isnotempty(tags.MonitorStarterPacks)\n| where type in (split('{SelectPaasType}',\",\"))\n| project Resource=id, type,tag=tags.MonitorStarterPacks,resourceGroup, location, subscriptionId, ResourceName=name\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Monitored PaaS",
                     "exportMultipleValues": true,
@@ -1904,9 +2021,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "Avd"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1973,10 +2088,49 @@
               "groupType": "editable",
               "items": [
                 {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "parameters": [
+                      {
+                        "id": "b1d3b50e-3c4e-43f1-a146-89fe65823238",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SelectPaaStypeToTag",
+                        "label": "Select Type(s)",
+                        "type": 7,
+                        "multiSelect": true,
+                        "quote": "",
+                        "delimiter": ",",
+                        "query": "resources\n{PaaSQuery}\n| where isempty(tags.MonitorStarterPacks)\n| summarize by type=tolower(type)",
+                        "crossComponentResources": [
+                          "value::tenant"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resources/tenants",
+                        "value": []
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants"
+                  },
+                  "name": "parameters - service type not tagged"
+                },
+                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n{PaaSQuery}\n| where isempty(tags.MonitorStarterPacks)\n| project Resource=id, type=tolower(type),resourceGroup, location, subscriptionId, ResourceName=name\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
+                    "query": "resources\n{PaaSQuery}\n| where isempty(tags.MonitorStarterPacks)\n| where type in (split('{SelectPaaStypeToTag}',\",\"))\n| project Resource=id, type=tolower(type),resourceGroup, location, subscriptionId, ResourceName=name\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId,subscriptionId1\n| sort by type asc",
                     "size": 0,
                     "title": "Non-monitored PaaS",
                     "exportMultipleValues": true,
@@ -2045,7 +2199,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": "Avd"
+                        "value": "SQLMI"
                       }
                     ],
                     "style": "pills",
