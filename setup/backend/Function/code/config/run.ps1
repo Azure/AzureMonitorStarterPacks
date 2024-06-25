@@ -185,22 +185,23 @@ switch ($Action) {
 "@
   }
   'getPlatformquery' {
-    $body = @'
-        {
-            "Query":"
-        | where tolower(type) in (
-          'microsoft.network/vpngateways',
-          'microsoft.network/virtualnetworkgateways',
-          'microsoft.keyvault/vaults',
-          'microsoft.network/networksecuritygroups',
-          'microsoft.network/publicipaddresses',
-          'microsoft.network/privatednszones',
-          'microsoft.network/frontdoors',
-          'microsoft.network/azurefirewalls',
-          'microsoft.network/applicationgateways'
-      ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
-    }
-'@
+    $body='{}'
+#     $body = @'
+#         {
+#             "Query":"
+#         | where tolower(type) in (
+#           'microsoft.network/vpngateways',
+#           'microsoft.network/virtualnetworkgateways',
+#           'microsoft.keyvault/vaults',
+#           'microsoft.network/networksecuritygroups',
+#           'microsoft.network/publicipaddresses',
+#           'microsoft.network/privatednszones',
+#           'microsoft.network/frontdoors',
+#           'microsoft.network/azurefirewalls',
+#           'microsoft.network/applicationgateways'
+#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+#     }
+# '@
   }
   default { $body = '' }
 }

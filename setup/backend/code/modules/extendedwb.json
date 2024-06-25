@@ -203,10 +203,7 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": [
-                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e",
-                    "/subscriptions/7591e487-7045-43a5-9896-e7a82cb2c602"
-                  ]
+                  "value": []
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -308,7 +305,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPfta24"
                 }
               ],
               "style": "above",
@@ -362,7 +359,7 @@
                   "version": "KqlParameterItem/1.0",
                   "name": "appInsightsName",
                   "type": 5,
-                  "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"",
+                  "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id, name",
                   "crossComponentResources": [
                     "value::tenant"
                   ],
@@ -370,7 +367,8 @@
                     "additionalResourceOptions": []
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resources/tenants"
+                  "resourceType": "microsoft.resources/tenants",
+                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Insights/components/AMP-fta-bd4d88c1-Function"
                 }
               ],
               "style": "pills",
@@ -4681,17 +4679,70 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
-              "crossComponentResources": [
-                "{appInsightsName}"
-              ],
               "parameters": [
+                {
+                  "id": "dffde712-0ef1-4c46-922a-47a42643130c",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "appInsightsTimeframe",
+                  "label": "Time Range",
+                  "type": 4,
+                  "typeSettings": {
+                    "selectableValues": [
+                      {
+                        "durationMs": 300000
+                      },
+                      {
+                        "durationMs": 900000
+                      },
+                      {
+                        "durationMs": 1800000
+                      },
+                      {
+                        "durationMs": 3600000
+                      },
+                      {
+                        "durationMs": 14400000
+                      },
+                      {
+                        "durationMs": 43200000
+                      },
+                      {
+                        "durationMs": 86400000
+                      },
+                      {
+                        "durationMs": 172800000
+                      },
+                      {
+                        "durationMs": 259200000
+                      },
+                      {
+                        "durationMs": 604800000
+                      },
+                      {
+                        "durationMs": 1209600000
+                      },
+                      {
+                        "durationMs": 2419200000
+                      },
+                      {
+                        "durationMs": 2592000000
+                      }
+                    ]
+                  },
+                  "timeContext": {
+                    "durationMs": 2592000000
+                  },
+                  "value": {
+                    "durationMs": 2419200000
+                  }
+                },
                 {
                   "id": "70107de5-d9cd-46ea-9027-43d83053dac3",
                   "version": "KqlParameterItem/1.0",
                   "name": "FunctionApp",
                   "label": "Function App",
                   "type": 2,
-                  "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    operation_Id,\n    cloud_RoleName,\n    invocationId=customDimensions['InvocationId']\n| where timestamp > ago(30d)\n| where cloud_RoleName =~ 'AMP-fta-bd4d88c1-Function' //and operation_Name =~ 'agentMgmt'\n| order by timestamp desc\n| take 20\n| summarize by Functions=operation_Name\n",
+                  "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    operation_Id,\n    cloud_RoleName,\n    invocationId=customDimensions['InvocationId']\n| order by timestamp desc\n| take 20\n| summarize by Functions=operation_Name\n",
                   "crossComponentResources": [
                     "{appInsightsName}"
                   ],
@@ -4700,11 +4751,12 @@
                     "showDefault": false
                   },
                   "timeContext": {
-                    "durationMs": 2592000000
+                    "durationMs": 0
                   },
+                  "timeContextFromParameter": "appInsightsTimeframe",
                   "queryType": 0,
                   "resourceType": "microsoft.insights/components",
-                  "value": "config"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -4717,12 +4769,10 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    operation_Id,\n    cloud_RoleName,\n    invocationId=customDimensions['InvocationId']\n| where timestamp > ago(30d)\n| where cloud_RoleName =~ 'AMP-fta-bd4d88c1-Function' and operation_Name =~ '{FunctionApp}'\n| order by timestamp desc\n| take 20",
+              "query": "requests\n| project\n    timestamp,\n    id,\n    operation_Name,\n    success,\n    resultCode,\n    duration,\n    operation_Id,\n    cloud_RoleName,\n    invocationId=customDimensions['InvocationId']\n| where operation_Name =~ '{FunctionApp}'\n| order by timestamp desc\n| take 20",
               "size": 0,
               "title": "Invocations",
-              "timeContext": {
-                "durationMs": 2592000000
-              },
+              "timeContextFromParameter": "appInsightsTimeframe",
               "exportedParameters": [
                 {
                   "fieldName": "invocationId",
@@ -4756,13 +4806,11 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "union traces\n| union exceptions\n| where timestamp > ago(30d)\n| where operation_Id == '{operationid}'\n| where customDimensions['InvocationId'] == '{invocationid}'\n| order by timestamp asc\n| project\n    timestamp,\n    message = iff(message != '', message, iff(innermostMessage != '', innermostMessage, customDimensions.[strcat('prop__{','OriginalFormat}')])),\n    logLevel = customDimensions.['LogLevel']",
+              "query": "union traces\n| union exceptions\n| where operation_Id == '{operationid}'\n| where customDimensions['InvocationId'] == '{invocationid}'\n| order by timestamp asc\n| project\n    timestamp,\n    message = iff(message != '', message, iff(innermostMessage != '', innermostMessage, customDimensions.[strcat('prop__{','OriginalFormat}')])),\n    logLevel = customDimensions.['LogLevel']",
               "size": 0,
               "title": "Invocation Details",
               "noDataMessage": "No Invocation Selected",
-              "timeContext": {
-                "durationMs": 2592000000
-              },
+              "timeContextFromParameter": "appInsightsTimeframe",
               "exportFieldName": "invocationId",
               "exportParameterName": "invocationid",
               "queryType": 0,
