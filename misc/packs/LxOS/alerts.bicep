@@ -101,7 +101,7 @@ var alertlist = []
 //   }
 // ]
 module alertsnew '../../../modules/alerts/alerts.bicep' = {
-  name: '${moduleprefix}-Alerts'
+  name: '${moduleprefix}-Alerts-${location}'
   params: {
     alertlist: alertlist
     AGId: AGId

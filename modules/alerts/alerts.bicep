@@ -7,7 +7,7 @@ param Tags object
 param moduleprefix string
 
 module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
-  name: '${packtag}-Alert-${i}'
+  name: '${packtag}-Alert-${i}-${location}'
   params: {
     location: location
     actionGroupResourceId: AGId

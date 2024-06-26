@@ -18,10 +18,12 @@ param instanceName string
 // Table to receive the data
 var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(lawResourceId,'/')[8]
+var lawResourceGroupName = split(lawResourceId,'/')[4]
+var lawSubscriptionId = split(lawResourceId,'/')[2]
 
 module table '../../modules/LAW/table.bicep' = {
   name: tableNameToUse
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: resourceGroup(lawSubscriptionId, lawResourceGroupName)
   params: {
     parentname: lawFriendlyName
     tableName: tableNameToUse

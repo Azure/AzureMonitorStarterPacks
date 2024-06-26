@@ -216,7 +216,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
 
 //Add keyvault
 module keyvault 'modules/keyvault.bicep' = {
-  name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
+  name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, location, 'keyvault'), 0, 6)}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     kvName: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName,location,'keyvault'), 0, 6)}'

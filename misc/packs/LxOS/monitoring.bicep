@@ -69,7 +69,7 @@ var resourceGroupName = split(resourceGroupId, '/')[4]
 // }
 
 module InsightsAlerts './alerts.bicep' = {
-  name: 'Alerts-${packtag}'
+  name: 'Alerts-${packtag}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location

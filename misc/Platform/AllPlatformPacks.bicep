@@ -30,7 +30,7 @@ param customerTags object
 param instanceName string
 
 module KVAlerts './KeyVault/monitoring.bicep' = {
-  name: 'KVAlerts'
+  name: 'KVAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     location: location
@@ -50,7 +50,7 @@ module KVAlerts './KeyVault/monitoring.bicep' = {
   }
 }
 module vWan './Network/vWan/monitoring.bicep' = {
-  name: 'vWanAlerts'
+  name: 'vWanAlerts-${instanceName}-${location}'
   params: {
     actionGroupResourceId: actionGroupResourceId
     assignmentLevel: assignmentLevel
@@ -68,7 +68,7 @@ module vWan './Network/vWan/monitoring.bicep' = {
   }
 }
 module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
-  name: 'LoadBalancersAlerts'
+  name: 'LoadBalancersAlerts-${instanceName}-${location}'
   params: {
     actionGroupResourceId: actionGroupResourceId
     assignmentLevel: assignmentLevel
@@ -88,7 +88,7 @@ module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
   }
 }
 module AA './AA/alerts.bicep' = {
-  name: 'AA'
+  name: 'AA-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location
@@ -112,7 +112,7 @@ module AA './AA/alerts.bicep' = {
   }
 }
 module AppGW './Network/AppGW/alerts.bicep' = {
-  name: 'AppGWAlerts'
+  name: 'AppGWAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location
@@ -136,7 +136,7 @@ module AppGW './Network/AppGW/alerts.bicep' = {
   }
 }
 module AzFW './Network/AzFW/alerts.bicep' = {
-  name: 'AzFWAlerts'
+  name: 'AzFWAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location
@@ -160,7 +160,7 @@ module AzFW './Network/AzFW/alerts.bicep' = {
   }
 }
 module AzFD './Network/AzFD/alerts.bicep' = {
-  name: 'AzFDAlerts'
+  name: 'AzFDAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location
@@ -184,7 +184,7 @@ module AzFD './Network/AzFD/alerts.bicep' = {
   }
 }
 module PrivZones './Network/PrivZones/alerts.bicep' = {
-  name: 'PrivZonesAlerts'
+  name: 'PrivZonesAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location
@@ -208,7 +208,7 @@ module PrivZones './Network/PrivZones/alerts.bicep' = {
   }
 }
 module PIP './Network/PIP/alerts.bicep' = {
-  name: 'PIPAlerts'
+  name: 'PIPAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location
@@ -233,7 +233,7 @@ module PIP './Network/PIP/alerts.bicep' = {
 }
 
 module NSG './Network/NSG/alerts.bicep' = {
-  name: 'NSGAlerts'
+  name: 'NSGAlerts-${instanceName}-${location}'
   params: {
     assignmentLevel: assignmentLevel
     //location: location

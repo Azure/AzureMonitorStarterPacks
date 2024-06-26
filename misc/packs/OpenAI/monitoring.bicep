@@ -34,7 +34,7 @@ var tempTags ={
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 module Alerts 'Alerts.bicep' = {
-  name: '${packtag}-Alerts'
+  name: '${packtag}-Alerts-${instanceName}-${location}'
   params: {
     packTag: packtag
     policyLocation: location
