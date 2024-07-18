@@ -4,7 +4,7 @@ The recommended experience to deploy the packs is by using the provided interfac
 
 To deploy only packs, click the icon below. The solution must have been deployed before in order to deploy the packs.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Azure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FAllPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Azure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FAllPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
 
 ## Details about the packs
 
