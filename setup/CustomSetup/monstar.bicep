@@ -42,12 +42,12 @@ param existingActionGroupId string = ''
 param deployAllPacks bool
 param deployIaaSPacks bool = false
 param deployPaaSPacks bool = false
-param deployPlatformPacks bool = false
+// Platform packs no longer exist. All Packs are Paas Packs.
+//param deployPlatformPacks bool = false
 param deployDiscovery bool = false
-
 param collectTelemetry bool = true
 
-var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
+var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
@@ -59,8 +59,7 @@ var functionName = 'AMP-${instanceName}-${split(subscriptionId,'-')[0]}-Function
 var logicAppName = 'AMP-${instanceName}-LogicApp'
 var ImageGalleryName = 'AMP${instanceName}Gallery'
 
-
-
+// Resource Group if needed
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
   name: 'resourceGroup-Deployment'
   scope: subscription(subscriptionId)
@@ -70,7 +69,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
     Tags: Tags
   }
 }
-
+// Storage Account if needed.
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
   name:'newstorage-deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -172,7 +171,7 @@ module backend '../backend/code/backend.bicep' = {
     _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
     appInsightsLocation: appInsightsLocation
-//    currentUserIdObject: currentUserIdObject
+    //currentUserIdObject: currentUserIdObject
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     location: location
@@ -217,7 +216,6 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     existingActionGroupResourceId: existingActionGroupId
     deployIaaSPacks: deployIaaSPacks || deployAllPacks
     deployPaaSPacks: deployPaaSPacks || deployAllPacks
-    deployPlatformPacks: deployPlatformPacks || deployAllPacks
     storageAccountName: storageAccountName
     imageGalleryName: ImageGalleryName
     instanceName: instanceName

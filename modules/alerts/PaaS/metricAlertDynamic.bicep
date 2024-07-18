@@ -35,7 +35,6 @@ param deploymentRoleDefinitionIds array = [
 @allowed([
     'IaaS'
     'PaaS'
-    'Platform'
 ])
 param packtype string
 
@@ -82,7 +81,7 @@ param parAlertState string = 'true'
 param parMonitorDisable string = 'MonitorDisable' 
 param instanceName string
 module metricAlert '../../alz/deploy.bicep' = {
-    name: guid(alertname)
+    name: guid(alertname,policyLocation,instanceName)
     params: {
         name: 'AMP-${instanceName}-${alertname}'
         displayName: 'AMP-${instanceName}-${alertDisplayName}'

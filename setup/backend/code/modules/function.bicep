@@ -1,6 +1,8 @@
 param _artifactsLocation string
 @secure()
 param _artifactsLocationSasToken string
+param SAkvSecretName string
+param appInsightsSecretName string
 param functionname string
 param location string
 param Tags object
@@ -12,6 +14,10 @@ param filename string = 'discovery.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param lawresourceid string
 param appInsightsLocation string
+param monitoringKeyName string
+param keyVaultName string
+param subscriptionId string
+param resourceGroupName string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
@@ -27,11 +33,9 @@ var sasConfig = {
   signedProtocol: 'https'
   keyToSign: 'key2'
 }
-
 resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
 }
-
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'deployscript-Function-${instanceName}'
   dependsOn: [
@@ -40,6 +44,12 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   tags: Tags
   location: location
   kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${userManagedIdentity}': {}
+    }
+  }
   properties: {
     azCliVersion: '2.42.0'
     timeout: 'PT5M'
@@ -93,7 +103,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
   kind: 'functionapp'
   tags: Tags
   identity: {
-      type: 'UserAssigned'
+      type: 'SystemAssigned, UserAssigned'
       userAssignedIdentities: {
           '${userManagedIdentity}': {}
       }
@@ -162,10 +172,26 @@ resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
       keyVaultReferenceIdentity: 'SystemAssigned'
   }
 }
+// var functionSystemAssignedIdentityRoles= [
+//   '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
+// ]
+
+// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =  [for (roledefinitionId, i) in functionSystemAssignedIdentityRoles:  {
+//   name: guid('${functionname}-role-assignment-${i}',resourceGroup().name)
+//   properties: {
+//     description: '${functionname}-${functionSystemAssignedIdentityRoles[0]}'
+//     principalId: azfunctionsite.identity.principalId
+//     principalType: 'ServicePrincipal'
+//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions',roledefinitionId)
+//   }
+// }]
 
 resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   name: 'appsettings'
   parent: azfunctionsite
+  // dependsOn: [
+  //   roleAssignment
+  // ]
   properties: {
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
@@ -181,21 +207,36 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     PacksUserManagedId: packsUserManagedId
     ARTIFACS_LOCATION: _artifactsLocation
     ARTIFACTS_LOCATION_SAS_TOKEN: _artifactsLocationSasToken
+    // WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
+    // //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName})'
+    // //AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+    // //AzureWebJobsStorage:'@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${SAkvSecretName}'
+    // WEBSITE_SKIP_CONTENTSHARE_VALIDATION: '1'
+    // //AzureWebJobsStorage__accountName: discoveryStorage.name
+    // WEBSITE_CONTENTSHARE : discoveryStorage.name
+    // FUNCTIONS_WORKER_RUNTIME:'powershell'
+    // FUNCTIONS_EXTENSION_VERSION:'~4'
+    // ResourceGroup: resourceGroup().name
+    // SolutionTag: solutionTag
+    // APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsightsSecretName}'
+    // APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsightsSecretName}'
+    // ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+    // MSI_CLIENT_ID: userManagedIdentityClientId
+    // PacksUserManagedId: packsUserManagedId
+    // ARTIFACS_LOCATION: _artifactsLocation
+    // ARTIFACTS_LOCATION_SAS_TOKEN: _artifactsLocationSasToken
   }
 }
-
 resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
   parent: azfunctionsite
   dependsOn: [
     deploymentScript
   ]
-  
   name: 'MSDeploy'
   properties: {
     packageUri: '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
   }
 }
-
 resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   name: functionname
   tags: Tags
@@ -209,20 +250,30 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
     WorkspaceResourceId: lawresourceid
-    
   }
 }
 
-var keyName = 'monitoringKey'
-
+module kvSecretsAppInsights '../modules/keyvaultsecretAppInsights.bicep' = {
+  name: 'kvSecretAppInsights'
+  dependsOn: [
+    appinsights
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    kvName: keyVaultName
+    Tags: Tags
+    appInsightsName: appinsights.name
+    appInsightsSecretName: appInsightsSecretName
+  }
+}
 resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
   dependsOn: [ 
     azfunctionsiteconfig 
   ]
   tags: Tags
-  name: '${functionname}/default/${keyName}'  
+  name: '${functionname}/default/${monitoringKeyName}'  
   properties: {  
-    name: keyName  
+    name: monitoringKeyName  
     value: apiManagementKey
   }  
 } 

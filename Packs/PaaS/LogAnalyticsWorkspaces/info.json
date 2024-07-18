@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Log Analytics",
+        "Type": "PaaS",
+        "Description": "Log Analytics Monitoring Pack"
+    }
+}

@@ -53,7 +53,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                 }
               }
               method: 'get'
-              path: '/secrets/@{encodeURIComponent(\'FunctionKey\')}/value'
+              path: '/secrets/@{encodeURIComponent(\'monitoringKey\')}/value'
             }
           }
           Parse_JSON: {
@@ -90,10 +90,10 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                     type: 'Function'
                     inputs: {
                         body: '@body(\'Parse_JSON\')?[\'functionBody\']'
-                        Headers : {
-                            //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
-                            'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
-                        }
+                        // Headers : {
+                        //     //'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).masterKey
+                        //     'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
+                        // }
                         function: {
                             id: '${azfunctionsite.id}/functions/tagmgmt'
                         }

@@ -29,14 +29,9 @@ Central admin interface for the solution. The workbook is used to enable/disable
 When a server is selected, the list of available packs is offered:
 ![Alt text](image-12.png)
 
-### PaaS
+### Services
 
 ![Alt text](image-18.png)
-
-### Platform
-
-![Alt text](image-19.png)
-
 
 ### Alert Setup
   Used to enable or disable alerts per monitoring pack, as well as to Configure the action group to the alerts. The solution can also delete the alert rule if required.
@@ -92,8 +87,8 @@ The basic solution is composed of the following components:
 
 7. For Discovery of workloads, a VM Application is deployed to Azure VMs to generate the discovery data and DCR collects the data, which is shown in the Admin Workbook. VM Applications can be also used by packs that require richer data.
 
-8. For PaaS and platform services, when tagged, policies will generate the required alerts following the guidance from the [AMBA](https://aka.ms/amba) documentation.
+8. For services, when tagged, policies will generate the required alerts following the guidance from the [AMBA](https://aka.ms/amba) documentation.
 
-9. For PaaS and platform services, Alerts are usually created by the policies themselves. Policies can, if required, deploy diagnostics settings, which will send data to the log analytics workspace.
+9. For services, Alerts are usually created by the policies themselves. Policies can, if required, deploy diagnostics settings, which will send data to the log analytics workspace.
 
 10. The discovery component leverages a VM Application and a DCR to collect installed applications in Windows and Linux. The data is added to a custom table in the Log Analytics workspace and can be used to help onboarding discovered workloads.

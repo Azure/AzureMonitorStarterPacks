@@ -57,18 +57,18 @@ $tagMapping = @"
     {
       "tag": "VPNgw",
       "nameSpace": "Microsoft.Network/vpngateways",
-      "type": "Platform"
+      "type": "PaaS"
     }
     ,
     {
       "tag": "ERgw",
       "nameSpace": "Microsoft.Network/expressRouteGateways",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "ALB",
       "nameSpace": "Microsoft.Network/loadBalancers",
-      "type": "Platform",
+      "type": "PaaS",
       "sku": "Standard"
     },
     {
@@ -79,37 +79,37 @@ $tagMapping = @"
     {
       "tag": "AppGw",
       "nameSpace": "Microsoft.Network/applicationGateways",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "AzFW",
       "nameSpace": "Microsoft.Network/azureFirewalls",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "AzFD",
       "nameSpace": "Microsoft.Network/frontdoors",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "PrivZones",
       "nameSpace": "Microsoft.Network/privateDnsZones",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "PIP",
       "nameSpace": "Microsoft.Network/publicIPAddresses",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "NSG",
       "nameSpace": "Microsoft.Network/networkSecurityGroups",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
       "tag": "KeyVault",
       "nameSpace": "microsoft.keyvault/vaults",
-      "type": "Platform"
+      "type": "PaaS"
     }
     ]
 }
@@ -142,7 +142,7 @@ switch ($Action) {
         }
 "@ | convertfrom-json
   }
-  # Gets a list of tags (all) or for a specific type (PaaS or Platform)
+  # Gets a list of tags (all) or for a specific type (PaaS)
   'getAllServiceTags' {
     $type = $Request.Query.Type
     if ([string]::IsNullOrEmpty($type)) {
@@ -167,19 +167,7 @@ switch ($Action) {
           'microsoft.desktopvirtualization/hostpools',
           'microsoft.logic/workflows',
           'microsoft.sql/managedinstances',
-          'microsoft.sql/servers/databases'
-      )
-      or (
-          tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-      )"
-      }
-"@
-  }
-  'getPlatformquery' {
-    $body = @'
-        {
-            "Query":"
-        | where tolower(type) in (
+          'microsoft.sql/servers/databases',
           'microsoft.network/vpngateways',
           'microsoft.network/virtualnetworkgateways',
           'microsoft.keyvault/vaults',
@@ -189,9 +177,31 @@ switch ($Action) {
           'microsoft.network/frontdoors',
           'microsoft.network/azurefirewalls',
           'microsoft.network/applicationgateways'
+      )
+      or (
+          tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
-    }
-'@
+      }
+"@
+  }
+  'getPlatformquery' {
+    $body='{}'
+#     $body = @'
+#         {
+#             "Query":"
+#         | where tolower(type) in (
+#           'microsoft.network/vpngateways',
+#           'microsoft.network/virtualnetworkgateways',
+#           'microsoft.keyvault/vaults',
+#           'microsoft.network/networksecuritygroups',
+#           'microsoft.network/publicipaddresses',
+#           'microsoft.network/privatednszones',
+#           'microsoft.network/frontdoors',
+#           'microsoft.network/azurefirewalls',
+#           'microsoft.network/applicationgateways'
+#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+#     }
+# '@
   }
   default { $body = '' }
 }

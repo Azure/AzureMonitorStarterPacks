@@ -21,6 +21,9 @@ param resourceGroupName string
 param mgname string
 param imageGalleryName string
 param collectTelemetry bool
+var monitoringSecretName = 'monitoringKey'
+var SASecretName = 'SAKey'
+var appInsightsSecretName = 'appInsightsKey'
 
 var packPolicyRoleDefinitionIds=[
   // '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
@@ -31,7 +34,8 @@ var packPolicyRoleDefinitionIds=[
   'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
   // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
 ]
-
+//These are specific to the scopen where the function is deployed to.
+//potential issue when enabling policies to a different scope and permissions are not added to a higher scope.
 var backendFunctionRoleDefinitionIds = [
   '4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
   '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // VM Contributor
@@ -42,6 +46,18 @@ var backendFunctionRoleDefinitionIds = [
   '36243c78-bf99-498c-9df9-86d9f8d28608' // policy contributor
   'f1a07417-d97a-45cb-824c-7a7467783830' // Managed identity Operator
 ]
+var packsRGroleDefinitionIds=[
+  //contributor roles
+  'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor Role Definition Id for Contributor
+  //grafana admin
+  '22926164-76b3-42b3-bc55-97df8dab3e41' // Grafana Admin
+  //Above role should be able to add diagnostics to everything according to docs.
+  // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
+]
+
+var functionRGroleDefinitionIds=[
+  'ba92f5b4-2d11-453d-a403-e96b0029c9fe'] // Storage Blob Data Contributor
+
 var logicappRequiredRoleassignments = [
   '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
 ]
@@ -85,6 +101,7 @@ module backendFunction 'modules/function.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     functionUserManagedIdentity
+    kvSecretstorage
   ]
   params: {
     appInsightsLocation: appInsightsLocation
@@ -100,6 +117,13 @@ module backendFunction 'modules/function.bicep' = {
     instanceName: instanceName
     _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
+    keyVaultName: keyvault.outputs.kvName
+    SAkvSecretName: SASecretName
+    monitoringKeyName: monitoringSecretName
+    appInsightsSecretName: appInsightsSecretName
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
+
   }
 }
 
@@ -162,6 +186,8 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     subscriptionId: subscriptionId
     addRGRoleAssignments: true
     solutionTag: solutionTag
+    RGroleDefinitionIds: packsRGroleDefinitionIds
+
   }
 }
 
@@ -183,21 +209,19 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
     solutionTag: solutionTag
+    RGroleDefinitionIds: functionRGroleDefinitionIds
+    addRGRoleAssignments: true
   }
 }
 
 //Add keyvault
 module keyvault 'modules/keyvault.bicep' = {
-  name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
-  dependsOn: [
-    backendFunction
-  ]
+  name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, location, 'keyvault'), 0, 6)}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
-    kvName: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
+    kvName: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName,location,'keyvault'), 0, 6)}'
     location: location
     Tags: Tags
-    functionName: functionname
   }
 }
 
@@ -213,6 +237,37 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
     roleShortName: roledefinitionId
   }
 }]
+//
+// Secrets
+//
+module kvSecretstorage './modules/keyvaultsecretstorage.bicep' = {
+  name: 'kvSecretsstorage'
+  dependsOn: [
+    keyvault
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    kvName: keyvault.outputs.kvName
+    storageAccountName: storageAccountName
+    Tags: Tags
+    SASecretName: SASecretName
+  }
+}
+
+module kvSecretsfunction './modules/keyvaultsecretsfunction.bicep' = {
+  name: 'kvSecretsfunction'
+  dependsOn: [
+    keyvault
+    backendFunction
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    functionName: functionname
+    kvName: keyvault.outputs.kvName
+    Tags: Tags
+    monitoringSecretName: monitoringSecretName
+  }
+}
 
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId

@@ -113,7 +113,7 @@ var performanceCounters=[
 
 // Alerts - the module below creates the alerts and associates them with the action group
 module Alerts './alerts.bicep' = {
-  name: 'Alerts-${packtag}'
+  name: 'Alerts-${packtag}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
@@ -126,7 +126,7 @@ module Alerts './alerts.bicep' = {
 }
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
-  name: 'dcrPerformance-${packtag}'
+  name: 'dcrPerformance-${packtag}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
@@ -141,7 +141,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   }
 }
 module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
+  name: 'policysetup-${packtag}-${instanceName}-${location}'
   params: {
     dcrId: dcrbasicvmMonitoring.outputs.dcrId
     packtag: packtag

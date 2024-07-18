@@ -53,7 +53,7 @@ resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
               timeAggregation: 'Average'
               metricMeasureColumn: metricMeasureColumn
               dimensions: dimensions
-              resourceIdColumn: empty(dimensions) ? '_ResourceId' : null
+              resourceIdColumn: empty(dimensions) ? null : '_ResourceId'
               operator: operator
               threshold: threshold
               failingPeriods: {

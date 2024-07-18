@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "Log Analytics",
-        "Type": "Platform",
-        "Description": "Log Analytics Monitoring Pack"
-    }
-}

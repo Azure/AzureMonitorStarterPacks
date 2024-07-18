@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Azure Firewall",
+        "Type": "PaaS",
+        "Description": "Azure Firewall Monitoring Pack"
+    }
+}

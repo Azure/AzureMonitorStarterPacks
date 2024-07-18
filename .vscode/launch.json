@@ -8,6 +8,14 @@
             "name": "PowerShell: Interactive Session",
             "type": "PowerShell",
             "request": "launch"
+        },
+        {
+            "name": "Attach to PowerShell Functions",
+            "type": "PowerShell",
+            "request": "attach",
+            "customPipeName": "AzureFunctionsPSWorker",
+            "runspaceId": 1,
+            "preLaunchTask": "func: host start"
         }
     ]
 }

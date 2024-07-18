@@ -34,8 +34,6 @@ param assignmentLevel string
 param customerTags object 
 param instanceName string
 
-
-
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {
@@ -175,5 +173,232 @@ module WebApps './WebApp/monitoring.bicep' = {
     location: location
     resourceGroupId: resourceGroupId
     workspaceId: workspaceId
+  }
+}
+module KVAlerts './KeyVault/monitoring.bicep' = {
+  name: 'KVAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    location: location
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packtag: 'KeyVault'
+    // grafanaName: grafanaName
+    // dceId: dceId
+    // customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+  }
+}
+module vWan './Network/vWan/monitoring.bicep' = {
+  name: 'vWanAlerts'
+  params: {
+    actionGroupResourceId: actionGroupResourceId
+    assignmentLevel: assignmentLevel
+    location: location
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    workspaceId: workspaceId
+    packtag: 'vWan'
+    solutionVersion: solutionVersion
+    customerTags: customerTags
+    instanceName: instanceName
+  }
+}
+module LoadBalancers './Network/LoadBalancers/monitoring.bicep' = {
+  name: 'LoadBalancersAlerts'
+  params: {
+    actionGroupResourceId: actionGroupResourceId
+    assignmentLevel: assignmentLevel
+    location: location
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packtag: 'ALB'
+    solutionVersion: solutionVersion
+    //dceId: dceId
+    //grafanaName: grafanaName
+    customerTags: customerTags
+    instanceName: instanceName
+  }
+}
+module AA './AA/alerts.bicep' = {
+  name: 'AA'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'AA'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Automation/automationAccounts'
+  }
+}
+module AppGW './Network/AppGW/alerts.bicep' = {
+  name: 'AppGWAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'AppGW'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Network/applicationGateways'
+  }
+}
+module AzFW './Network/AzFW/alerts.bicep' = {
+  name: 'AzFWAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'AzFW'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Network/azureFirewalls'
+  }
+}
+module AzFD './Network/AzFD/alerts.bicep' = {
+  name: 'AzFDAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'AzFD'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Network/frontdoors'
+  }
+}
+module PrivZones './Network/PrivZones/alerts.bicep' = {
+  name: 'PrivZonesAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'PrivZones'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Network/privateDnsZones'
+  }
+}
+module PIP './Network/PIP/alerts.bicep' = {
+  name: 'PIPAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'PIP'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Network/publicIPAddresses'
+  }
+}
+
+module NSG './Network/NSG/alerts.bicep' = {
+  name: 'NSGAlerts'
+  params: {
+    assignmentLevel: assignmentLevel
+    //location: location
+    mgname: mgname
+    //resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    //actionGroupResourceId: actionGroupResourceId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //workspaceId: workspaceId
+    packTag: 'NSG'
+    //grafanaName: grafanaName
+    //dceId: dceId
+    //customerTags: customerTags
+    instanceName: instanceName
+    solutionVersion: solutionVersion
+    AGId: actionGroupResourceId
+    policyLocation: location
+    parResourceGroupName: resourceGroupId
+    resourceType: 'Microsoft.Network/networkSecurityGroups'
   }
 }

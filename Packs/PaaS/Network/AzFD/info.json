@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Azure Front Door",
+        "Type": "PaaS",
+        "Description": "Azure Front Door Monitoring Pack"
+    }
+}

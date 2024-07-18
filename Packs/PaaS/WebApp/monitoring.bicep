@@ -19,7 +19,7 @@ param solutionVersion string
 param customerTags object 
 var tempTags ={
   '${solutionTag}': packtag
-  MonitoringPackType: 'Platform'
+  MonitoringPackType: 'PaaS'
   solutionVersion: solutionVersion
 }
 // if the customer has provided tags, then use them, otherwise use the default tags

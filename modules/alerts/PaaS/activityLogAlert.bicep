@@ -26,12 +26,11 @@ var parAlertState = 'true'
 @allowed([
     'IaaS'
     'PaaS'
-    'Platform'
 ])
 param packtype string
 param instanceName string
 module ActivityLogAlert '../../alz/deploy.bicep' = {
-  name: guid(alertname)
+  name: guid(alertname,policyLocation,instanceName)
   params: {
       name: 'AMP-${instanceName}-${alertname}'
       displayName: 'AMP-${instanceName}-${alertDisplayName}'

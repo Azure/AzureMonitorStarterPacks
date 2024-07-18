@@ -464,26 +464,14 @@
                         {
                             "name": "deployPaaSPacks",
                             "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs",
-                            "toolTip": "Select to deploy all PaaS packs.",
+                            "label": "Deploy Services Packs",
+                            "toolTip": "Select to deploy all Azure Services packs.",
                             "defaultValue": false,
                             "constraints": {
                                 "required": false,
-                                "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
+                                "validationMessage": "Select to deploy the available Services packs to the selected environment."
                             },
                             "visible": "[equals(steps('Packs').deployPacks, false)]"
-                        },
-                        {
-                            "name": "deployPlatformPacks",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs",
-                            "toolTip": "Select to deploy all Platform packs.",
-                            "defaultValue": false,
-                            "visible": "[equals(steps('Packs').deployPacks, false)]",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the available Platform packs to the selected environment."
-                            }
                         },
                         {
                             "name": "packsText",
@@ -495,7 +483,7 @@
                                     "uri": "https://github.com/Azure/AzureMonitorStarterPacks/tree/main/Packs#readme"
                                 }
                             },
-                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true))]"
+                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true))]"
                         },
                         {
                             "name": "ActionGroupStatus",
@@ -515,7 +503,7 @@
                                 ],
                                 "required": true
                             },
-                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true))]"
+                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true))]"
                         },
                         {
                             "name": "existingAG",
@@ -531,7 +519,7 @@
                                 "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
                         },
                         {
                             "name": "NewActionGroupName",
@@ -545,7 +533,7 @@
                                 "regex": "^[a-z0-9A-Z]{1,12}$",
                                 "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-12 characters long."
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceiver",
@@ -557,7 +545,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceiveremail",
@@ -569,7 +557,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         }
                     ]
                 },
@@ -609,7 +597,6 @@
                 "deployAllPacks": "[steps('Packs').deployPacks]",
                 "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
                 "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]",
-                "deployPlatformPacks": "[steps('Packs').deployPlatformPacks]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
                 "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
                 "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
