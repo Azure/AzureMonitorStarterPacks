@@ -29,14 +29,9 @@ Central admin interface for the solution. The workbook is used to enable/disable
 When a server is selected, the list of available packs is offered:
 ![Alt text](image-12.png)
 
-### PaaS
+### Services
 
 ![Alt text](image-18.png)
-
-### Platform
-
-![Alt text](image-19.png)
-
 
 ### Alert Setup
   Used to enable or disable alerts per monitoring pack, as well as to Configure the action group to the alerts. The solution can also delete the alert rule if required.

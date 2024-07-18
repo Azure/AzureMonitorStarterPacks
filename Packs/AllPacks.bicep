@@ -27,7 +27,7 @@ param customerTags object
 param existingActionGroupResourceId string
 param deployIaaSPacks bool
 param deployPaaSPacks bool
-// param deployPlatformPacks bool
+// param deployPlatformPacks bool - No longer supported
 param storageAccountName string
 param imageGalleryName string
 param instanceName string
@@ -39,7 +39,6 @@ param actionGroupName string = ''
 param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
 param emailreiceversemail string = ''
-
 
 var solutionTagComponents='MonitorStarterPacksComponents'
 
@@ -130,7 +129,7 @@ module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
 //   }
 // }
 
-// Grafana upload and install
+// Grafana upload and install of dashboards.
 module grafana './ds.bicep' = if (deployGrafana) {
   name: 'grafana'
   scope: resourceGroup(subscriptionId, resourceGroupName)

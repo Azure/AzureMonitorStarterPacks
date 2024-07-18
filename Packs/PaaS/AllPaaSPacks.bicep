@@ -34,8 +34,6 @@ param assignmentLevel string
 param customerTags object 
 param instanceName string
 
-
-
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
   params: {
