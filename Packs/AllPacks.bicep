@@ -63,7 +63,7 @@ module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG)
 }
 
 module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
-  name: 'deployIaaSPacks'
+  name: 'deployIaaSPacks-${instanceName}-${location}'
   params: {
     // Tags: Tags
     location: location
@@ -86,7 +86,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
 }
 
 module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
-  name: 'deployPaaSPacks'
+  name: 'deployPaaSPacks-${instanceName}-${location}'
   params: {
     // _artifactsLocation: _artifactsLocation
     // _artifactsLocationSasToken: _artifactsLocationSasToken

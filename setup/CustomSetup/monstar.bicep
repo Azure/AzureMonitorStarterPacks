@@ -61,7 +61,7 @@ var ImageGalleryName = 'AMP${instanceName}Gallery'
 
 // Resource Group if needed
 module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
-  name: 'resourceGroup-Deployment'
+  name: 'resourceGroup-Deployment-${instanceName}-${location}'
   scope: subscription(subscriptionId)
   params: {
     resourceGroupName: resourceGroupName
@@ -71,7 +71,7 @@ module resourgeGroup '../backend/code/modules/mg/resourceGroup.bicep' = if (crea
 }
 // Storage Account if needed.
 module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
-  name:'newstorage-deployment'
+  name:'newstorage-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     resourgeGroup
@@ -83,7 +83,7 @@ module storageAccount '../backend/code/modules/mg/storageAccount.bicep' = if (cr
   }
 }
 module existingStorageAccount '../backend/code/modules/mg/storageAccountBlobs.bicep' = if (!createNewStorageAccount) {
-  name:'existingstorage-deployment'
+  name:'existingstorage-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     storageAccountName: storageAccountName
@@ -91,7 +91,7 @@ module existingStorageAccount '../backend/code/modules/mg/storageAccountBlobs.bi
 }
 
 module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS) {
-  name: 'logAnalytics-Deployment'
+  name: 'logAnalytics-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     resourgeGroup
@@ -106,7 +106,7 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
 
 // AMA policy - conditionally deploy it
 module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
-  name: 'DeployAMAPolicy'
+  name: 'DeployAMAPolicy-${instanceName}-${location}'
   dependsOn: [
     resourgeGroup
   ]
@@ -122,7 +122,7 @@ module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
 }
 
 module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
-  name: 'DeployDiscovery-${instanceName}'
+  name: 'DeployDiscovery-${instanceName}-${location}'
   dependsOn: [
     backend
   ]
@@ -146,7 +146,7 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
 }
 
 module amg '../backend/code/modules/grafana.bicep' = if (newGrafana && deployGrafana) {
-  name: 'azureManagedGrafana-${instanceName}'
+  name: 'azureManagedGrafana-${instanceName}-${location}'
   dependsOn: [
     resourgeGroup
     logAnalytics
@@ -163,7 +163,7 @@ module amg '../backend/code/modules/grafana.bicep' = if (newGrafana && deployGra
 }
 
 module backend '../backend/code/backend.bicep' = {
-  name: 'MonitoringPacks-backend-${instanceName}'
+  name: 'MonitoringPacks-backend-${instanceName}-${location}'
   dependsOn: [
     resourgeGroup
   ]
@@ -189,7 +189,7 @@ module backend '../backend/code/backend.bicep' = {
 }
 
 module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
-  name: 'DeployAllPacks'
+  name: 'DeployAllPacks-${instanceName}-${location}'
   dependsOn: [
     backend
   ]
