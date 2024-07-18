@@ -20,7 +20,7 @@ param parResourceGroupTags object = {
 param parAlertState string = 'true'
 
 module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-OAIClErrors'
+    name: '${uniqueString(deployment().name)}-OAIClErrors-${instanceName}'
     params: {
         alertname: 'Alert on Client Errors over threshold'
         alertDisplayName: 'Alert on Client Errors over threshold'
