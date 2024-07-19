@@ -61,113 +61,145 @@ $PlatformQuery=@"
             'microsoft.network/applicationgateways'
       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')
 "@
-$tagMapping=@"
+$tagMapping = @"
 {
-    tags: 
-    [
+  "tags": [
+    {
+      "tag": "KeyVault",
+      "nameSpace": "Microsoft.KeyVault/vaults",
+      "type": "PaaS"
+    },
     {
       "tag": "LogicApps",
       "nameSpace": "Microsoft.Logic/workflows",
       "type": "PaaS"
-    }
-    ,
+    },
     {
-      "tag": "SQLSrv",
-      "nameSpace": "Microsoft.Sql/servers/databases",
+      "tag": "ServiceBus",
+      "nameSpace": "Microsoft.ServiceBus/namespaces",
       "type": "PaaS"
-    }
-    ,
-    {
-      "tag": "SQLMI",
-      "nameSpace": "Microsoft.Sql/managedInstances",
-      "type": "PaaS"
-    }
-    ,
-    {
-      "tag": "WebApp",
-      "nameSpace": "Microsoft.Web/sites",
-      "type": "PaaS"
-    }
-    ,
+    },
     {
       "tag": "Storage",
       "nameSpace": "Microsoft.Storage/storageaccounts",
       "type": "PaaS"
-    }
-    ,
-    {
-      "tag": "VPNG",
-      "nameSpace": "Microsoft.Network/vpngateways",
-      "type": "Platform"
-    }
-    ,
-    {
-      "tag": "ERgw",
-      "nameSpace": "Microsoft.Network/expressRouteGateways",
-      "type": "Platform"
     },
     {
-      "tag": "ALB",
-      "nameSpace": "Microsoft.Network/loadBalancers",
-      "type": "Platform",
-      "sku": "Standard"
-    },
-    {
-      "tag": "AA",
-      "nameSpace": "Microsoft.Automation/automationAccounts",
+      "tag": "WebApps",
+      "nameSpace": "Microsoft.Web/sites",
       "type": "PaaS"
     },
     {
-      "tag": "AppGw",
-      "nameSpace": "Microsoft.Network/applicationGateways",
-      "type": "Platform"
+      "tag": "SQLSrv",
+      "nameSpace": "Microsoft.Sql/servers",
+      "type": "PaaS"
+    },
+    {
+      "tag": "SQLMI",
+      "nameSpace": "Microsoft.Sql/managedinstances",
+      "type": "PaaS"
+    },
+    {
+      "tag": "WebServer",
+      "nameSpace": "Microsoft.Web/serverfarms",
+      "type": "PaaS"
+    },
+    {
+      "tag": "AppGW",
+      "nameSpace": "Microsoft.Network/applicationgateways",
+      "type": "PaaS"
     },
     {
       "tag": "AzFW",
-      "nameSpace": "Microsoft.Network/azureFirewalls",
-      "type": "Platform"
+      "nameSpace": "Microsoft.Network/azurefirewalls",
+      "type": "PaaS"
+    },
+    {
+      "tag": "PrivZones",
+      "nameSpace": "Microsoft.Network/privatednszones",
+      "type": "PaaS"
+    },
+    {
+      "tag": "PIP",
+      "nameSpace": "Microsoft.Network/publicipaddresses",
+      "type": "PaaS"
+    },
+    {
+      "tag": "UDR",
+      "nameSpace": "Microsoft.Network/routetables",
+      "type": "PaaS"
+    },
+    {
+      "tag": "AA",
+      "nameSpace": "Microsoft.Automation/automationaccounts",
+      "type": "PaaS"
+    },
+    {
+      "tag": "NSG",
+      "nameSpace": "Microsoft.Network/networksecuritygroups",
+      "type": "PaaS"
     },
     {
       "tag": "AzFD",
       "nameSpace": "Microsoft.Network/frontdoors",
-      "type": "Platform"
+      "type": "PaaS"
     },
     {
-      "tag": "PrivZones",
-      "nameSpace": "Microsoft.Network/privateDnsZones",
-      "type": "Platform"
+      "tag": "ALB",
+      "nameSpace": "Microsoft.Network/loadbalancers",
+      "type": "PaaS"
     },
     {
-      "tag": "PIP",
-      "nameSpace": "Microsoft.Network/publicIPAddresses",
-      "type": "Platform"
+      "tag": "Bastion",
+      "nameSpace": "Microsoft.Network/bastionhosts",
+      "type": "PaaS"
     },
     {
-      "tag": "NSG",
-      "nameSpace": "Microsoft.Network/networkSecurityGroups",
-      "type": "Platform"
-    },
-    {
-      "tag": "KeyVault",
-      "nameSpace": "microsoft.keyvault/vaults",
-      "type": "Platform"
+      "tag": "VPNG",
+      "nameSpace": "Microsoft.Network/vpngateways",
+      "type": "PaaS"
     },
     {
       "tag": "VnetGW",
-      "nameSpace": "Microsoft.Network/virtualnetworkgateways",
-      "type": "Platform"
+      "nameSpace": "Microsoft.Network/virtualNetworkgateways",
+      "type": "PaaS"
     },
     {
-      "tag": "AVD",
-      "nameSpace": "Microsoft.DesktopVirtualization/hostpools",
+      "tag": "VNET",
+      "nameSpace": "Microsoft.Network/virtualnetworks",
       "type": "PaaS"
-    },{
-      "tag": "VNet",
-      "nameSpace": "microsoft.network/virtualnetworks",
-      "type": "Platform"
     },
-    
-    ]
+    {
+      "tag": "MLWS",
+      "nameSpace": "Microsoft.MachineLearningServices/workspaces",
+      "type": "PaaS"
+    },
+    {
+      "tag": "EVNS",
+      "nameSpace": "Microsoft.EventHub/namespaces",
+      "type": "PaaS"
+    },
+    {
+      "tag": "EVCL",
+      "nameSpace": "Microsoft.EventHub/clusters",
+      "type": "PaaS"
+    },
+    {
+      "tag": "MDB",
+      "nameSpace": "Microsoft.DBforMariaDB/servers",
+      "type": "PaaS"
+    },
+    {
+      "tag": "CDN",
+      "nameSpace": "Microsoft.Cdn/profiles",
+      "type": "PaaS"
+    },
+    {
+      "tag": "APIM",
+      "nameSpace": "Microsoft.ApiManagement/service",
+      "type": "PaaS"
+    }
+  ]
 }
 "@ | ConvertFrom-Json
 
@@ -317,7 +349,7 @@ $PaaSQuery"
 
         $results+=foreach ($res in $resources) {
             if ($res.Resource -in $alerts.Resource) {
-                $totalAlerts=($alerts|where Resource -eq $res.Resource).count
+                $totalAlerts=($alerts|where {$_.Resource -eq $res.Resource}).count
                 "{""Resource"" : ""$($res.Resource)"","
                 """type"" : ""$($res.""type"")"","
                 """tag"" : ""$($res.""tag"")"","
