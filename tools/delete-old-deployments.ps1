@@ -3,6 +3,7 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$ManagementGroupId
 )
+"Found $(Get-AzManagementGroupDeployment -ManagementGroupId $ManagementGroupId  | Where-Object -Property Timestamp -LT -Value ((Get-Date).AddDays(-15)) | Measure-Object).Count old deployments."
 # 15 days or older deployments will be deleted
 Get-AzManagementGroupDeployment -ManagementGroupId $ManagementGroupId  | Where-Object -Property Timestamp -LT -Value ((Get-Date).AddDays(-15)) | Remove-AzManagementGroupDeployment
 

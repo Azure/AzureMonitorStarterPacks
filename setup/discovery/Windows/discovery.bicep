@@ -88,14 +88,14 @@ module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLeve
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-application'
+    assignmentName: 'AMg-${ruleshortname}-app'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'ManagementGroup') {
   dependsOn: [
     applicationPolicy
   ]

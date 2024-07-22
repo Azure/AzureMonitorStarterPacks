@@ -44,22 +44,22 @@ module arcassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGro
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: 'AMP-Assign-${ruleshortname}-arc'
+    assignmentName: 'AMg-${ruleshortname}-arc'
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'ManagementGroup') {
   dependsOn: [
     policyARC
   ]
-  name: 'AssigSub-${packtag}-${ruleshortname}-arc'
+  name: 'ASub-${packtag}-${ruleshortname}-arc'
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: 'AMP-Assign-${ruleshortname}-arc'
+    assignmentName: 'AMg-${ruleshortname}-arc'
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId

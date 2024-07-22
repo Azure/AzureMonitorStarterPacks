@@ -37,11 +37,11 @@ module vmassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGrou
   dependsOn: [
     policyVM
   ]
-  name: 'Assignment-${packtag}-${ruleshortname}-vm'
+  name: 'AMg-${packtag}-${ruleshortname}-vm'
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
+    assignmentName: 'AMG-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
@@ -52,7 +52,7 @@ module vmassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel !
   dependsOn: [
     policyVM
   ]
-  name: 'AssignSub-${packtag}-${ruleshortname}-vm'
+  name: 'ASub-${packtag}-${ruleshortname}-vm'
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
@@ -113,7 +113,7 @@ module ARCPolicies './policiesARC.bicep' = if (arcEnabled) {
 //   }
 // }
 
-// module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'managementGroup' && arcEnabled) {
+// module arcassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'ManagementGroup' && arcEnabled) {
 //   dependsOn: [
 //     policyARC
 //   ]

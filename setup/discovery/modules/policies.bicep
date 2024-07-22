@@ -42,14 +42,14 @@ module vmassignment '../modules/assignment.bicep' = if(assignmentLevel == 'Manag
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
+    assignmentName: 'AMg-${ruleshortname}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'ManagementGroup') {
   dependsOn: [
     policyVM
   ]
