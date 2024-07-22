@@ -24,41 +24,69 @@ if ($resources) {
     "Working on $($resources.count) resource(s). Action: $action. Altering $TagName in the resource."
     switch ($action) {
         'AddTag' {
-            foreach ($TagValue in $TagList) {
-                foreach ($resource in $resources) {
-                    # Tagging
-                    Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue
-                    # Add Agent
-                    if ($PackType -in ('IaaS', 'Discovery')) {
-                        Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
-                    }
-                    # Add Tag Based condition.
-                    if ($TagValue -eq 'Avd') {
-                        # Create AVD alerts function.
-                        $hostPoolName = ($resource.Resource -split '/')[8]
-                        $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                        Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
-                        -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
-                    }
-                } # End of resource loop
-            }
-        }
-        'RemoveTag' {
-            foreach ($TagValue in $TagList) {
-                foreach ($resource in $resources) {
-                    # Tagging
-                    Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
+          foreach ($resource in $resources) {
+              # Tagging
+              if ($PackType -in ('IaaS', 'Discovery')) {
+                foreach ($TagValue in $TagList) {
+                  Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue #-instanceName $instanceName `
+                 # -packType $PackType -actionGroupId $defaultAG -resourceType "microsoft.compute"
+                  # Add Agent
+                  Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
                 }
+              }
+              else { #Paas or Platform
+                "PackType: $PackType"
+                "Adding tag "
+                Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag
                 if ($TagValue -eq 'Avd') {
-                    $hostPoolName = ($resource.Resource -split '/')[8]
-                    $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                    Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName `
-                                -location $resource.Location -TagName $TagName -TagValue $TagValue `
-                                -action $action `
-                                -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+                  # Create AVD alerts function.
+                  $hostPoolName = ($resource.Resource -split '/')[8]
+                  $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+                  Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
+                  -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
                 }
+              }
+              # Add Tag Based condition.
+            }  # End of resource loop
+        } # End of AddTag
+'RemoveTag' {
+          foreach ($resource in $resources) {
+            # Tagging
+            if ($PackType -in ('IaaS', 'Discovery')) {
+              foreach ($TagValue in $TagList) {
+                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
+              }
             }
-        }
+            else { #Paas or Platform
+              "PackType: $PackType"
+              "Removing Tag from service."
+              Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType
+              if ($TagValue -eq 'Avd') {
+                # Create AVD alerts function.
+                $hostPoolName = ($resource.Resource -split '/')[8]
+                $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+                Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
+                -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+              }
+            }
+            # Add Tag Based condition.
+          }  # End of resource loop
+        }  # End of Remove Tag
+
+            # foreach ($TagValue in $TagList) {
+            #     foreach ($resource in $resources) {
+            #         # Tagging
+            #         Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
+            #     }
+            #     if ($TagValue -eq 'Avd') {
+            #         $hostPoolName = ($resource.Resource -split '/')[8]
+            #         $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+            #         Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName `
+            #                     -location $resource.Location -TagName $TagName -TagValue $TagValue `
+            #                     -action $action `
+            #                     -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+            #     }
+            # }
         default {
             Write-Host "Invalid Action"
         }

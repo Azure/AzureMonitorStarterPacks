@@ -82,7 +82,7 @@ module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
     packtype: 'Discovery'
   }
 }
-module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
+module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'ManagementGroup') {
   dependsOn: [
     applicationPolicy
   ]
