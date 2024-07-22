@@ -11,6 +11,7 @@ param assignmentLevel string = 'ManagementGroup'
 param subscriptionId string
 param instanceName string
 param arcEnabled bool = true
+param index int=1
 
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -41,7 +42,7 @@ module vmassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGrou
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'AMG-${ruleshortname}-vm'
+    assignmentName: 'AM-${packtag}${index}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
