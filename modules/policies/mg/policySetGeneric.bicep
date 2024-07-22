@@ -49,7 +49,7 @@ module assignment './assignment.bicep' = if (assignmentLevel == 'ManagementGroup
   params: {
     policyDefinitionId: policySetDef.id
     location: location
-    assignmentName: 'AMP-AMA-${initiativeName}-Set'
+    assignmentName: 'A-${instanceName}-${packtag}-S'
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
     // roledefinitionIds: [
