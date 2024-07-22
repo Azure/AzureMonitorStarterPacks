@@ -92,7 +92,7 @@ module applicationPolicy '../../../setup/discovery/modules/vmapplicationpolicy.b
     packtype: 'IaaS'
   }
 }
-module vmapplicationAssignment '../../../setup/discovery/modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
+module vmapplicationAssignment '../../../setup/discovery/modules/assignment.bicep' = if(assignmentLevel == 'ManagementGroup') {
   dependsOn: [
     applicationPolicy
   ]

@@ -7,7 +7,7 @@ param ruleshortname string
 param location string
 param userManagedIdentityResourceId string
 param mgname string
-param assignmentLevel string = 'managementGroup'
+param assignmentLevel string = 'ManagementGroup'
 param subscriptionId string
 param instanceName string
 
@@ -35,7 +35,7 @@ module policyARC './associacionpolicyARC.bicep' = {
 //module policyAssignment {}
 // param policyAssignmentName string = 'audit-vm-manageddisks'
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-module arcassignment './assignment.bicep' = if(assignmentLevel == 'managementGroup') {
+module arcassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGroup') {
   dependsOn: [
     policyARC
   ]

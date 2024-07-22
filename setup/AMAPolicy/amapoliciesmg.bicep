@@ -41,7 +41,7 @@ module amaPolicyMG '../../modules/policies/mg/policySet.bicep' = {
   }
 }
 
-module assignment '../../modules/policies/mg/assignment.bicep' = if (assignmentLevel == 'managementGroup'){
+module assignment '../../modules/policies/mg/assignment.bicep' = if (assignmentLevel == 'ManagementGroup'){
   name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicyMG

@@ -41,7 +41,7 @@ resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' 
   }
 }
 
-module assignment './assignment.bicep' = if (assignmentLevel == 'managementGroup'){
+module assignment './assignment.bicep' = if (assignmentLevel == 'ManagementGroup'){
   name: 'assignment-${initiativeName}'
   // dependsOn: [
   //   policySetDef
