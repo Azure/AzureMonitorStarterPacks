@@ -290,12 +290,17 @@ switch ($Action) {
   }
   "getMonitoredPaaS" {
       $PaaSQuery=get-paasquery
-      $PaaSQuery
+      if ($Request.Query.resourceFilter) {
+        $resourceFilter = @"
+        | where tolower(type) in ($($Request.Query.resourceFilter))
+"@        
+      }
       $resourceQuery=@"
       resources
       $PaaSQuery
       | where isnotempty(tags.MonitorStarterPacks)
       | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+      $resourceFilter
 "@
         $alertsQuery=@"
         resources
