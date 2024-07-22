@@ -30,18 +30,18 @@ var resourceShortType = split(resourceType, '/')[1]
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
 
 module diagassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGroup') {
-  name: 'AM-${packtag}-${resourceShortType}-${assignmentSuffix}'
+  name: 'AM-${packtag}-${assignmentSuffix}'
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policydefinitionId
-    assignmentName: 'AMP-${instanceName}-${packtag}-${resourceShortType}-${assignmentSuffix}'
+    assignmentName: 'AM-${instanceName}-${packtag}'//-${resourceShortType}-${assignmentSuffix}'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module diagassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module diagassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel != 'ManagementGroup') {
   name: 'AM-${packtag}-${resourceShortType}-${assignmentSuffix}'
   scope: subscription(subscriptionId)
   params: {

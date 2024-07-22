@@ -58,7 +58,7 @@ module assignment '../../modules/policies/mg/assignment.bicep' = if (assignmentL
     // ]
   }
 }
-module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if (assignmentLevel != 'managementGroup') {
+module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if (assignmentLevel != 'ManagementGroup') {
   name: 'assignment-${rulename}'
   dependsOn: [
     amaPolicyMG
@@ -68,7 +68,7 @@ module assignmentsub '../../modules/policies/subscription/assignment.bicep' = if
   params: {
     policyDefinitionId: amaPolicyMG.outputs.policySetDefId
     location: location
-    assignmentName: 'AMP-Assign-${rulename}'
+    assignmentName: 'AMP-ASub-${rulename}'
     solutionTag: solutionTag
     userManagedIdentityResourceId: AMAUserManagedIdentity.outputs.userManagedIdentityResourceId
     // roledefinitionIds: [

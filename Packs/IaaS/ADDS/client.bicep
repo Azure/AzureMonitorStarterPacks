@@ -100,14 +100,14 @@ module vmapplicationAssignment '../../../setup/discovery/modules/assignment.bice
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-application'
+    assignmentName: 'AMg-${ruleshortname}-app'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
   }
 }
-module vmassignmentsub '../../../setup/discovery/modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+module vmassignmentsub '../../../setup/discovery/modules/sub/assignment.bicep' = if(assignmentLevel != 'ManagementGroup') {
   dependsOn: [
     applicationPolicy
   ]

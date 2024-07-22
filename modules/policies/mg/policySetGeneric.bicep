@@ -57,7 +57,7 @@ module assignment './assignment.bicep' = if (assignmentLevel == 'ManagementGroup
     // ]
   }
 }
-module assignmentsub '../subscription/assignment.bicep' = if (assignmentLevel != 'managementGroup') {
+module assignmentsub '../subscription/assignment.bicep' = if (assignmentLevel != 'ManagementGroup') {
   name: 'assignment--${initiativeName}'
   // dependsOn: [
   //   policySetDef
