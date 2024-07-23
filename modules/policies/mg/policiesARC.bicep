@@ -40,7 +40,7 @@ module arcassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGro
   dependsOn: [
     policyARC
   ]
-  name: 'Assignment-${packtag}-${ruleshortname}-arc'
+  name: 'AM-${packtag}${index}-arc'
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policyARC.outputs.policyId

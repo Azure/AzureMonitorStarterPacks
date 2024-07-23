@@ -90,7 +90,7 @@ module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLeve
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: 'AMg-${ruleshortname}-application'
+    assignmentName: 'AMg-LXDisc-app'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
