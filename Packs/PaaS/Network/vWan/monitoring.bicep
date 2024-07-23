@@ -77,6 +77,7 @@ module policyassignment '../../../../modules/policies/mg/policiesDiag.bicep' = [
     assignmentLevel: assignmentLevel
     policyType: 'diag'
     instanceName: instanceName
+    index: i //Index is used to create unique names for the policy assignments, mostly for Management groups since the assignment name is limited to 24 characters.
   }
 }]
 
