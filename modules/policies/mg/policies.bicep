@@ -57,7 +57,7 @@ module vmassignmentsub '../subscription/assignment.bicep' = if(assignmentLevel !
   scope: subscription(subscriptionId)
   params: {
     policyDefinitionId: policyVM.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-vm'
+    assignmentName: 'AMP-SubA-${packtag}-vm'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag

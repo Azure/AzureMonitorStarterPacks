@@ -195,6 +195,7 @@ module policysetupIISLogs '../../../modules/policies/mg/policies.bicep' = {
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
     instanceName: instanceName
+    index: 2
   }
 }
 

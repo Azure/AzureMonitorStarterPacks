@@ -116,5 +116,6 @@ module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) i
     assignmentLevel: assignmentLevel
     subscriptionId: subscriptionId
     instanceName: instanceName
+    index: i
   }
 }]
