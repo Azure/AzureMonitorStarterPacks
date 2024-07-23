@@ -30,7 +30,7 @@ var resourceShortType = split(resourceType, '/')[1]
 // param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
 
 module diagassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGroup') {
-  name: 'AM-${packtag}-${assignmentSuffix}'
+  name: 'AM-${packtag}${index}-${instanceName}'
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policydefinitionId

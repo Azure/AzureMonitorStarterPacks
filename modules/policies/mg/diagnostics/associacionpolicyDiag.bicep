@@ -195,21 +195,4 @@ resource diagPolicy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
   }
 }
 
-// module policyassignment '../../../../modules/policies/mg/policiesDiag.bicep' = if(!initiativeMember) {
-//   name: guid('AMP-${instanceName}-${policyName}')
-//   params: {
-//     location: policyLocation
-//     mgname: mgname
-//     packtag: packtag
-//     policydefinitionId: diagPolicy.id
-//     resourceType: resourceType
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId 
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     assignmentLevel: assignmentLevel
-//     policyType: 'diag'
-//     assignmentSuffix: assignmentSuffix
-//   }
-// }
-
 output policyId string = diagPolicy.id
