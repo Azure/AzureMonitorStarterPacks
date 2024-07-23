@@ -79,6 +79,7 @@ module ARCPolicies './policiesARC.bicep' = if (arcEnabled) {
     subscriptionId: subscriptionId
     userManagedIdentityResourceId: userManagedIdentityResourceId
     assignmentLevel: assignmentLevel
+    index: index
   }
 }
 // module policyARC './associacionpolicyARC.bicep' = if (arcEnabled) {
