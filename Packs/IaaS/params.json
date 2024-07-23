@@ -2,26 +2,47 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "workspaceId": {
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW-eus"
+        },
+        "packtag": {
+            "value": "IIS"
+        },
         "solutionTag": {
             "value": "MonitorStarterPacks"
         },
         "solutionVersion": {
-            "value": "1.0.0"
+            "value": "0.1"
         },
-        "location": {
-            "value": "eastus"
+        "dceId": {
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Insights/dataCollectionEndpoints/AMP-peus-DCE-eastus"
         },
-        "resourceGroupName": {
-            "value": "rg-MonstarPacks"
+        "userManagedIdentityResourceId": {
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AMP-peus-UMI-Packs"
         },
-        "grafanaName": {
-            "value": "AMSP6c64f9ed"
+        "mgname": {
+            "value": "FehseCorpRoot"
         },
-        "fileName": {
-            "value": "grafana.zip"
+        "subscriptionId": {
+            "value": "6c64f9ed-88d2-4598-8de6-7a9527dc16ca"
         },
-        "packsManagedIdentityResourceId": {
-            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourcegroups/rg-MonstarPacks/providers/Microsoft.ManagedIdentity/userAssignedIdentities/packsUserManagedIdentity"
+        "resourceGroupId": {
+            "value": "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks"
+        },
+        "assignmentLevel": {
+            "value": "ManagementGroup"
+        },
+        "customerTags": {
+            "value": {}
+        },
+        "actionGroupResourceId": {
+            "value": "/subscriptions/6C64F9ED-88D2-4598-8DE6-7A9527DC16CA/resourceGroups/AMonStarterPacks/providers/microsoft.insights/actionGroups/VMAdmins"
+        },
+        "instanceName": {
+            "value": "peus"
         }
     }
 }
