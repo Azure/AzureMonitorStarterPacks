@@ -10,6 +10,7 @@ param mgname string
 param assignmentLevel string = 'ManagementGroup'
 param subscriptionId string
 param instanceName string
+param index int=1
 
 var roledefinitionIds=[
   '/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa' 
@@ -44,7 +45,7 @@ module arcassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGro
   params: {
     policyDefinitionId: policyARC.outputs.policyId
     location: location
-    assignmentName: 'AMg-${ruleshortname}-arc'
+    assignmentName: 'AM-${packtag}${index}-arc'
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
     userManagedIdentityResourceId: userManagedIdentityResourceId
