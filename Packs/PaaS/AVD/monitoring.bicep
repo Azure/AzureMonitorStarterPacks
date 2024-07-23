@@ -166,5 +166,6 @@ module policyassignment '../../../modules/policies/mg/policiesDiag.bicep' = [for
     assignmentLevel: assignmentLevel
     policyType: 'diag'
     instanceName: instanceName
+    index: i
   }
 }]

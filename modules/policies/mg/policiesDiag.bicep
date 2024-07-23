@@ -9,7 +9,7 @@ param assignmentLevel string = 'ManagementGroup'
 param subscriptionId string
 param resourceType string
 param instanceName string
-
+param index int=1
 @allowed(
   [
     'diag'
@@ -34,7 +34,7 @@ module diagassignment './assignment.bicep' = if(assignmentLevel == 'ManagementGr
   scope: managementGroup(mgname)
   params: {
     policyDefinitionId: policydefinitionId
-    assignmentName: 'AM-${instanceName}-${packtag}'//-${resourceShortType}-${assignmentSuffix}'
+    assignmentName: 'AM-${instanceName}-${packtag}${index}'//-${resourceShortType}-${assignmentSuffix}'
     location: location
     //roledefinitionIds: roledefinitionIds
     solutionTag: solutionTag
