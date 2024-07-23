@@ -42,24 +42,24 @@ if ($RemoveAMAPolicySet -or $RemoveAll) {
     "Removing AMA policy set."
     $inits=Get-AzPolicySetDefinition | where-object {$_.Metadata.MonitorStarterPacks -ne $null}
     foreach ($init in $inits) {
-        "Removing policy set $($init.PolicySetDefinitionId)"
-        #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
+        "Removing policy set $($init.Id)"
+        #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.Id
         $query=@"
         policyresources
         | where type == "microsoft.authorization/policyassignments"
         | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
-        | where PolicyId == '$($init.PolicySetDefinitionId)'
+        | where PolicyId == '$($init.Id)'
 "@
-        $assignments=Search-AzGraph -Query $query
+        $assignments=Search-AzGraph -Query $query -UseTenantScope
         if ($assignments.count -ne 0)
         {
-            "Removing assignments for $($pol.PolicyDefinitionId)"
+            "Removing assignments for $($init.Id) initiative."
             foreach ($assignment in $assignments) {
                 "Removing assignment for $($assignment.name)"
                 Remove-AzPolicyAssignment -Id $assignment.id
             }
         }
-        Remove-AzPolicySetDefinition -Id $init.PolicySetDefinitionId -Force
+        Remove-AzPolicySetDefinition -Id $init.Id -Force
     }
 }
 else {
@@ -114,19 +114,19 @@ if ($RemoveDiscovery -or $RemoveAll) {
                 }
             }
             if ($remove) {
-                "Removing policy $($pol.PolicyDefinitionId) and assignments for pack $($pol.Metadata.MonitorStarterPacks)"
-                #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId # Only works for the current subscription. Need to use resource graph.
+                "Removing policy $($pol.Id) and assignments for pack $($pol.Metadata.MonitorStarterPacks)"
+                #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.Id # Only works for the current subscription. Need to use resource graph.
                 $query=@"
             policyresources
             | where type == "microsoft.authorization/policyassignments"
             | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
-            | where PolicyId == '$($pol.PolicyDefinitionId)'
+            | where PolicyId == '$($pol.Id)'
 "@
                 $assignments=Search-AzGraph -Query $query -UseTenantScope
                 
                 if ($assignments.count -ne 0)
                 {
-                    "Removing assignments for $($pol.PolicyDefinitionId)"
+                    "Removing assignments for $($pol.Id)"
                     foreach ($assignment in $assignments) {
                         # No need to remove role assignments with user defined managed identities.
                         # $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
@@ -137,8 +137,8 @@ if ($RemoveDiscovery -or $RemoveAll) {
                         Remove-AzPolicyAssignment -Id $assignment.id
                     }
                  }
-                "Removing policy definition for $($pol.PolicyDefinitionId)"
-                Remove-AzPolicyDefinition -Id $pol.PolicyDefinitionId -Force
+                "Removing policy definition for $($pol.Id)"
+                Remove-AzPolicyDefinition -Id $pol.Id -Force
             }
             else {
                 "Skipping pack $($pol.Name)"
@@ -228,7 +228,7 @@ if ($RemovePacks -or $RemoveAll) {
     $inits=Get-AzPolicySetDefinition | where-object {$_.Metadata.MonitorStarterPacks -ne $null}
     foreach ($init in $inits) {
         "Removing policy set $($init.Id)"
-        #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.PolicySetDefinitionId
+        #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.Id
         $query=@"
         policyresources
         | where type == "microsoft.authorization/policyassignments"
@@ -246,9 +246,6 @@ if ($RemovePacks -or $RemoveAll) {
         }
         Remove-AzPolicySetDefinition -Id $init.Id -Force
     }
-
-    
-    
     foreach ($pol in ($pols | Where-Object {$_.Metadata.MonitorStarterPacks -ne $null}) ) {
         $remove=$true
         $pack=$pol.Metadata.MonitorStarterPacks
@@ -264,7 +261,7 @@ if ($RemovePacks -or $RemoveAll) {
         }
         if ($remove) {
             "Removing policy $($pol.Id) and assignments for pack $pack"
-            #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId # Only works for the current subscription. Need to use resource graph.
+            #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.Id # Only works for the current subscription. Need to use resource graph.
             $query=@"
         policyresources
         | where type == "microsoft.authorization/policyassignments"
@@ -275,7 +272,7 @@ if ($RemovePacks -or $RemoveAll) {
             
             if ($assignments.count -ne 0)
             {
-                "Removing assignments for $($pol.PolicyDefinitionId)"
+                "Removing assignments for $($pol.Id)"
                 foreach ($assignment in $assignments) {
                     # No need to remove role assignments with user defined managed identities.
                     # $assignmentObjectId= Get-AzADServicePrincipal -Id $assignment.Identity.PrincipalId -ErrorAction SilentlyContinue
@@ -286,7 +283,7 @@ if ($RemovePacks -or $RemoveAll) {
                     Remove-AzPolicyAssignment -Id $assignment.id
                 }
             }
-            "Removing policy definition for $($pol.PolicyDefinitionId)"
+            "Removing policy definition for $($pol.Id)"
             Remove-AzPolicyDefinition -Id $pol.Id -Force
         }
         else {
