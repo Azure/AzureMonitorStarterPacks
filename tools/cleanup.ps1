@@ -238,7 +238,7 @@ if ($RemovePacks -or $RemoveAll) {
         $assignments=Search-AzGraph -Query $query
         if ($assignments.count -ne 0)
         {
-            "Removing assignments for $($pol.PolicyDefinitionId)"
+            "Removing assignments for $($pol.Id)"
             foreach ($assignment in $assignments) {
                 "Removing assignment for $($assignment.name)"
                 Remove-AzPolicyAssignment -Id $assignment.id
@@ -249,7 +249,7 @@ if ($RemovePacks -or $RemoveAll) {
 
     
     
-    foreach ($pol in ($pols | Where-Object {$_.Metadata.MonitorStarterPacks -eq $pack}) ) {
+    foreach ($pol in ($pols | Where-Object {$_.Metadata.MonitorStarterPacks -ne $null}) ) {
         $remove=$true
         $pack=$pol.Metadata.MonitorStarterPacks
         "Removing $pack pack."
@@ -263,7 +263,7 @@ if ($RemovePacks -or $RemoveAll) {
             }
         }
         if ($remove) {
-            "Removing policy $($pol.Id) and assignments for pack $($pol.Metadata.MonitorStarterPacks)"
+            "Removing policy $($pol.Id) and assignments for pack $pack"
             #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId # Only works for the current subscription. Need to use resource graph.
             $query=@"
         policyresources
