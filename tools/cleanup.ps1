@@ -246,9 +246,6 @@ if ($RemovePacks -or $RemoveAll) {
         }
         Remove-AzPolicySetDefinition -Id $init.Id -Force
     }
-
-    
-    
     foreach ($pol in ($pols | Where-Object {$_.Metadata.MonitorStarterPacks -ne $null}) ) {
         $remove=$true
         $pack=$pol.Metadata.MonitorStarterPacks
