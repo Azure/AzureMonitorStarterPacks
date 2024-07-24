@@ -180,7 +180,7 @@
             "content": {
               "version": "KqlParameterItem/1.0",
               "crossComponentResources": [
-                "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e"
+                ""
               ],
               "parameters": [
                 {
@@ -204,8 +204,8 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e",
-                    "/subscriptions/7591e487-7045-43a5-9896-e7a82cb2c602"
+                    "",
+                    ""
                   ]
                 },
                 {
@@ -231,7 +231,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
+                  "value": ""
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -244,13 +244,13 @@
                   "isGlobal": true,
                   "query": "resources\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\n| where isnotempty(tags.MonitorStarterPacksComponents)\n| project id,name",
                   "crossComponentResources": [
-                    "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e"
+                    "value::tenant"
                   ],
                   "typeSettings": {
                     "additionalResourceOptions": []
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-bd4d88c1-Function"
+                  "value": ""
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -285,7 +285,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
+                  "value": ""
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -308,7 +308,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPfta24"
+                  "value": ""
                 }
               ],
               "style": "above",
@@ -372,7 +372,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/bd4d88c1-fc0f-482f-b57b-2f3ed541945e/resourceGroups/rg-MonstarPacks/providers/Microsoft.Insights/components/AMP-fta-bd4d88c1-Function"
+                  "value": ""
                 }
               ],
               "style": "pills",

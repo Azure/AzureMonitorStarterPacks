@@ -27,6 +27,10 @@ The Main solution can be deployed by clicking the link below to the respective c
 
 [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fsetup.json)
 
+## Monitoring Packs
+
+Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
+
 ## Initial Configuration
 
 Once the deployment is completed, the following steps need to be completed:
@@ -41,15 +45,12 @@ The first time certain areas are accessed, the following configuration will need
 
 ![alt text](./Docs/media/image-1.png)
 
-## Monitoring Packs
-
-Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
-
 Review Packs documentation [here](./Packs/README.md).
 
 ## Multi-region Considerations
 
 If you are deploying the solution in multiple regions, a few additional steps are required. The following steps need to be completed:
+
 - For discovery and VM Application dependent components (ADDS), the VM Application versions need to have a replica in each region where VMs will be monitored.
 - For the Data Collection rules, a data collection endpoint needs to be created in each region. The data collection endpoint allows for the agent to receive configuration in the specific region. The data collection endpoint is assigned after the data collection rule association has been created.
 
@@ -68,51 +69,15 @@ In order for the current user to have access to the Grafana environment, the use
 
 ## Network Isolation (Private Endpoints)
 
-The solution can work with network isolation. By default, the components are deployed with public endpoints. The following components can be isolated (click the links for details):
-- [Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security) 
-- [Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-security)
-- [Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-private-endpoints)
-- [Azure Function](https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-vnet) - The function will require a higher SKU in order to work with network isolation.
-- [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/private-link-service)
-- [Azure Managed Grafana](https://learn.microsoft.com/en-us/azure/managed-grafana/how-to-set-up-private-access?tabs=azure-portal)
-
-The Compute Gallery and the VM Application Gallery are not supported with network isolation. 
+Review Network Isolation guidance [here](./Docs/networkisolation.md).
 
 ## Removing the solution
 
-In order to remove the solution, you can run the following script in this [link](https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1). The script will remove all the resources created by the solution.
+Review removal documentation [here](./Docs/removal.md).
 
-- Open the Azure CLI with PowerShell:
+## Authoring Guide
 
-```powershell
-wget https://raw.githubusercontent.com/Azure/AzureMonitorStarterPacks/main/tools/cleanup.ps1
-./cleanup.ps1 -RG <Resource Group Name> -RemoveAll
-```
-
-Alternatively, you can select to remove specific components of the solution by using the following parameters:
-
-- RemovePacks : Removes all the packs deployed by the solution
-- RemoveAMAPolicySet : Removes the policy set deployed by the solution
-- RemoveMainSolution : Removes the main components of the deployed solution
-- RemoveDiscovery : Removes the discovery deployed by the solution
-
-Once completed, some resources will remain in the resource group. These resources are not removed by the script and need to be removed manually. The resources are:
-
-- Storage Account
-- Log Analytics Workspace
-- Action Group(s)
-
-Note: If the gallery is not removed in the first run, please run the command again.
-
-Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
-
-Note 2: To completeley remove the Log Analytics workspace, use the -ForceDelete parameter. This will remove the workspace and all the data in it (ignoring the retention period).
-
-Example:
-
-```powershell
-remove-AzOperationalInsightsWorkspace -ResourceGroupName <Resource Group> -Name <Workspace name> -ForceDelete -force
-```
+Click [here](./Docs/authoring.md) for guidance on how to create new packs.
 
 ## Telemetry
 
@@ -121,11 +86,6 @@ Microsoft can correlate these resources used to support the deployments. Microso
 If you don't wish to send usage data to Microsoft, you can disable telemetry during setup. 
 
 Project Bicep collects telemetry in some scenarios as part of improving the product.
-
-
-## Authoring Guide
-
-Click [here](./Docs/authoring.md) for guidance on how to create new packs.
 
 ## Contributing
 
