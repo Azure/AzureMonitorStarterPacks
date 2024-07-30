@@ -22,14 +22,37 @@
                                 "method": "GET",
                                 "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
                             }
-                        },{
+                        },
+						{
                             "name": "subscriptionAPI",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
                                 "path": "subscriptions?api-version=2022-12-01"
                             }
-                        }
+                        },
+						{
+							"name": "AppInsightsLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('Configuration').subscriptionId,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
+								}
+							}
+						},
+						{
+							"name": "grafanaLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
+								}
+							}
+						}
                     ]
                 },
                 {
@@ -52,28 +75,6 @@
                                 "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
                             }
                         },
-						{
-							"name": "grafanaLocationsAPI",
-							"type": "Microsoft.Solutions.ArmApiControl",
-							"request": {
-								"method": "GET",
-								"path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
-								"transforms": {
-									"list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
-								}
-							}
-						},
-						{
-							"name": "AppInsightsLocationsAPI",
-							"type": "Microsoft.Solutions.ArmApiControl",
-							"request": {
-								"method": "GET",
-								"path": "[concat(steps('Configuration').subscriptionId,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
-								"transforms": {
-									"list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
-								}
-							}
-						},
                         {
                             "name": "AzureManagedGrafanaApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
@@ -331,7 +332,7 @@
 							"filterPlaceholder": "Filter Locations...",
 							"defaultDescription": "A value for selection",
 							"constraints": {
-								"allowedValues": "[steps('Configuration').AppInsightsLocationsAPI.transformed.list]",
+								"allowedValues": "[steps('basics').AppInsightsLocationsAPI.transformed.list]",
 								"required": true
 							},
 							"visible": true
@@ -413,7 +414,7 @@
 							"filterPlaceholder": "Filter Grafana Locations...",
 							"defaultDescription": "A value for selection",
 							"constraints": {
-								"allowedValues": "[steps('Configuration').grafanaLocationsAPI.transformed.list]",
+								"allowedValues": "[steps('basics').grafanaLocationsAPI.transformed.list]",
 								"required": true
 							},
 							"visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
