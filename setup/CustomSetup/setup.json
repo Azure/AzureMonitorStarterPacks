@@ -21,6 +21,7 @@
 							"location": {
 								"visible": false
 							},
+                            "kind": "Subscription",
 							"instanceDetailsLabel": " "
                         },
                         {
