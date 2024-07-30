@@ -314,11 +314,14 @@ insightsresources
                 "Working on $($DCR.name)"
                 $searchQuery=$query + "'$($DCR.Id)'"
                 "Looking for associations."
-                $dcras=Search-AzGraph -Query $searchQuery -UseTenantScope
-                "Found $($dcras.count) for $($DCR.Name)."
+                ##$dcras=Search-AzGraph -Query $searchQuery -UseTenantScope
+                $dcras=Get-AzDataCollectionRuleAssociation -DataCollectionRuleName $DCR.Name -ResourceGroupName $DCR.ResourceGroupName
+                "Found $($dcras.count) associationsfor $($DCR.Name)."
                 foreach ($dcra in $dcras) {
-                    "Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
-                    Remove-AzDataCollectionRuleAssociation -TargetResourceId $dcra.resourceId -AssociationName $dcra.name
+                    #"Removing DCR association $($dcra.rulename) for $($dcra.resourceId)"
+                    "Removing DCR association $($dcra.Name) for $($dcra.Id)"
+                    $resourceId=$dcra.Id.toLower().Split('/providers/microsoft.insights/')[0]   
+                    Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $dcra.name
                 }
                 "Removing DCR $($DCR.Name)"
                 Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
@@ -328,7 +331,6 @@ insightsresources
             # remove Tags from VMs.
             # remove monitor extensions (optional)
             # remove alert rules
-
         }
     }
     else {
