@@ -21,7 +21,7 @@
 							"location": {
 								"visible": false
 							},
-                            "kind": "Subscription",
+                            "kind": "resourceGroup",
 							"instanceDetailsLabel": " "
                         },
                         {
