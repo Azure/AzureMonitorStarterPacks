@@ -15,6 +15,14 @@
                             "kind": "ManagementGroup",
                             "instanceDetailsLabel": "MonStar Packs Deployment Details"
                         },
+						{
+                            "name": "resourceScopeSub",
+                            "type": "Microsoft.Common.ResourceScope",
+							"location": {
+								"visible": false
+							},
+							"instanceDetailsLabel": " "
+                        },
                         {
                             "name": "mgmtGroupAPI",
                             "type": "Microsoft.Solutions.ArmApiControl",
@@ -188,12 +196,12 @@
 							"toolTip": "",
 							"defaultValue": {
 								"name": "storageaccount01",
-								"type": "Premium_LRS"
+								"type": "Standard_LRS"
 							},
 							"scope": {
 								"location": "[steps('basics').resourceScope.location.name]",
-								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
-								"subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
+								"resourceGroupName": "[steps('basics').resourceScopeSub.resourceGroup.name]",
+								"subscriptionId": "[last(split(steps('basics').resourceScopeSub.subscription.id,'/'))]"
 							},
 							"constraints": {
 								"allowedTypes": []
@@ -579,8 +587,8 @@
         "outputs": {
             "parameters": {
                 "mgname": "[steps('basics').resourceScope.managementGroup.name]",
-                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
-                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "subscriptionId": "[last(split(steps('basics').resourceScopeSub.subscription.id,'/'))]",
+                "resourceGroupName": "[steps('basics').resourceScopeSub.resourceGroup.name]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
@@ -589,7 +597,7 @@
                 "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
+                "createNewResourceGroup": "[equals(steps('basics').resourceScopeSub.resourceGroup.mode, 'New')]",
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
