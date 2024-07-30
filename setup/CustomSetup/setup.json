@@ -15,21 +15,19 @@
                             "kind": "ManagementGroup",
                             "instanceDetailsLabel": "MonStar Packs Deployment Details"
                         },
-						{
-                            "name": "resourceScopeSub",
-                            "type": "Microsoft.Common.ResourceScope",
-							"location": {
-								"visible": false
-							},
-                            "kind": "ResourceGroup",
-							"instanceDetailsLabel": " "
-                        },
                         {
                             "name": "mgmtGroupAPI",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
                                 "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
+                            }
+                        },{
+                            "name": "subscriptionAPI",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2022-12-01"
                             }
                         }
                     ]
@@ -38,14 +36,6 @@
                     "name": "Configuration",
                     "label": "Configuration",
                     "elements": [
-                        {
-                            "name": "subscriptionAPI",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "subscriptions?api-version=2022-12-01"
-                            }
-                        },
                         {
                             "name": "ResGroupsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
@@ -121,7 +111,7 @@
                             "filterPlaceholder": "Filter Subscriptions...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('Configuration').subscriptionAPI.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.id, '\"}')))]",
+                                "allowedValues": "[map(steps('basics').subscriptionAPI.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
                             "visible": true
@@ -197,12 +187,12 @@
 							"toolTip": "",
 							"defaultValue": {
 								"name": "storageaccount01",
-								"type": "Standard_LRS"
+								"type": "Premium_LRS"
 							},
 							"scope": {
 								"location": "[steps('basics').resourceScope.location.name]",
-								"resourceGroupName": "[steps('basics').resourceScopeSub.resourceGroup.name]",
-								"subscriptionId": "[last(split(steps('basics').resourceScopeSub.subscription.id,'/'))]"
+								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+								"subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
 							},
 							"constraints": {
 								"allowedTypes": []
@@ -588,8 +578,8 @@
         "outputs": {
             "parameters": {
                 "mgname": "[steps('basics').resourceScope.managementGroup.name]",
-                "subscriptionId": "[last(split(steps('basics').resourceScopeSub.subscription.id,'/'))]",
-                "resourceGroupName": "[steps('basics').resourceScopeSub.resourceGroup.name]",
+                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
+                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
                 "location": "[steps('basics').resourceScope.location.name]",
                 "assignmentLevel": "[steps('Configuration').assignmentLevel]",
                 "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
@@ -598,7 +588,7 @@
                 "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
-                "createNewResourceGroup": "[equals(steps('basics').resourceScopeSub.resourceGroup.mode, 'New')]",
+                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
