@@ -21,7 +21,7 @@
 							"location": {
 								"visible": false
 							},
-                            "kind": "resourceGroup",
+                            "kind": "ResourceGroup",
 							"instanceDetailsLabel": " "
                         },
                         {
