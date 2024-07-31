@@ -175,7 +175,7 @@ module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bice
 
 // This module creates a user managed identity for the packs to use.
 module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'AMP-${instanceName}-UMI-Packs'
+  name: 'AMP-${instanceName}-${location}-UMI-Packs'
   params: {
     location: location
     Tags: Tags
@@ -199,7 +199,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
 // }
 
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'AMP-${instanceName}-UMI-Function'
+  name: 'AMP-${instanceName}-${location}-UMI-Function'
   params: {
     location: location
     Tags: Tags
