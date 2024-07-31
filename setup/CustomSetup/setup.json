@@ -109,14 +109,6 @@
                             },
                             "visible": true
                         },
-						{
-                            "name": "ResGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
-                            }
-                        },
                         {
                             "name": "ResourceGroupStatus",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -150,6 +142,14 @@
                                 "validationMessage": ""
                             },
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "ResGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
+                            }
                         },
                         {
                             "name": "resourceGroupNameExisting",
