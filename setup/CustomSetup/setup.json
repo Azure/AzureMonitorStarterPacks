@@ -23,7 +23,7 @@
                                 "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
                             }
                         },
-                        {
+						{
                             "name": "subscriptionAPI",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -31,28 +31,28 @@
                                 "path": "subscriptions?api-version=2022-12-01"
                             }
                         },
-                        {
-                            "name": "AppInsightsLocationsAPI",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
-                                "transforms": {
-                                    "list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
-                                }
-                            }
-                        },
-                        {
-                            "name": "grafanaLocationsAPI",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
-                                "transforms": {
-                                    "list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
-                                }
-                            }
-                        }
+						{
+							"name": "AppInsightsLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('Configuration').subscriptionId,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
+								}
+							}
+						},
+						{
+							"name": "grafanaLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
+								}
+							}
+						}
                     ]
                 },
                 {
@@ -88,9 +88,9 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "style": "Info",
-                                "text": "Make sure the subscription selected below is under the Management Group hierarchy selected in the previous step. If not the setup will fail.",
-                                "uri": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+                              "style": "Info",
+                              "text": "Make sure the subscription selected below is under the Management Group hierarchy selected in the previous step. If not the setup will fail.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
                             }
                         },
                         {
@@ -109,7 +109,7 @@
                             },
                             "visible": true
                         },
-                        {
+						{
                             "name": "ResGroupsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -175,34 +175,34 @@
                             "defaultValue": "",
                             "toolTip": "Name of the Monitoring Pack instance.",
                             "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9]{1,4}$",
-                                "validationMessage": "Only alphanumeric lowercase characters are allowed, and the value must be 1-4 characters long."
+								"required": true,
+                    			"regex": "^[a-z0-9]{1,4}$",
+                    			"validationMessage": "Only alphanumeric lowercase characters are allowed, and the value must be 1-4 characters long."
                             },
                             "visible": true
                         },
-                        {
-                            "name": "storageAccountSelector",
-                            "type": "Microsoft.Storage.StorageAccountSelector",
-                            "label": "Storage account",
-                            "toolTip": "",
-                            "defaultValue": {
-                                "name": "storageaccount01",
-                                "type": "Standard_LRS"
-                            },
-                            "scope": {
-                                "location": "[steps('basics').resourceScope.location.name]",
-                                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
-                                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
-                            },
-                            "constraints": {
-                                "allowedTypes": []
-                            },
-                            "options": {
-                                "hideExisting": false
-                            },
-                            "visible": true
-                        },
+						{
+							"name": "storageAccountSelector",
+							"type": "Microsoft.Storage.StorageAccountSelector",
+							"label": "Storage account",
+							"toolTip": "",
+							"defaultValue": {
+								"name": "storageaccount01",
+								"type": "Standard_LRS"
+							},
+							"scope": {
+								"location": "[steps('basics').resourceScope.location.name]",
+								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+								"subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
+							},
+							"constraints": {
+								"allowedTypes": []
+							},
+							"options": {
+								"hideExisting": false
+							},
+							"visible": true
+						},
                         {
                             "name": "LAWStatus",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -255,9 +255,9 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "style": "Info",
-                                "text": "AVD Insights: If you are using a seperate Log Analytics Workspace for AVD resources, it is assumed that you have already configured it via the AVD Insights and this Log Analytics Workspace is intended for all other resources. It can be used for AVD, however you'll need to ensure you configure the diagnostics and/or utilize the configuration workbook within AVD Insights.",
-                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/insights?tabs=monitor"
+                              "style": "Info",
+                              "text": "AVD Insights: If you are using a seperate Log Analytics Workspace for AVD resources, it is assumed that you have already configured it via the AVD Insights and this Log Analytics Workspace is intended for all other resources. It can be used for AVD, however you'll need to ensure you configure the diagnostics and/or utilize the configuration workbook within AVD Insights.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/insights?tabs=monitor"
                             }
                         },
                         {
@@ -321,22 +321,22 @@
                                 "uri": "https://www.microsoft.com"
                             }
                         },
-                        {
-                            "name": "AppInsightsLocation",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Location for App Insights",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Subscription to deploy resources to.",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Locations...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[steps('basics').AppInsightsLocationsAPI.transformed.list]",
-                                "required": true
-                            },
-                            "visible": true
-                        },
+						{
+							"name": "AppInsightsLocation",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Location for App Insights",
+							"multiselect": false,
+							"defaultValue": "",
+							"toolTip": "Subscription to deploy resources to.",
+							"filter": true,
+							"filterPlaceholder": "Filter Locations...",
+							"defaultDescription": "A value for selection",
+							"constraints": {
+								"allowedValues": "[steps('basics').AppInsightsLocationsAPI.transformed.list]",
+								"required": true
+							},
+							"visible": true
+						},
                         {
                             "name": "deployGrafana",
                             "type": "Microsoft.Common.CheckBox",
@@ -403,33 +403,35 @@
                             "infoMessages": [],
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
                         },
-                        {
-                            "name": "grafanaLocation",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Grafana Location",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Subscription to deploy resources to.",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Grafana Locations...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[steps('basics').grafanaLocationsAPI.transformed.list]",
-                                "required": true
-                            },
-                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                        },
-                        {
-                            "name": "collectTelemetry",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Collect deployment telemetry.",
-                            "toolTip": "Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Please acknowledge the legal conditions."
-                            },
-                            "defaultValue": true
-                        }
+						{
+							"name": "grafanaLocation",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Grafana Location",
+							"multiselect": false,
+							"defaultValue": "",
+							"toolTip": "Subscription to deploy resources to.",
+							"filter": true,
+							"filterPlaceholder": "Filter Grafana Locations...",
+							"defaultDescription": "A value for selection",
+							"constraints": {
+								"allowedValues": "[steps('basics').grafanaLocationsAPI.transformed.list]",
+								"required": true
+							},
+							"visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
+						},
+												
+						{
+							"name": "collectTelemetry",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Collect deployment telemetry.",
+							"toolTip": "Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.",
+							"constraints": {
+								"required": false,
+								"validationMessage": "Please acknowledge the legal conditions."
+							},
+							"defaultValue": true
+							
+						}
                     ]
                 },
                 {
@@ -572,16 +574,47 @@
                         }
                     ]
                 }
-            ],
-            "_dxContentPath": "view.properties"
+            ]
         },
         "outputs": {
             "parameters": {
-                "_dxContentPath": "view.outputs.parameters"
+                "mgname": "[steps('basics').resourceScope.managementGroup.name]",
+                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
+                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "location": "[steps('basics').resourceScope.location.name]",
+                "assignmentLevel": "[steps('Configuration').assignmentLevel]",
+                "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
+                "grafanaLocation": "[steps('Configuration').grafanaLocation]",
+                "grafanaName": "[steps('Configuration').NewGrafanaName]",
+                "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
+                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
+                "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
+                "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
+                "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
+                "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
+                "deployAllPacks": "[steps('Packs').deployPacks]",
+                "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
+                "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]",
+                "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
+                "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
+                "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
+                "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiveremail,'')]",
+                "existingAGRG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(take(split(steps('Packs').existingAG,'/'),5)))]",
+                "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
+                "customerTags": "[steps('tags').tagsByResource]",
+                "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",
+                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
+                "deployDiscovery": "[steps('Configuration').deployDiscovery]",
+				"instanceName":  "[steps('Configuration').instanceName]",
+                "deployGrafana": "[steps('Configuration').deployGrafana]",
+				"collectTelemetry": "[steps('Configuration').collectTelemetry]",
+                "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]"
             },
             "kind": "ManagementGroup",
-            "_dxContentPath": "view.outputs"
-        },
-        "_dxContentPath": "view"
+            "location": "[steps('basics').resourceScope.location.name]",
+            "managementGroupId": "[steps('basics').resourceScope.managementGroup.id]"
+        }
     }
 }
