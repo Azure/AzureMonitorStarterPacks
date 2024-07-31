@@ -258,7 +258,7 @@
                   "name": "configKey",
                   "label": "Config Function Key",
                   "type": 1,
-                  "description": "The function key is fetched automatically from the function selected on the right.",
+                  "description": "The function key is fetched automatically from the function selected on the left.",
                   "isRequired": true,
                   "isGlobal": true,
                   "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"POST\",\"path\":\"{FunctionApps}/functions/config/listkeys?api-version=2022-03-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.default\",\"columns\":[]}}]}",
@@ -332,50 +332,20 @@
               ],
               "parameters": [
                 {
-                  "id": "e5054aa1-60b0-4050-9f35-f4b2d3ac0d0e",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "PaaSQuery",
-                  "type": 1,
-                  "description": "This parameter is used to bring the proper PaaS list of supported services.",
-                  "isGlobal": true,
-                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getPaaSquery\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "queryType": 10,
-                  "value": null
-                },
-                {
-                  "version": "KqlParameterItem/1.0",
-                  "name": "PlatformQuery",
-                  "type": 1,
-                  "description": "This parameter is used to bring the proper Platform list of supported services.",
-                  "isGlobal": true,
-                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getPlatformquery\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "queryType": 10,
-                  "id": "9a917e70-be3e-43bb-a44b-85d857762cd9"
-                },
-                {
                   "id": "03340268-1ac8-4d74-a76e-bc37a4bdd45c",
                   "version": "KqlParameterItem/1.0",
                   "name": "appInsightsName",
-                  "type": 5,
-                  "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id, name",
+                  "type": 1,
+                  "isRequired": true,
+                  "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id",
                   "crossComponentResources": [
                     "value::tenant"
                   ],
-                  "typeSettings": {
-                    "additionalResourceOptions": []
-                  },
                   "queryType": 1,
-                  "resourceType": "microsoft.resources/tenants",
-                  "value": ""
+                  "resourceType": "microsoft.resources/tenants"
                 }
               ],
-              "style": "pills",
+              "style": "above",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants"
             },
