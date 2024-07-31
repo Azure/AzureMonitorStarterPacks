@@ -86,7 +86,7 @@ module telemetry './nested_telemetry.bicep' =  if (collectTelemetry) {
 //   keyToSign: 'key2'
 // }
 module gallery './modules/aig.bicep' = {
-  name: imageGalleryName
+  name: '${imageGalleryName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     galleryname: imageGalleryName
@@ -97,7 +97,7 @@ module gallery './modules/aig.bicep' = {
 
 // Module below implements function, storage account, and app insights
 module backendFunction 'modules/function.bicep' = {
-  name: functionname
+  name: '${functionname}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     functionUserManagedIdentity
@@ -128,7 +128,7 @@ module backendFunction 'modules/function.bicep' = {
 }
 
 module logicapp './modules/logicapp.bicep' = {
-  name: logicappname
+  name: '${logicappname}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     backendFunction
@@ -153,7 +153,7 @@ module logicapp './modules/logicapp.bicep' = {
 // }
 
 module extendedWorkbook './modules/extendedworkbook.bicep' = {
-  name: 'workbook2deployment'
+  name: 'workbook2deployment-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     lawresourceid: lawresourceid
@@ -227,7 +227,7 @@ module keyvault 'modules/keyvault.bicep' = {
 
 //Add permissions for loginapp as a user to keyvault
 module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in logicappRequiredRoleassignments:  {
-  name: 'logiapprbac-${i}'
+  name: 'logiapprbac-${i}-${instanceName}-${location}'
   scope: managementGroup(mgname)
   params: {
     resourcename: keyvault.outputs.kvResourceId
@@ -241,7 +241,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bice
 // Secrets
 //
 module kvSecretstorage './modules/keyvaultsecretstorage.bicep' = {
-  name: 'kvSecretsstorage'
+  name: 'kvSecretsstorage-${instanceName}-${location}'
   dependsOn: [
     keyvault
   ]
@@ -255,7 +255,7 @@ module kvSecretstorage './modules/keyvaultsecretstorage.bicep' = {
 }
 
 module kvSecretsfunction './modules/keyvaultsecretsfunction.bicep' = {
-  name: 'kvSecretsfunction'
+  name: 'kvSecretsfunction-${instanceName}-${location}'
   dependsOn: [
     keyvault
     backendFunction
