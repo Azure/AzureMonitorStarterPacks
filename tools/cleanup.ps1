@@ -12,6 +12,10 @@ param (
     [Parameter(Mandatory=$false)]
     [switch]$RemoveDiscovery,
     [Parameter(Mandatory=$false)]
+    [switch]$RemoveStorage,
+    [Parameter(Mandatory=$false)]
+    [switch]$RemoveLAW,
+    [Parameter(Mandatory=$false)]
     [switch]$confirmEachPack
 )
 # Check login
@@ -422,7 +426,23 @@ $managedIdentityNames=(Search-AzGraph -Query $query).name
 else {
     "Skipping main solution removal. Use -RemoveMainSolution to remove it"
 }
-
+if ($RemoveStorage) {
+    "Removing storage account."
+    Get-AzResource -ResourceType 'Microsoft.Storage/storageAccounts' -ResourceGroupName $RG | Remove-AzResource -Confirm
+    }
+    else {
+        "Skipping storage account removal. Use -RemoveStorage to remove it."
+}
+if ($RemoveLAW) {
+    "Removing log analytics workspace."
+    $LAWS=Get-AzResource -ResourceType 'Microsoft.OperationalInsights/workspaces' -ResourceGroupName $RG
+    foreach ($LAW in $LAWS) {
+        Remove-AzOperationalInsightsWorkspace -ResourceGroupName $RG -Name $LAW.Name -ForceDelete -Confirm
+    }
+}
+else {
+    "Skipping log analytics workspace removal. Use -RemoveLAW to remove it."
+}
 if ($RemoveTag) {
     " Removing tag $RemoveTag from resources."
     " Not implemented yet."

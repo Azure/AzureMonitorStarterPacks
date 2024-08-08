@@ -60,14 +60,6 @@
                     "label": "Configuration",
                     "elements": [
                         {
-                            "name": "ActionGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
-                            }
-                        },
-                        {
                             "name": "AzureManagedGrafanaApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -438,6 +430,14 @@
                     "name": "Packs",
                     "label": "Packs",
                     "elements": [
+                        {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
                         {
                             "name": "deployPacks",
                             "type": "Microsoft.Common.CheckBox",
