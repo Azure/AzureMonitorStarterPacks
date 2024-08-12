@@ -102,6 +102,14 @@
                             "visible": true
                         },
                         {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
+                        {
                             "name": "ResourceGroupStatus",
                             "type": "Microsoft.Common.OptionsGroup",
                             "label": "Use New or Existing Resource Group",
@@ -430,14 +438,6 @@
                     "name": "Packs",
                     "label": "Packs",
                     "elements": [
-                        {
-                            "name": "ActionGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
-                            }
-                        },
                         {
                             "name": "deployPacks",
                             "type": "Microsoft.Common.CheckBox",
