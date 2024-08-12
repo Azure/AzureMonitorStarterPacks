@@ -201,8 +201,8 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca",
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                    "",
+                    ""
                   ]
                 },
                 {
@@ -228,7 +228,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-vse-LogicApp"
+                  "value": ""
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -247,7 +247,7 @@
                     "additionalResourceOptions": []
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-vse-b1e924f9-Function"
+                  "value": ""
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -282,7 +282,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
+                  "value": ""
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -305,7 +305,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": ""
                 }
               ],
               "style": "above",
@@ -1141,7 +1141,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"inner\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Associated Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Packs2\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Packs2\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"}]}",
                     "size": 0,
                     "title": "Monitored Machines",
                     "exportMultipleValues": true,
@@ -1153,6 +1153,7 @@
                         "quote": ""
                       }
                     ],
+                    "showExportToExcel": true,
                     "queryType": 7,
                     "visualization": "table",
                     "gridSettings": {
@@ -3976,7 +3977,7 @@
                 {
                   "id": "2c17bf03-2295-4b97-850f-3208602c9e50",
                   "cellValue": "discTab",
-                  "linkTarget": "step",
+                  "linkTarget": "parameter",
                   "linkLabel": "Discovery Policies",
                   "subTarget": "discPolicies",
                   "style": "link"
@@ -4185,7 +4186,7 @@
                               "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
                               "version": "KqlParameterItem/1.0",
                               "name": "PackTagsLeftDiscovery",
-                              "label": "Add/Remove",
+                              "label": "Remove",
                               "type": 2,
                               "isGlobal": true,
                               "multiSelect": true,
@@ -4203,7 +4204,10 @@
                                 "durationMs": 86400000
                               },
                               "queryType": 1,
-                              "resourceType": "microsoft.resourcegraph/resources"
+                              "resourceType": "microsoft.resourcegraph/resources",
+                              "value": [
+                                "LxDisc"
+                              ]
                             }
                           ],
                           "style": "pills",
@@ -4244,24 +4248,6 @@
                                 "httpMethod": "POST",
                                 "title": "Remove Monitoring",
                                 "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftDiscovery} Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
-                                "runLabel": "Confirm"
-                              }
-                            },
-                            {
-                              "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
-                              "linkTarget": "ArmAction",
-                              "linkLabel": "Add Discovery for {PackTagsLeftPackTagsLeftDiscovery} Pack(s)",
-                              "style": "primary",
-                              "linkIsContextBlade": true,
-                              "armActionContext": {
-                                "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                "headers": [],
-                                "params": [],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{\"taggedVMsDiscovery\"}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\",\n    \"PackType\":\"Discovery\"\n  }\n}",
-                                "httpMethod": "POST",
-                                "title": "Add Monitoring",
-                                "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeftDiscovery} Pack(s)\n\nto VMs:\n\n{taggedVMsDiscovery}\n",
-                                "actionName": "AddMonitoringPack",
                                 "runLabel": "Confirm"
                               }
                             }
@@ -4342,7 +4328,7 @@
                               "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
                               "version": "KqlParameterItem/1.0",
                               "name": "PackTagsDiscovery",
-                              "label": "Select Pack to Enable",
+                              "label": "Select to Enable",
                               "type": 2,
                               "isGlobal": true,
                               "multiSelect": true,
@@ -4598,7 +4584,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "dc1",
+                  "value": null,
                   "label": "Select Server"
                 },
                 {
@@ -4687,6 +4673,54 @@
               "value": "discData"
             },
             "name": "query - discovery - all"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
+              "size": 0,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "vmsDiscoveryTag",
+                  "parameterType": 1
+                },
+                {
+                  "fieldName": "tag",
+                  "parameterName": "vmsDiscoveryTagValue",
+                  "parameterType": 1
+                }
+              ],
+              "queryType": 10,
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "tag",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "ArmAction",
+                      "linkIsContextBlade": true,
+                      "armActionContext": {
+                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                        "headers": [],
+                        "params": [],
+                        "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                        "httpMethod": "POST",
+                        "title": "TagDiscovery",
+                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag:$.Computer}]\n\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                        "actionName": "TagDiscovery",
+                        "runLabel": "TagDiscovery"
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Click to Enable monitoring"
+                    }
+                  }
+                ]
+              }
+            },
+            "name": "query - 0"
           }
         ]
       },
@@ -4950,7 +4984,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law2"
+    ""
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
