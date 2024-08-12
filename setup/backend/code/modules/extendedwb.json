@@ -2440,8 +2440,20 @@
                           }
                         }
                       ],
-                      "filter": true
-                    }
+                      "filter": true,
+                      "sortBy": [
+                        {
+                          "itemKey": "$gen_thresholds_VMInsightsAssociations_1",
+                          "sortOrder": 2
+                        }
+                      ]
+                    },
+                    "sortBy": [
+                      {
+                        "itemKey": "$gen_thresholds_VMInsightsAssociations_1",
+                        "sortOrder": 2
+                      }
+                    ]
                   },
                   "customWidth": "30",
                   "name": "query - 3",
@@ -2462,6 +2474,17 @@
                       "value::tenant"
                     ],
                     "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "dataCollectionRuleId",
+                          "formatter": 13,
+                          "formatOptions": {
+                            "linkTarget": "Resource",
+                            "linkIsContextBlade": true,
+                            "showIcon": true
+                          }
+                        }
+                      ],
                       "filter": true
                     }
                   },
@@ -3461,6 +3484,41 @@
         "title": "Agent Management",
         "items": [
           {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "24d1e53a-ca25-4488-92af-4746e5411951",
+                  "cellValue": "agentTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Agents",
+                  "subTarget": "agents",
+                  "preText": "",
+                  "style": "link"
+                },
+                {
+                  "id": "230109a1-ed5a-4f33-b577-dab3c9b97c4d",
+                  "cellValue": "agentTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "HeartBeat",
+                  "subTarget": "heartbeat",
+                  "style": "link"
+                },
+                {
+                  "id": "7413ed40-fb13-48b3-acee-d27259ca7617",
+                  "cellValue": "agentTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "VM Applications",
+                  "subTarget": "vmapplications",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "links - 3"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
@@ -3677,6 +3735,11 @@
               ]
             },
             "customWidth": "75",
+            "conditionalVisibility": {
+              "parameterName": "agentTab",
+              "comparison": "isEqualTo",
+              "value": "agents"
+            },
             "showPin": false,
             "name": "query - agent install status",
             "styleSettings": {
@@ -3763,6 +3826,11 @@
               }
             },
             "customWidth": "25",
+            "conditionalVisibility": {
+              "parameterName": "agentTab",
+              "comparison": "isEqualTo",
+              "value": "agents"
+            },
             "name": "query - agent install status - graph",
             "styleSettings": {
               "showBorder": true
@@ -3817,7 +3885,50 @@
               }
             },
             "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "agentTab",
+              "comparison": "isEqualTo",
+              "value": "heartbeat"
+            },
             "name": "query - active alerts",
+            "styleSettings": {
+              "showBorder": true
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
+              "size": 0,
+              "title": "Client Status (VM Applications)",
+              "queryType": 1,
+              "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
+              "gridSettings": {
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "Computer",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "Computer",
+                  "sortOrder": 1
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "agentTab",
+              "comparison": "isEqualTo",
+              "value": "vmapplications"
+            },
+            "name": "query - vmapplications",
             "styleSettings": {
               "showBorder": true
             }
@@ -3865,17 +3976,9 @@
                 {
                   "id": "2c17bf03-2295-4b97-850f-3208602c9e50",
                   "cellValue": "discTab",
-                  "linkTarget": "parameter",
+                  "linkTarget": "step",
                   "linkLabel": "Discovery Policies",
                   "subTarget": "discPolicies",
-                  "style": "link"
-                },
-                {
-                  "id": "d8862da2-59ce-4e61-93a3-5bc5a46149a8",
-                  "cellValue": "discTab",
-                  "linkTarget": "parameter",
-                  "linkLabel": "VM Apps Status",
-                  "subTarget": "discVMApps",
                   "style": "link"
                 },
                 {
@@ -3889,54 +3992,6 @@
               ]
             },
             "name": "links - 10"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
-              "size": 0,
-              "exportedParameters": [
-                {
-                  "parameterName": "vmsDiscoveryTag",
-                  "parameterType": 1
-                },
-                {
-                  "fieldName": "tag",
-                  "parameterName": "vmsDiscoveryTagValue",
-                  "parameterType": 1
-                }
-              ],
-              "queryType": 10,
-              "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "tag",
-                    "formatter": 1,
-                    "formatOptions": {
-                      "linkTarget": "ArmAction",
-                      "linkIsContextBlade": true,
-                      "armActionContext": {
-                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                        "headers": [],
-                        "params": [],
-                        "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
-                        "httpMethod": "POST",
-                        "title": "Enable Monitoring",
-                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": {vmsDiscoveryTag:$.Computer}\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
-                        "runLabel": "Enable"
-                      }
-                    }
-                  }
-                ]
-              }
-            },
-            "conditionalVisibility": {
-              "parameterName": "discTab",
-              "comparison": "isEqualTo",
-              "value": "discResults"
-            },
-            "name": "query - discovery Results"
           },
           {
             "type": 12,
@@ -3985,13 +4040,49 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+                    "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
                     "size": 0,
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
                     "crossComponentResources": [
                       "value::tenant"
-                    ]
+                    ],
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "Packs",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "contains",
+                                "thresholdValue": "WinDisc",
+                                "text": "WinDisc"
+                              },
+                              {
+                                "thresholdValue": "LxDisc",
+                                "text": "LxDisk"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "unknown",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "columnMatch": "subscriptionId",
+                          "formatter": 15,
+                          "formatOptions": {
+                            "linkTarget": null,
+                            "showIcon": true
+                          }
+                        }
+                      ]
+                    }
                   },
                   "conditionalVisibility": {
                     "parameterName": "showHidden",
@@ -4011,7 +4102,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"outer\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Associated\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\"}]}",
+                          "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"outer\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].Packs\",\"mergedName\":\"Associated\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].resourceId\"}]}",
                           "size": 0,
                           "title": "Discoverable Machines",
                           "exportMultipleValues": true,
@@ -4027,6 +4118,47 @@
                           "visualization": "table",
                           "gridSettings": {
                             "formatters": [
+                              {
+                                "columnMatch": "Packs",
+                                "formatter": 18,
+                                "formatOptions": {
+                                  "thresholdsOptions": "icons",
+                                  "thresholdsGrid": [
+                                    {
+                                      "operator": "contains",
+                                      "thresholdValue": "WinDisc",
+                                      "text": "WinDisc"
+                                    },
+                                    {
+                                      "operator": "contains",
+                                      "thresholdValue": "LxDisc",
+                                      "text": "LxDisc"
+                                    },
+                                    {
+                                      "operator": "Default",
+                                      "thresholdValue": null,
+                                      "representation": "unknown",
+                                      "text": "{0}{1}"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "columnMatch": "OS",
+                                "formatter": 1
+                              },
+                              {
+                                "columnMatch": "Associated",
+                                "formatter": 1
+                              },
+                              {
+                                "columnMatch": "subscriptionId",
+                                "formatter": 15,
+                                "formatOptions": {
+                                  "linkTarget": null,
+                                  "showIcon": true
+                                }
+                              },
                               {
                                 "columnMatch": "Associated Packs",
                                 "formatter": 1
@@ -4160,7 +4292,7 @@
                           "version": "KqlItem/1.0",
                           "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
                           "size": 0,
-                          "title": "Non-monitored Machines",
+                          "title": "Non-discoverable Machines",
                           "exportMultipleValues": true,
                           "exportedParameters": [
                             {
@@ -4555,44 +4687,6 @@
               "value": "discData"
             },
             "name": "query - discovery - all"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
-              "size": 0,
-              "title": "Client Status (VM Applications)",
-              "queryType": 1,
-              "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
-              "gridSettings": {
-                "filter": true,
-                "sortBy": [
-                  {
-                    "itemKey": "Computer",
-                    "sortOrder": 1
-                  }
-                ]
-              },
-              "sortBy": [
-                {
-                  "itemKey": "Computer",
-                  "sortOrder": 1
-                }
-              ]
-            },
-            "conditionalVisibility": {
-              "parameterName": "discTab",
-              "comparison": "isEqualTo",
-              "value": "discVMApps"
-            },
-            "name": "query - vmapplications",
-            "styleSettings": {
-              "showBorder": true
-            }
           }
         ]
       },
@@ -4805,6 +4899,54 @@
         "value": "logs"
       },
       "name": "groupLogs"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
+        "size": 0,
+        "exportedParameters": [
+          {
+            "parameterName": "vmsDiscoveryTag",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "tag",
+            "parameterName": "vmsDiscoveryTagValue",
+            "parameterType": 1
+          }
+        ],
+        "queryType": 10,
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "tag",
+              "formatter": 1,
+              "formatOptions": {
+                "linkTarget": "ArmAction",
+                "linkIsContextBlade": true,
+                "armActionContext": {
+                  "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                  "headers": [],
+                  "params": [],
+                  "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                  "httpMethod": "POST",
+                  "title": "Enable Monitoring",
+                  "description": "# Adding Tag(s) To VMs\n\n\"Resources\": {vmsDiscoveryTag:$.Computer}\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                  "runLabel": "Enable"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "conditionalVisibility": {
+        "parameterName": "discTab",
+        "comparison": "isEqualTo",
+        "value": "discResults"
+      },
+      "name": "query - discovery Results"
     }
   ],
   "fallbackResourceIds": [
