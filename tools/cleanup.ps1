@@ -18,6 +18,39 @@ param (
     [Parameter(Mandatory=$false)]
     [switch]$confirmEachPack
 )
+function remove-appversions {
+    param (
+        [object]$vm,
+        [array]$appstoremove
+    )
+    #$vmswithApps=Get-AzVM | Where-Object { $_.ApplicationProfile -ne $null}
+    #$appstoremove=@("/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Compute/galleries/AMPprodGallery/applications/ADDS-collection/versions/1.0.0","/subscriptions/6c64f9ed-88d2-4598-8de6-7a9527dc16ca/resourceGroups/rg-MonstarPacks/providers/Microsoft.Compute/galleries/AMPprodGallery/applications/prod-windiscovery/versions/1.0.0")
+    # foreach ($VM in $vmswithApps)
+    # {
+
+    # if app name is the one to remove
+    foreach ($apptoremove in $appstoremove)
+    {
+        "Checking for app: $apptoremove"
+        "VM has " + $VM.ApplicationProfile.GalleryApplications.Count + " apps."
+        $app = $VM.ApplicationProfile.GalleryApplications | Where-Object { $_.PackageReferenceId -eq $apptoremove}
+        if ($app)
+        {
+            # remove app from vm
+            "Removing $($app.PackageReferenceId.Split("/applications/")[1]) from VM: $($VM.Name)" 
+            # Then and only then find the VM. Need to switch to the VM subscription if different.
+            if ((Get-AzContext).Subscription.Id -ne $VM.id.Split('/')[2]) {
+                Set-AzContext -Subscription $VM.Id.Split('/')[2]
+            }
+            $VMT=get-azVM -ResourceGroupName $VM.ResourceGroup -Name $VM.name
+            $VMT.ApplicationProfile.GalleryApplications.Remove($app)
+            Write-Output "Removed app from VM: $($VMT.Name)"
+        }
+    }
+    #$vm.ApplicationProfile
+    Write-Output "Updating VM: $($VM.Name)"
+    Update-AzVM -VM $VMT -ResourceGroupName $VMT.ResourceGroupName -asjob
+}
 # Check login
 # import module(s)
 # Resource graph
@@ -85,7 +118,7 @@ if ($RemoveDiscovery -or $RemoveAll) {
     | where ruleId =~
 '@
     # Remove DCRs and associations
-    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tag.MonitoringPackType -eq "Discovery"} -ErrorAction SilentlyContinue
+    $DCRs=Get-AzDataCollectionRule -ResourceGroupName $RG | where-object {$_.Tag.AdditionalProperties.MonitoringPackType -eq "Discovery"} -ErrorAction SilentlyContinue
     foreach ($DCR in $DCRs)
     {
         $searchQuery=$query + "'$($DCR.Id)'"
@@ -96,7 +129,8 @@ if ($RemoveDiscovery -or $RemoveAll) {
         }
         Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
     }
-    $pols=Get-AzPolicyDefinition | Where-Object {$_.Metadata.MonitoringPackType -eq "Discovery"}
+    #$pols=Get-AzPolicyDefinition | Where-Object {$_.Metadata.MonitoringPackType -eq "Discovery"}
+    $pols=$null
     # retrive unique list of packs installed
     $packs=$pols.Metadata.MonitorStarterPacks | Select-Object -Unique # should be just discovery anyways in this case.
     "Found $($packs.count) packs with DCRs: $packs"
@@ -149,70 +183,49 @@ if ($RemoveDiscovery -or $RemoveAll) {
             }
         }
     }
-    # Uninstall vm applications from VMs.
-    # Remove Applications from Gallery
-    
-    # uninstall VM Apps
-    # find the gallery
-
+    $originalSub=(Get-AzContext).Subscription.Id
     Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
-    "Finding apps..."
-    $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
-    "Found $($galleryApps.Count) apps."
-    foreach ($ga in $galleryApps) {
-        $gavs=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
-        "Found $($gavs.Count) versions of $($ga.Name)"
-        "Finding VMs with $($ga.Name)"
-        foreach ($gav in $gavs) {
-            # Find vms with that app
-            $vms=Get-AzVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
-            foreach ($vm in $vms) {
-                # Remove Application from VM - Remove-AzVMGalleryApplication
-                "Removing $($ga.Name) from $($vm.Name)"
-                Remove-AzVMGalleryApplication -VM $vm -Name $ga.Name -Version $gav.Name -ResourceGroupName $vm.ResourceGroupName
-            }
-            # Remove Application Version - Remove-AzGalleryApplicationVersion
-            "Removing $($gav.Name) from $($ga.Name)"
-            Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -Name $gav.Name -ResourceGroupName $RG
+        "Finding apps..."
+        $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
+        "Found $($galleryApps.Count) apps."
+        $gas=@()
+        $gavs=@()
+        foreach ($ga in $galleryApps) {
+            $gas+=$ga.Id
+            $gtemps=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
+            if ($gtemps) {$gavs+=$gtemps.Id}
         }
-        # Remove Application - Remove-AzGalleryApplication
-        "Removing $($ga.Name) from gallery."
-        Remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG
-        # Find VMs with that app
-        #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
-        # Remove Application from VM - Remove-AzVMGalleryApplication
-        # Remove Application Version - Remove-AzGalleryApplicationVersion
-        #Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
-        # Remove Application - Remove-AzGalleryApplication
-        #remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
-    }
-    #Remove Gallery
-    "Removing gallery $($_.Name)"
-    Remove-AzGallery -Name $_.Name -ResourceGroupName $RG -Force
-    }
-    # Get-AzGallery -ResourceGroupName $RG | Where-Object {$_.Tags.MonitorStarterPacksComponents -ne $null} | ForEach-Object {
-    #     $galleryApps=Get-AzGalleryApplication -GalleryName $_.Name -ResourceGroupName $RG
-    #     foreach ($ga in $galleryApps) {
-    #         $gavs=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
-    #         foreach ($gav in $gavs) {
-    #             # Find vms with that app
-    #             $vms=Get-AzVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
-    #             foreach ($vm in $vms) {
-    #                 # Remove Application from VM - Remove-AzVMGalleryApplication
-    #                 Remove-AzVMGalleryApplication -VM $vm -Name $ga.Name -Version $gav.Name -ResourceGroupName $RG
-    #             }
-    #             # Remove Application Version - Remove-AzGalleryApplicationVersion
-    #             Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -Name $gav.Name -ResourceGroupName $RG
-    #         }
-    #         # Find VMs with that app
-    #         #$vms=get-azVM | where {$_.ApplicationProfile -ne $null} | where {$_.ApplicationProfile.Applications -ne $null} | where {$_.ApplicationProfile.Applications.Name -eq $ga.Name}
-    #         # Remove Application from VM - Remove-AzVMGalleryApplication
-    #         # Remove Application Version - Remove-AzGalleryApplicationVersion
-    #         #Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG | Remove-AzGalleryApplicationVersion
-    #         # Remove Application - Remove-AzGalleryApplication
-    #         #remove-AzGalleryApplication -GalleryName $_.Name -Name $ga.Name -ResourceGroupName $RG  
-    #     }
-    # }
+        if ($gavs.Count -gt 0) {
+            #need an Azure Resource Graph query to get all VMs with apps.
+            $query=@"
+resources
+| where type == "microsoft.compute/virtualmachines"
+| where isnotempty(properties.applicationProfile.galleryApplications)
+| project id, name, resourceGroup, applicationProfile=properties.applicationProfile    
+"@
+            $vmswithApps=Search-AzGraph -Query $query
+
+            #$vmswithApps=Get-AzVM | Where-Object { $_.ApplicationProfile -ne $null}
+            foreach ($VM in $vmswithApps) { 
+                remove-appversions -vm $vm -appstoremove $gavs
+            }
+        }
+        Set-AzContext -Subscription $originalSub
+        # then go ahead and remove applications and gallery once all VMs are clear.
+        foreach ($gav in $gavs) {
+            $gaName=$gav.Split("/")[10]
+            $gavName=$gav.Split("/")[12]
+            "Removing $gav from $gaName"
+            Remove-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $gaName -Name $gavName -ResourceGroupName $RG
+        }
+        foreach ($ga in $gas) {
+            $gaName=$ga.Split("/")[10]
+            "Removing $($ga)"
+            Remove-AzGalleryApplication -GalleryName $_.Name -Name $gaName -ResourceGroupName $RG
+        }
+        "Removing gallery: $($_.Name)"
+        Remove-AzGallery -Name $_.Name -ResourceGroupName $RG -Force
+    } 
 }
 #region Packs
 # Remove policy assignments and policies
