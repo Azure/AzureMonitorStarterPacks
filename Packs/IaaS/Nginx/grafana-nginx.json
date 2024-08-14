@@ -1,53 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_AZURE_MONITOR",
-      "label": "Azure Monitor",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "grafana-azure-monitor-datasource",
-      "pluginName": "Azure Monitor"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "9.5.13"
-    },
-    {
-      "type": "datasource",
-      "id": "grafana-azure-monitor-datasource",
-      "name": "Azure Monitor",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "piechart",
-      "name": "Pie chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -68,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 25,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -93,7 +44,7 @@
         "content": "<sub>*Note: If you have multiple workspaces, and you are not seeing data in the visualisations below, please first select the workspace that you have used in the configuration of the Azure Monitor Starter Packs in the options above.*</sub>",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "type": "text"
     },
     {
@@ -117,13 +68,13 @@
         "content": "# NGINX Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "type": "text"
     },
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -173,7 +124,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -188,7 +139,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -200,7 +151,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "description": "This panel shows the status of the NGINX daemons. You will need to enable Change Tracking and Inventory to report on this - https://learn.microsoft.com/en-us/azure/automation/change-tracking/overview-monitoring-agent?tabs=win-az-vm",
       "fieldConfig": {
@@ -338,7 +289,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -356,7 +307,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
@@ -371,7 +322,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -430,7 +381,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -445,7 +396,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -504,7 +455,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -537,13 +488,13 @@
         "content": "# Health and Performance",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "type": "text"
     },
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -634,7 +585,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -649,7 +600,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -661,7 +612,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -669,6 +620,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -682,6 +634,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
@@ -748,7 +701,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -760,7 +713,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -802,8 +755,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -850,7 +802,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -862,7 +814,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "azure-monitor-oob"
       },
       "fieldConfig": {
         "defaults": {
@@ -904,8 +856,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -952,7 +903,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "azure-monitor-oob"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -963,8 +914,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
@@ -972,7 +922,7 @@
         "current": {
           "selected": false,
           "text": "Azure Monitor",
-          "value": "Azure Monitor"
+          "value": "azure-monitor-oob"
         },
         "hide": 0,
         "includeAll": false,
@@ -987,10 +937,14 @@
         "type": "datasource"
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${DS_AZURE_MONITOR}"
+          "uid": "azure-monitor-oob"
         },
         "definition": "",
         "hide": 0,
@@ -1014,10 +968,14 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${DS_AZURE_MONITOR}"
+          "uid": "azure-monitor-oob"
         },
         "definition": "",
         "hide": 0,
@@ -1042,10 +1000,14 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${DS_AZURE_MONITOR}"
+          "uid": "azure-monitor-oob"
         },
         "definition": "",
         "hide": 0,
@@ -1084,6 +1046,6 @@
   "timezone": "",
   "title": "Azure Monitor Starter Pack / NGINX",
   "uid": "NGINXMonStarPackDash",
-  "version": 13,
+  "version": 1,
   "weekStart": ""
 }

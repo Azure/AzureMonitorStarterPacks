@@ -19,7 +19,7 @@ var ruleshortname = 'amp${instanceName}windisc'
 var appName = '${instanceName}-windiscovery'
 var appDescription = 'Windows Workload discovery'
 var OS = 'Windows'
-var appVersionName = '1.0.0'
+var appVersionName = '1.1.0'
 
 // VM Application to collect the data - this would be ideally an extension
 module windowsDiscoveryApp '../modules/aigapp.bicep' = {

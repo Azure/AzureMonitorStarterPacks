@@ -448,7 +448,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Getting Started\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance, if you enabled it. Make sure to property set permissions before attemping to access it.\n\n## <span style=\"background-color: #FF0000;color: #FFFF00\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
+        "json": "# Getting Started\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance, if you enabled it. Make sure to property set permissions before attemping to access it.\n\n## <span style=\"color: #FF0000\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
       },
       "conditionalVisibility": {
         "parameterName": "tabSelection",
@@ -2407,8 +2407,9 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName, name\n| summarize VMInsightsAssociations=count(name) by ['Server Name']=serverName \n",
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName=sourceResourceId, name\n| summarize VMInsightsAssociations=count(name) by ['Server Name']=serverName \n",
                     "size": 0,
+                    "title": "Servers and DCR associations",
                     "exportFieldName": "Server Name",
                     "exportParameterName": "vmiSelectedServer",
                     "queryType": 1,
@@ -2458,7 +2459,7 @@
                       }
                     ]
                   },
-                  "customWidth": "30",
+                  "customWidth": "50",
                   "name": "query - 3",
                   "styleSettings": {
                     "showBorder": true
@@ -2468,9 +2469,62 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| where serverName=~'{vmiSelectedServer}'\n| summarize by dataCollectionRuleId, name\n",
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName, name\n| summarize Servers=count(serverName) by DCR=name\n",
                     "size": 0,
-                    "title": "Details",
+                    "title": "Servers by VMInsights DCR",
+                    "exportFieldName": "DCR",
+                    "exportParameterName": "vmiSelectedDCR",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "VMInsightsAssociations",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": ">",
+                                "thresholdValue": "1",
+                                "representation": "2",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          },
+                          "tooltipFormat": {
+                            "tooltip": "If more than one VMInsights association is found, there may be data duplication to one or more Log Analytics workspaces."
+                          }
+                        }
+                      ],
+                      "filter": true
+                    },
+                    "sortBy": []
+                  },
+                  "customWidth": "50",
+                  "name": "query - VM Insights per DCR",
+                  "styleSettings": {
+                    "showBorder": true
+                  }
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName, dataCollectionRuleId\n| summarize Servers=count(serverName) by DCRId=dataCollectionRuleId\n",
+                    "size": 0,
+                    "title": "VMInsights DCRs and Servers",
+                    "exportFieldName": "DCRId",
+                    "exportParameterName": "VMIdataCollectionRuleId",
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
                     "crossComponentResources": [
@@ -2493,6 +2547,57 @@
                   },
                   "customWidth": "50",
                   "name": "query - VMInsight rules details",
+                  "styleSettings": {
+                    "showBorder": true
+                  }
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| where dataCollectionRuleId=='{VMIdataCollectionRuleId}'\n| project ['Server Name']=sourceResourceId\n\n",
+                    "size": 0,
+                    "title": "Associated Servers",
+                    "exportFieldName": "DCR",
+                    "exportParameterName": "vmiSelectedDCR",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "VMInsightsAssociations",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": ">",
+                                "thresholdValue": "1",
+                                "representation": "2",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          },
+                          "tooltipFormat": {
+                            "tooltip": "If more than one VMInsights association is found, there may be data duplication to one or more Log Analytics workspaces."
+                          }
+                        }
+                      ],
+                      "filter": true
+                    },
+                    "sortBy": []
+                  },
+                  "customWidth": "50",
+                  "name": "query - VM Insights per DCR - Copy",
                   "styleSettings": {
                     "showBorder": true
                   }
@@ -3529,7 +3634,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), State, UpgradeEnabled,subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',iff(State<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (State == 'succeeded'),'Uninstall',iff(State <> 'succeeded','Warning',''))\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1\n| order by id",
+              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), State, UpgradeEnabled,subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',iff(State<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (State == 'succeeded'),'Uninstall',iff(State <> 'succeeded','Warning',''))\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1\n| order by id",
               "size": 0,
               "title": "Agent Install Status",
               "exportMultipleValues": true,

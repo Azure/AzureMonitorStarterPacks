@@ -21,11 +21,11 @@
       }
     ]
   },
-  "description": "This dashboard provides an overview of the health and performance of the resources monitored in Azure Monitor enabled by the Windows Operating System MonStarPack",
+  "description": "This dashboard provides an overview of the health and performance of the resources monitored in Azure Monitor enabled by the VMI Monitor Starter Pack",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 22,
+  "id": 20,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -71,7 +71,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Windows Operating System Overview",
+        "content": "# VMInsights Overview",
         "mode": "markdown"
       },
       "pluginVersion": "10.4.3",
@@ -1078,7 +1078,8 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1149,7 +1150,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1198,7 +1199,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1269,7 +1271,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.13",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -1304,12 +1306,12 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "Azure Monitor"
           ],
           "value": [
-            "azure-monitor-oob"
+            "Azure Monitor"
           ]
         },
         "hide": 0,
@@ -1327,8 +1329,12 @@
       {
         "current": {
           "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": [
+            ""
+          ],
+          "value": [
+            ""
+          ]
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
@@ -1357,9 +1363,13 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
@@ -1391,10 +1401,10 @@
         "current": {
           "selected": true,
           "text": [
-            "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourcegroups/servers/providers/microsoft.compute/virtualmachines/server1"
+            "All"
           ],
           "value": [
-            "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourcegroups/servers/providers/microsoft.compute/virtualmachines/server1"
+            "$__all"
           ]
         },
         "datasource": {
@@ -1435,8 +1445,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Azure Monitor Start Pack / Windows Operating System",
-  "uid": "WindowsOSMonStarPackDash",
-  "version": 1,
+  "title": "Azure Monitor Start Pack / VMInsights",
+  "uid": "VMIStartPackDash",
+  "version": 3,
   "weekStart": ""
 }
