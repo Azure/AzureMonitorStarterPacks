@@ -129,8 +129,7 @@ if ($RemoveDiscovery -or $RemoveAll) {
         }
         Remove-AzDataCollectionRule -ResourceGroupName $DCR.Id.Split('/')[4] -Name $DCR.Name
     }
-    #$pols=Get-AzPolicyDefinition | Where-Object {$_.Metadata.MonitoringPackType -eq "Discovery"}
-    $pols=$null
+    $pols=Get-AzPolicyDefinition | Where-Object {$_.Metadata.MonitoringPackType -eq "Discovery"}
     # retrive unique list of packs installed
     $packs=$pols.Metadata.MonitorStarterPacks | Select-Object -Unique # should be just discovery anyways in this case.
     "Found $($packs.count) packs with DCRs: $packs"
