@@ -98,7 +98,7 @@
             "id": "7499a88f-a536-41d7-9b58-9ebae1b5290e",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Alert Mgmt",
+            "linkLabel": "Alerts",
             "subTarget": "alertmanagement",
             "style": "link"
           },
@@ -106,7 +106,7 @@
             "id": "3a19e3a9-d64d-41d8-a313-3a60db36bcc4",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Policy Management",
+            "linkLabel": "Policies",
             "subTarget": "policystatus",
             "style": "link"
           },
@@ -114,7 +114,7 @@
             "id": "c2a67d72-dd46-44ea-adba-b9d70915c607",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Pack Status",
+            "linkLabel": "Packs",
             "subTarget": "rulemanagement",
             "style": "link"
           },
@@ -122,7 +122,7 @@
             "id": "d8f7936d-170f-430d-af7d-ac22115a9e38",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Agent Mgmt",
+            "linkLabel": "Agents",
             "subTarget": "agentmgmt",
             "style": "link"
           },
@@ -130,7 +130,7 @@
             "id": "afec2944-3bd3-4bd3-8afa-6dc39d0b623a",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Discovery (Preview)",
+            "linkLabel": "Discovery(Prototype)",
             "subTarget": "autodiscovery",
             "style": "link"
           },
@@ -201,8 +201,8 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "",
-                    ""
+                    "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933",
+                    "/subscriptions/34126048-cae2-4be8-9d63-c991bc04bec0"
                   ]
                 },
                 {
@@ -228,7 +228,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": ""
+                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -247,7 +247,7 @@
                     "additionalResourceOptions": []
                   },
                   "queryType": 1,
-                  "value": ""
+                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-c64740b6-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -282,7 +282,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": ""
+                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LA"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -305,7 +305,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": ""
+                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPc64740b6"
                 }
               ],
               "style": "above",
@@ -448,7 +448,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Getting Started\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance. Make sure to property set permissions before attemping to access it.\n\n## ***If this is the first time using this solution, please configure parameters in the Configuration tab and save the workbook for proper functionality.***\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
+        "json": "# Getting Started\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance, if you enabled it. Make sure to property set permissions before attemping to access it.\n\n## <span style=\"background-color: #FF0000;color: #FFFF00\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
       },
       "conditionalVisibility": {
         "parameterName": "tabSelection",
@@ -1942,7 +1942,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "Storage"
+                  "value": "IIS2016"
                 }
               ],
               "style": "pills",
@@ -1971,6 +1971,8 @@
                   "quote": ""
                 }
               ],
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -2587,7 +2589,7 @@
             "content": {
               "version": "KqlItem/1.0",
               "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| extend ds=properties.dataSources\n| project id,Type=kind, location,syslog=ds.syslog[0].streams[0], windowsEventLogs=ds.windowsEventLogs[0].streams[0], logsettings=ds.logFiles, performanceCounters=ds.performanceCounters[0].streams[0],provisioningState=properties.provisioningState, \ndataCollectionEndpointId=properties.dataCollectionEndpointId,transformKql=properties.dataFlows[0].transformKql,workspaceResourceId=properties.destinations.logAnalytics[0].workspaceResourceId\n",
-              "size": 1,
+              "size": 0,
               "title": "List of Currently Configured Data Collection Rules",
               "showRefreshButton": true,
               "exportedParameters": [
@@ -3124,6 +3126,8 @@
                   "quote": ""
                 }
               ],
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -3320,6 +3324,8 @@
                   "parameterType": 1
                 }
               ],
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -3537,6 +3543,8 @@
                   "quote": ""
                 }
               ],
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -3847,6 +3855,8 @@
               "timeContext": {
                 "durationMs": 86400000
               },
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -3903,6 +3913,8 @@
               "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
               "size": 0,
               "title": "Client Status (VM Applications)",
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
               "crossComponentResources": [
@@ -3948,7 +3960,7 @@
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
-        "title": "Auto Discovery",
+        "title": "Auto Discovery Prototype - Use with caution.",
         "loadType": "always",
         "items": [
           {
@@ -4115,6 +4127,7 @@
                               "quote": ""
                             }
                           ],
+                          "showExportToExcel": true,
                           "queryType": 7,
                           "visualization": "table",
                           "gridSettings": {
@@ -4584,7 +4597,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null,
+                  "value": "winserver1",
                   "label": "Select Server"
                 },
                 {
@@ -4657,6 +4670,7 @@
               "size": 0,
               "title": "All Discovery Data",
               "timeContextFromParameter": "discoveryPeriod",
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -4730,45 +4744,6 @@
         "value": "autodiscovery"
       },
       "name": "AutoDiscoveryGroup"
-    },
-    {
-      "type": 3,
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
-        "size": 0,
-        "title": "Monitored Machines (old)",
-        "exportMultipleValues": true,
-        "exportedParameters": [
-          {
-            "fieldName": "",
-            "parameterName": "taggedVMsOld",
-            "parameterType": 5,
-            "quote": ""
-          }
-        ],
-        "queryType": 1,
-        "resourceType": "microsoft.resourcegraph/resources",
-        "crossComponentResources": [
-          "{Subscriptions}"
-        ],
-        "visualization": "table",
-        "gridSettings": {
-          "filter": true
-        },
-        "sortBy": []
-      },
-      "conditionalVisibility": {
-        "parameterName": "ew",
-        "comparison": "isEqualTo",
-        "value": "w"
-      },
-      "name": "Monitored Servers",
-      "styleSettings": {
-        "margin": "400",
-        "padding": "400",
-        "showBorder": true
-      }
     },
     {
       "type": 12,
@@ -4984,7 +4959,7 @@
     }
   ],
   "fallbackResourceIds": [
-    ""
+    "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-la"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

@@ -31,9 +31,8 @@ The Main solution can be deployed by clicking the link below to the respective c
 
 Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
 
-## Discovery Feature and ADDS Pack (Prototype)
-
-<span style="background-color: #FF0000">The Discovery feature is a feature that allows the solution to discover the VMs in the subscription and apply the monitoring packs to the VMs. The ADDS pack is a pack that monitors Active Directory Domain Services. Both packs use VM Applications as the base to augment data collection. The VM Application is a lightweight agent that collects data from the VM and sends it to the solution. The VM Application is deployed as part of the pack deployment. These are experimental features and are not recommended for production environments at this moment. If you chose to deploy these packs in a limited scope.</span>
+## Discovery Feature and ADDS Pack (Prototypes)
+<span style="color: red">The Discovery feature is a feature that allows the solution to discover the VMs in the subscription and apply the monitoring packs to the VMs. The ADDS pack is a pack that monitors Active Directory Domain Services. Both packs use VM Applications as the base to augment data collection. The VM Application is a lightweight agent that collects data from the VM and sends it to the solution. The VM Application is deployed as part of the pack deployment. These are experimental features and are not recommended for production environments at this moment. If you chose to deploy these packs in a limited scope.</span>
 
 ## Initial Configuration
 
