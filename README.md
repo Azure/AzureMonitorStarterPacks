@@ -8,7 +8,7 @@ FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
 
 - Minimize the need for the Customer to determine the minimal monitoring items for a certain type of workload 
 
-- Provide best practices out of the box on items that need monitoring for different workloads. The Monitoring Packs work closely wit the Azure Monitor Baseline Alerts [AMBA](http://aka.ms/amba) and the Azure Monitor teams to provide an comprehensive and aligned monitoring solution.
+- Provide best practices out of the box on items that need monitoring for different workloads. The Monitoring Packs work closely with the Azure Monitor Baseline Alerts [AMBA](http://aka.ms/amba) and the Azure Monitor teams to provide an comprehensive and aligned monitoring solution.
 
 - Create a framework for collaboration that will make it easy to add new monitored technologies. 
 
@@ -30,6 +30,9 @@ The Main solution can be deployed by clicking the link below to the respective c
 ## Monitoring Packs
 
 Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
+
+## Discovery Feature and ADDS Pack (Prototypes)
+<span style="color: red">The Discovery feature is a feature that allows the solution to discover the VMs in the subscription and apply the monitoring packs to the VMs. The ADDS pack is a pack that monitors Active Directory Domain Services. Both packs use VM Applications as the base to augment data collection. The VM Application is a lightweight agent that collects data from the VM and sends it to the solution. The VM Application is deployed as part of the pack deployment. These are experimental features and are not recommended for production environments at this moment. If you chose to deploy these packs in a limited scope.</span>
 
 ## Initial Configuration
 

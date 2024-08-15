@@ -159,15 +159,6 @@ $tagMapping = @"
 }
 "@ | ConvertFrom-Json
 
-$discoveringMappings = @{
-  "ADDS"  = "AD-Domain-Services"
-  "DNS"   = "DNS"
-  "FS"    = "FS-FileServer"
-  "IIS"   = "Web-Server"
-  "STSVC" = "Storage-Services"
-  "Nginx" = "nginx-core"
-  "Avd"   = "Avd-hostpool"
-}
 switch ($Action) {
   # Returns the tag based on the nameSpace provided
   'getTagbyService' {
@@ -200,7 +191,16 @@ switch ($Action) {
   }
   # returns a list of discovery mapping directions.
   'getDiscoveryMappings' {
-    $body = $discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
+    $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
+  }
+  'getdiscoveryresults' {
+    $WSId= $Request.Query.WSId
+    if ($WSId) {
+      $body = get-discoveryresults -LogAnalyticsWSResourceId $WSId
+    }
+    else {
+      $body = 'No Workspace ID provided'
+    }
   }
   'getPaaSquery' {
     $body = get-paasquery
