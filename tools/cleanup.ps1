@@ -12,12 +12,15 @@ param (
     [Parameter(Mandatory=$false)]
     [switch]$RemoveDiscovery,
     [Parameter(Mandatory=$false)]
+    [switch]$RemoveDiscoveryVMApps,
+    [Parameter(Mandatory=$false)]
     [switch]$RemoveStorage,
     [Parameter(Mandatory=$false)]
     [switch]$RemoveLAW,
     [Parameter(Mandatory=$false)]
     [switch]$confirmEachPack
 )
+#region functions
 function remove-appversions {
     param (
         [object]$vm,
@@ -51,9 +54,11 @@ function remove-appversions {
     Write-Output "Updating VM: $($VM.Name)"
     Update-AzVM -VM $VMT -ResourceGroupName $VMT.ResourceGroupName -asjob
 }
+#endregion
 # Check login
 # import module(s)
 # Resource graph
+#region initialization
 Write-Output "Installing/Loading Azure Resource Graph module."
 if ($null -eq (get-module Az.ResourceGraph)) {
     try {
@@ -72,7 +77,8 @@ if ($null -eq (Get-AzResourceGroup -Name $RG -ErrorAction SilentlyContinue)) {
     return
 }
 # Add deployment cleanup. Deployments may conflict if previous deployment to the same resource group failed or done to another region.
-
+#endregion
+#region AMAPolicySet
 # AMA policy set removal
 # Remove policy sets
 if ($RemoveAMAPolicySet -or $RemoveAll) {
@@ -102,7 +108,8 @@ if ($RemoveAMAPolicySet -or $RemoveAll) {
 else {
     "Skipping AMA policy set removal. Use -RemoveAMAPolicySet to remove them."
 }
-
+#endregion
+#region Discovery
 if ($RemoveDiscovery -or $RemoveAll) {
     # Remove DCR associations
     # Remove DCRs
@@ -194,7 +201,7 @@ if ($RemoveDiscovery -or $RemoveAll) {
             $gtemps=Get-AzGalleryApplicationVersion -GalleryName $_.Name -GalleryApplicationName $ga.Name -ResourceGroupName $RG
             if ($gtemps) {$gavs+=$gtemps.Id}
         }
-        if ($gavs.Count -gt 0) {
+        if ($gavs.Count -gt 0 -and $RemoveDiscoveryVMApps) {
             #need an Azure Resource Graph query to get all VMs with apps.
             $query=@"
 resources
@@ -208,8 +215,12 @@ resources
             foreach ($VM in $vmswithApps) { 
                 remove-appversions -vm $vm -appstoremove $gavs
             }
+            # switch back to the original subscription
+            Set-AzContext -Subscription $originalSub
         }
-        Set-AzContext -Subscription $originalSub
+        elseif (!($RemoveDiscoveryVMApps) -and $gavs.Count -gt 0) {
+            "There may applicattions installed in the VMs. Manual removal may be required."
+        }
         # then go ahead and remove applications and gallery once all VMs are clear.
         foreach ($gav in $gavs) {
             $gaName=$gav.Split("/")[10]
@@ -226,6 +237,7 @@ resources
         Remove-AzGallery -Name $_.Name -ResourceGroupName $RG -Force
     } 
 }
+#endregion
 #region Packs
 # Remove policy assignments and policies
 if ($RemovePacks -or $RemoveAll) {
