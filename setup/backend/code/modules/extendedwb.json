@@ -2469,9 +2469,9 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName, name\n| summarize Servers=count(serverName) by DCR=name\n",
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| where sourceResourceId=~'{vmiSelectedServer}'\n| summarize by DCRId=dataCollectionRuleId\n",
                     "size": 0,
-                    "title": "Servers by VMInsights DCR",
+                    "title": "Details for {vmiSelectedServer}",
                     "exportFieldName": "DCR",
                     "exportParameterName": "vmiSelectedDCR",
                     "queryType": 1,
