@@ -67,13 +67,13 @@ A common module is used to provide common functions to the other modules. The co
 
 |Action|Description|
 |------|-----------|
-|Install-azMonitorAgent||
-|get-discovermappings||
-|Add-Agent||
-|Add-Tag||
-|Remove-DCRa||
-|Remove-Tag||
-|get-alertApiVersion||
-|Config-AVD||
+|Install-azMonitorAgent|Effective installs the agent using the API. It also creates a System Managed Identity for the VM(s)|
+|get-discovermappings|used internally to provide the mappings based on the config|
+|Add-Agent|Install the agent|
+|Add-Tag|Adds the tag to a resource (and configures AVD monitoring).|
+|Remove-DCRa|Removes a DCR association|
+|Remove-Tag|Removes a tag|
+|get-alertApiVersion|gets the current API version to support other functions|
+|Config-AVD|Configures the AVD monitoring|
 |get-serviceTag||
-|get-paasquery||
+|get-paasquery|returns the current paas ARG query for supported services|
