@@ -3,73 +3,6 @@ using namespace System.Net
 
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
-# Function to add AMA to a VM or arc machine
-# The tags added to the extension are copied from the resource.
-function Install-azMonitorAgent {
-    param (
-    [Parameter(Mandatory=$true)]
-    $subscriptionId, 
-    [Parameter(Mandatory=$true)]
-        $resourceGroupName,
-        [Parameter(Mandatory=$true)]
-        $vmName, 
-        [Parameter(Mandatory=$true)]
-        $location,
-        [Parameter(Mandatory=$true)]
-        [string]$ExtensionName, #  AzureMonitorWindowsAgent or AzureMonitorLinuxAgent
-        [Parameter(Mandatory=$true)]
-        [string]$ExtensionTypeHandlerVersion #1.2 for windows, 1.27 for linux
-    )
-    # Identity 
-    $URL="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName"+"?api-version=2018-06-01"
-    $Method="PATCH"
-    $Body=@"
-{
-    "identity": {
-        "type": "SystemAssigned"
-    }
-}
-"@
-    try {
-        invoke-Azrestmethod -URI $URL -Method $Method -Payload $Body 
-    }
-    catch {
-        Write-Host "Error setting identity. $($_.Exception.Message)"
-    }
-    # Extension
-    Set-AzContext -SubscriptionId $subscriptionId
-    $tags=get-azvm -Name $vmName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-    $Method="PUT"
-    $URL="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName/extensions/$ExtensionName"+"?api-version=2023-09-01"
-    $Body=@"
-    {
-        "properties": {
-            "autoUpgradeMinorVersion": true,
-            "enableAutomaticUpgrade": true,
-            "publisher": "Microsoft.Azure.Monitor",
-            "type": "$ExtensionName",
-            "typeHandlerVersion": "$ExtensionTypeHandlerVersion",
-            "settings": {
-                "authentication": {
-                    "managedIdentity": {
-                        "identifier-name": "mi_res_id",
-                        "identifier-value": "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/"
-                    }
-                }
-            }
-        },
-        "location": "$location",
-        "tags": $tags
-    }
-}
-"@
-    try {
-        Invoke-AzRestMethod -URI $URL -Method "PUT" -Payload $Body
-    }
-    catch {
-        Write-Host "Error installing agent. $($_.Exception.Message)"
-    }
-}
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
@@ -86,11 +19,14 @@ if ($resources) {
                 $resourceName=$resource.id.split('/')[8]
                 $resourceSubcriptionId=$resource.id.split('/')[2]
                 "Running $action for $resourceName resource."
+                Set-AzContext -subscriptionId $resourceSubcriptionId
                 #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
                 if ($resource.OS -eq 'Linux') {
+                    "Looking for the Linux agent on $resourceName and $($resource.'Resource Group') RG."
                     $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
                 }
                 else {
+                    "Looking for the Windows agent on $resourceName and $($resource.'Resource Group') RG."
                     $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
                 }
                 if ($agentstatus) {
@@ -135,13 +71,17 @@ if ($resources) {
                 $resourceName=$resource.id.split('/')[8]
                 $resourceSubcriptionId=$resource.id.split('/')[2]
                 "Running $action for $resourceName resource."
+                Set-AzContext -subscriptionId $resourceSubcriptionId
                 #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
                 if ($resource.OS -eq 'Linux') {
+                                        "Looking for the Linux agent on $resourceName and $($resource.'Resource Group') RG."
                     $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
                 }
                 else {
+                                        "Looking for the Windows agent on $resourceName and $($resource.'Resource Group') RG."
                     $agentstatus=Get-AzVMExtension -ResourceGroupName $resource.'Resource Group' -VMName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
                 }
+                "Agent Status: $agentstatus"
                 if (!$agentstatus) {
                     "Agent not installed."
                 }

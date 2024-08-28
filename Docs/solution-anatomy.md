@@ -77,7 +77,7 @@ The basic solution is composed of the following components:
 
 2. The logic app is triggered by the workbook ARM actions and determine which function to call (policymgmt, alertmanagement or tagmgmt) to perform the appropriate actions.
 
-3. The function apps execute the actions as per above. The tagmgmt function also installs AMA if not present.
+3. The [function](/Docs/function.md) apps execute the actions as per above. The tagmgmt function also installs AMA if not present.
 
 4. Once tagging is detected by a specific policy, a DCR association is created between the pack specific rule and the targeted VM(s).
 
