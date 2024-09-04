@@ -201,8 +201,8 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933",
-                    "/subscriptions/34126048-cae2-4be8-9d63-c991bc04bec0"
+                    "",
+                    ""
                   ]
                 },
                 {
@@ -228,7 +228,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-fta-LogicApp"
+                  "value": ""
                 },
                 {
                   "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -247,7 +247,7 @@
                     "additionalResourceOptions": []
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-fta-c64740b6-Function"
+                  "value": ""
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -282,7 +282,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LA"
+                  "value": ""
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -305,7 +305,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPc64740b6"
+                  "value": ""
                 }
               ],
               "style": "above",
