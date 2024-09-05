@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
 @description('The Tag value for this pack')
-param packtag string = 'VMIDep'
+param packtag string = 'InsightsDep'
 // @description('Name of the DCR rule to be created')
 // param rulename string = 'AMSP-Windows-OS'
 param actionGroupResourceId string

@@ -42,7 +42,11 @@ function install-extension {
         [Parameter(Mandatory = $true)]
         [string]$ExtensionName, #  AzureMonitorWindowsAgent or AzureMonitorLinuxAgent
         [Parameter(Mandatory = $true)]
-        [string]$ExtensionTypeHandlerVersion #1.2 for windows, 1.27 for linux
+        [string]$ExtensionTypeHandlerVersion, #1.2 for windows, 1.27 for linux
+        [Parameter(Mandatory = $true)]
+        [string]$tags,
+        [Parameter(Mandatory = $false)]
+        [string]$EnableAutomaticUpgrade="true"
     )
     $Method = "PUT"
     $URL = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName/extensions/$ExtensionName" + "?api-version=2023-09-01"
@@ -50,7 +54,7 @@ function install-extension {
     {
         "properties": {
             "autoUpgradeMinorVersion": true,
-            "enableAutomaticUpgrade": true,
+            "enableAutomaticUpgrade": "$EnableAutomaticUpgrade",
             "publisher": "Microsoft.Azure.Monitor",
             "type": "$ExtensionName",
             "typeHandlerVersion": "$ExtensionTypeHandlerVersion",
@@ -114,7 +118,8 @@ function Install-azMonitorAgent {
             -location $location `
             -ExtensionName "DependencyAgentWindows" `
             -ExtensionTypeHandlerVersion "9.10.18.4770" `
-            -tags $tags
+            -tags $tags `
+            -EnableAutomaticUpgrade "false"
     }
 }
 function get-discovermappings {
