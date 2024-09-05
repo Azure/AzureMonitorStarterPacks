@@ -27,7 +27,7 @@ The Main solution can be deployed by clicking the link below to the respective c
 
 ### Packs Only
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FAllPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com2FFehseCorp%2FAzureMonitorStarterPacks%2Fmain%2FPacks%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Ffixworkbookandotherissues%2FPacks%2FAllPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Ffixworkbookandotherissues%2FPacks%2FCustomSetup%2Fsetup.json)
 
 
 [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fsetup.json)
