@@ -98,7 +98,7 @@
             "id": "7499a88f-a536-41d7-9b58-9ebae1b5290e",
             "cellValue": "tabSelection",
             "linkTarget": "parameter",
-            "linkLabel": "Alerts",
+            "linkLabel": "Alert Rules",
             "subTarget": "alertmanagement",
             "style": "link"
           },
@@ -1225,10 +1225,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources",
-                        "value": [
-                          "InsightsDep"
-                        ]
+                        "resourceType": "microsoft.resourcegraph/resources"
                       }
                     ],
                     "style": "pills",
@@ -1960,7 +1957,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "LogicApps"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -3293,7 +3290,7 @@
                         "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": [{policyToRemediate}]\n  }\n}",
                         "httpMethod": "POST",
                         "title": "Remediate a policy",
-                        "description": "# Remediate\n\nPolicies:\n\n[{policyToRemediate}]\n",
+                        "description": "# Remediate\n\nPolicies:\n\n[{policyToRemediate:$.policyId}]\n",
                         "actionName": "Remediatepolicies",
                         "runLabel": "Remediate"
                       }
@@ -3676,6 +3673,47 @@
               "visualization": "table",
               "gridSettings": {
                 "formatters": [
+                  {
+                    "columnMatch": "Dependency Agent",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "N/A",
+                          "representation": "1",
+                          "text": "",
+                          "tooltipFormat": {
+                            "tooltip": "Not Installed"
+                          }
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "DependencyAgentWindows",
+                          "representation": "success",
+                          "text": "",
+                          "tooltipFormat": {
+                            "tooltip": "Installed"
+                          }
+                        },
+                        {
+                          "thresholdValue": "DependencyAgentLinux",
+                          "representation": "success",
+                          "text": "",
+                          "tooltipFormat": {
+                            "tooltip": "Installed"
+                          }
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "unknown",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  },
                   {
                     "columnMatch": "ExtensionName",
                     "formatter": 18,
