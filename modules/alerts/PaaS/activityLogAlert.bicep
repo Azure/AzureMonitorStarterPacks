@@ -256,7 +256,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                   {
                                       type: 'Microsoft.Resources/deployments'
                                       apiVersion: '2019-10-01'
-                                      name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
+                                      name: '[uniquestring(concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\')))]'
                                       resourceGroup: '[parameters(\'alertResourceGroupName\')]'
                                       properties: {
                                           mode: 'Incremental'
@@ -297,7 +297,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                   {
                                                       type: 'microsoft.insights/activityLogAlerts'
                                                       apiVersion: '2020-10-01'
-                                                      name: '[uniqueString(concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\')))]'
+                                                      name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
                                                       location: 'global'
                                                       tags: {
                                                          '[parameters(\'solutionTag\')]': '[parameters(\'packTag\')]'
