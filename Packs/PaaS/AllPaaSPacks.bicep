@@ -33,6 +33,7 @@ param assignmentLevel string
 //param grafanaName string
 param customerTags object 
 param instanceName string
+var resourceGroupName = split(resourceGroupId, '/')[4]
 
 module Storage './Storage/monitoring.bicep' = {
   name: 'StorageAlerts'
@@ -95,7 +96,7 @@ module LogicApps './LogicApps/alerts.bicep' = {
     instanceName: instanceName
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     solutionVersion: solutionVersion
     resourceType: 'Microsoft.Logic/workflows'
   }
@@ -122,7 +123,7 @@ module SQLMI './SQL/SQLMI/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Sql/managedInstances'
   }
 }
@@ -146,7 +147,7 @@ module SQLSrv './SQL/server/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Sql/servers/databases'
   }
 }
@@ -253,7 +254,7 @@ module AA './AA/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Automation/automationAccounts'
   }
 }
@@ -277,7 +278,7 @@ module AppGW './Network/AppGW/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Network/applicationGateways'
   }
 }
@@ -301,7 +302,7 @@ module AzFW './Network/AzFW/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Network/azureFirewalls'
   }
 }
@@ -325,7 +326,7 @@ module AzFD './Network/AzFD/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Network/frontdoors'
   }
 }
@@ -349,7 +350,7 @@ module PrivZones './Network/PrivZones/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Network/privateDnsZones'
   }
 }
@@ -373,7 +374,7 @@ module PIP './Network/PIP/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Network/publicIPAddresses'
   }
 }
@@ -398,7 +399,7 @@ module NSG './Network/NSG/alerts.bicep' = {
     solutionVersion: solutionVersion
     AGId: actionGroupResourceId
     policyLocation: location
-    parResourceGroupName: resourceGroupId
+    parResourceGroupName: resourceGroupName
     resourceType: 'Microsoft.Network/networkSecurityGroups'
   }
 }

@@ -42,5 +42,6 @@ module Alert1 '../../../../modules/alerts/PaaS/activityLogAlert.bicep' = {
         operationName: 'delete'
         packtype: 'PaaS'
         instanceName: instanceName
+        
     }
 }

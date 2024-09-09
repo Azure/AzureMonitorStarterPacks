@@ -148,7 +148,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
               details: {
                   roleDefinitionIds: deploymentRoleDefinitionIds
                   type: 'Microsoft.Insights/activityLogAlerts'
-                  name: alertname
+                  name: '[concat(parameters(\'resourceType\'),\'/\',parameters(\'operationName\'))]'
                   existenceScope: 'resourcegroup'
                   resourceGroupName: '[parameters(\'alertResourceGroupName\')]'
                   deploymentScope: 'subscription'
@@ -256,7 +256,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                   {
                                       type: 'Microsoft.Resources/deployments'
                                       apiVersion: '2019-10-01'
-                                      name: '[concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\'))]'
+                                      name: '[uniquestring(concat(parameters(\'alertname\'),\'-\',parameters(\'resourceName\')))]'
                                       resourceGroup: '[parameters(\'alertResourceGroupName\')]'
                                       properties: {
                                           mode: 'Incremental'

@@ -17,12 +17,24 @@ The packs are divided into three categories: IaaS, PaaS and Platform. Each pack 
 
 The IaaS packs implement monitoring based on the AMA agent. Some packs, like the ADDS pack require the VM Application 'client' to be installed. The client is installed by default in the VMs once targetted by the solution.
 
-### VM Insights (VMInsights)
+### VM Insights
+
+This pack leverage the VM Insights rules. It can be used in two different configurations:
+
+#### VM Insights (VMI)
 
 This pack leverage the VM Insights rules. It implements the following:
+
 - VMInsights Rule (DCR)
 - Alerts (6) - Memory, Disk, Heartbeat, CPU. See details [here](./IaaS/VMI/alerts.bicep)
 - Grafana Dashboards (Windows and Linux)
+
+#### VM Insights + Dependency Agent (Service Map) (InsightsDep)
+
+This pack leverage the VM Insights rules. It implements the following:
+
+- VMInsights Rule (DCR) with Dependency Agent configuration
+- Alerts (6) - Memory, Disk, Heartbeat, CPU. See details [here](./IaaS/VMI/alerts.bicep)
 
 ### IIS (IIS)
 

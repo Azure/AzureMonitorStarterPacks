@@ -243,7 +243,7 @@ resources
 if ($RemovePacks -or $RemoveAll) {
     "Removing packs."
     # Gets all policies with the tag MonitorStarterPacks
-    $pols=Get-AzPolicyDefinition | Where-Object {$_.Metadata.MonitorStarterPacks -ne $null} 
+    $pols=Get-AzPolicyDefinition | Where-Object {$_.Metadata.MonitorStarterPacks -ne $null -and $_.Metadata.MonitoringPackType -ne "Discovery"} 
     # retrive unique list of packs installed
     $packs=$pols.Metadata.MonitorStarterPacks | Select-Object -Unique
     "Found $($packs.count) packs from policies: $packs"
@@ -253,7 +253,7 @@ if ($RemovePacks -or $RemoveAll) {
     # }
     # Remove policy sets and assignments
     "Removing policy sets."
-    $inits=Get-AzPolicySetDefinition | where-object {$_.Metadata.MonitorStarterPacks -ne $null}
+    $inits=Get-AzPolicySetDefinition | where-object {$_.Metadata.MonitorStarterPacks -ne $null -and $_.Metadata.MonitoringPackType -ne "Discovery"}
     foreach ($init in $inits) {
         "Removing policy set $($init.Id)"
         #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $init.Id
@@ -263,7 +263,7 @@ if ($RemovePacks -or $RemoveAll) {
         | extend AssignmentDisplayName=properties.displayName,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId)
         | where PolicyId == '$($init.Id)'
 "@
-        $assignments=Search-AzGraph -Query $query
+        $assignments=Search-AzGraph -Query $query -UseTenantScope
         if ($assignments.count -ne 0)
         {
             "Removing assignments for $($pol.Id)"

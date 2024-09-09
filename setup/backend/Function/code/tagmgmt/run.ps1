@@ -28,10 +28,11 @@ if ($resources) {
               # Tagging
               if ($PackType -in ('IaaS', 'Discovery')) {
                 foreach ($TagValue in $TagList) {
+                  $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
                   Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue #-instanceName $instanceName `
                  # -packType $PackType -actionGroupId $defaultAG -resourceType "microsoft.compute"
                   # Add Agent
-                  Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
+                  Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 }
               }
               else { #Paas or Platform

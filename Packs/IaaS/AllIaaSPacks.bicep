@@ -79,6 +79,24 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
     instanceName: instanceName
   }
 }
+module VMInsightsPackWithDependency './VMInsightswithDependency/monitoring.bicep' = {
+  name: 'VMInsightsDependencyPack'
+  params: {
+    assignmentLevel: assignmentLevel
+    dceId: dceId
+    location: location
+    mgname: mgname
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    subscriptionId: subscriptionId
+    userManagedIdentityResourceId: userManagedIdentityResourceId
+    workspaceId: workspaceId
+    customerTags: customerTags
+    actionGroupResourceId: actionGroupResourceId
+    instanceName: instanceName
+  }
+}
 // module WinOSPack './WinOS/monitoring.bicep' = {
 //   name: 'WinOSPack'
 //   params: {
