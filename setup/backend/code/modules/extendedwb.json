@@ -1141,7 +1141,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Packs2\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"}]}",
                     "size": 0,
                     "title": "Monitored Machines",
                     "exportMultipleValues": true,
@@ -1158,6 +1158,13 @@
                     "visualization": "table",
                     "gridSettings": {
                       "formatters": [
+                        {
+                          "columnMatch": "Associations",
+                          "formatter": 0,
+                          "tooltipFormat": {
+                            "tooltip": "If empty, no DCR associations have been created by the policies yet."
+                          }
+                        },
                         {
                           "columnMatch": "Associated Packs",
                           "formatter": 18,
@@ -1218,7 +1225,10 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"
+                        "resourceType": "microsoft.resourcegraph/resources",
+                        "value": [
+                          "InsightsDep"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1408,7 +1418,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "VMI"
+                          "InsightsDep"
                         ]
                       }
                     ],
@@ -1550,7 +1560,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.Total\",\"columnid\":\"AlertRules\",\"columnType\":\"long\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.Total\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                     "size": 0,
                     "title": "Monitored Services",
                     "exportMultipleValues": true,
@@ -1582,6 +1592,11 @@
                                 "operator": ">",
                                 "thresholdValue": "0",
                                 "representation": "success",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "is Empty",
+                                "representation": "2",
                                 "text": "{0}{1}"
                               },
                               {
@@ -2410,8 +2425,8 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName=sourceResourceId, name\n| summarize VMInsightsAssociations=count(name) by ['Server Name']=serverName \n",
-                    "size": 0,
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=inner  (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(sourceResourceId), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName=sourceResourceId, name\n| summarize VMInsightsAssociations=count(name) by ['Server Name']=serverName \n",
+                    "size": 1,
                     "title": "Servers and DCR associations",
                     "exportFieldName": "Server Name",
                     "exportParameterName": "vmiSelectedServer",
@@ -2473,7 +2488,7 @@
                   "content": {
                     "version": "KqlItem/1.0",
                     "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| where sourceResourceId=~'{vmiSelectedServer}'\n| summarize by DCRId=dataCollectionRuleId\n",
-                    "size": 0,
+                    "size": 1,
                     "title": "Details for {vmiSelectedServer}",
                     "exportFieldName": "DCR",
                     "exportParameterName": "vmiSelectedDCR",
@@ -2523,8 +2538,8 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName, dataCollectionRuleId\n| summarize Servers=count(serverName) by DCRId=dataCollectionRuleId\n",
-                    "size": 0,
+                    "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=inner   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| project serverName, dataCollectionRuleId\n| summarize Servers=count(serverName) by DCRId=dataCollectionRuleId\n",
+                    "size": 1,
                     "title": "VMInsights DCRs and Servers",
                     "exportFieldName": "DCRId",
                     "exportParameterName": "VMIdataCollectionRuleId",
@@ -2559,7 +2574,7 @@
                   "content": {
                     "version": "KqlItem/1.0",
                     "query": "resources\n| where ['type'] =~ 'microsoft.insights/datacollectionrules'\n| mv-expand datasources=properties.dataSources.performanceCounters\n| where isnotnull(datasources)\n| mv-expand  cs=datasources.counterSpecifiers //=~ '\\\\VmInsights\\\\DetailedMetrics'\n| where cs =~'\\\\VmInsights\\\\DetailedMetrics'\n| join kind=leftouter   (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| where isnotnull(properties.dataCollectionRuleId)\n| extend sourceResourceId=tostring(split(id,'/providers/Microsoft.Insights/')[0])\n| extend serverName=tostring(split(sourceResourceId,'/')[8]), dataCollectionRuleId=tostring(properties.dataCollectionRuleId)) on $left.id == $right.dataCollectionRuleId\n| where dataCollectionRuleId=='{VMIdataCollectionRuleId}'\n| project ['Server Name']=sourceResourceId\n\n",
-                    "size": 0,
+                    "size": 1,
                     "title": "Associated Servers",
                     "exportFieldName": "DCR",
                     "exportParameterName": "vmiSelectedDCR",
@@ -3637,7 +3652,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), State, UpgradeEnabled,subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',iff(State<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (State == 'succeeded'),'Uninstall',iff(State <> 'succeeded','Warning',''))\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1\n| order by id",
+              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('DependencyAgentWindows','DependencyAgentLinux')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        DepAgent = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('DependencyAgentWindows','DependencyAgentLinux')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        DepAgent = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ['Dependency Agent']=iff(isempty(DepAgent),'N/A',DepAgent),ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), ['AMA State']=State, ['AMA Upg']=UpgradeEnabled,['Subscription']=subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',iff(['AMA State']<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (['AMA State'] == 'succeeded'),'Uninstall',iff(['AMA State'] <> 'succeeded','Warning',''))\n",
               "size": 0,
               "title": "Agent Install Status",
               "exportMultipleValues": true,
@@ -3731,30 +3746,45 @@
                     }
                   },
                   {
-                    "columnMatch": "UpgradeEnabled",
+                    "columnMatch": "AMA Upg",
                     "formatter": 18,
                     "formatOptions": {
                       "thresholdsOptions": "icons",
                       "thresholdsGrid": [
                         {
-                          "operator": "==",
-                          "thresholdValue": "true",
-                          "representation": "success",
-                          "text": ""
-                        },
-                        {
-                          "operator": "==",
-                          "thresholdValue": "false",
-                          "representation": "2",
-                          "text": ""
+                          "operator": "is Empty",
+                          "representation": "1",
+                          "text": "",
+                          "tooltipFormat": {
+                            "tooltip": "Auto Upgrade not enabled"
+                          }
                         },
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "unknown",
-                          "text": ""
+                          "representation": "success",
+                          "text": "",
+                          "tooltipFormat": {
+                            "tooltip": "Enabled"
+                          }
                         }
                       ]
+                    }
+                  },
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 15,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "Resource Group",
+                    "formatter": 14,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
                     }
                   },
                   {
@@ -3834,24 +3864,77 @@
                         "runLabel": "RemoveAgent"
                       }
                     }
+                  },
+                  {
+                    "columnMatch": "subscriptionId",
+                    "formatter": 15,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "DepAgent",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "N/A",
+                          "representation": "1",
+                          "text": "{0}{1}",
+                          "tooltipFormat": {
+                            "tooltip": "Not Installed"
+                          }
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": "{0}{1}",
+                          "tooltipFormat": {
+                            "tooltip": "Installed"
+                          }
+                        }
+                      ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Dependency Agent Status"
+                    }
+                  },
+                  {
+                    "columnMatch": "UpgradeEnabled",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "true",
+                          "representation": "success",
+                          "text": ""
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "false",
+                          "representation": "2",
+                          "text": ""
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "unknown",
+                          "text": ""
+                        }
+                      ]
+                    }
                   }
                 ],
-                "filter": true,
-                "sortBy": [
-                  {
-                    "itemKey": "$gen_thresholds_ExtensionName_2",
-                    "sortOrder": 1
-                  }
-                ]
+                "filter": true
               },
-              "sortBy": [
-                {
-                  "itemKey": "$gen_thresholds_ExtensionName_2",
-                  "sortOrder": 1
-                }
-              ]
+              "sortBy": []
             },
-            "customWidth": "75",
             "conditionalVisibility": {
               "parameterName": "agentTab",
               "comparison": "isEqualTo",
@@ -4920,7 +5003,7 @@
                     "durationMs": 2592000000
                   },
                   "value": {
-                    "durationMs": 3600000
+                    "durationMs": 2419200000
                   }
                 },
                 {
@@ -5067,7 +5150,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    ""
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

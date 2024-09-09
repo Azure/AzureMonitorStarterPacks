@@ -44,9 +44,11 @@ function install-extension {
         [Parameter(Mandatory = $true)]
         [string]$ExtensionTypeHandlerVersion, #1.2 for windows, 1.27 for linux
         [Parameter(Mandatory = $true)]
-        [string]$tags,
+        [object]$tags,
         [Parameter(Mandatory = $false)]
-        [string]$EnableAutomaticUpgrade="true"
+        [string]$EnableAutomaticUpgrade="true",
+        [Parameter(Mandatory = $true)]
+        [string]$publisher
     )
     $Method = "PUT"
     $URL = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName/extensions/$ExtensionName" + "?api-version=2023-09-01"
@@ -55,7 +57,7 @@ function install-extension {
         "properties": {
             "autoUpgradeMinorVersion": true,
             "enableAutomaticUpgrade": "$EnableAutomaticUpgrade",
-            "publisher": "Microsoft.Azure.Monitor",
+            "publisher": "$publisher",
             "type": "$ExtensionName",
             "typeHandlerVersion": "$ExtensionTypeHandlerVersion",
             "settings": {
@@ -109,7 +111,8 @@ function Install-azMonitorAgent {
         -location $location `
         -ExtensionName $ExtensionName `
         -ExtensionTypeHandlerVersion $ExtensionTypeHandlerVersion `
-        -tags $tags
+        -tags $tags `
+        -publisher "Microsoft.Azure.Monitor"
     
     if ($InstallDependencyAgent) {
         install-extension -subscriptionId $subscriptionId `
@@ -117,9 +120,10 @@ function Install-azMonitorAgent {
             -vmName $vmName `
             -location $location `
             -ExtensionName "DependencyAgentWindows" `
-            -ExtensionTypeHandlerVersion "9.10.18.4770" `
+            -ExtensionTypeHandlerVersion "9.0" `
             -tags $tags `
-            -EnableAutomaticUpgrade "false"
+            -EnableAutomaticUpgrade "false" `
+            -publisher "Microsoft.Azure.Monitoring.DependencyAgent"
     }
 }
 function get-discovermappings {
@@ -222,7 +226,68 @@ function Add-Agent {
         }
     }
     if ($agentstatus) {
-        "Agent already installed."
+        "Azure Monitor Agent already installed."
+        if ($InstallDependencyAgent) {
+            "Checking Dependency agent."
+            # Check for Linux
+            if ($ResourceOS -eq 'Linux') {
+                if ($resourceId.split('/')[7] -eq 'virtualMachines') {
+                    $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "DependencyAgentLinux" -ErrorAction SilentlyContinue
+                    if ($agentstatus) {
+                        "Dependency Agent already installed."
+                    }
+                    else {
+                        "Dependency Agent not installed. Installing..."
+                        install-extension -subscriptionId $resourceSubcriptionId `
+                                          -resourceGroupName $resourceGroupName `
+                                          -vmName $resourceName `
+                                          -location $location `
+                                          -ExtensionName "DependencyAgentLinux" `
+                                          -ExtensionTypeHandlerVersion "9.0" `
+                                          -InstallDependencyAgent $InstallDependencyAgent
+                    }
+                }
+                else {
+                    $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "DependencyAgentLinux" -ErrorAction SilentlyContinue
+                }
+            }
+            else {
+                if ($resourceId.split('/')[7] -eq 'virtualMachines') {
+                    $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "DependencyAgentWindows" -ErrorAction SilentlyContinue
+                    if ($agentstatus) {
+                        "Dependency Agent already installed."
+                    }
+                    else {
+                        "Dependency Agent not installed. Installing..."
+                        install-extension -subscriptionId $resourceSubcriptionId `
+                                          -resourceGroupName $resourceGroupName `
+                                          -vmName $resourceName `
+                                          -location $location `
+                                          -ExtensionName "DependencyAgentWindows" `
+                                          -ExtensionTypeHandlerVersion "9.0" `
+                                          -InstallDependencyAgent $InstallDependencyAgent `
+                                          -publisher "Microsoft.Azure.Monitoring.DependencyAgent"
+                    }
+                }
+                else {
+                    # ARC
+                    $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "DependencyAgentWindows" -ErrorAction SilentlyContinue
+                    if ($agentstatus) {
+                        "Dependency Agent already installed."
+                    }
+                    else {
+                        "Dependency Agent not installed. Installing..."
+                        $agent=New-AzConnectedMachineExtension -Name DependencyAgentWindows `
+                            -ExtensionType DependencyAgentWindows `
+                            -Publisher Microsoft.Azure.Monitoring.DependencyAgent `
+                            -ResourceGroupName $resourceGroupName `
+                            -MachineName $resourceName `
+                            -Location $location `
+                            -EnableAutomaticUpgrade -Tag $tags
+                    }
+                }
+            }
+        }
     }
     else {
         "Agent not installed. Installing..."
@@ -230,7 +295,6 @@ function Add-Agent {
             # 
             if ($resourceId.split('/')[7] -eq 'virtualMachines') {
                 # Virtual machine - add extension
-                
                 install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $location `
                     -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27" -InstallDependencyAgent $InstallDependencyAgent
                 #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -EnableAutomaticUpgrade $true
@@ -249,17 +313,27 @@ function Add-Agent {
             # Windows
             if ($resourceId.split('/')[7] -eq 'virtualMachines') {
                 # Virtual machine - add extension
-                install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $location `
-                    -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2" -InstallDependencyAgent $installDependencyAgent
+                install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName `
+                                        -vmName $resourceName -location $location `
+                                        -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2" `
+                                        -InstallDependencyAgent $installDependencyAgent
                 #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
             }
             else {
                 # Arc machine -add extension
                 Set-AzContext -SubscriptionId $resourceSubcriptionId
                 $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-                $agent = New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
+                $agent = New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent `
+                                    -Publisher Microsoft.Azure.Monitor `
+                                    -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
                 if ($InstallDependencyAgent) {
-                    $agent=New-AzConnectedMachineExtension -Name DependencyAgentWindows -ExtensionType DependencyAgentWindows -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
+                    $agent=New-AzConnectedMachineExtension -Name DependencyAgentWindows `
+                                                           -ExtensionType DependencyAgentWindows `
+                                                           -Publisher Microsoft.Azure.Monitoring.DependencyAgent `
+                                                           -ResourceGroupName $resourceGroupName `
+                                                           -MachineName $resourceName `
+                                                           -Location $location `
+                                                           -EnableAutomaticUpgrade -Tag $tags
                 }
             }
         }
@@ -338,9 +412,14 @@ insightsresources
 ruleId =~ '$($DCR.id)'
 "@
         $associationQuery
-        $association = Search-AzGraph -Query $associationQuery
+        $association = Search-AzGraph -Query $associationQuery -UseTenantScope
         if ($association.count -gt 0) {
             "Found association $($association.name). Removing..."
+            $resourceSubcriptionId = $resourceId.split('/')[2]
+            $currentSub=(Get-AzContext).Subscription.Id
+            if ($resourceSubcriptionId -ne $currentSub) {
+                Set-AzContext -SubscriptionId $resourceSubcriptionId
+            }
             Remove-AzDataCollectionRuleAssociation -TargetResourceId $resourceId -AssociationName $association.name
         }
         else {

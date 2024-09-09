@@ -28,7 +28,7 @@ if ($resources) {
               # Tagging
               if ($PackType -in ('IaaS', 'Discovery')) {
                 foreach ($TagValue in $TagList) {
-                  $InstallDependencyAgent = ($TagValue -eq 'VMIDep') ? $true : $false
+                  $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
                   Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue #-instanceName $instanceName `
                  # -packType $PackType -actionGroupId $defaultAG -resourceType "microsoft.compute"
                   # Add Agent

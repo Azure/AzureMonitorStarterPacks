@@ -14,6 +14,13 @@ foreach ($file in $mainMonstarPacksFiles) {
     bicep build $file.File
     Set-Location $currentFolder  
 }
+
+# Workbook clean up
+Copy-Item ./setup/backend/code/modules/extendedwb.json /tmp/extendedwb.json.bak
+./tools/prep-workbook.ps1 -jsonFilePath ./setup/backend/code/modules/extendedwb.json -jsoutOutputPath /tmp/extendedwb.json.new
+remove-item ./setup/backend/code/modules/extendedwb.json
+move-item /tmp/extendedwb.json.new ./setup/backend/code/modules/extendedwb.json
+
 # Grafana Dashaboards
 Set-Location "./Packs"
 $DestinationPath='./Grafana.zip'
