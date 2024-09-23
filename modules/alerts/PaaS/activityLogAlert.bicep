@@ -148,7 +148,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
               details: {
                   roleDefinitionIds: deploymentRoleDefinitionIds
                   type: 'Microsoft.Insights/activityLogAlerts'
-                  name: '[concat(parameters(\'resourceType\'),\'/\',parameters(\'operationName\'))]'
+                  name: '[concat(parameters(\'tagValue\'),parameters(\'operationName\'))]'
                   existenceScope: 'resourcegroup'
                   resourceGroupName: '[parameters(\'alertResourceGroupName\')]'
                   deploymentScope: 'subscription'
