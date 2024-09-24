@@ -148,7 +148,7 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
               details: {
                   roleDefinitionIds: deploymentRoleDefinitionIds
                   type: 'Microsoft.Insights/activityLogAlerts'
-                  name: '[concat(parameters(\'tagValue\'),parameters(\'operationName\'))]'
+                  name: '[concat(parameters(\'alertname\'),\'-\',field(\'name\'))]'
                   existenceScope: 'resourcegroup'
                   resourceGroupName: '[parameters(\'alertResourceGroupName\')]'
                   deploymentScope: 'subscription'
@@ -291,6 +291,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                                 operationName: {
                                                     type: 'string'
                                                 }
+                                                resourceName: {
+                                                    type: 'string'
+                                                }
                                               }
                                               variables: {}
                                               resources: [
@@ -371,6 +374,9 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
                                             }
                                             operationName: {
                                                 value: '[parameters(\'operationName\')]'
+                                            }
+                                            resourceName: {
+                                                value: '[parameters(\'resourceName\')]'
                                             }
                                           }
                                       }
