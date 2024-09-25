@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 28,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -50,7 +50,7 @@
         "content": "<sub>*Note: If you have multiple workspaces, and you are not seeing data in the visualisations below, please first select the workspace that you have used in the configuration of the Azure Monitor Starter Packs in the options above.*</sub>",
         "mode": "markdown"
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "type": "text"
     },
     {
@@ -74,7 +74,7 @@
         "content": "# Linux Operating System Overview",
         "mode": "markdown"
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "type": "text"
     },
     {
@@ -395,7 +395,7 @@
         "content": "# Health and Availability",
         "mode": "markdown"
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "type": "text"
     },
     {
@@ -483,7 +483,7 @@
           }
         ]
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -619,7 +619,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -743,7 +743,7 @@
           }
         ]
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -791,8 +791,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -876,7 +875,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "targets": [
         {
           "azureLogAnalytics": {
@@ -917,8 +916,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1013,7 +1011,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "10.4.7",
       "targets": [
         {
           "azureMonitor": {
@@ -1325,6 +1323,7 @@
         "name": "Datasource",
         "options": [],
         "query": "grafana-azure-monitor-datasource",
+        "queryValue": "",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1395,13 +1394,9 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": [
-            "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourcegroups/servers/providers/microsoft.compute/virtualmachines/server1"
-          ],
-          "value": [
-            "/subscriptions/c64740b6-ed3d-48cc-b46d-1cad26733933/resourcegroups/servers/providers/microsoft.compute/virtualmachines/server1"
-          ]
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
@@ -1420,7 +1415,7 @@
             "resources": []
           },
           "azureResourceGraph": {
-            "query": "resources\r\n| extend StarterPack = tags.MonitorStarterPacks\r\n| where StarterPack contains \"VMI\" and type in (\"microsoft.hybridcompute/machines\", \"microsoft.compute/virtualmachines\")\r\n| project value = tolower(id), label = name"
+            "query": "resources | where type =~ 'microsoft.hybridcompute/machines'\r\n| extend StarterPack = tags.MonitorStarterPacks,OS=properties.osType\r\n|union (resources | where type =~ 'microsoft.compute/virtualmachines'\r\n|extend StarterPack = tags.MonitorStarterPacks,OS=properties.storageProfile.osDisk.osType)\r\n| where (StarterPack contains \"VMI\" or StarterPack contains \"InsightsDep\")\r\n| where OS =~ 'linux'\r\n| project value = tolower(id), label = name"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",

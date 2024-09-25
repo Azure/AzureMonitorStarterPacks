@@ -61,7 +61,14 @@ policyresources
         }
         foreach ($pol in $pols) {
             "Policy $($pol.PolicyDefinitionId) is non-compliant"
-            $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
+            $assignmentsQuery=@"
+            policyresources
+            | where type == 'microsoft.authorization/policyassignments'
+            | extend policyDefinitionId=properties.policyDefinitionId, Scope=properties.scope
+            | where policyDefinitionId == '$($pol.PolicyDefinitionId)'
+"@
+            #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
+            $assignments=Search-AzGraph -Query $assignmentsQuery -UseTenantScope
             foreach ($assignment in $assignments) {
                 "Starting remediation for $($assignment.DisplayName)"
                 Start-AzPolicyRemediation -Name "$($pol.PolicyDefinitionName) remediation" -PolicyAssignmentId $assignment.id -ResourceDiscoveryMode ExistingNonCompliant -Scope $assignment.Scope

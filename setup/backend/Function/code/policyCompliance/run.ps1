@@ -15,7 +15,7 @@ policyresources
 | where ComplianceState =~ "NonCompliant"
 | summarize by PolicySetDefinitionName
 | join kind= innerunique   (policyresources
-| where ['type'] =~ "microsoft.authorization/policysetdefinitions" and isnotnull(properties.metadata.MonitorStarterPacks)
+| where ['type'] =~ "microsoft.authorization/policysetdefinitions" and isnotnull(properties.metadata.$SolutionTag)
 | project PolicySetDefinitionName=name, PolicySetDefinitionId=id, policyDefinitions=properties.policyDefinitions) on PolicySetDefinitionName
 | project-away PolicySetDefinitionName1
 "@
@@ -28,7 +28,7 @@ policyresources
 | where ComplianceState =~ "NonCompliant"
 | summarize by PolicyDefinitionName
 | join kind= innerunique   (policyresources
-| where ['type'] =~ "microsoft.authorization/policydefinitions" and isnotnull(properties.metadata.MonitorStarterPacks) 
+| where ['type'] =~ "microsoft.authorization/policydefinitions" and isnotnull(properties.metadata.$SolutionTag) 
  and properties.metadata.initiativeMember != true
 | project  PolicyDefinitionName=name, PolicyDefinitionId=id) on PolicyDefinitionName
 | project-away PolicyDefinitionName1
@@ -41,7 +41,14 @@ $pols=Search-AzGraph -Query $polStateQuery -UseTenantScope
 
 foreach ($pol in $pols) {
     "Policy $($pol.PolicyDefinitionId) is non-compliant"
-    $assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId
+    $assignmentsQuery=@"
+    policyresources
+    | where type == 'microsoft.authorization/policyassignments'
+    | extend policyDefinitionId=properties.policyDefinitionId, Scope=properties.scope
+    | where policyDefinitionId == '$($pol.PolicyDefinitionId)'
+"@
+    #$assignments=Get-AzPolicyAssignment -PolicyDefinitionId $pol.PolicyDefinitionId 
+    $assignments=Search-AzGraph -Query $assignmentsQuery -UseTenantScope
     foreach ($assignment in $assignments) {
         "Starting remediation for $($assignment.DisplayName)"
         Start-AzPolicyRemediation -Name "$($pol.PolicyDefinitionName) remediation" -PolicyAssignmentId $assignment.id -ResourceDiscoveryMode ExistingNonCompliant -Scope $assignment.Scope
