@@ -129,7 +129,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -188,7 +188,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -204,7 +204,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -263,7 +263,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -278,7 +278,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -339,7 +339,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -354,7 +354,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -414,7 +414,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -453,7 +453,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -554,7 +554,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "hide": false,
           "queryType": "Azure Log Analytics",
@@ -568,7 +568,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -694,7 +694,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -710,7 +710,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -816,7 +816,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "hide": false,
           "queryType": "Azure Log Analytics",
@@ -831,7 +831,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -938,7 +938,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "hide": false,
           "queryType": "Azure Log Analytics",
@@ -952,7 +952,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1068,7 +1068,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -1107,7 +1107,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1214,7 +1214,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "hide": false,
           "queryType": "Azure Log Analytics",
@@ -1228,7 +1228,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "${DS_AZURE_MONITOR}"
+        "uid": "${Datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1335,7 +1335,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "${DS_AZURE_MONITOR}"
+            "uid": "${Datasource}"
           },
           "hide": false,
           "queryType": "Azure Log Analytics",
@@ -1380,7 +1380,7 @@
         "current": {},
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${DS_AZURE_MONITOR}"
+          "uid": "${Datasource}"
         },
         "definition": "subscriptions",
         "hide": 0,
@@ -1407,7 +1407,7 @@
         "current": {},
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${DS_AZURE_MONITOR}"
+          "uid": "${Datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -1435,7 +1435,7 @@
         "current": {},
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "${DS_AZURE_MONITOR}"
+          "uid": "${Datasource}"
         },
         "definition": "",
         "hide": 0,
