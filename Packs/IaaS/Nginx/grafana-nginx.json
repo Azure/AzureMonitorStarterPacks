@@ -74,7 +74,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -139,7 +139,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -151,7 +151,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "description": "This panel shows the status of the NGINX daemons. You will need to enable Change Tracking and Inventory to report on this - https://learn.microsoft.com/en-us/azure/automation/change-tracking/overview-monitoring-agent?tabs=win-az-vm",
       "fieldConfig": {
@@ -307,7 +307,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
@@ -322,7 +322,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -381,7 +381,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -396,7 +396,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -455,7 +455,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Resource Graph",
           "refId": "A",
@@ -494,7 +494,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -600,7 +600,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -612,7 +612,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -701,7 +701,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -713,7 +713,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -802,7 +802,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -814,7 +814,7 @@
     {
       "datasource": {
         "type": "grafana-azure-monitor-datasource",
-        "uid": "azure-monitor-oob"
+        "uid": "${Datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -903,7 +903,7 @@
           },
           "datasource": {
             "type": "grafana-azure-monitor-datasource",
-            "uid": "azure-monitor-oob"
+            "uid": "${Datasource}"
           },
           "queryType": "Azure Log Analytics",
           "refId": "A"
@@ -944,7 +944,7 @@
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "azure-monitor-oob"
+          "uid": "${Datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -975,7 +975,7 @@
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "azure-monitor-oob"
+          "uid": "${Datasource}"
         },
         "definition": "",
         "hide": 0,
@@ -1007,7 +1007,7 @@
         },
         "datasource": {
           "type": "grafana-azure-monitor-datasource",
-          "uid": "azure-monitor-oob"
+          "uid": "${Datasource}"
         },
         "definition": "",
         "hide": 0,
