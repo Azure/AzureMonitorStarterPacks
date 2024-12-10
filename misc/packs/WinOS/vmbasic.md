@@ -1,4 +1,4 @@
-#FTA Monitoring Starter Pack
+# Monitoring Starter Pack
 
 ## Basic VM Monitoring
 

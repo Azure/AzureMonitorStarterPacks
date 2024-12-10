@@ -3,7 +3,7 @@ title: Azure Monitoring Packs
 geekdocCollapseSection: true
 ---
 
-# FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
+# Monitoring Starter Packs (MonStar Packs)
 
 ## Objectives
 
