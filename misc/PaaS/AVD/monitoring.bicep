@@ -127,7 +127,7 @@ module Alerts 'alerts.bicep' = {
 // DCRs
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcravdMonitoring '../../../modules/DCRs/dcr-AVD.bicep' = {
-  name: 'dcrPerformance-${packtag}'
+  name: 'dcrPerformance-${packtag}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
@@ -143,53 +143,53 @@ module dcravdMonitoring '../../../modules/DCRs/dcr-AVD.bicep' = {
     dceId: dceId
   }
 }
-module policysetup '../../../modules/policies/mg/policies.bicep' = {
-  name: 'policysetup-${packtag}'
-  params: {
-    dcrId: dcravdMonitoring.outputs.dcrId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: rulename
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: '${ruleshortname}-1'
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
+// module policysetup '../../../modules/policies/mg/policies.bicep' = {
+//   name: 'policysetup-${packtag}'
+//   params: {
+//     dcrId: dcravdMonitoring.outputs.dcrId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: rulename
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: '${ruleshortname}-1'
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }
 // Diagnostic settings policies
-module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpolicyDiag.bicep' = [for (rt,i) in resourceTypes: {
-  name: 'associacionpolicy-${packtag}-${split(rt, '/')[1]}'
-  params: {
-    logAnalyticsWSResourceId: workspaceId
-    packtag: packtag
-    solutionTag: solutionTag
-    policyDescription: 'Policy to associate the diagnostics setting for ${split(rt, '/')[1]} resources the tagged with ${packtag} tag.'
-    policyDisplayName: 'Associate the diagnostics with the ${split(rt, '/')[1]} resources tagged with ${packtag} tag.'
-    policyName: 'Associate-diagnostics-${packtag}-${split(rt, '/')[1]}'
-    resourceType: rt
-    initiativeMember: false
-    packtype: 'PaaS'
-  }
-}]
-module policyassignment '../../../modules/policies/mg/policiesDiag.bicep' = [for (rt,i) in resourceTypes: {
-  name: 'AMP-diag-${instanceName}-${packtag}-${split(rt, '/')[1]}'
-  dependsOn: [
-    diagnosticsPolicy
-  ]
-  params: {
-    location: location
-    mgname: mgname
-    packtag: packtag
-    policydefinitionId: diagnosticsPolicy[i].outputs.policyId
-    resourceType: rt
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId 
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    assignmentLevel: assignmentLevel
-    policyType: 'diag'
-    instanceName: instanceName
-  }
-}]
+// module diagnosticsPolicy '../../../modules/policies/mg/diagnostics/associacionpolicyDiag.bicep' = [for (rt,i) in resourceTypes: {
+//   name: 'associacionpolicy-${packtag}-${split(rt, '/')[1]}'
+//   params: {
+//     logAnalyticsWSResourceId: workspaceId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     policyDescription: 'Policy to associate the diagnostics setting for ${split(rt, '/')[1]} resources the tagged with ${packtag} tag.'
+//     policyDisplayName: 'Associate the diagnostics with the ${split(rt, '/')[1]} resources tagged with ${packtag} tag.'
+//     policyName: 'Associate-diagnostics-${packtag}-${split(rt, '/')[1]}'
+//     resourceType: rt
+//     initiativeMember: false
+//     packtype: 'PaaS'
+//   }
+// }]
+// module policyassignment '../../../modules/policies/mg/policiesDiag.bicep' = [for (rt,i) in resourceTypes: {
+//   name: 'AMP-diag-${instanceName}-${packtag}-${split(rt, '/')[1]}'
+//   dependsOn: [
+//     diagnosticsPolicy
+//   ]
+//   params: {
+//     location: location
+//     mgname: mgname
+//     packtag: packtag
+//     policydefinitionId: diagnosticsPolicy[i].outputs.policyId
+//     resourceType: rt
+//     solutionTag: solutionTag
+//     subscriptionId: subscriptionId 
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     assignmentLevel: assignmentLevel
+//     policyType: 'diag'
+//     instanceName: instanceName
+//   }
+// }]

@@ -19,7 +19,7 @@ var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
 module table '../../modules/LAW/table.bicep' = {
-  name: tableNameToUse
+  name: '${tableNameToUse}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     parentname: lawFriendlyName
@@ -29,7 +29,7 @@ module table '../../modules/LAW/table.bicep' = {
 }
 
 module WindowsDiscovery './Windows/discovery.bicep' = {
-  name: 'WindowsDiscovery-${instanceName}'
+  name: 'WindowsDiscovery-${instanceName}-${location}'
   dependsOn: [
     table
   ]
@@ -50,7 +50,7 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
   }
 }
 module LinuxDiscovery 'Linux/discovery.bicep' = {
-  name: 'LinuxDiscovery-${instanceName}'
+  name: 'LinuxDiscovery-${instanceName}-${location}'
   dependsOn: [
     table
   ]

@@ -92,7 +92,7 @@ var performanceCounters=[
 
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
-  name: 'dcrPerformance-${packtag}'
+  name: 'dcrPerformance-${packtag}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
@@ -125,7 +125,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
 // }
 
 module client 'client.bicep' = {
-   name: 'client-${instanceName}-${packtag}'
+   name: 'client-${instanceName}-${packtag}-${location}'
    params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId

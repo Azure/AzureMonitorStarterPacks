@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14690064295725447735"
+      "templateHash": "6745167425505354642"
     }
   },
   "parameters": {
@@ -547,7 +547,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13715151744327431582"
+              "templateHash": "591116481738387430"
             }
           },
           "parameters": {
@@ -602,7 +602,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[variables('tableNameToUse')]",
+              "name": "[format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location'))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -674,7 +674,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('WindowsDiscovery-{0}', parameters('instanceName'))]",
+              "name": "[format('WindowsDiscovery-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -729,7 +729,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13561197592227783550"
+                      "templateHash": "13331780847572411691"
                     }
                   },
                   "parameters": {
@@ -1104,236 +1104,6 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('applicationPolicy-{0}', variables('appName'))]",
-                      "location": "[deployment().location]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "packtag": {
-                            "value": "WinDisc"
-                          },
-                          "policyDescription": {
-                            "value": "[format('Install {0} to {1} VMs', variables('appName'), variables('OS'))]"
-                          },
-                          "policyName": {
-                            "value": "[format('Install {0}', variables('appName'))]"
-                          },
-                          "policyDisplayName": {
-                            "value": "[format('Install {0} to {1} VMs', variables('appName'), variables('OS'))]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
-                          },
-                          "vmapplicationResourceId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))), '2022-09-01').outputs.appVersionId.value]"
-                          },
-                          "roledefinitionIds": {
-                            "value": [
-                              "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-                            ]
-                          },
-                          "packtype": {
-                            "value": "Discovery"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "5110734202552971726"
-                            }
-                          },
-                          "parameters": {
-                            "vmapplicationResourceId": {
-                              "type": "string"
-                            },
-                            "policyName": {
-                              "type": "string"
-                            },
-                            "policyDisplayName": {
-                              "type": "string"
-                            },
-                            "policyDescription": {
-                              "type": "string"
-                            },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "packtype": {
-                              "type": "string"
-                            },
-                            "roledefinitionIds": {
-                              "type": "array",
-                              "defaultValue": [
-                                "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
-                                "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
-                              ]
-                            }
-                          },
-                          "variables": {
-                            "vmApplicationName": "[split(parameters('vmapplicationResourceId'), '/')[10]]"
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.Authorization/policyDefinitions",
-                              "apiVersion": "2021-06-01",
-                              "name": "[format('AMP-{0}', parameters('policyName'))]",
-                              "properties": {
-                                "description": "[format('AMP-{0}', parameters('policyDescription'))]",
-                                "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
-                                "metadata": {
-                                  "category": "Monitoring",
-                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                                  "MonitoringPackType": "[parameters('packtype')]"
-                                },
-                                "policyType": "Custom",
-                                "mode": "Indexed",
-                                "parameters": {
-                                  "tagName": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "Tag name",
-                                      "description": "A tag to apply the association conditionally."
-                                    },
-                                    "defaultValue": "[parameters('solutionTag')]"
-                                  },
-                                  "tagValue": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "Tag value",
-                                      "description": "The value of the tag."
-                                    },
-                                    "defaultValue": "[parameters('packtag')]"
-                                  },
-                                  "effect": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "Effect",
-                                      "description": "Enable or disable the execution of the policy"
-                                    },
-                                    "allowedValues": [
-                                      "DeployIfNotExists",
-                                      "Disabled"
-                                    ],
-                                    "defaultValue": "DeployIfNotExists"
-                                  },
-                                  "vmapplicationId": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "applicationId",
-                                      "description": "the VM application ID to assign to the VM"
-                                    },
-                                    "defaultValue": "[parameters('vmapplicationResourceId')]"
-                                  }
-                                },
-                                "policyRule": {
-                                  "if": {
-                                    "allOf": [
-                                      {
-                                        "field": "[[concat('tags[', parameters('tagName'), ']')]",
-                                        "contains": "[[parameters('tagValue')]"
-                                      },
-                                      {
-                                        "field": "type",
-                                        "equals": "Microsoft.Compute/virtualMachines"
-                                      }
-                                    ]
-                                  },
-                                  "then": {
-                                    "effect": "[[parameters('effect')]",
-                                    "details": {
-                                      "type": "Microsoft.Compute/virtualMachines",
-                                      "name": "[[field('name')]",
-                                      "existenceCondition": {
-                                        "allOf": [
-                                          {
-                                            "count": {
-                                              "field": "Microsoft.Compute/virtualMachines/applicationProfile.galleryApplications[*]",
-                                              "where": {
-                                                "field": "Microsoft.Compute/virtualMachines/applicationProfile.galleryApplications[*].packageReferenceId",
-                                                "equals": "[[parameters('vmapplicationId')]"
-                                              }
-                                            },
-                                            "greater": 0
-                                          }
-                                        ]
-                                      },
-                                      "roleDefinitionIds": "[parameters('roledefinitionIds')]",
-                                      "deployment": {
-                                        "properties": {
-                                          "mode": "incremental",
-                                          "template": {
-                                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
-                                            "contentVersion": "1.0.0.0",
-                                            "parameters": {
-                                              "vmName": {
-                                                "type": "string"
-                                              },
-                                              "location": {
-                                                "type": "string"
-                                              },
-                                              "vmapplicationId": {
-                                                "type": "string"
-                                              }
-                                            },
-                                            "variables": {
-                                              "vmApplicationName": "[variables('vmApplicationName')]"
-                                            },
-                                            "resources": [
-                                              {
-                                                "apiVersion": "2021-07-01",
-                                                "type": "Microsoft.Compute/virtualMachines/VMapplications",
-                                                "name": "[[concat(parameters('vmName'), '/',variables('vmApplicationName'))]",
-                                                "location": "[[parameters('location')]",
-                                                "properties": {
-                                                  "packageReferenceId": "[[parameters('vmapplicationId')]"
-                                                }
-                                              }
-                                            ]
-                                          },
-                                          "parameters": {
-                                            "vmName": {
-                                              "value": "[[field('name')]"
-                                            },
-                                            "location": {
-                                              "value": "[[field('location')]"
-                                            },
-                                            "vmapplicationId": {
-                                              "value": "[[parameters('vmapplicationId')]"
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          ],
-                          "outputs": {
-                            "policyId": {
-                              "type": "string",
-                              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
-                            }
-                          }
-                        }
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS')))]"
-                      ]
-                    },
-                    {
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
                       "name": "[format('amp-{0}-DCR-{1}Discovery', parameters('instanceName'), variables('OS'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -1515,13 +1285,13 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', variables('tableNameToUse'))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
               ]
             },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('LinuxDiscovery-{0}', parameters('instanceName'))]",
+              "name": "[format('LinuxDiscovery-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1579,7 +1349,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13286054610010574571"
+                      "templateHash": "13440623184375052361"
                     }
                   },
                   "parameters": {
@@ -1637,7 +1407,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS'))]",
+                      "name": "[format('amp-{0}-Discovery-{1}-{2}', parameters('instanceName'), variables('OS'), parameters('location'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -1714,7 +1484,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('upload-discovery-{0}', variables('OS'))]",
+                      "name": "[format('upload-discovery-{0}-{1}-{2}', variables('OS'), parameters('instanceName'), parameters('location'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -1825,7 +1595,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))]",
+                      "name": "[format('amp-{0}-Discovery-{1}-App-{2}', parameters('instanceName'), variables('OS'), parameters('location'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -1850,7 +1620,7 @@
                             "value": "[parameters('location')]"
                           },
                           "mediaLink": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-discovery-{0}', variables('OS'))), '2022-09-01').outputs.fileURL.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-discovery-{0}-{1}-{2}', variables('OS'), parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.fileURL.value]"
                           },
                           "installCommands": {
                             "value": "[format('tar -xvf {0} && chmod +x ./install.sh && ./install.sh', variables('appName'))]"
@@ -1950,238 +1720,8 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}', parameters('instanceName'), variables('OS')))]",
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-discovery-{0}', variables('OS')))]"
-                      ]
-                    },
-                    {
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('applicationPolicy-{0}', variables('appName'))]",
-                      "location": "[deployment().location]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "packtag": {
-                            "value": "LxDisc"
-                          },
-                          "policyDescription": {
-                            "value": "[format('Install {0} to {1} VMs', variables('appName'), variables('OS'))]"
-                          },
-                          "policyName": {
-                            "value": "[format('Install {0}', variables('appName'))]"
-                          },
-                          "policyDisplayName": {
-                            "value": "[format('Install {0} to {1} VMs', variables('appName'), variables('OS'))]"
-                          },
-                          "solutionTag": {
-                            "value": "[parameters('solutionTag')]"
-                          },
-                          "vmapplicationResourceId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS'))), '2022-09-01').outputs.appVersionId.value]"
-                          },
-                          "roledefinitionIds": {
-                            "value": [
-                              "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-                            ]
-                          },
-                          "packtype": {
-                            "value": "Discovery"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "5110734202552971726"
-                            }
-                          },
-                          "parameters": {
-                            "vmapplicationResourceId": {
-                              "type": "string"
-                            },
-                            "policyName": {
-                              "type": "string"
-                            },
-                            "policyDisplayName": {
-                              "type": "string"
-                            },
-                            "policyDescription": {
-                              "type": "string"
-                            },
-                            "packtag": {
-                              "type": "string"
-                            },
-                            "solutionTag": {
-                              "type": "string"
-                            },
-                            "packtype": {
-                              "type": "string"
-                            },
-                            "roledefinitionIds": {
-                              "type": "array",
-                              "defaultValue": [
-                                "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
-                                "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
-                              ]
-                            }
-                          },
-                          "variables": {
-                            "vmApplicationName": "[split(parameters('vmapplicationResourceId'), '/')[10]]"
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.Authorization/policyDefinitions",
-                              "apiVersion": "2021-06-01",
-                              "name": "[format('AMP-{0}', parameters('policyName'))]",
-                              "properties": {
-                                "description": "[format('AMP-{0}', parameters('policyDescription'))]",
-                                "displayName": "[format('AMP-{0}', parameters('policyDisplayName'))]",
-                                "metadata": {
-                                  "category": "Monitoring",
-                                  "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
-                                  "MonitoringPackType": "[parameters('packtype')]"
-                                },
-                                "policyType": "Custom",
-                                "mode": "Indexed",
-                                "parameters": {
-                                  "tagName": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "Tag name",
-                                      "description": "A tag to apply the association conditionally."
-                                    },
-                                    "defaultValue": "[parameters('solutionTag')]"
-                                  },
-                                  "tagValue": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "Tag value",
-                                      "description": "The value of the tag."
-                                    },
-                                    "defaultValue": "[parameters('packtag')]"
-                                  },
-                                  "effect": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "Effect",
-                                      "description": "Enable or disable the execution of the policy"
-                                    },
-                                    "allowedValues": [
-                                      "DeployIfNotExists",
-                                      "Disabled"
-                                    ],
-                                    "defaultValue": "DeployIfNotExists"
-                                  },
-                                  "vmapplicationId": {
-                                    "type": "String",
-                                    "metadata": {
-                                      "displayName": "applicationId",
-                                      "description": "the VM application ID to assign to the VM"
-                                    },
-                                    "defaultValue": "[parameters('vmapplicationResourceId')]"
-                                  }
-                                },
-                                "policyRule": {
-                                  "if": {
-                                    "allOf": [
-                                      {
-                                        "field": "[[concat('tags[', parameters('tagName'), ']')]",
-                                        "contains": "[[parameters('tagValue')]"
-                                      },
-                                      {
-                                        "field": "type",
-                                        "equals": "Microsoft.Compute/virtualMachines"
-                                      }
-                                    ]
-                                  },
-                                  "then": {
-                                    "effect": "[[parameters('effect')]",
-                                    "details": {
-                                      "type": "Microsoft.Compute/virtualMachines",
-                                      "name": "[[field('name')]",
-                                      "existenceCondition": {
-                                        "allOf": [
-                                          {
-                                            "count": {
-                                              "field": "Microsoft.Compute/virtualMachines/applicationProfile.galleryApplications[*]",
-                                              "where": {
-                                                "field": "Microsoft.Compute/virtualMachines/applicationProfile.galleryApplications[*].packageReferenceId",
-                                                "equals": "[[parameters('vmapplicationId')]"
-                                              }
-                                            },
-                                            "greater": 0
-                                          }
-                                        ]
-                                      },
-                                      "roleDefinitionIds": "[parameters('roledefinitionIds')]",
-                                      "deployment": {
-                                        "properties": {
-                                          "mode": "incremental",
-                                          "template": {
-                                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
-                                            "contentVersion": "1.0.0.0",
-                                            "parameters": {
-                                              "vmName": {
-                                                "type": "string"
-                                              },
-                                              "location": {
-                                                "type": "string"
-                                              },
-                                              "vmapplicationId": {
-                                                "type": "string"
-                                              }
-                                            },
-                                            "variables": {
-                                              "vmApplicationName": "[variables('vmApplicationName')]"
-                                            },
-                                            "resources": [
-                                              {
-                                                "apiVersion": "2021-07-01",
-                                                "type": "Microsoft.Compute/virtualMachines/VMapplications",
-                                                "name": "[[concat(parameters('vmName'), '/',variables('vmApplicationName'))]",
-                                                "location": "[[parameters('location')]",
-                                                "properties": {
-                                                  "packageReferenceId": "[[parameters('vmapplicationId')]"
-                                                }
-                                              }
-                                            ]
-                                          },
-                                          "parameters": {
-                                            "vmName": {
-                                              "value": "[[field('name')]"
-                                            },
-                                            "location": {
-                                              "value": "[[field('location')]"
-                                            },
-                                            "vmapplicationId": {
-                                              "value": "[[parameters('vmapplicationId')]"
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          ],
-                          "outputs": {
-                            "policyId": {
-                              "type": "string",
-                              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', format('AMP-{0}', parameters('policyName')))]"
-                            }
-                          }
-                        }
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-App', parameters('instanceName'), variables('OS')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('amp-{0}-Discovery-{1}-{2}', parameters('instanceName'), variables('OS'), parameters('location')))]",
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-discovery-{0}-{1}-{2}', variables('OS'), parameters('instanceName'), parameters('location')))]"
                       ]
                     },
                     {
@@ -2368,7 +1908,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', variables('tableNameToUse'))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
               ]
             }
           ]
@@ -9918,7 +9458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1302089269185484209"
+              "templateHash": "1298710547514674957"
             }
           },
           "parameters": {
@@ -10170,7 +9710,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8402398021039016508"
+                      "templateHash": "5463922814552443040"
                     }
                   },
                   "parameters": {
@@ -10308,7 +9848,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "16330159383869739757"
+                              "templateHash": "13721024895843585629"
                             }
                           },
                           "parameters": {
@@ -10445,7 +9985,7 @@
                             {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "[format('dcrPerformance-{0}', parameters('packtag'))]",
+                              "name": "[format('dcrPerformance-{0}-{1}-{2}', parameters('packtag'), parameters('instanceName'), parameters('location'))]",
                               "subscriptionId": "[parameters('subscriptionId')]",
                               "resourceGroup": "[variables('resourceGroupName')]",
                               "properties": {
@@ -10587,7 +10127,7 @@
                             {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "[format('client-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                              "name": "[format('client-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), parameters('location'))]",
                               "location": "[deployment().location]",
                               "properties": {
                                 "expressionEvaluationOptions": {

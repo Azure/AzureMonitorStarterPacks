@@ -14,7 +14,7 @@ param location string
 
 //new action group
 module ag 'emailactiongroup.bicep' = if (!useExistingAG) {
-  name: 'ag-new'
+  name: 'ag-new-${actionGroupName}-${location}'
   scope: resourceGroup(subscriptionId, newRGresourceGroup)
   params: {
     actiongroupname: actionGroupName

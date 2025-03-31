@@ -64,21 +64,21 @@ module windiscovery '../modules/aigappversion.bicep' = {
     packageFileName: 'discover.zip'
   }
 }
-module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
-  name: 'applicationPolicy-${appName}'
-  params: {
-    packtag: 'WinDisc'
-    policyDescription: 'Install ${appName} to ${OS} VMs'
-    policyName: 'Install ${appName}'
-    policyDisplayName: 'Install ${appName} to ${OS} VMs'
-    solutionTag: solutionTag
-    vmapplicationResourceId: windiscovery.outputs.appVersionId
-    roledefinitionIds: [
-      '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-    ]
-    packtype: 'Discovery'
-  }
-}
+// module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
+//   name: 'applicationPolicy-${appName}'
+//   params: {
+//     packtag: 'WinDisc'
+//     policyDescription: 'Install ${appName} to ${OS} VMs'
+//     policyName: 'Install ${appName}'
+//     policyDisplayName: 'Install ${appName} to ${OS} VMs'
+//     solutionTag: solutionTag
+//     vmapplicationResourceId: windiscovery.outputs.appVersionId
+//     roledefinitionIds: [
+//       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+//     ]
+//     packtype: 'Discovery'
+//   }
+// }
 // module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
 //   dependsOn: [
 //     applicationPolicy

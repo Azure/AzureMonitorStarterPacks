@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1302089269185484209"
+      "templateHash": "1298710547514674957"
     }
   },
   "parameters": {
@@ -257,7 +257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8402398021039016508"
+              "templateHash": "5463922814552443040"
             }
           },
           "parameters": {
@@ -395,7 +395,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16330159383869739757"
+                      "templateHash": "13721024895843585629"
                     }
                   },
                   "parameters": {
@@ -532,7 +532,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('dcrPerformance-{0}', parameters('packtag'))]",
+                      "name": "[format('dcrPerformance-{0}-{1}-{2}', parameters('packtag'), parameters('instanceName'), parameters('location'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[variables('resourceGroupName')]",
                       "properties": {
@@ -674,7 +674,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('client-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                      "name": "[format('client-{0}-{1}-{2}', parameters('instanceName'), parameters('packtag'), parameters('location'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {

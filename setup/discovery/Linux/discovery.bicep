@@ -24,7 +24,7 @@ var appVersionName = '1.0.0'
 // VM Application to collect the data - this would be ideally an extension
 module linuxdiscoveryapp '../modules/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
-  name: 'amp-${instanceName}-Discovery-${OS}'
+  name: 'amp-${instanceName}-Discovery-${OS}-${location}'
   params: {
     aigname: imageGalleryName
     appDescription: appDescription
@@ -36,7 +36,7 @@ module linuxdiscoveryapp '../modules/aigapp.bicep' = {
 }
 
 module uploadLinux './uploadDSLinux.bicep' = {
-  name: 'upload-discovery-${OS}'
+  name: 'upload-discovery-${OS}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     containerName: 'discovery'
@@ -48,7 +48,7 @@ module uploadLinux './uploadDSLinux.bicep' = {
 }
 
 module linuxDiscovery '../modules/aigappversion.bicep' = {
-  name: 'amp-${instanceName}-Discovery-${OS}-App'
+  name: 'amp-${instanceName}-Discovery-${OS}-App-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     linuxdiscoveryapp
@@ -66,21 +66,21 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     packageFileName: 'discover.tar'
   }
 }
-module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
-  name: 'applicationPolicy-${appName}'
-  params: {
-    packtag: 'LxDisc'
-    policyDescription: 'Install ${appName} to ${OS} VMs'
-    policyName: 'Install ${appName}'
-    policyDisplayName: 'Install ${appName} to ${OS} VMs'
-    solutionTag: solutionTag
-    vmapplicationResourceId: linuxDiscovery.outputs.appVersionId
-    roledefinitionIds: [
-      '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-    ]
-    packtype: 'Discovery'
-  }
-}
+// module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
+//   name: 'applicationPolicy-${appName}'
+//   params: {
+//     packtag: 'LxDisc'
+//     policyDescription: 'Install ${appName} to ${OS} VMs'
+//     policyName: 'Install ${appName}'
+//     policyDisplayName: 'Install ${appName} to ${OS} VMs'
+//     solutionTag: solutionTag
+//     vmapplicationResourceId: linuxDiscovery.outputs.appVersionId
+//     roledefinitionIds: [
+//       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+//     ]
+//     packtype: 'Discovery'
+//   }
+// }
 // module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
 //   dependsOn: [
 //     applicationPolicy
