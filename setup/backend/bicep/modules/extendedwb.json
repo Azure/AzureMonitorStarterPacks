@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Azure Monitor Starter Packs - Extended Admin Centre - V2.2\n\n\n"
+        "json": "# Azure Monitor Starter Packs - Extended Admin Centre - V3.0 (Beta)\n\n\n"
       },
       "customWidth": "50",
       "name": "textTitle"
@@ -1438,7 +1438,8 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "InsightsDep"
+                          "InsightsDep",
+                          "Nginx"
                         ]
                       }
                     ],
@@ -1580,7 +1581,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.Total\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.AlertRules\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                     "size": 0,
                     "title": "Monitored Services",
                     "exportMultipleValues": true,
@@ -5211,7 +5212,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
