@@ -6,7 +6,7 @@ param mgname string
 param resourceType string
 param policyLocation string
 param parResourceGroupName string
-param assignmentLevel string
+//param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param instanceName string
@@ -19,6 +19,7 @@ param deploymentRoleDefinitionIds array = [
 //     environment: 'test'
 // }
 param parAlertState string = 'true'
+
 module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-RunsFailed'
     params: {
@@ -31,8 +32,8 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsFailed - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunsFailed - Microsoft.Logic-workflows'
+      alertname: 'RunsFailed - workflows'
+      alertDisplayName: 'RunsFailed - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow runs failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -41,7 +42,7 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns'
+      assignmentSuffix: 'Metworkflows1'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -52,7 +53,6 @@ module Alert1 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       timeAggregation: 'Total'
     }
   }
-  
 module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ActionsFailed'
     params: {
@@ -65,8 +65,8 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionsFailed - Microsoft.Logic-workflows'
-      alertDisplayName: 'ActionsFailed - Microsoft.Logic-workflows'
+      alertname: 'ActionsFailed - workflows'
+      alertDisplayName: 'ActionsFailed - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow actions failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -75,7 +75,7 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsActi1'
+      assignmentSuffix: 'Metworkflows2'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -86,7 +86,6 @@ module Alert2 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       timeAggregation: 'Total'
     }
   }
-  
 module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-TriggersFailed'
     params: {
@@ -99,8 +98,8 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggersFailed - Microsoft.Logic-workflows'
-      alertDisplayName: 'TriggersFailed - Microsoft.Logic-workflows'
+      alertname: 'TriggersFailed - workflows'
+      alertDisplayName: 'TriggersFailed - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow triggers failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -109,7 +108,7 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsTrig'
+      assignmentSuffix: 'Metworkflows3'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -120,7 +119,6 @@ module Alert3 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       timeAggregation: 'Total'
     }
   }
-  
 module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-RunLatency'
     params: {
@@ -133,8 +131,8 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunLatency - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunLatency - Microsoft.Logic-workflows'
+      alertname: 'RunLatency - workflows'
+      alertDisplayName: 'RunLatency - Microsoft.Logic/workflows'
       alertDescription: 'Latency of completed workflow runs.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -143,7 +141,7 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT5M'
       parThreshold: '99999'
-      assignmentSuffix: 'MetworkflowsRunL'
+      assignmentSuffix: 'Metworkflows4'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -154,7 +152,6 @@ module Alert4 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       timeAggregation: 'Average'
     }
   }
-  
 module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-RunFailurePercentage'
     params: {
@@ -167,8 +164,8 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunFailurePercentage - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunFailurePercentage - Microsoft.Logic-workflows'
+      alertname: 'RunFailurePercentage - workflows'
+      alertDisplayName: 'RunFailurePercentage - Microsoft.Logic/workflows'
       alertDescription: 'Percentage of workflow runs failed.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '2'
@@ -177,7 +174,7 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT15M'   
       parWindowSize: 'PT1H'
       parThreshold: '50'
-      assignmentSuffix: 'MetworkflowsRunF'
+      assignmentSuffix: 'Metworkflows5'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -188,111 +185,7 @@ module Alert5 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       timeAggregation: 'Total'
     }
   }
-  
 module Alert6 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-RunsStarted'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsStarted - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunsStarted - Microsoft.Logic-workflows'
-      alertDescription: 'Number of workflow runs started.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '3'
-      metricName: 'RunsStarted'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1M'   
-      parWindowSize: 'PT1M'
-      parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns4'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
-  
-module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-RunsSucceeded'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsSucceeded - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunsSucceeded - Microsoft.Logic-workflows'
-      alertDescription: 'Number of workflow runs succeeded.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '3'
-      metricName: 'RunsSucceeded'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1M'   
-      parWindowSize: 'PT1M'
-      parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns2'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
-  
-module Alert8  '../../../modules/alerts/PaaS/metricAlertDynamic.bicep' = {
-    name: '${uniqueString(deployment().name)}-RunsCompleted'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsCompleted'
-      alertDisplayName: 'RunsCompleted'
-      alertDescription: 'Number of workflow runs completed.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '3'
-      metricName: 'RunsCompleted'
-      operator: 'LessThan'
-      parEvaluationFrequency: 'PT1H'   
-      parWindowSize: 'PT1H'
-      alertSensitivity: 'Medium'
-      minFailingPeriodsToAlert: 4
-      numberOfEvaluationPeriods: 4
-      assignmentSuffix: 'MetworkflowsRuns3'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Count'
-    }
-  }
-module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ActionLatency'
     params: {
     assignmentLevel: assignmentLevel
@@ -304,8 +197,8 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionLatency - Microsoft.Logic-workflows'
-      alertDisplayName: 'ActionLatency - Microsoft.Logic-workflows'
+      alertname: 'ActionLatency - workflows'
+      alertDisplayName: 'ActionLatency - Microsoft.Logic/workflows'
       alertDescription: 'Latency of completed workflow actions.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -314,7 +207,7 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '15'
-      assignmentSuffix: 'MetworkflowsActi2'
+      assignmentSuffix: 'Metworkflows6'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -325,8 +218,7 @@ module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = 
       timeAggregation: 'Average'
     }
   }
-  
-module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module Alert7 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-TriggerLatency'
     params: {
     assignmentLevel: assignmentLevel
@@ -338,8 +230,8 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggerLatency - Microsoft.Logic-workflows'
-      alertDisplayName: 'TriggerLatency - Microsoft.Logic-workflows'
+      alertname: 'TriggerLatency - workflows'
+      alertDisplayName: 'TriggerLatency - Microsoft.Logic/workflows'
       alertDescription: 'Latency of completed workflow triggers.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -348,7 +240,7 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '15'
-      assignmentSuffix: 'MetworkflowsTrig4'
+      assignmentSuffix: 'Metworkflows7'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -359,8 +251,7 @@ module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       timeAggregation: 'Average'
     }
   }
-  
-module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module Alert8 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-TriggerThrottledEvents'
     params: {
     assignmentLevel: assignmentLevel
@@ -372,8 +263,8 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggerThrottledEvents - Microsoft.Logic-workflows'
-      alertDisplayName: 'TriggerThrottledEvents - Microsoft.Logic-workflows'
+      alertname: 'TriggerThrottledEvents - workflows'
+      alertDisplayName: 'TriggerThrottledEvents - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow trigger throttled events.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -382,7 +273,7 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsTrig2'
+      assignmentSuffix: 'Metworkflows8'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -393,8 +284,7 @@ module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       timeAggregation: 'Total'
     }
   }
-  
-module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module Alert9 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-ActionThrottledEvents'
     params: {
     assignmentLevel: assignmentLevel
@@ -406,8 +296,8 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionThrottledEvents - Microsoft.Logic-workflows'
-      alertDisplayName: 'ActionThrottledEvents - Microsoft.Logic-workflows'
+      alertname: 'ActionThrottledEvents - workflows'
+      alertDisplayName: 'ActionThrottledEvents - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow action throttled events..'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -416,7 +306,7 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsActi3'
+      assignmentSuffix: 'Metworkflows9'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -427,8 +317,7 @@ module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       timeAggregation: 'Total'
     }
   }
-  
-module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module Alert10 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-TriggersSkipped'
     params: {
     assignmentLevel: assignmentLevel
@@ -440,8 +329,8 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TriggersSkipped - Microsoft.Logic-workflows'
-      alertDisplayName: 'TriggersSkipped - Microsoft.Logic-workflows'
+      alertname: 'TriggersSkipped - workflows'
+      alertDisplayName: 'TriggersSkipped - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow triggers skipped.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '2'
@@ -450,7 +339,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1H'   
       parWindowSize: 'PT1H'
       parThreshold: '5'
-      assignmentSuffix: 'MetworkflowsTrig3'
+      assignmentSuffix: 'Metworkflows10'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -461,8 +350,7 @@ module Alert13 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       timeAggregation: 'Count'
     }
   }
-  
-module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module Alert11 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-RunStartThrottledEvents'
     params: {
     assignmentLevel: assignmentLevel
@@ -474,8 +362,8 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunStartThrottledEvents - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunStartThrottledEvents - Microsoft.Logic-workflows'
+      alertname: 'RunStartThrottledEvents - workflows'
+      alertDisplayName: 'RunStartThrottledEvents - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow run start throttled events.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -484,7 +372,7 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT1M'   
       parWindowSize: 'PT1M'
       parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRunS6'
+      assignmentSuffix: 'Metworkflows11'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -495,8 +383,7 @@ module Alert14 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       timeAggregation: 'Total'
     }
   }
-  
-module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
+module Alert12 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
     name: '${uniqueString(deployment().name)}-RunThrottledEvents'
     params: {
     assignmentLevel: assignmentLevel
@@ -508,8 +395,8 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       subscriptionId: subscriptionId
       userManagedIdentityResourceId: userManagedIdentityResourceId
       deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunThrottledEvents - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunThrottledEvents - Microsoft.Logic-workflows'
+      alertname: 'RunThrottledEvents - workflows'
+      alertDisplayName: 'RunThrottledEvents - Microsoft.Logic/workflows'
       alertDescription: 'Number of workflow action or trigger throttled events.'
       metricNamespace: 'Microsoft.Logic/workflows'
       parAlertSeverity: '3'
@@ -518,7 +405,7 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       parEvaluationFrequency: 'PT5M'   
       parWindowSize: 'PT5M'
       parThreshold: '1'
-      assignmentSuffix: 'MetworkflowsRunT'
+      assignmentSuffix: 'Metworkflows12'
       parAutoMitigate: 'false'
       parPolicyEffect: 'deployIfNotExists'
       AGId: AGId
@@ -529,143 +416,6 @@ module Alert15 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
       timeAggregation: 'Total'
     }
   }
-  
-module Alert16 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-TotalBillableExecutions'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'TotalBillableExecutions - Microsoft.Logic-workflows'
-      alertDisplayName: 'TotalBillableExecutions - Microsoft.Logic-workflows'
-      alertDescription: 'Number of workflow executions getting billed.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '3'
-      metricName: 'TotalBillableExecutions'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1H'   
-      parWindowSize: 'P1D'
-      parThreshold: '20000'
-      assignmentSuffix: 'MetworkflowsTota'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
-  
-module Alert17 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-RunSuccessLatency'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunSuccessLatency - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunSuccessLatency - Microsoft.Logic/workflows'
-      alertDescription: 'Latency of succeeded workflow runs.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '1'
-      metricName: 'RunSuccessLatency'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1M'   
-      parWindowSize: 'PT5M'
-      parThreshold: '100'
-      assignmentSuffix: 'MetworkflowsRunS7'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
-  
-module Alert18 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-ActionsSkipped'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'ActionsSkipped - Microsoft.Logic-workflows'
-      alertDisplayName: 'ActionsSkipped - Microsoft.Logic-workflows'
-      alertDescription: 'Number of workflow actions skipped.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '3'
-      metricName: 'ActionsSkipped'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT1H'   
-      parWindowSize: 'PT1H'
-      parThreshold: '10'
-      assignmentSuffix: 'MetworkflowsActi4'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
-  
-module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' = {
-    name: '${uniqueString(deployment().name)}-RunsCancelled'
-    params: {
-    assignmentLevel: assignmentLevel
-      policyLocation: policyLocation
-      mgname: mgname
-      packTag: packTag
-      resourceType: resourceType
-      solutionTag: solutionTag
-      subscriptionId: subscriptionId
-      userManagedIdentityResourceId: userManagedIdentityResourceId
-      deploymentRoleDefinitionIds: deploymentRoleDefinitionIds
-      alertname: 'RunsCancelled - Microsoft.Logic-workflows'
-      alertDisplayName: 'RunsCancelled - Microsoft.Logic-workflows'
-      alertDescription: 'Number of workflow runs cancelled.'
-      metricNamespace: 'Microsoft.Logic/workflows'
-      parAlertSeverity: '3'
-      metricName: 'RunsCancelled'
-      operator: 'GreaterThan'
-      parEvaluationFrequency: 'PT5M'   
-      parWindowSize: 'PT5M'
-      parThreshold: '0'
-      assignmentSuffix: 'MetworkflowsRuns5'
-      parAutoMitigate: 'false'
-      parPolicyEffect: 'deployIfNotExists'
-      AGId: AGId
-      parAlertState: parAlertState
-      initiativeMember: true
-      packtype: 'PaaS'
-      instanceName: instanceName
-      timeAggregation: 'Total'
-    }
-  }
-  
   module policySet '../../../modules/policies/mg/policySetGeneric.bicep' = {
     name: '${packTag}-PolicySet'
     params: {
@@ -682,64 +432,42 @@ module Alert19 '../../../modules/alerts/PaaS/metricAlertStaticThreshold.bicep' =
         userManagedIdentityResourceId: userManagedIdentityResourceId
         instanceName: instanceName
         policyDefinitions: [
-            {
-                policyDefinitionId: Alert1.outputs.policyId
-            }
-            {
+          {
+              policyDefinitionId: Alert1.outputs.policyId
+          }
+          {
               policyDefinitionId: Alert2.outputs.policyId
-            }
-            {
-                policyDefinitionId: Alert3.outputs.policyId
-            }
-            {
+          }
+          {
+              policyDefinitionId: Alert3.outputs.policyId
+          }
+          {
               policyDefinitionId: Alert4.outputs.policyId
-            }
-            {
+          }
+          {
               policyDefinitionId: Alert5.outputs.policyId
-            }
-            {
+          }
+          {
               policyDefinitionId: Alert6.outputs.policyId
-            }
-            {
+          }
+          {
               policyDefinitionId: Alert7.outputs.policyId
-            }
-            {
+          }
+          {
               policyDefinitionId: Alert8.outputs.policyId
-            }
-            {
+          }
+          {
               policyDefinitionId: Alert9.outputs.policyId
           }
           {
-            policyDefinitionId: Alert10.outputs.policyId
+              policyDefinitionId: Alert10.outputs.policyId
           }
           {
               policyDefinitionId: Alert11.outputs.policyId
           }
           {
-            policyDefinitionId: Alert12.outputs.policyId
+              policyDefinitionId: Alert12.outputs.policyId
           }
-          {
-            policyDefinitionId: Alert13.outputs.policyId
-          }
-          {
-            policyDefinitionId: Alert14.outputs.policyId
-          }
-          {
-            policyDefinitionId: Alert15.outputs.policyId
-          }
-          {
-            policyDefinitionId: Alert16.outputs.policyId
-          }
-          {
-            policyDefinitionId: Alert17.outputs.policyId
-        }
-        {
-          policyDefinitionId: Alert18.outputs.policyId
-        }
-        {
-            policyDefinitionId: Alert19.outputs.policyId
-        }
         ]
     }
   }
-  

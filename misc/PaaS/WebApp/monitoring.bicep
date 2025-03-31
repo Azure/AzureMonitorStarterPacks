@@ -13,7 +13,7 @@ param location string //= resourceGroup().location
 param subscriptionId string
 param userManagedIdentityResourceId string
 param mgname string 
-param assignmentLevel string
+//param assignmentLevel string
 param resourceGroupId string
 param solutionVersion string
 param customerTags object 

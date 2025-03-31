@@ -12,7 +12,7 @@ param userManagedIdentityResourceId string
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
-param assignmentLevel string
+////param assignmentLevel string
 param solutionTag string
 param solutionVersion string
 param customerTags object

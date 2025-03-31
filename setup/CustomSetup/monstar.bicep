@@ -224,8 +224,8 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     solutionVersion: solutionVersion
     existingActionGroupResourceId: existingActionGroupId
     deployIaaSPacks: deployIaaSPacks || deployAllPacks
-    deployPaaSPacks: deployPaaSPacks || deployAllPacks
-    deployPlatformPacks: deployPlatformPacks || deployAllPacks
+    // deployPaaSPacks: deployPaaSPacks || deployAllPacks
+    // deployPlatformPacks: deployPlatformPacks || deployAllPacks
     storageAccountName: storageAccountName
     imageGalleryName: ImageGalleryName
     instanceName: instanceName

@@ -7,7 +7,7 @@ param ruleshortname string
 param location string
 param userManagedIdentityResourceId string
 param mgname string
-param assignmentLevel string = 'managementGroup'
+//param assignmentLevel string = 'managementGroup'
 param subscriptionId string
 param instanceName string
 

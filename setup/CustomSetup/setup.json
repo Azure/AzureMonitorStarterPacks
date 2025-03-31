@@ -22,14 +22,8 @@
                                 "method": "GET",
                                 "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
                             }
-                        }
-                    ]
-                },
-                {
-                    "name": "Configuration",
-                    "label": "Configuration",
-                    "elements": [
-                        {
+                        },
+						{
                             "name": "subscriptionAPI",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
@@ -37,30 +31,34 @@
                                 "path": "subscriptions?api-version=2022-12-01"
                             }
                         },
-                        {
-                            "name": "ResGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
-                            }
-                        },
-                        {
-                            "name": "ActionGroupsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
-                            }
-                        },
-                        {
-                            "name": "grafanaLocationsAPI",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]"
-                            }
-                        },
+						{
+							"name": "AppInsightsLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('Configuration').subscriptionId,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
+								}
+							}
+						},
+						{
+							"name": "grafanaLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
+								}
+							}
+						}
+                    ]
+                },
+                {
+                    "name": "Configuration",
+                    "label": "Configuration",
+                    "elements": [
                         {
                             "name": "AzureManagedGrafanaApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
@@ -78,11 +76,13 @@
                             }
                         },
                         {
-                            "name": "StorageAccountsApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]"
+                            "name": "subscriptionInfoBox",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "style": "Info",
+                              "text": "Make sure the subscription selected below is under the Management Group hierarchy selected in the previous step. If not the setup will fail.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
                             }
                         },
                         {
@@ -96,10 +96,18 @@
                             "filterPlaceholder": "Filter Subscriptions...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
-                                "allowedValues": "[map(steps('Configuration').subscriptionAPI.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.id, '\"}')))]",
+                                "allowedValues": "[map(steps('basics').subscriptionAPI.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
                             "visible": true
+                        },
+                        {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
                         },
                         {
                             "name": "ResourceGroupStatus",
@@ -136,6 +144,14 @@
                             "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]"
                         },
                         {
+                            "name": "ResGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
                             "name": "resourceGroupNameExisting",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Existing Resource Group",
@@ -165,56 +181,28 @@
                             },
                             "visible": true
                         },
-                        {
-                            "name": "storageAccountStatus",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Use New or Existing Storage Account",
-                            "toolTip": "This will be the Storage Account for the Solution",
-                            "defaultValue": "Existing",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": "New"
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": "Existing"
-                                    }
-                                ],
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
-                            "name": "storageAccountNameNew",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Name for the new Storage Account. Must be unique globally!",
-                            "defaultValue": "amonsterpacksxxxx",
-                            "toolTip": "Use only allowed characters. Change xxxx to random characters",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z]{1,30}$",
-                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
-                            },
-                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'New')]"
-                        },
-                        {
-                            "name": "existingStorageAccount",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Existing Storage Account",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Storage Account to support solution",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Storage Account...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[map(steps('Configuration').StorageAccountsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
-                            },
-                            "visible": "[equals(steps('Configuration').storageAccountStatus, 'Existing')]"
-                        },
+						{
+							"name": "storageAccountSelector",
+							"type": "Microsoft.Storage.StorageAccountSelector",
+							"label": "Storage account",
+							"toolTip": "",
+							"defaultValue": {
+								"name": "storageaccount01",
+								"type": "Standard_LRS"
+							},
+							"scope": {
+								"location": "[steps('basics').resourceScope.location.name]",
+								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+								"subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
+							},
+							"constraints": {
+								"allowedTypes": []
+							},
+							"options": {
+								"hideExisting": false
+							},
+							"visible": true
+						},
                         {
                             "name": "LAWStatus",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -245,7 +233,7 @@
                             "toolTip": "Log Analytics Workspace Name for MonStar Packs.",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').LAWStatus, 'New')]",
-                                "regex": "",
+                                "regex": "^[a-zA-Z0-9][a-zA-Z0-9-]{0,21}[a-zA-Z0-9]$",
                                 "validationMessage": ""
                             },
                             "visible": "[equals(steps('Configuration').LAWStatus, 'New')]"
@@ -263,47 +251,6 @@
                             "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
                         },
                         {
-                            "name": "assignmentLevel",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Assign Policies to ManagementGroup or Subscription",
-                            "toolTip": "This will define the initial assignment Level for the policies.",
-                            "defaultValue": "Subscription",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "Management Group",
-                                        "value": "ManagementGroup"
-                                    },
-                                    {
-                                        "label": "Subscription",
-                                        "value": "Subscription"
-                                    }
-                                ],
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
-                            "name": "deployAMAPolicy",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy AMA Policy Intiative",
-                            "toolTip": "The AMA Initiative will be applied at the selected scope and will take care of installing the AMA agent to servers, VMs and VMSS.",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the AMA policies to the selected Management Group or Subscription."
-                            }
-                        },
-                        {
-                            "name": "infoBoxAMA",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('Configuration').deployAMAPolicy, true)]",
-                            "options": {
-                                "icon": "None",
-                                "text": "When Enabled, a custom Initiative will be installed to the selected Management Group or Subscription. The Initiative will install the AMA agent on all supported resources.",
-                                "uri": "https://www.microsoft.com"
-                            }
-                        },
-                        {
                             "name": "deployDiscovery",
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Deploy Discovery features.(Preview)",
@@ -318,216 +265,26 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[equals(steps('Configuration').deployDiscovery, true)]",
                             "options": {
-                                "icon": "None",
                                 "text": "When discovery is enabled in the configuration page, workloads will be discovered in those Azure VMs.",
                                 "uri": "https://www.microsoft.com"
                             }
                         },
-                        {
-                            "name": "AppInsightsLocation",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Location for App Insights",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "The location to deploy the Function app insights",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Location...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "East US",
-                                        "value": "eastus"
-                                    },
-                                    {
-                                        "label": "South Central US",
-                                        "value": "southcentralus"
-                                    },
-                                    {
-                                        "label": "North Europe",
-                                        "value": "northeurope"
-                                    },
-                                    {
-                                        "label": "West Europe",
-                                        "value": "westeurope"
-                                    },
-                                    {
-                                        "label": "Southeast Asia",
-                                        "value": "southeastasia"
-                                    },
-                                    {
-                                        "label": "West US 2",
-                                        "value": "westus2"
-                                    },
-                                    {
-                                        "label": "UK South",
-                                        "value": "uksouth"
-                                    },
-                                    {
-                                        "label": "Canada Central",
-                                        "value": "canadacentral"
-                                    },
-                                    {
-                                        "label": "Central India",
-                                        "value": "centralindia"
-                                    },
-                                    {
-                                        "label": "Japan East",
-                                        "value": "japaneast"
-                                    },
-                                    {
-                                        "label": "Australia East",
-                                        "value": "australiaeast"
-                                    },
-                                    {
-                                        "label": "Korea Central",
-                                        "value": "koreacentral"
-                                    },
-                                    {
-                                        "label": "France Central",
-                                        "value": "francecentral"
-                                    },
-                                    {
-                                        "label": "Central US",
-                                        "value": "centralus"
-                                    },
-                                    {
-                                        "label": "East US 2",
-                                        "value": "eastus2"
-                                    },
-                                    {
-                                        "label": "East Asia",
-                                        "value": "eastasia"
-                                    },
-                                    {
-                                        "label": "West US",
-                                        "value": "westus"
-                                    },
-                                    {
-                                        "label": "South Africa North",
-                                        "value": "southafricanorth"
-                                    },
-                                    {
-                                        "label": "North Central US",
-                                        "value": "northcentralus"
-                                    },
-                                    {
-                                        "label": "Brazil South",
-                                        "value": "brazilsouth"
-                                    },
-                                    {
-                                        "label": "Switzerland North",
-                                        "value": "switzerlandnorth"
-                                    },
-                                    {
-                                        "label": "Norway East",
-                                        "value": "norwayeast"
-                                    },
-                                    {
-                                        "label": "Norway West",
-                                        "value": "norwaywest"
-                                    },
-                                    {
-                                        "label": "Australia Southeast",
-                                        "value": "australiasoutheast"
-                                    },
-                                    {
-                                        "label": "Australia Central 2",
-                                        "value": "australiacentral2"
-                                    },
-                                    {
-                                        "label": "Germany West Central",
-                                        "value": "germanywestcentral"
-                                    },
-                                    {
-                                        "label": "Switzerland West",
-                                        "value": "switzerlandwest"
-                                    },
-                                    {
-                                        "label": "UAE Central",
-                                        "value": "uaecentral"
-                                    },
-                                    {
-                                        "label": "UK West",
-                                        "value": "ukwest"
-                                    },
-                                    {
-                                        "label": "Japan West",
-                                        "value": "japanwest"
-                                    },
-                                    {
-                                        "label": "Brazil Southeast",
-                                        "value": "brazilsoutheast"
-                                    },
-                                    {
-                                        "label": "UAE North",
-                                        "value": "uaenorth"
-                                    },
-                                    {
-                                        "label": "Australia Central",
-                                        "value": "australiacentral"
-                                    },
-                                    {
-                                        "label": "France South",
-                                        "value": "francesouth"
-                                    },
-                                    {
-                                        "label": "South India",
-                                        "value": "southindia"
-                                    },
-                                    {
-                                        "label": "West US 3",
-                                        "value": "westus3"
-                                    },
-                                    {
-                                        "label": "Korea South",
-                                        "value": "koreasouth"
-                                    },
-                                    {
-                                        "label": "Sweden Central",
-                                        "value": "swedencentral"
-                                    },
-                                    {
-                                        "label": "Canada East",
-                                        "value": "canadaeast"
-                                    },
-                                    {
-                                        "label": "Jio India Central",
-                                        "value": "jioindiacentral"
-                                    },
-                                    {
-                                        "label": "Jio India West",
-                                        "value": "jioindiawest"
-                                    },
-                                    {
-                                        "label": "Qatar Central",
-                                        "value": "qatarcentral"
-                                    },
-                                    {
-                                        "label": "South Africa West",
-                                        "value": "southafricawest"
-                                    },
-                                    {
-                                        "label": "Germany North",
-                                        "value": "germanynorth"
-                                    },
-                                    {
-                                        "label": "Poland Central",
-                                        "value": "polandcentral"
-                                    },
-                                    {
-                                        "label": "Israel Central",
-                                        "value": "israelcentral"
-                                    },
-                                    {
-                                        "label": "Italy North",
-                                        "value": "italynorth"
-                                    }
-                                ]
-                            },
-                            "visible": "true"
-                        },
+						{
+							"name": "AppInsightsLocation",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Location for App Insights",
+							"multiselect": false,
+							"defaultValue": "",
+							"toolTip": "Subscription to deploy resources to.",
+							"filter": true,
+							"filterPlaceholder": "Filter Locations...",
+							"defaultDescription": "A value for selection",
+							"constraints": {
+								"allowedValues": "[steps('basics').AppInsightsLocationsAPI.transformed.list]",
+								"required": true
+							},
+							"visible": true
+						},
                         {
                             "name": "deployGrafana",
                             "type": "Microsoft.Common.CheckBox",
@@ -543,9 +300,9 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[equals(steps('Configuration').deployGrafana, true)]",
                             "options": {
-                                "icon": "None",
                                 "text": "When Enabled, a new Azure Managed Grafana will be deployed to the selected subscription. The Grafana will be used to visualize the data from the MonStar Packs. If not enabled, some visuals for certain Packs won't be available.",
-                                "uri": "https://www.microsoft.com"
+                                "uri": "https://www.microsoft.com",
+								"style": "Info"
                             }
                         },
                         {
@@ -577,7 +334,7 @@
                             "toolTip": "TBD",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
-                                "regex": "",
+                                "regex": "^[a-zA-Z][a-zA-Z0-9-]{0,21}[a-zA-Z0-9]$",
                                 "validationMessage": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit."
                             },
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
@@ -594,95 +351,23 @@
                             "infoMessages": [],
                             "visible": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
                         },
-                        {
-                            "name": "grafanaLocation",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Location for Azure Managed Grafana",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Location for Azure Managed Grafana",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Location...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "East US",
-                                        "value": "eastus"
-                                    },
-                                    {
-                                        "label": "East US 2",
-                                        "value": "eastus2"
-                                    },
-                                    {
-                                        "label": "South Central US",
-                                        "value": "southcentralus"
-                                    },
-                                    {
-                                        "label": "West Central US",
-                                        "value": "westcentralus"
-                                    },
-                                    {
-                                        "label": "West US",
-                                        "value": "westus"
-                                    },
-                                    {
-                                        "label": "West US 2",
-                                        "value": "westus2"
-                                    },
-                                    {
-                                        "label": "West US 3",
-                                        "value": "westus3"
-                                    },
-                                    {
-                                        "label": "Canada Central",
-                                        "value": "canadacentral"
-                                    },
-                                    {
-                                        "label": "Central US",
-                                        "value": "centralus"
-                                    },
-                                    {
-                                        "label": "East US 2 EUAP",
-                                        "value": "eastus2euap"
-                                    },
-                                    {
-                                        "label": "Central US EUAP",
-                                        "value": "centraluseuap"
-                                    },
-                                    {
-                                        "label": "Australia East",
-                                        "value": "australiaeast"
-                                    },
-                                    {
-                                        "label": "UK South",
-                                        "value": "uksouth"
-                                    },
-                                    {
-                                        "label": "North Europe",
-                                        "value": "northeurope"
-                                    },
-                                    {
-                                        "label": "West Europe",
-                                        "value": "westeurope"
-                                    },
-                                    {
-                                        "label": "Central India",
-                                        "value": "centralindia"
-                                    },
-                                    {
-                                        "label": "Southeast Asia",
-                                        "value": "southeastasia"
-                                    },
-                                    {
-                                        "label": "Sweden Central",
-                                        "value": "swedencentral"
-                                    }
-                                ],
-                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                            },
-                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
-                        },
+						{
+							"name": "grafanaLocation",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Grafana Location",
+							"multiselect": false,
+							"defaultValue": "",
+							"toolTip": "Subscription to deploy resources to.",
+							"filter": true,
+							"filterPlaceholder": "Filter Grafana Locations...",
+							"defaultDescription": "A value for selection",
+							"constraints": {
+								"allowedValues": "[steps('basics').grafanaLocationsAPI.transformed.list]",
+								"required": true
+							},
+							"visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
+						},
+												
 						{
 							"name": "collectTelemetry",
 							"type": "Microsoft.Common.CheckBox",
@@ -725,30 +410,6 @@
                             }
                         },
                         {
-                            "name": "deployPaaSPacks",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All PaaS Packs (Preview)",
-                            "toolTip": "Select to deploy all PaaS packs.",
-                            "defaultValue": false,
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the available PaaS packs to the selected environment."
-                            },
-                            "visible": "[equals(steps('Packs').deployPacks, false)]"
-                        },
-                        {
-                            "name": "deployPlatformPacks",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Platform Packs (Preview)",
-                            "toolTip": "Select to deploy all Platform packs.",
-                            "defaultValue": false,
-                            "visible": "[equals(steps('Packs').deployPacks, false)]",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the available Platform packs to the selected environment."
-                            }
-                        },
-                        {
                             "name": "packsText",
                             "type": "Microsoft.Common.TextBlock",
                             "options": {
@@ -758,7 +419,7 @@
                                     "uri": "https://github.com/Azure/AzureMonitorStarterPacks/tree/main/Packs#readme"
                                 }
                             },
-                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true))]"
+                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true))]"
                         },
                         {
                             "name": "ActionGroupStatus",
@@ -778,7 +439,7 @@
                                 ],
                                 "required": true
                             },
-                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true))]"
+                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true))]"
                         },
                         {
                             "name": "existingAG",
@@ -794,7 +455,7 @@
                                 "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
                         },
                         {
                             "name": "NewActionGroupName",
@@ -806,9 +467,9 @@
                             "constraints": {
                                 "required": true,
                                 "regex": "^[a-z0-9A-Z]{1,12}$",
-                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-12 characters long."
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceiver",
@@ -820,7 +481,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         },
                         {
                             "name": "emailreceiveremail",
@@ -832,7 +493,7 @@
                             "constraints": {
                                 "required": true
                             },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true),equals(steps('Packs').deployPaaSPacks, true),equals(steps('Packs').deployPlatformPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
+                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
                         }
                     ]
                 },
@@ -857,12 +518,10 @@
                 "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
                 "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
                 "location": "[steps('basics').resourceScope.location.name]",
-                "assignmentLevel": "[steps('Configuration').assignmentLevel]",
-                "deployAMApolicy": "[steps('Configuration').deployAMAPolicy]",
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[steps('Configuration').NewGrafanaName]",
-                "storageAccountName": "[if(equals(steps('Configuration').storageAccountStatus,'New'),steps('Configuration').storageAccountNameNew,last(split(steps('Configuration').existingStorageAccount, '/')))]",
-                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountStatus,'New')]",
+                "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
+                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
                 "functionName": "[concat('MonitorStarterPacks-',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
                 "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
                 "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
@@ -871,8 +530,6 @@
                 "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
                 "deployAllPacks": "[steps('Packs').deployPacks]",
                 "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
-                "deployPaaSPacks": "[steps('Packs').deployPaaSPacks]",
-                "deployPlatformPacks": "[steps('Packs').deployPlatformPacks]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
                 "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
                 "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
@@ -885,7 +542,8 @@
                 "deployDiscovery": "[steps('Configuration').deployDiscovery]",
 				"instanceName":  "[steps('Configuration').instanceName]",
                 "deployGrafana": "[steps('Configuration').deployGrafana]",
-				"collectTelemetry": "[steps('Configuration').collectTelemetry]"
+				"collectTelemetry": "[steps('Configuration').collectTelemetry]",
+                "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]"
             },
             "kind": "ManagementGroup",
             "location": "[steps('basics').resourceScope.location.name]",

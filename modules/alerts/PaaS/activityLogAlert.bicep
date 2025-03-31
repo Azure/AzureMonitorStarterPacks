@@ -15,7 +15,7 @@ param deploymentRoleDefinitionIds array = [
 ]
 param subscriptionId string
 param mgname string
-param assignmentLevel string
+//param assignmentLevel string
 param userManagedIdentityResourceId string
 param resourceType string
 param operationName string

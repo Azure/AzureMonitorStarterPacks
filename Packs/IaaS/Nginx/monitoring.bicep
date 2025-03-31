@@ -18,7 +18,7 @@ param userManagedIdentityResourceId string
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
-param assignmentLevel string
+//param assignmentLevel string
 param customerTags object
 param instanceName string
 var tableName = 'NginxLogs'
@@ -102,19 +102,19 @@ module Alerts './alerts.bicep' = {
     instanceName: instanceName
   }
 }
-module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) in filePatterns:{
-  name: 'policysetup-${packtag}-${i}'
-  params: {
-    dcrId: fileCollectionRule[i].outputs.ruleId
-    packtag: packtag
-    solutionTag: solutionTag
-    rulename: '${rulename}-${i}'
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: '${rulename}-${i}'
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}]
+// module policysetup '../../../modules/policies/mg/policies.bicep' = [for (fp,i) in filePatterns:{
+//   name: 'policysetup-${packtag}-${i}'
+//   params: {
+//     dcrId: fileCollectionRule[i].outputs.ruleId
+//     packtag: packtag
+//     solutionTag: solutionTag
+//     rulename: '${rulename}-${i}'
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: '${rulename}-${i}'
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }]

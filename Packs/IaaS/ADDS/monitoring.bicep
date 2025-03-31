@@ -17,7 +17,7 @@ param userManagedIdentityResourceId string
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
-param assignmentLevel string
+//param assignmentLevel string
 param instanceName string
 
 var rulename = 'AMP-${instanceName}-${packtag}'
@@ -127,7 +127,7 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
 module client 'client.bicep' = {
    name: 'client-${instanceName}-${packtag}'
    params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     instanceName: instanceName
     location: location

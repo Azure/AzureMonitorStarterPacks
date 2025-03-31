@@ -21,7 +21,7 @@ param solutionVersion string
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param assignmentLevel string
+//param assignmentLevel string
 //param grafanaResourceId string
 param customerTags object
 param actionGroupResourceId string
@@ -42,7 +42,7 @@ var resourceGroupName = split(resourceGroupId, '/')[4]
 module ADDS './ADDS/monitoring.bicep' = {
   name: 'ADDSPack'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname
@@ -64,7 +64,7 @@ module ADDS './ADDS/monitoring.bicep' = {
 module VMInsightsPack './VMInsights/monitoring.bicep' = {
   name: 'VMInsightsPack'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname
@@ -119,7 +119,7 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
 module IIS './IIS/monitoring.bicep' = {
   name: 'IISPack-deployment'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname
@@ -137,7 +137,7 @@ module IIS './IIS/monitoring.bicep' = {
 module IIS2016 './IIS2016/monitoring.bicep' = {
   name: 'IIS2016-deployment'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname
@@ -155,7 +155,7 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
 module DNS2016 './DNS2016/monitoring.bicep' = {
   name: 'DNS2016-deployment'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname
@@ -173,7 +173,7 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
 module PS2016 './PS2016/monitoring.bicep' = {
   name: 'PS2016-deployment'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname
@@ -191,7 +191,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
 module Nginx './Nginx/monitoring.bicep' = {
   name: 'Nginx-deployment'
   params: {
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
     mgname: mgname

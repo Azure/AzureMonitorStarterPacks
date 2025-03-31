@@ -6,7 +6,7 @@ param mgname string
 param resourceType string
 param policyLocation string
 param parResourceGroupName string
-param assignmentLevel string
+//param assignmentLevel string
 param userManagedIdentityResourceId string
 param AGId string
 param location string

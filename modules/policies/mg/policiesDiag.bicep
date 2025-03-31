@@ -5,7 +5,7 @@ param location string
 param userManagedIdentityResourceId string
 param assignmentSuffix string=''
 param mgname string
-param assignmentLevel string = 'managementGroup'
+//param assignmentLevel string = 'managementGroup'
 param subscriptionId string
 param resourceType string
 param instanceName string

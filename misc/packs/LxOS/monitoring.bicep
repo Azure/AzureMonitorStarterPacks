@@ -18,7 +18,7 @@ param userManagedIdentityResourceId string
 param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
-param assignmentLevel string
+//param assignmentLevel string
 param customerTags object
 param instanceName string
 

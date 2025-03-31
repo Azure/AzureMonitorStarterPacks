@@ -32,7 +32,7 @@ param resourceGroupId string
 param subscriptionId string
 param userManagedIdentityResourceId string
 param mgname string 
-param assignmentLevel string
+//param assignmentLevel string
 // param grafanaName string
 param customerTags object 
 param instanceName string

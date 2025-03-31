@@ -26,8 +26,8 @@ param grafanaResourceId string = ''
 param customerTags object
 param existingActionGroupResourceId string
 param deployIaaSPacks bool
-param deployPaaSPacks bool
-param deployPlatformPacks bool
+// param deployPaaSPacks bool
+// param deployPlatformPacks bool
 param storageAccountName string
 param imageGalleryName string
 param instanceName string
@@ -73,7 +73,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     solutionVersion: solutionVersion
     dceId: dceId
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    assignmentLevel: assignmentLevel
+    //assignmentLevel: assignmentLevel
     //grafanaResourceId: grafanaResourceId
     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
     customerTags: customerTags

@@ -16,7 +16,7 @@ param actionGroupResourceId string
 param subscriptionId string
 param userManagedIdentityResourceId string
 param mgname string 
-param assignmentLevel string
+//param assignmentLevel string
 param resourceGroupId string
 //param grafanaName string
 param instanceName string
