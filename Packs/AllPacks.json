@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "75210959557262682"
+      "templateHash": "1302089269185484209"
     }
   },
   "parameters": {
@@ -116,7 +116,7 @@
       "condition": "[not(parameters('useExistingAG'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "deployAG-new",
+      "name": "[format('deployAG-new-{0}-{1}', parameters('actionGroupName'), parameters('location'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -201,7 +201,7 @@
       "condition": "[parameters('deployIaaSPacks')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "deployIaaSPacks",
+      "name": "[format('deployIaaSPacks-{0}-{1}', parameters('instanceName'), parameters('location'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -227,7 +227,7 @@
           "userManagedIdentityResourceId": {
             "value": "[parameters('userManagedIdentityResourceId')]"
           },
-          "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new'), '2022-09-01').outputs.agGroupId.value))]",
+          "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('deployAG-new-{0}-{1}', parameters('actionGroupName'), parameters('location'))), '2022-09-01').outputs.agGroupId.value))]",
           "customerTags": {
             "value": "[parameters('customerTags')]"
           },
@@ -257,7 +257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8068286933730068613"
+              "templateHash": "8402398021039016508"
             }
           },
           "parameters": {
@@ -331,7 +331,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "ADDSPack",
+              "name": "[format('ADDSPack-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1411,7 +1411,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "VMInsightsPack",
+              "name": "[format('VMInsightsPack-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2425,7 +2425,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "IISPack-deployment",
+              "name": "[format('IISPack-deployment-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3825,7 +3825,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "IIS2016-deployment",
+              "name": "[format('IIS2016-deployment-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -5251,7 +5251,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "DNS2016-deployment",
+              "name": "[format('DNS2016-deployment-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -6890,7 +6890,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "PS2016-deployment",
+              "name": "[format('PS2016-deployment-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -7942,7 +7942,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "Nginx-deployment",
+              "name": "[format('Nginx-deployment-{0}-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -9016,7 +9016,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'deployAG-new')]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('deployAG-new-{0}-{1}', parameters('actionGroupName'), parameters('location')))]"
       ]
     },
     {

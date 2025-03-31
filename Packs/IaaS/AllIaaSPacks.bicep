@@ -40,7 +40,7 @@ var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 module ADDS './ADDS/monitoring.bicep' = {
-  name: 'ADDSPack'
+  name: 'ADDSPack-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId
@@ -62,7 +62,7 @@ module ADDS './ADDS/monitoring.bicep' = {
   }
 }
 module VMInsightsPack './VMInsights/monitoring.bicep' = {
-  name: 'VMInsightsPack'
+  name: 'VMInsightsPack-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId
@@ -117,7 +117,7 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
 //   }
 // }
 module IIS './IIS/monitoring.bicep' = {
-  name: 'IISPack-deployment'
+  name: 'IISPack-deployment-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId
@@ -135,7 +135,7 @@ module IIS './IIS/monitoring.bicep' = {
   }
 }
 module IIS2016 './IIS2016/monitoring.bicep' = {
-  name: 'IIS2016-deployment'
+  name: 'IIS2016-deployment-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId
@@ -153,7 +153,7 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
   }
 }
 module DNS2016 './DNS2016/monitoring.bicep' = {
-  name: 'DNS2016-deployment'
+  name: 'DNS2016-deployment-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId
@@ -171,7 +171,7 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
   }
 }
 module PS2016 './PS2016/monitoring.bicep' = {
-  name: 'PS2016-deployment'
+  name: 'PS2016-deployment-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId
@@ -189,7 +189,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
   }
 }
 module Nginx './Nginx/monitoring.bicep' = {
-  name: 'Nginx-deployment'
+  name: 'Nginx-deployment-${instanceName}-${location}'
   params: {
     //assignmentLevel: assignmentLevel
     dceId: dceId

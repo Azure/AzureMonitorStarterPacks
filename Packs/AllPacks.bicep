@@ -51,7 +51,7 @@ var tempTags= {
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG) {
-  name: 'deployAG-new'
+  name: 'deployAG-new-${actionGroupName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     emailreceiver: emailreceiver
@@ -63,7 +63,7 @@ module ag '../modules/actiongroups/emailactiongroup.bicep' = if (!useExistingAG)
 }
 
 module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
-  name: 'deployIaaSPacks'
+  name: 'deployIaaSPacks-${instanceName}-${location}'
   params: {
     // Tags: Tags
     location: location
