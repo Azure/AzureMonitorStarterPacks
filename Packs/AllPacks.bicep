@@ -21,7 +21,6 @@ param solutionVersion string
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param assignmentLevel string
 param grafanaResourceId string = ''
 param customerTags object
 param existingActionGroupResourceId string

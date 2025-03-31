@@ -11,7 +11,6 @@ param lawResourceId string
 param tableName string
 param userManagedIdentityResourceId string
 param mgname string
-param assignmentLevel string
 param dceId string
 param Tags object
 param instanceName string
@@ -45,7 +44,6 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     tableNameToUse: tableNameToUse
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
-    assignmentLevel: assignmentLevel
     dceId: dceId
     tags: Tags
     instanceName: instanceName
@@ -68,7 +66,6 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     tableNameToUse: tableNameToUse
     userManagedIdentityResourceId: userManagedIdentityResourceId
     mgname: mgname
-    assignmentLevel: assignmentLevel
     dceId: dceId
     tags: Tags
     instanceName: instanceName

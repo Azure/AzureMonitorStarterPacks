@@ -11,7 +11,6 @@ param lawResourceId string
 param tableNameToUse string
 param userManagedIdentityResourceId string
 param mgname string
-param assignmentLevel string
 param dceId string
 param tags object
 param instanceName string
@@ -82,36 +81,36 @@ module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
     packtype: 'Discovery'
   }
 }
-module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
-  dependsOn: [
-    applicationPolicy
-  ]
-  name: 'Assignment-${ruleshortname}'
-  scope: managementGroup(mgname)
-  params: {
-    policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-application'
-    location: location
-    //roledefinitionIds: roledefinitionIds
-    solutionTag: solutionTag
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-  }
-}
-module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
-  dependsOn: [
-    applicationPolicy
-  ]
-  name: 'AssignSub-${ruleshortname}'
-  scope: subscription(subscriptionId)
-  params: {
-    policyDefinitionId: applicationPolicy.outputs.policyId
-    assignmentName: 'AMP-Assign-${ruleshortname}-application'
-    location: location
-    //roledefinitionIds: roledefinitionIds
-    solutionTag: solutionTag
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-  }
-}
+// module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
+//   dependsOn: [
+//     applicationPolicy
+//   ]
+//   name: 'Assignment-${ruleshortname}'
+//   scope: managementGroup(mgname)
+//   params: {
+//     policyDefinitionId: applicationPolicy.outputs.policyId
+//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
+//     location: location
+//     //roledefinitionIds: roledefinitionIds
+//     solutionTag: solutionTag
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }
+// module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
+//   dependsOn: [
+//     applicationPolicy
+//   ]
+//   name: 'AssignSub-${ruleshortname}'
+//   scope: subscription(subscriptionId)
+//   params: {
+//     policyDefinitionId: applicationPolicy.outputs.policyId
+//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
+//     location: location
+//     //roledefinitionIds: roledefinitionIds
+//     solutionTag: solutionTag
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//   }
+// }
 // DCR to collect the data
 module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
   name: 'LinuxDiscoveryDCR'
@@ -134,20 +133,20 @@ module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
 }
 
 // Policy to assign DCR to all Linux VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
-module policysetup '../modules/policies.bicep' = {
-  name: 'policysetup-linuxdiscovery'
-  params: {
-    dcrId: LinuxDiscoveryDCR.outputs.ruleId
-    packtag: 'LxDisc'
-    solutionTag: solutionTag
-    rulename: LinuxDiscoveryDCR.outputs.ruleName
-    location: location
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
-    ruleshortname: ruleshortname
-    assignmentLevel: assignmentLevel
-    subscriptionId: subscriptionId
-    packtype: 'Discovery'
-    instanceName: instanceName
-  }
-}
+// module policysetup '../modules/policies.bicep' = {
+//   name: 'policysetup-linuxdiscovery'
+//   params: {
+//     dcrId: LinuxDiscoveryDCR.outputs.ruleId
+//     packtag: 'LxDisc'
+//     solutionTag: solutionTag
+//     rulename: LinuxDiscoveryDCR.outputs.ruleName
+//     location: location
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     mgname: mgname
+//     ruleshortname: ruleshortname
+//     assignmentLevel: assignmentLevel
+//     subscriptionId: subscriptionId
+//     packtype: 'Discovery'
+//     instanceName: instanceName
+//   }
+// }

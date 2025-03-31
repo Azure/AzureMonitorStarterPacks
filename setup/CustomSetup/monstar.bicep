@@ -9,11 +9,9 @@ param subscriptionId string
 param resourceGroupName string
 param createNewResourceGroup bool = false
 param location string
-param assignmentLevel string
 param newLogAnalyticsWSName string = ''
 param createNewLogAnalyticsWS bool
 param existingLogAnalyticsWSId string = ''
-param deployAMApolicy bool
 //param currentUserIdObject string // This is to automatically assign permissions to Grafana.
 //param functionName string
 param grafanaLocation string = ''
@@ -25,10 +23,10 @@ param createNewStorageAccount bool = false
 param resourceGroupId string = ''
 param instanceName string
 param deployGrafana bool
-
 // Packs` stuff
 @description('Name of the Action Group to be used or created.')
 param actionGroupName string = ''
+param existingActionGroupId string = ''
 @description('Email receiver names to be used for the Action Group if being created.')
 param emailreceiver string = ''
 @description('Email addresses to be used for the Action Group if being created.')
@@ -36,17 +34,15 @@ param emailreiceversemail string
 @description('If set to true, a new Action group will be created')
 param useExistingAG bool = false
 param customerTags object
-param existingActionGroupId string = ''
 
 param deployAllPacks bool
 param deployIaaSPacks bool = false
-param deployPaaSPacks bool = false
-param deployPlatformPacks bool = false
 param deployDiscovery bool = false
 
 param collectTelemetry bool = true
+param appInsightsLocation string
 
-var deployPacks = deployAllPacks || deployIaaSPacks || deployPaaSPacks || deployPlatformPacks
+var deployPacks = deployAllPacks || deployIaaSPacks //|| deployPaaSPacks || deployPlatformPacks
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
@@ -117,21 +113,21 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
 // }
 
 // AMA policy - conditionally deploy it
-module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
-  name: 'DeployAMAPolicy'
-  dependsOn: [
-    resourgeGroup
-  ]
-  params: {
-    assignmentLevel: assignmentLevel
-    location: location
-    resourceGroupName: resourceGroupName
-    solutionTag: solutionTagComponents
-    solutionVersion: solutionVersion
-    subscriptionId: subscriptionId
-    Tags: Tags
-  }
-}
+// module AMAPolicy '../AMAPolicy/amapoliciesmg.bicep' = if (deployAMApolicy) {
+//   name: 'DeployAMAPolicy'
+//   dependsOn: [
+//     resourgeGroup
+//   ]
+//   params: {
+//     assignmentLevel: assignmentLevel
+//     location: location
+//     resourceGroupName: resourceGroupName
+//     solutionTag: solutionTagComponents
+//     solutionVersion: solutionVersion
+//     subscriptionId: subscriptionId
+//     Tags: Tags
+//   }
+// }
 
 module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
   name: 'DeployDiscovery-${instanceName}'
@@ -139,7 +135,6 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     backend
   ]
   params: {
-    assignmentLevel: assignmentLevel
     location: location
     resourceGroupName: resourceGroupName
     solutionTag: solutionTag
@@ -180,7 +175,7 @@ module backend '../backend/bicep/backend.bicep' = {
     resourgeGroup
   ]
   params: {
-    appInsightsLocation: location
+    appInsightsLocation: appInsightsLocation
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     location: location
@@ -205,7 +200,6 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
   params: {
     // _artifactsLocation: _artifactsLocation
     // _artifactsLocationSasToken: _artifactsLocationSasToken
-    assignmentLevel: assignmentLevel
     location: location
     dceId: backend.outputs.dceId
     mgname: mgname
