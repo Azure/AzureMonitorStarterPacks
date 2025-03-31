@@ -168,7 +168,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
 // }
 
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'AMP-${instanceName}-UMI-Function'
+  name: 'AMP-${instanceName}-UMI-Function-${location}'
   params: {
     location: location
     Tags: Tags

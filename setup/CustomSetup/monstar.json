@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "859951983455289052"
+      "templateHash": "4598166591712002723"
     }
   },
   "parameters": {
@@ -2778,7 +2778,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9472653001876352169"
+              "templateHash": "15376652005181622580"
             }
           },
           "parameters": {
@@ -2968,10 +2968,10 @@
                     "value": "[parameters('storageAccountName')]"
                   },
                   "userManagedIdentity": {
-                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Function', parameters('instanceName'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
+                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Function-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
                   },
                   "userManagedIdentityClientId": {
-                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Function', parameters('instanceName'))), '2022-09-01').outputs.userManagedIdentityClientId.value]"
+                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Function-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityClientId.value]"
                   },
                   "packsUserManagedId": {
                     "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs', parameters('instanceName'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
@@ -3263,7 +3263,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Function', parameters('instanceName')))]",
+                "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Function-{1}', parameters('instanceName'), parameters('location')))]",
                 "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs', parameters('instanceName')))]"
               ]
             },
@@ -9271,7 +9271,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('AMP-{0}-UMI-Function', parameters('instanceName'))]",
+              "name": "[format('AMP-{0}-UMI-Function-{1}', parameters('instanceName'), parameters('location'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
