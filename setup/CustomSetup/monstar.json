@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3365936276448331830"
+      "templateHash": "4096886588656047854"
     }
   },
   "parameters": {
@@ -2778,7 +2778,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13839988368287977510"
+              "templateHash": "10704995410416150773"
             }
           },
           "parameters": {
@@ -8958,7 +8958,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "3778783447857397540"
+                      "templateHash": "1419658493773483259"
                     }
                   },
                   "parameters": {
@@ -9001,7 +9001,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[parameters('userIdentityName')]",
+                      "name": "[format('{0}-{1}', parameters('userIdentityName'), parameters('location'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -9074,7 +9074,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-{1}', parameters('userIdentityName'), copyIndex())]",
+                      "name": "[format('{0}-{1}-{2}', parameters('userIdentityName'), copyIndex(), parameters('location'))]",
                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -9087,7 +9087,7 @@
                             "value": "[parameters('userIdentityName')]"
                           },
                           "principalId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
                             "value": "[parameters('solutionTag')]"
@@ -9155,7 +9155,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName'))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location')))]"
                       ]
                     },
                     {
@@ -9179,7 +9179,7 @@
                             "value": "[parameters('userIdentityName')]"
                           },
                           "principalId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
                             "value": "[parameters('solutionTag')]"
@@ -9247,22 +9247,22 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName'))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location')))]"
                       ]
                     }
                   ],
                   "outputs": {
                     "userManagedIdentityPrincipalId": {
                       "type": "string",
-                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                     },
                     "userManagedIdentityClientId": {
                       "type": "string",
-                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityClientId.value]"
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityClientId.value]"
                     },
                     "userManagedIdentityResourceId": {
                       "type": "string",
-                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
                     }
                   }
                 }
@@ -9311,7 +9311,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "3778783447857397540"
+                      "templateHash": "1419658493773483259"
                     }
                   },
                   "parameters": {
@@ -9354,7 +9354,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[parameters('userIdentityName')]",
+                      "name": "[format('{0}-{1}', parameters('userIdentityName'), parameters('location'))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -9427,7 +9427,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-{1}', parameters('userIdentityName'), copyIndex())]",
+                      "name": "[format('{0}-{1}-{2}', parameters('userIdentityName'), copyIndex(), parameters('location'))]",
                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -9440,7 +9440,7 @@
                             "value": "[parameters('userIdentityName')]"
                           },
                           "principalId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
                             "value": "[parameters('solutionTag')]"
@@ -9508,7 +9508,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName'))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location')))]"
                       ]
                     },
                     {
@@ -9532,7 +9532,7 @@
                             "value": "[parameters('userIdentityName')]"
                           },
                           "principalId": {
-                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                           },
                           "solutionTag": {
                             "value": "[parameters('solutionTag')]"
@@ -9600,22 +9600,22 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName'))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location')))]"
                       ]
                     }
                   ],
                   "outputs": {
                     "userManagedIdentityPrincipalId": {
                       "type": "string",
-                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
                     },
                     "userManagedIdentityClientId": {
                       "type": "string",
-                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityClientId.value]"
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityClientId.value]"
                     },
                     "userManagedIdentityResourceId": {
                       "type": "string",
-                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', parameters('userIdentityName')), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}', parameters('userIdentityName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
                     }
                   }
                 }

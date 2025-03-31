@@ -26,7 +26,7 @@ var RGroleDefinitionIds=[
 //   }
 // }
 module userManagedIdentity './umidentityresource.bicep' = {
-  name: userIdentityName
+  name: '${userIdentityName}-${location}'
   scope: resourceGroup(subscriptionId,resourceGroupName)
   params: {
     location: location
@@ -36,7 +36,7 @@ module userManagedIdentity './umidentityresource.bicep' = {
 }
 
 module userIdentityRoleAssignments '../../../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roleDefinitionIds:  {
-  name: '${userIdentityName}-${i}'
+  name: '${userIdentityName}-${i}-${location}'
   scope: managementGroup(mgname)
   params: {
     resourcename: userIdentityName
