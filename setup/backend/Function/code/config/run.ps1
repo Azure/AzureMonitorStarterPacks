@@ -3,14 +3,6 @@ using namespace System.Net
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
 
-function get-serviceTag {
-    param (
-        [string]$namespace,
-        [PSCustomObject]$tagMappings
-    )
-    $tag=($tagMappings.tags | Where-Object { $_.nameSpace -eq $namespace }).tag
-    return $tag
-}
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
@@ -19,48 +11,12 @@ $Request
 
 $Action = $Request.Query.Action
 "Action: $Action"
-"Body"
-$Request.Body
-"EoB"
-$PaaSQuery=@"
-| where tolower(type) in (
-            'microsoft.storage/storageaccounts',
-            'microsoft.desktopvirtualization/hostpools',
-            'microsoft.logic/workflows',
-            'microsoft.sql/managedinstances',
-            'microsoft.sql/servers/databases',
-            'microsoft.containerservice/managedclusters',
-            'microsoft.documentdb/databaseaccounts',
-            'microsoft.apimanagement/service',
-            'microsoft.web/sites',
-            'microsoft.containerregistry/registries',
-            'microsoft.cache/redis'
-      )
-      or (
-          tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-      )
-"@
+"Headers:"
+#$Request.Headers.resourceFilter
+# "Body"
+# $Request.Body
+# "EoB"
 
-$PlatformQuery=@"
-| where tolower(type) in (
-            'microsoft.network/virtualnetworks',
-            'microsoft.network/expressroutecircuits',
-            'microsoft.network/expressrouteports',
-            'microsoft.datafactory/factories',
-            'microsoft.cdn/profiles',
-            'microsoft.eventhub/clusters',
-            'microsoft.eventhub/namespaces',
-            'microsoft.network/vpngateways',
-            'microsoft.network/virtualnetworkgateways',
-            'microsoft.keyvault/vaults',
-            'microsoft.network/networksecuritygroups',
-            'microsoft.network/publicipaddresses',
-            'microsoft.network/privatednszones',
-            'microsoft.network/frontdoors',
-            'microsoft.network/azurefirewalls',
-            'microsoft.network/applicationgateways'
-      ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')
-"@
 $tagMapping = @"
 {
   "tags": [
@@ -203,294 +159,189 @@ $tagMapping = @"
 }
 "@ | ConvertFrom-Json
 
-$discoveringMappings=@{
-   "ADDS"="AD-Domain-Services"
-   "DNS"="DNS"
-   "FS"="FS-FileServer"
-   "IIS"="Web-Server"
-   "STSVC"="Storage-Services"
-   "Nginx"="nginx-core"
-}
 switch ($Action) {
-    # Returns the tag based on the nameSpace provided
-    'getTagbyService' {
-        $svc=$Request.body.metricNamespace
-        if ($svc) {
-            $tag=$tagMapping.tags | ? { $_.nameSpace -eq $svc } 
-        }
-        else {
-            $tag='Undetermined'
-        }
-        $body=@"
+  # Returns the tag based on the nameSpace provided
+  'getTagbyService' {
+    $svc = $Request.body.metricNamespace
+    if ($svc) {
+      $tag = $tagMapping.tags | ? { $_.nameSpace -eq $svc } 
+    }
+    else {
+      $tag = 'Undetermined'
+    }
+    $body = @"
         {
             "tag":"$($tag.tag)",
             "nameSpace":"$($tag.nameSpace)",
             "type":"$($tag.type)"
         }
 "@ | convertfrom-json
+  }
+  # Gets a list of tags (all) or for a specific type (PaaS)
+  'getAllServiceTags' {
+    $type = $Request.Query.Type
+    if ([string]::IsNullOrEmpty($type)) {
+      $body = $tagMapping.tags  | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
     }
-    # Gets a list of tags (all) or for a specific type (PaaS or Platform)
-    'getAllServiceTags' {
-        $type=$Request.Query.Type
-        if ([string]::IsNullOrEmpty($type)) {
-            $body=$tagMapping.tags  | Select-Object tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
-        }
-        else {
-            "Type"
-            $body=$tagMapping.tags  | where-object {$_.type -eq $type} | Select-Object tag, @{Label="nameSpace";Expression={$_.nameSpace.ToLower()}},type | convertto-json
+    else {
+      "Type"
+      $body = $tagMapping.tags  | where-object { $_.type -eq $type } | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json
             
-        }
     }
-    # returns a list of discovery mapping directions.
-    'getDiscoveryMappings' {
-        $body=$discoveringMappings.Keys | Select-Object @{l='tag';e={$_}},@{l='application';e={$discoveringMappings.$_}}
+  }
+  # returns a list of discovery mapping directions.
+  'getDiscoveryMappings' {
+    $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
+  }
+  'getdiscoveryresults' {
+    $WSId= $Request.Query.WSId
+    if ($WSId) {
+      $body = get-discoveryresults -LogAnalyticsWSResourceId $WSId
     }
-    'getPaaSquery' {
-        $body=@"
-        {
-            "Query": "
-$PaaSQuery"
-      }
-"@
+    else {
+      $body = 'No Workspace ID provided'
     }
-    'getPlatformquery' {
-        $body=@"
-        {
-            "Query":"
-        $PlatformQuery"
-    }
-"@
-    }
-    'listAmbaAlerts' {
-      $body=get-AmbaCatalog
-#       $ambaJsonURL=$env:ambaJsonURL
-#       if ($ambaJsonURL -eq $null) {
-#           "No AMBA URL provided"
-#           exit
-#       }
-#       $aaa=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json
-#       $Categories=$aaa.psobject.properties.Name
-#       #$Categories
-#       $body=@"
-# {
-#     "Categories": [
-# "@
-#     $i=0
-#           foreach ($cat in $Categories) {
-#               $svcs=$aaa.$($cat).psobject.properties.Name
-#               foreach ($svc in $svcs) {
-#                   if ($aaa.$cat.$svc.name -ne $null) {                  
-#                       if ($aaa.$cat.$svc[0].properties.metricNamespace -ne $null) {
-#                         $namespace=$aaa.$cat.$svc[0].properties.metricNamespace.tolower()
-#                         $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
-#                         "$namespace $ambafolder"
-#                           $bodyt=@"
-#       {
-#         "category" : "$cat",
-#         "service" : "$svc",
-#         "namespace": "$namespace",
-#         "tag": "$(get-tagForAmbaFolder -nameSpace $ambaFolder)"
-#       }
-# "@
-#                       }
-#                       else {
-#                         $namespace="microsoft.$($cat.tolower())/$($svc.tolower())"
-#                         $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
-#                         "$namespace $ambafolder"
-#                           $bodyt=@"
+  }
+  'getPaaSquery' {
+    $body = get-paasquery
+#     @"
 #         {
-#             "category" : "$cat",
-#           "service" : "$svc",
-#           "namespace": "$namespace",
-#           "tag" : "$(get-tagForAmbaFolder -nameSpace $ambaFolder)"
-#         }
-# "@  
-#                       }
-#                       if ($i -eq 0) {
-#                           $body+=@"
-#                           $bodyt
+#             "Query": "
+#         | where tolower(type) in (
+#           'microsoft.storage/storageaccounts',
+#           'microsoft.desktopvirtualization/hostpools',
+#           'microsoft.logic/workflows',
+#           'microsoft.sql/managedinstances',
+#           'microsoft.sql/servers/databases',
+#           'microsoft.network/vpngateways',
+#           'microsoft.network/virtualnetworkgateways',
+#           'microsoft.keyvault/vaults',
+#           'microsoft.network/networksecuritygroups',
+#           'microsoft.network/publicipaddresses',
+#           'microsoft.network/privatednszones',
+#           'microsoft.network/frontdoors',
+#           'microsoft.network/azurefirewalls',
+#           'microsoft.network/applicationgateways'
+#       )
+#       or (
+#           tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
+#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+#       }
 # "@
-    
-#                           $i++
-#                       }
-#                       else {
-#                           $body+=@"
-#     ,
-#                           $bodyt
-# "@
-#                       }
-#                   }
-#               }
-#           }
-#         $body+=@"
-#         ]
-#         }
-# "@
-    
-    }
-    "getMonitoredPaaS" {
-        $resourceQuery=@"
-        resources
-        $PaaSQuery
-        | where isnotempty(tags.MonitorStarterPacks)
-        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-"@
-        $alertsQuery=@"
-        resources
-        | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-        | where isnotempty(tags.MonitorStarterPacks)
-        | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
-"@
-        $resources=Search-AzGraph -Query $resourceQuery
-        $alerts=Search-AzGraph -Query $alertsQuery
-
-        # determine if the resources have alerts and shows total
-        $results="{""Monitored Resources"" : ["
-
-        $results+=foreach ($res in $resources) {
-            if ($res.Resource -in $alerts.Resource) {
-                $totalAlerts=($alerts|where {$_.Resource -eq $res.Resource}).count
-                "{""Resource"" : ""$($res.Resource)"","
-                """type"" : ""$($res.""type"")"","
-                """tag"" : ""$($res.""tag"")"","
-                """resourceGroup"" : ""$($res.""resourceGroup"")"","
-                """location"" : ""$($res.""location"")"","
-                """kind"" : ""$($res.""kind"")"","
-                """subscriptionId"" : ""$($res.""subscriptionId"")"","
-                """Total"" : $totalAlerts},"
-            } else {
-                "{""Resource"" : ""$($res.Resource)"","
-                """type"" : ""$($res.""type"")"","
-                """tag"" : ""$($res.""tag"")"","
-                """resourceGroup"" : ""$($res.""resourceGroup"")"","
-                """location"" : ""$($res.""location"")"","
-                """kind"" : ""$($res.""kind"")"","
-                """subscriptionId"" : ""$($res.""subscriptionId"")"","
-                """Total"" : 0 },"
-            }   
-        }
-    $resultsString=$results -join ""
-    $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
-
-    }
-    "getNonMonitoredPaaS" {
-      $resourceQuery=@"
-      resources
-      $PaaSQuery
-      | where isempty(tags.MonitorStarterPacks)
+  }
+  'getPlatformquery' {
+    $body='{}'
+#     $body = @'
+#         {
+#             "Query":"
+#         | where tolower(type) in (
+#           'microsoft.network/vpngateways',
+#           'microsoft.network/virtualnetworkgateways',
+#           'microsoft.keyvault/vaults',
+#           'microsoft.network/networksecuritygroups',
+#           'microsoft.network/publicipaddresses',
+#           'microsoft.network/privatednszones',
+#           'microsoft.network/frontdoors',
+#           'microsoft.network/azurefirewalls',
+#           'microsoft.network/applicationgateways'
+#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+#     }
+# '@
+  }
+  "getNonMonitoredPaaS" {
+      if ($Request.Query.resourceFilter) {
+        $resourceFilter = @"
+        | where tolower(type) in ($($Request.Query.resourceFilter))
+"@        
+      }
+      $ambaURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+      $ambaCatalog=get-AmbaCatalog -ambaJsonURL $ambaURL | ConvertFrom-Json -Depth 10
+      $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
+      #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+      $nameSpacesWithAlerts=($nameSpacesWithAlerts | % { "'$_'" }) -join ','
+      # use a kql azure resource graph query to find all the namespaces with alerts
+      $PassQuery="resources | where isempty(tags.MonitorStarterPacks)
+      | where type in~ ($nameSpacesWithAlerts)
+      | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
       | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-"@
+      $resourceFilter"
+      $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+      $body="{""Non-Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+      #$PaaSQuery
+#       $resourceQuery=@"
+#       resources
+#       $PaaSQuery
+#       | where isempty(tags.MonitorStarterPacks)
+#       | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+#       $resourceFilter
+# "@
 #       $alertsQuery=@"
 #       resources
 #       | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
 #       | where isnotempty(tags.MonitorStarterPacks)
 #       | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
 # "@
-      $resources=Search-AzGraph -Query $resourceQuery
-      $resourceQuery
-      # $alerts=Search-AzGraph -Query $alertsQuery
+      # $resources=Search-AzGraph -Query $resourceQuery
+      # $resourceQuery
+      # # $alerts=Search-AzGraph -Query $alertsQuery
 
-      # determine if the resources have alerts and shows total
-      $results="{""Monitored Resources"" : ["
+      # # determine if the resources have alerts and shows total
+      # $results="{""Monitored Resources"" : ["
 
-      $results+=foreach ($res in $resources) {
-              "{""Resource"" : ""$($res.Resource)"","
-              """type"" : ""$($res.""type"")"","
-              """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
-              """resourceGroup"" : ""$($res.""resourceGroup"")"","
-              """location"" : ""$($res.""location"")"","
-              """kind"" : ""$($res.""kind"")"","
-              """subscriptionId"" : ""$($res.""subscriptionId"")""},"
-      }
-      $resultsString=$results -join ""
-      $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
+      # $results+=foreach ($res in $resources) {
+      #         "{""Resource"" : ""$($res.Resource)"","
+      #         """type"" : ""$($res.""type"")"","
+      #         """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
+      #         """resourceGroup"" : ""$($res.""resourceGroup"")"","
+      #         """location"" : ""$($res.""location"")"","
+      #         """kind"" : ""$($res.""kind"")"","
+      #         """subscriptionId"" : ""$($res.""subscriptionId"")""},"
+      # }
+      # $resultsString=$results -join ""
+      # $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
   }
-    "getMonitoredPlatform" {
-        $resourceQuery=@"
-        resources
-        $PlatformQuery
-        | where isnotempty(tags.MonitorStarterPacks)
-        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-"@
-        $alertsQuery=@"
-        resources
+  "getMonitoredPaaS" {
+    if ($Request.Query.resourceFilter) {
+      $resourceFilter = @"
+      | where tolower(type) in ($($Request.Query.resourceFilter))
+"@        
+    }
+    $ambaURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+    $ambaCatalog=get-AmbaCatalog -ambaJsonURL $ambaURL | ConvertFrom-Json -Depth 10
+    $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
+    #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+    $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
+    # use a kql azure resource graph query to find all the namespaces with alerts
+    $PassQuery=@"
+    resources | where isnotempty(tags.MonitorStarterPacks)
+    | where type in~ ($nameSpacesWithAlerts)
+    | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+    | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+    | join (resources
         | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
         | where isnotempty(tags.MonitorStarterPacks)
-        | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+        | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
+    $resourceFilter
+    | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind
+    
 "@
-        $resources=Search-AzGraph -Query $resourceQuery
-        $alerts=Search-AzGraph -Query $alertsQuery
+"PaasQuery"
+$PaaSQuery
+    $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+    
+    $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+}
 
-        # determine if the resources have alerts and shows total
-        "Results: $($resources.count)"
-        $results="{""Monitored Resources"" : ["
-
-        $results+=foreach ($res in $resources) {
-            if ($res.Resource -in $alerts.Resource) {
-                $totalAlerts=($alerts|where Resource -eq $res.Resource).count
-                "{""Resource"" : ""$($res.Resource)"","
-                """type"" : ""$($res.""type"")"","
-                """tag"" : ""$($res.""tag"")"","
-                """resourceGroup"" : ""$($res.""resourceGroup"")"","
-                """location"" : ""$($res.""location"")"","
-                """kind"" : ""$($res.""kind"")"","
-                """subscriptionId"" : ""$($res.""subscriptionId"")"","
-                """Total"" : $totalAlerts},"
-            } else {
-                "{""Resource"" : ""$($res.Resource)"","
-                """type"" : ""$($res.""type"")"","
-                """tag"" : ""$($res.""tag"")"","
-                """resourceGroup"" : ""$($res.""resourceGroup"")"","
-                """location"" : ""$($res.""location"")"","
-                """kind"" : ""$($res.""kind"")"","
-                """subscriptionId"" : ""$($res.""subscriptionId"")"","
-                """Total"" : 0 },"
-            }   
-        }
-    $resultsString=$results -join ""
-    $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
-
-    }
-    "getNonMonitoredPlatform" {
-      $resourceQuery=@"
-      resources
-      $PlatformQuery
-      | where isempty(tags.MonitorStarterPacks)
-      | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-"@
-      $alertsQuery=@"
-      resources
-      | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-      | where isempty(tags.MonitorStarterPacks)
-      | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
-"@
-      $resources=Search-AzGraph -Query $resourceQuery
-      $resourceQuery
-      $alerts=Search-AzGraph -Query $alertsQuery
-
-      # determine if the resources have alerts and shows total
-      "Results: $($resources.count)"
-      $results="{""Non-Monitored Resources"" : ["
-
-      $results+=foreach ($res in $resources) {
-        "{""Resource"" : ""$($res.Resource)"","
-        """type"" : ""$($res.""type"")"","
-        """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
-        """resourceGroup"" : ""$($res.""resourceGroup"")"","
-        """location"" : ""$($res.""location"")"","
-        """kind"" : ""$($res.""kind"")"","
-        """subscriptionId"" : ""$($res.""subscriptionId"")""},"
-      }
-  $resultsString=$results -join ""
-  $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
-
+  "getSupportedServices" {
+    # uset $tagmapping to return only the namespace column in a json body
+    $body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
   }
-    default {$body=''}
+  default { $body = '' }
 }
 
 # # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = [HttpStatusCode]::OK
-    Body = $body
-})
+    Body       = $body
+  })
 

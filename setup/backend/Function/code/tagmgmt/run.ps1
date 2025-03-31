@@ -3,20 +3,18 @@ using namespace System.Net
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
 $RepoUrl = $env:repoURL
-$instanceName = $env:InstanceName
-$servicesBaseURL= $env:servicesBaseURL
-
+$instanceName=$env:INSTANCENAME
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
-$resources
 $action = $Request.Body.Action
+$TagList = $Request.Body.Pack.split(',')
 $PackType = $Request.Body.PackType
 $LogAnalyticsWSAVD = $Request.Body.AVDLAW
+$ResourceType = $Request.Body.Type
 $defaultAG=$Request.Body.DefaultAG
-"PackType: $PackType"
-
+#$Request | convertto-json
 if ($resources) {
     #$TagName='MonitorStarterPacks'
     $TagName = $env:SolutionTag
@@ -32,17 +30,30 @@ if ($resources) {
               # Tagging
               if ($PackType -in ('IaaS', 'Discovery')) {
                 foreach ($TagValue in $TagList) {
-                  Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -instanceName $instanceName `
-                    -packType $PackType -actionGroupId $defaultAG -resourceType "microsoft.compute"
+                  $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
+                  Add-Tag -resourceId $resource.Resource `
+                  -TagName $TagName `
+                  -TagValue $TagValue `
+                  -instanceName $instanceName `
+                  -packType $PackType `
+                  -resourceType 'Compute'
+         #-instanceName $instanceName `
+                 # -packType $PackType -actionGroupId $defaultAG -resourceType "microsoft.compute"
                   # Add Agent
-                  Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location
+                  Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 }
               }
               else { #Paas or Platform
                 "PackType: $PackType"
-                "Adding tag "
-                Add-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -instanceName $instanceName `
-                -packType $PackType -actionGroupId $defaultAG -resourceType $resource.type
+                "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
+                Add-Tag -resourceId $resource.Resource `
+                 -TagName $TagName `
+                 -TagValue $ResourceType `
+                 -resourceType $ResourceType `
+                 -actionGroupId $defaultAG `
+                 -packtype $packType `
+                 -instanceName $instanceName `
+                 -location $resource.location
                 if ($TagValue -eq 'Avd') {
                   # Create AVD alerts function.
                   $hostPoolName = ($resource.Resource -split '/')[8]
@@ -55,26 +66,43 @@ if ($resources) {
             }  # End of resource loop
         } # End of AddTag
         'RemoveTag' {
-            
-            foreach ($resource in $resources) {
-                # Tagging
-                if ($PackType -in ('IaaS', 'Discovery')) {
-                    foreach ($TagValue in $TagList) {
-                        Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
-                    }
-                }
-                else {
-                    Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType
-                }
-                # Special case: AVD
-                if ($TagValue -eq 'Avd') {
-                    $hostPoolName = ($resource.Resource -split '/')[8]
-                    $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                    $LogAnalyticsWS = $Request.Body.AltLAW
-                    Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWS
-                }
+          foreach ($resource in $resources) {
+            # Tagging
+            if ($PackType -in ('IaaS', 'Discovery')) {
+              foreach ($TagValue in $TagList) {
+                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
+              }
             }
-        }
+            else { #Paas or Platform
+              "PackType: $PackType"
+              "Removing Tag from service."
+              Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType
+              if ($TagValue -eq 'Avd') {
+                # Create AVD alerts function.
+                $hostPoolName = ($resource.Resource -split '/')[8]
+                $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+                Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
+                -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+              }
+            }
+            # Add Tag Based condition.
+          }  # End of resource loop
+        }  # End of Remove Tag
+
+            # foreach ($TagValue in $TagList) {
+            #     foreach ($resource in $resources) {
+            #         # Tagging
+            #         Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
+            #     }
+            #     if ($TagValue -eq 'Avd') {
+            #         $hostPoolName = ($resource.Resource -split '/')[8]
+            #         $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+            #         Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName `
+            #                     -location $resource.Location -TagName $TagName -TagValue $TagValue `
+            #                     -action $action `
+            #                     -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+            #     }
+            # }
         default {
             Write-Host "Invalid Action"
         }

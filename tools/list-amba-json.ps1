@@ -9,13 +9,15 @@ $i=0
       foreach ($cat in $Categories) {
           $svcs=$aaa.$($cat).psobject.properties.Name
           foreach ($svc in $svcs) {
+             $namespace="microsoft.$($cat.tolower())/$($svc.tolower())"
               if ($aaa.$cat.$svc.name -ne $null) {                  
                   if ($aaa.$cat.$svc[0].properties.metricNamespace -ne $null) {
                       $bodyt=@"
   {
     "category" : "$cat",
     "service" : "$svc",
-    "namespace": "$($aaa.$cat.$svc[0].properties.metricNamespace.tolower())"
+    "metricnamespace": "$($aaa.$cat.$svc[0].properties.metricNamespace.tolower())",
+    "namespace2": "$namespace"
   }
 "@
                     
@@ -26,7 +28,8 @@ $i=0
     {
         "category" : "$cat",
       "service" : "$svc",
-      "namespace": "N/A"
+      "metricnamespace": "N/A",
+        "namespace2": "$namespace"
     }
 "@  
                   }

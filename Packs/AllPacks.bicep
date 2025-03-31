@@ -86,50 +86,50 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
   }
 }
 
-module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
-  name: 'deployPaaSPacks'
-  params: {
-    // Tags: Tags
-    // _artifactsLocation: _artifactsLocation
-    // _artifactsLocationSasToken: _artifactsLocationSasToken
-    location: location
-    workspaceId: workspaceId
-    //workspaceIdAVD: workspaceIdAVD
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    //dceId: dceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    assignmentLevel: assignmentLevel
-    //grafanaName: 'grafana'
-    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
-    customerTags: customerTags
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    subscriptionId: subscriptionId
-    instanceName: instanceName
-  }
-}
+// module AllPaaSPacks 'PaaS/AllPaaSPacks.bicep' = if (deployPaaSPacks) {
+//   name: 'deployPaaSPacks'
+//   params: {
+//     // Tags: Tags
+//     // _artifactsLocation: _artifactsLocation
+//     // _artifactsLocationSasToken: _artifactsLocationSasToken
+//     location: location
+//     workspaceId: workspaceId
+//     //workspaceIdAVD: workspaceIdAVD
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     //dceId: dceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     assignmentLevel: assignmentLevel
+//     //grafanaName: 'grafana'
+//     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
+//     customerTags: customerTags
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     subscriptionId: subscriptionId
+//     instanceName: instanceName
+//   }
+// }
 
-module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatformPacks) {
-  name: 'deployPlatformPacks'
-  params: {
-    // Tags: Tags
-    location: location
-    workspaceId: workspaceId
-    solutionTag: solutionTag
-    solutionVersion: solutionVersion
-    //dceId: dceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
-    assignmentLevel: assignmentLevel
-    actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
-    //grafanaName: 'grafana'
-    mgname: mgname
-    resourceGroupId: resourceGroupId
-    subscriptionId: subscriptionId
-    customerTags: customerTags
-    instanceName: instanceName
-  }
-}
+// module AllPlatformPacks './Platform/AllPlatformPacks.bicep' = if (deployPlatformPacks) {
+//   name: 'deployPlatformPacks'
+//   params: {
+//     // Tags: Tags
+//     location: location
+//     workspaceId: workspaceId
+//     solutionTag: solutionTag
+//     solutionVersion: solutionVersion
+//     //dceId: dceId
+//     userManagedIdentityResourceId: userManagedIdentityResourceId
+//     assignmentLevel: assignmentLevel
+//     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
+//     //grafanaName: 'grafana'
+//     mgname: mgname
+//     resourceGroupId: resourceGroupId
+//     subscriptionId: subscriptionId
+//     customerTags: customerTags
+//     instanceName: instanceName
+//   }
+// }
 
 // Grafana upload and install
 module grafana './ds.bicep' = if (deployGrafana) {

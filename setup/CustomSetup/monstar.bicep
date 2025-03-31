@@ -181,7 +181,6 @@ module backend '../backend/bicep/backend.bicep' = {
   ]
   params: {
     appInsightsLocation: location
-//    currentUserIdObject: currentUserIdObject
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     location: location
