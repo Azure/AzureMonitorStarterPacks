@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5334469997620608250"
+      "templateHash": "859951983455289052"
     }
   },
   "parameters": {
@@ -141,7 +141,7 @@
       "condition": "[parameters('createNewResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "resourceGroup-Deployment",
+      "name": "[format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -203,7 +203,7 @@
       "condition": "[parameters('createNewStorageAccount')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "newstorage-deployment",
+      "name": "[format('STOmonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -323,7 +323,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     },
     {
@@ -484,7 +484,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     },
     {
@@ -2412,7 +2412,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17700560527942817312"
+              "templateHash": "14855733454842223127"
             }
           },
           "parameters": {
@@ -2451,7 +2451,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "grafanaReadPermissions",
+              "name": "[format('AMGRReadP-{0}-{1}', parameters('grafanaName'), parameters('location'))]",
               "subscriptionId": "[subscription().subscriptionId]",
               "location": "[resourceGroup().location]",
               "properties": {
@@ -2538,7 +2538,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "grafanaLAWPermissions",
+              "name": "[format('AMGLAWP-{0}-{1}', parameters('grafanaName'), parameters('location'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2623,7 +2623,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "grafanaMonitorPermissions",
+              "name": "[format('AMGMonitorP-{0}-{1}', parameters('grafanaName'), parameters('location'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2716,7 +2716,7 @@
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
-        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     },
     {
@@ -2778,7 +2778,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1124942365391621724"
+              "templateHash": "9472653001876352169"
             }
           },
           "parameters": {
@@ -3592,7 +3592,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14595268456194738343"
+                      "templateHash": "18188190261874203369"
                     }
                   },
                   "parameters": {
@@ -3613,7 +3613,7 @@
                         {
                           "type": 1,
                           "content": {
-                            "json": "# Azure Monitor Starter Packs - Extended Admin Centre - V2.2\n\n\n"
+                            "json": "# Azure Monitor Starter Packs - Extended Admin Centre - V3.0 (Beta)\n\n\n"
                           },
                           "customWidth": "50",
                           "name": "textTitle"
@@ -5047,7 +5047,8 @@
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
                                             "value": [
-                                              "InsightsDep"
+                                              "InsightsDep",
+                                              "Nginx"
                                             ]
                                           }
                                         ],
@@ -5189,7 +5190,7 @@
                                       "type": 3,
                                       "content": {
                                         "version": "KqlItem/1.0",
-                                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.Total\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
+                                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.AlertRules\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                                         "size": 0,
                                         "title": "Monitored Services",
                                         "exportMultipleValues": true,
@@ -8820,7 +8821,7 @@
                         }
                       ],
                       "fallbackResourceIds": [
-                        "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+                        "Azure Monitor"
                       ],
                       "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
                     },
@@ -9837,7 +9838,7 @@
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
-        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     },
     {
@@ -9877,7 +9878,7 @@
           "actionGroupName": {
             "value": "[parameters('actionGroupName')]"
           },
-          "resourceGroupId": "[if(parameters('createNewResourceGroup'), createObject('value', reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment'), '2022-09-01').outputs.newResourceGroupId.value), createObject('value', parameters('resourceGroupId')))]",
+          "resourceGroupId": "[if(parameters('createNewResourceGroup'), createObject('value', reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName'))), '2022-09-01').outputs.newResourceGroupId.value), createObject('value', parameters('resourceGroupId')))]",
           "emailreceiver": {
             "value": "[parameters('emailreceiver')]"
           },
@@ -19061,7 +19062,7 @@
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('azureManagedGrafana-{0}', parameters('instanceName')))]",
         "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
-        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', 'resourceGroup-Deployment')]"
+        "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     }
   ]

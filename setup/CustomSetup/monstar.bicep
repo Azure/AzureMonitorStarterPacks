@@ -55,7 +55,7 @@ var logicAppName = 'AMP-${instanceName}-LogicApp'
 var ImageGalleryName = 'AMP${instanceName}Gallery'
 
 module resourgeGroup '../backend/bicep/modules/mg/resourceGroup.bicep' = if (createNewResourceGroup) {
-  name: 'resourceGroup-Deployment'
+  name: 'RGMonitoringPacks-${location}-${instanceName}'
   scope: subscription(subscriptionId)
   params: {
     resourceGroupName: resourceGroupName
@@ -65,7 +65,8 @@ module resourgeGroup '../backend/bicep/modules/mg/resourceGroup.bicep' = if (cre
 }
 
 module storageAccount '../backend/bicep/modules/mg/storageAccount.bicep' = if (createNewStorageAccount) {
-  name:'newstorage-deployment'
+  name:'STOmonitoringPacks-${location}-${instanceName}'
+
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     resourgeGroup
