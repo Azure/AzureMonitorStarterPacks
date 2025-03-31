@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6745167425505354642"
+      "templateHash": "470751214179023371"
     }
   },
   "parameters": {
@@ -9458,7 +9458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1298710547514674957"
+              "templateHash": "2544590526198049511"
             }
           },
           "parameters": {
@@ -9710,7 +9710,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5463922814552443040"
+                      "templateHash": "10483075205654096954"
                     }
                   },
                   "parameters": {
@@ -18458,6 +18458,225 @@
                                       }
                                     }
                                   ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "VMInsightsDependencyPack",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "dceId": {
+                            "value": "[parameters('dceId')]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "resourceGroupId": {
+                            "value": "[parameters('resourceGroupId')]"
+                          },
+                          "solutionTag": {
+                            "value": "[parameters('solutionTag')]"
+                          },
+                          "solutionVersion": {
+                            "value": "[parameters('solutionVersion')]"
+                          },
+                          "subscriptionId": {
+                            "value": "[parameters('subscriptionId')]"
+                          },
+                          "workspaceId": {
+                            "value": "[parameters('workspaceId')]"
+                          },
+                          "customerTags": {
+                            "value": "[parameters('customerTags')]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "14230917094621121622"
+                            }
+                          },
+                          "parameters": {
+                            "packtag": {
+                              "type": "string",
+                              "defaultValue": "InsightsDep",
+                              "metadata": {
+                                "description": "The Tag value for this pack"
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "location for the deployment."
+                              }
+                            },
+                            "workspaceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Full resource ID of the log analytics workspace to be used for the deployment."
+                              }
+                            },
+                            "solutionTag": {
+                              "type": "string"
+                            },
+                            "solutionVersion": {
+                              "type": "string"
+                            },
+                            "dceId": {
+                              "type": "string"
+                            },
+                            "subscriptionId": {
+                              "type": "string"
+                            },
+                            "resourceGroupId": {
+                              "type": "string"
+                            },
+                            "customerTags": {
+                              "type": "object"
+                            },
+                            "instanceName": {
+                              "type": "string"
+                            }
+                          },
+                          "variables": {
+                            "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                            "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
+                            "tempTags": {
+                              "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                              "MonitoringPackType": "IaaS",
+                              "solutionVersion": "[parameters('solutionVersion')]"
+                            },
+                            "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
+                            "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('vmInsightsDCR-{0}', parameters('packtag'))]",
+                              "subscriptionId": "[parameters('subscriptionId')]",
+                              "resourceGroup": "[variables('resourceGroupName')]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
+                                  "workspaceResourceId": {
+                                    "value": "[parameters('workspaceId')]"
+                                  },
+                                  "Tags": {
+                                    "value": "[variables('Tags')]"
+                                  },
+                                  "ruleName": {
+                                    "value": "[variables('rulename')]"
+                                  },
+                                  "dceId": {
+                                    "value": "[parameters('dceId')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "13954368441826719999"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "location": {
+                                      "type": "string"
+                                    },
+                                    "workspaceResourceId": {
+                                      "type": "string"
+                                    },
+                                    "Tags": {
+                                      "type": "object"
+                                    },
+                                    "ruleName": {
+                                      "type": "string"
+                                    },
+                                    "dceId": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "variables": {
+                                    "wsfriendlyname": "[split(parameters('workspaceResourceId'), '/')[8]]"
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.Insights/dataCollectionRules",
+                                      "apiVersion": "2021-09-01-preview",
+                                      "name": "[format('{0}-VMI', parameters('ruleName'))]",
+                                      "location": "[parameters('location')]",
+                                      "tags": "[parameters('Tags')]",
+                                      "properties": {
+                                        "description": "Data collection rule for VM Insights.",
+                                        "dataCollectionEndpointId": "[parameters('dceId')]",
+                                        "dataSources": {
+                                          "performanceCounters": [
+                                            {
+                                              "name": "VMInsightsPerfCounters",
+                                              "streams": [
+                                                "Microsoft-InsightsMetrics"
+                                              ],
+                                              "samplingFrequencyInSeconds": 60,
+                                              "counterSpecifiers": [
+                                                "\\VmInsights\\DetailedMetrics"
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "destinations": {
+                                          "logAnalytics": [
+                                            {
+                                              "workspaceResourceId": "[parameters('workspaceResourceId')]",
+                                              "name": "[variables('wsfriendlyname')]"
+                                            }
+                                          ]
+                                        },
+                                        "dataFlows": [
+                                          {
+                                            "streams": [
+                                              "Microsoft-InsightsMetrics"
+                                            ],
+                                            "destinations": [
+                                              "[variables('wsfriendlyname')]"
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ],
+                                  "outputs": {
+                                    "VMIRuleId": {
+                                      "type": "string",
+                                      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', format('{0}-VMI', parameters('ruleName')))]"
+                                    }
+                                  }
                                 }
                               }
                             }

@@ -206,3 +206,19 @@ module Nginx './Nginx/monitoring.bicep' = {
     instanceName: instanceName
   }
 }
+
+module VMInsightsPackWithDependency './VMInsightswithDependency/monitoring.bicep' = {
+  name: 'VMInsightsDependencyPack'
+  params: {
+    dceId: dceId
+    location: location
+    resourceGroupId: resourceGroupId
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    subscriptionId: subscriptionId
+    workspaceId: workspaceId
+    customerTags: customerTags
+    instanceName: instanceName
+  }
+}
+
