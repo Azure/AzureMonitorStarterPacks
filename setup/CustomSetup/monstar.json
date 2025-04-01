@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "470751214179023371"
+      "templateHash": "862656082429096049"
     }
   },
   "parameters": {
@@ -229,7 +229,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17891774439403355544"
+              "templateHash": "17027540109173456102"
             }
           },
           "parameters": {
@@ -264,6 +264,22 @@
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'applications')]",
+              "properties": {
+                "immutableStorageWithVersioning": {
+                  "enabled": false
+                },
+                "denyEncryptionScopeOverride": false,
+                "defaultEncryptionScope": "$account-encryption-key",
+                "publicAccess": "None"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'amba')]",
               "properties": {
                 "immutableStorageWithVersioning": {
                   "enabled": false
@@ -2318,7 +2334,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10704995410416150773"
+              "templateHash": "16558421497469301594"
             }
           },
           "parameters": {
@@ -2530,7 +2546,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8189292297702201004"
+                      "templateHash": "4281925135196815635"
                     }
                   },
                   "parameters": {
@@ -2753,7 +2769,8 @@
                         "PacksUserManagedId": "[parameters('packsUserManagedId')]",
                         "InstanceName": "[parameters('instanceName')]",
                         "AMBAJsonURL": "[variables('ambaJsonURL')]",
-                        "servicesBaseURL": "https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services"
+                        "servicesBaseURL": "https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services",
+                        "storageaccount": "[parameters('storageAccountName')]"
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Insights/components', parameters('functionname'))]",
@@ -3132,7 +3149,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18188190261874203369"
+                      "templateHash": "171292952624058976"
                     }
                   },
                   "parameters": {
@@ -3249,14 +3266,6 @@
                                 "linkTarget": "parameter",
                                 "linkLabel": "Alert Rules",
                                 "subTarget": "alertmanagement",
-                                "style": "link"
-                              },
-                              {
-                                "id": "3a19e3a9-d64d-41d8-a313-3a60db36bcc4",
-                                "cellValue": "tabSelection",
-                                "linkTarget": "parameter",
-                                "linkLabel": "Policies",
-                                "subTarget": "policystatus",
                                 "style": "link"
                               },
                               {
@@ -3433,7 +3442,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resourcegraph/resources",
-                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LA"
                                     },
                                     {
                                       "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -3456,7 +3465,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": null
+                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPb1e924f9"
                                     },
                                     {
                                       "id": "7961f447-f72b-401d-a26b-283a44e45b2e",
@@ -3538,14 +3547,6 @@
                                       "linkLabel": "Resource List",
                                       "subTarget": "resources",
                                       "style": "link"
-                                    },
-                                    {
-                                      "id": "2b8648a3-8221-4c46-bf6c-0962dc862628",
-                                      "cellValue": "configTab",
-                                      "linkTarget": "parameter",
-                                      "linkLabel": "Namespace Table",
-                                      "subTarget": "namespaces",
-                                      "style": "link"
                                     }
                                   ]
                                 },
@@ -3576,21 +3577,6 @@
                                 "styleSettings": {
                                   "showBorder": true
                                 }
-                              },
-                              {
-                                "type": 3,
-                                "content": {
-                                  "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
-                                  "size": 0,
-                                  "queryType": 10
-                                },
-                                "conditionalVisibility": {
-                                  "parameterName": "configTab",
-                                  "comparison": "isEqualTo",
-                                  "value": "namespaces"
-                                },
-                                "name": "queryServiceTags"
                               }
                             ],
                             "exportParameters": true
@@ -3606,7 +3592,7 @@
                           "type": 3,
                           "content": {
                             "version": "KqlItem/1.0",
-                            "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+                            "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
                             "size": 0,
                             "queryType": 10
                           },
@@ -3751,40 +3737,6 @@
                                       },
                                       "customWidth": "33",
                                       "name": "agentInstallStatus",
-                                      "styleSettings": {
-                                        "showBorder": true
-                                      }
-                                    },
-                                    {
-                                      "type": 3,
-                                      "content": {
-                                        "version": "KqlItem/1.0",
-                                        "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyId=id, policyName=name, pack=tostring(properties.metadata.MonitorStarterPacks)) on policyName\n| project policyId, policyName, complianceState=tostring(complianceState), pack,type='Policy'\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and isnotempty(properties.metadata.MonitorStarterPacks)\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project policyId=policySetDefinitionId, policyName=name,complianceState,pack='N/A', type='Set')\n| summarize count() by complianceState,policyName",
-                                        "size": 1,
-                                        "title": "Assignment Policies Status",
-                                        "queryType": 1,
-                                        "resourceType": "microsoft.resources/tenants",
-                                        "crossComponentResources": [
-                                          "value::tenant"
-                                        ],
-                                        "visualization": "piechart",
-                                        "chartSettings": {
-                                          "seriesLabelSettings": [
-                                            {
-                                              "seriesName": "Compliant",
-                                              "label": "Compliant",
-                                              "color": "green"
-                                            },
-                                            {
-                                              "seriesName": "nonCompliant",
-                                              "label": "Not Compliant",
-                                              "color": "redDark"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      "customWidth": "33",
-                                      "name": "policyComplianceStatus",
                                       "styleSettings": {
                                         "showBorder": true
                                       }
@@ -4115,7 +4067,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags&Type=PaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices&Type=PaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
                                   "size": 0,
                                   "queryType": 10
                                 },
@@ -4137,7 +4089,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getAllServiceTags&Type=Platform\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices&Type=Platform\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
                                   "size": 0,
                                   "queryType": 10
                                 },
@@ -4165,30 +4117,7 @@
                                   "resourceType": "microsoft.resources/tenants",
                                   "crossComponentResources": [
                                     "value::tenant"
-                                  ]
-                                },
-                                "conditionalVisibilities": [
-                                  {
-                                    "parameterName": "showHidden",
-                                    "comparison": "isEqualTo",
-                                    "value": "yes"
-                                  },
-                                  {
-                                    "parameterName": "dashTab",
-                                    "comparison": "isEqualTo",
-                                    "value": "paas"
-                                  }
-                                ],
-                                "name": "query - resourcestomerge - nonIaaS"
-                              },
-                              {
-                                "type": 3,
-                                "content": {
-                                  "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"queryServiceTags\",\"rightTable\":\"query - resourcestomerge - nonIaaS\",\"leftColumn\":\"nameSpace\",\"rightColumn\":\"nameSpace\"}],\"projectRename\":[{\"originalName\":\"[queryServiceTags].tag\",\"mergedName\":\"tag\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[queryServiceTags].type\",\"mergedName\":\"type\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - resourcestomerge - nonIaaS].Total\",\"mergedName\":\"Total\",\"fromId\":\"3d65009c-120d-4954-aa36-dd1e33b4b1d8\"},{\"originalName\":\"[query - 18].type\"},{\"originalName\":\"[query - pass - resourcestomerge].type\"},{\"originalName\":\"[queryServiceTags].tag\"},{\"originalName\":\"[query - resourcestomerge - nonIaaS].nameSpace\"},{\"originalName\":\"[queryServiceTags].nameSpace\"}]}",
-                                  "size": 0,
-                                  "title": "Monitored Services",
-                                  "queryType": 7,
+                                  ],
                                   "visualization": "piechart"
                                 },
                                 "conditionalVisibility": {
@@ -4196,8 +4125,7 @@
                                   "comparison": "isEqualTo",
                                   "value": "paas"
                                 },
-                                "showPin": false,
-                                "name": "query - PaaS Graph Status"
+                                "name": "query - resourcestomerge - nonIaaS"
                               }
                             ]
                           },
@@ -4587,7 +4515,6 @@
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
                                             "value": [
-                                              "InsightsDep",
                                               "Nginx"
                                             ]
                                           }
@@ -5130,7 +5057,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": null
+                                      "value": "microsoft.keyvault/vaults"
                                     }
                                   ],
                                   "style": "pills",
@@ -6356,431 +6283,6 @@
                           "content": {
                             "version": "NotebookGroup/1.0",
                             "groupType": "editable",
-                            "title": "Policy Assignment Status",
-                            "items": [
-                              {
-                                "type": 11,
-                                "content": {
-                                  "version": "LinkItem/1.0",
-                                  "style": "tabs",
-                                  "links": [
-                                    {
-                                      "id": "ec38b692-92dd-405d-9e0c-7fdce860cbd9",
-                                      "cellValue": "policyTab",
-                                      "linkTarget": "parameter",
-                                      "linkLabel": "Compliance",
-                                      "subTarget": "compliance",
-                                      "style": "link"
-                                    },
-                                    {
-                                      "id": "fde6131a-93c5-4a3d-a8ee-1509d3546026",
-                                      "cellValue": "policyTab",
-                                      "linkTarget": "parameter",
-                                      "linkLabel": "Assignment",
-                                      "subTarget": "assignment",
-                                      "style": "link"
-                                    }
-                                  ]
-                                },
-                                "name": "links - 8"
-                              },
-                              {
-                                "type": 1,
-                                "content": {
-                                  "json": "## Policy Management - Compliance\n\nThis dialog allows to verify the status of the pack policies as well as Remediate the policies.\n\nA background process remediates policies that are not compliant every 6 hours as well.",
-                                  "style": "info"
-                                },
-                                "conditionalVisibilities": [
-                                  {
-                                    "parameterName": "showHelp",
-                                    "comparison": "isEqualTo",
-                                    "value": "yes"
-                                  },
-                                  {
-                                    "parameterName": "policyTab",
-                                    "comparison": "isEqualTo",
-                                    "value": "compliance"
-                                  }
-                                ],
-                                "name": "text - Policy - Compliance"
-                              },
-                              {
-                                "type": 3,
-                                "content": {
-                                  "version": "KqlItem/1.0",
-                                  "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName), complianceState=properties.complianceState\n| join (policyresources | where type == \"microsoft.authorization/policydefinitions\" and isnotempty(properties.metadata.MonitorStarterPacks) | project policyId=id, policyName=name, pack=tostring(properties.metadata.MonitorStarterPacks)) on policyName\n| project policyId, policyName, complianceState=tostring(complianceState), pack,type='Policy'\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and isnotempty(properties.metadata.MonitorStarterPacks)\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project policyId=policySetDefinitionId, policyName=name,complianceState,pack='N/A', type='Set')",
-                                  "size": 0,
-                                  "title": "Assignment Status (Compliance)",
-                                  "exportMultipleValues": true,
-                                  "exportedParameters": [
-                                    {
-                                      "parameterName": "policyToRemediate",
-                                      "parameterType": 1,
-                                      "quote": ""
-                                    }
-                                  ],
-                                  "showExportToExcel": true,
-                                  "exportToExcelOptions": "all",
-                                  "queryType": 1,
-                                  "resourceType": "microsoft.resources/tenants",
-                                  "crossComponentResources": [
-                                    "value::tenant"
-                                  ],
-                                  "visualization": "table",
-                                  "gridSettings": {
-                                    "formatters": [
-                                      {
-                                        "columnMatch": "complianceState",
-                                        "formatter": 18,
-                                        "formatOptions": {
-                                          "linkTarget": "ArmAction",
-                                          "linkIsContextBlade": true,
-                                          "thresholdsOptions": "icons",
-                                          "thresholdsGrid": [
-                                            {
-                                              "operator": "==",
-                                              "thresholdValue": "Compliant",
-                                              "representation": "success",
-                                              "text": "Compliant"
-                                            },
-                                            {
-                                              "operator": "==",
-                                              "thresholdValue": "Non-compliant",
-                                              "representation": "2",
-                                              "text": "Non-Compliant"
-                                            },
-                                            {
-                                              "operator": "Default",
-                                              "thresholdValue": null,
-                                              "representation": "warning",
-                                              "text": "{0}{1}"
-                                            }
-                                          ],
-                                          "armActionContext": {
-                                            "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                            "headers": [],
-                                            "params": [],
-                                            "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": [{policyToRemediate}]\n  }\n}",
-                                            "httpMethod": "POST",
-                                            "title": "Remediate a policy",
-                                            "description": "# Remediate\n\nPolicies:\n\n[{policyToRemediate:$.policyId}]\n",
-                                            "actionName": "Remediatepolicies",
-                                            "runLabel": "Remediate"
-                                          }
-                                        },
-                                        "tooltipFormat": {
-                                          "tooltip": "Click To Remediate"
-                                        }
-                                      }
-                                    ],
-                                    "filter": true,
-                                    "sortBy": [
-                                      {
-                                        "itemKey": "type",
-                                        "sortOrder": 1
-                                      }
-                                    ]
-                                  },
-                                  "sortBy": [
-                                    {
-                                      "itemKey": "type",
-                                      "sortOrder": 1
-                                    }
-                                  ]
-                                },
-                                "customWidth": "75",
-                                "conditionalVisibility": {
-                                  "parameterName": "policyTab",
-                                  "comparison": "isEqualTo",
-                                  "value": "compliance"
-                                },
-                                "name": "policylist",
-                                "styleSettings": {
-                                  "showBorder": true
-                                }
-                              },
-                              {
-                                "type": 12,
-                                "content": {
-                                  "version": "NotebookGroup/1.0",
-                                  "groupType": "editable",
-                                  "items": [
-                                    {
-                                      "type": 11,
-                                      "content": {
-                                        "version": "LinkItem/1.0",
-                                        "style": "list",
-                                        "links": [
-                                          {
-                                            "id": "b3bb5a4d-0f95-4e9a-8634-9cb027f860aa",
-                                            "linkTarget": "ArmAction",
-                                            "linkLabel": "Remediate",
-                                            "preText": "",
-                                            "style": "primary",
-                                            "linkIsContextBlade": true,
-                                            "armActionContext": {
-                                              "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                              "headers": [],
-                                              "params": [],
-                                              "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Remediate\",\n    \"Policies\": [{policyToRemediate}]\n  }\n}",
-                                              "httpMethod": "POST",
-                                              "title": "Remediate policies",
-                                              "description": "# Please confirm remediation\n\nThis button will trigger a remediation action against the selected policies.\n\n{policyToRemediate}",
-                                              "actionName": "Remediate",
-                                              "runLabel": "Confirm"
-                                            }
-                                          },
-                                          {
-                                            "id": "8dfc5afa-108a-4713-8a0c-651c3a32c5f1",
-                                            "linkTarget": "ArmAction",
-                                            "linkLabel": "Check Compliance",
-                                            "style": "primary",
-                                            "linkIsContextBlade": true,
-                                            "armActionContext": {
-                                              "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                              "headers": [],
-                                              "params": [],
-                                              "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Scan\"\n  }\n}",
-                                              "httpMethod": "POST",
-                                              "title": "Check Policy Compliance",
-                                              "description": "# Please confirm the scan.",
-                                              "runLabel": "Confirm"
-                                            }
-                                          }
-                                        ]
-                                      },
-                                      "name": "links - 3"
-                                    },
-                                    {
-                                      "type": 1,
-                                      "content": {
-                                        "json": "## Policy Compliance Check\nThis task will trigger a tenant wide check for policy compliance.\n\n## Policy Remediation\n\nThis Task will trigger remediation for the policies in the list that are considered not compliant at this time.",
-                                        "style": "info"
-                                      },
-                                      "conditionalVisibilities": [
-                                        {
-                                          "parameterName": "tabSelection",
-                                          "comparison": "isEqualTo",
-                                          "value": "policystatus"
-                                        },
-                                        {
-                                          "parameterName": "showHelp",
-                                          "comparison": "isEqualTo",
-                                          "value": "yes"
-                                        }
-                                      ],
-                                      "name": "text - 7"
-                                    }
-                                  ]
-                                },
-                                "customWidth": "25",
-                                "conditionalVisibility": {
-                                  "parameterName": "policyTab",
-                                  "comparison": "isEqualTo",
-                                  "value": "compliance"
-                                },
-                                "name": "ComplianceButtons"
-                              },
-                              {
-                                "type": 1,
-                                "content": {
-                                  "json": "## Installed Policies and Initiatives with Assignments\n\nThis grid can be used to visualize the policies and currenct assignments as well as assing/unassign policies to/from different scopes.\n\nOnce one or more policies are selected, the diaglog of scopes (subscriptions and management groups) is displayed along with the respective buttons.\n",
-                                  "style": "info"
-                                },
-                                "conditionalVisibilities": [
-                                  {
-                                    "parameterName": "showHelp",
-                                    "comparison": "isEqualTo",
-                                    "value": "yes"
-                                  },
-                                  {
-                                    "parameterName": "policyTab",
-                                    "comparison": "isEqualTo",
-                                    "value": "assignment"
-                                  }
-                                ],
-                                "name": "text - 7"
-                              },
-                              {
-                                "type": 3,
-                                "content": {
-                                  "version": "KqlItem/1.0",
-                                  "query": "policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Policy',['id'],Pack=tostring(properties.metadata.MonitorStarterPacks)\n| join kind = leftouter (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentName=name,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join kind=leftouter  (policyresources\n| where type == \"microsoft.authorization/policydefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)) on $left.PolicyId == $right.id\n| project tostring(AssignmentName),Name=tostring(split(PolicyId,\"/\")[8]), PolicyId,ScopeLevel=iff(scope contains 'subscriptions',\"Sub\", \"MG\"), Scope=scope) on Name\n| project-away Name1, id\n| union ( policyresources\n| where type == \"microsoft.authorization/policysetdefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)\n| project Name=name, Type='Initiative',['id'],Pack=\"_N/A\"\n| join kind = leftouter (policyresources\n| where type == \"microsoft.authorization/policyassignments\"\n| project AssignmentName=name,scope=properties.scope,PolicyId=tostring(properties.policyDefinitionId), PolicyName=split(properties.PolicyId,\"/\")[8]\n| join kind=leftouter  (policyresources\n| where type == \"microsoft.authorization/policysetdefinitions\"\n| where  isnotempty(properties.metadata.MonitorStarterPacks)) on $left.PolicyId == $right.id\n| project tostring(AssignmentName),Name=tostring(split(PolicyId,\"/\")[8]), PolicyId, ScopeLevel=iff(scope contains 'subscriptions',\"Sub\", \"MG\"),Scope=scope) on Name\n| project-away Name1, id)\n| sort by Pack asc, AssignmentName asc ",
-                                  "size": 0,
-                                  "title": "Installed Policies and Initiatives with Assignments",
-                                  "noDataMessage": "No MonStar policies (packs) installed.",
-                                  "exportMultipleValues": true,
-                                  "exportedParameters": [
-                                    {
-                                      "fieldName": "",
-                                      "parameterName": "policyseletedpolicy",
-                                      "parameterType": 1
-                                    }
-                                  ],
-                                  "showExportToExcel": true,
-                                  "exportToExcelOptions": "all",
-                                  "queryType": 1,
-                                  "resourceType": "microsoft.resources/tenants",
-                                  "crossComponentResources": [
-                                    "value::tenant"
-                                  ],
-                                  "gridSettings": {
-                                    "formatters": [
-                                      {
-                                        "columnMatch": "Group",
-                                        "formatter": 1
-                                      }
-                                    ],
-                                    "filter": true
-                                  }
-                                },
-                                "conditionalVisibility": {
-                                  "parameterName": "policyTab",
-                                  "comparison": "isEqualTo",
-                                  "value": "assignment"
-                                },
-                                "name": "query - policiestoassign",
-                                "styleSettings": {
-                                  "showBorder": true
-                                }
-                              },
-                              {
-                                "type": 1,
-                                "content": {
-                                  "json": "Select Scope below to assign a policy. There is no need to Select a scope to Unassign the policy.",
-                                  "style": "info"
-                                },
-                                "conditionalVisibilities": [
-                                  {
-                                    "parameterName": "policyseletedpolicy",
-                                    "comparison": "isNotEqualTo"
-                                  },
-                                  {
-                                    "parameterName": "policyTab",
-                                    "comparison": "isEqualTo",
-                                    "value": "assignment"
-                                  }
-                                ],
-                                "name": "text - 6"
-                              },
-                              {
-                                "type": 3,
-                                "content": {
-                                  "version": "KqlItem/1.0",
-                                  "query": "resourcecontainers\n| where type == 'microsoft.management/managementgroups' or type =~ 'microsoft.resources/subscriptions'\n| project name, id, subscriptionId, type=split(type,'/')[1]",
-                                  "size": 0,
-                                  "exportMultipleValues": true,
-                                  "exportedParameters": [
-                                    {
-                                      "parameterName": "policyscopes",
-                                      "parameterType": 1,
-                                      "quote": "\""
-                                    }
-                                  ],
-                                  "queryType": 1,
-                                  "resourceType": "microsoft.resources/tenants",
-                                  "crossComponentResources": [
-                                    "value::tenant"
-                                  ]
-                                },
-                                "conditionalVisibility": {
-                                  "parameterName": "policyseletedpolicy",
-                                  "comparison": "isNotEqualTo"
-                                },
-                                "name": "query - 15",
-                                "styleSettings": {
-                                  "showBorder": true
-                                }
-                              },
-                              {
-                                "type": 11,
-                                "content": {
-                                  "version": "LinkItem/1.0",
-                                  "style": "paragraph",
-                                  "links": [
-                                    {
-                                      "id": "63320366-2b93-4e52-831c-55f7c6de4043",
-                                      "linkTarget": "ArmAction",
-                                      "linkLabel": "Assign Policy",
-                                      "style": "primary",
-                                      "linkIsContextBlade": true,
-                                      "armActionContext": {
-                                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                        "headers": [],
-                                        "params": [],
-                                        "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Assign\",\n    \"Scopes\": [{policyscopes}],\n    \"policies\": [{policyseletedpolicy}]\n  }\n}",
-                                        "httpMethod": "POST",
-                                        "title": "Assign Policy",
-                                        "description": "# Assign policy below to selected scope:\n\n## Policy\n\n{policyseletedpolicy}\n\n## Scope\n\n{policyscopes}",
-                                        "runLabel": "Assign"
-                                      }
-                                    },
-                                    {
-                                      "id": "ed3b8c20-e2ef-4768-b0b9-bfcc254602e6",
-                                      "linkTarget": "ArmAction",
-                                      "linkLabel": "Unassign Policy",
-                                      "style": "primary",
-                                      "linkIsContextBlade": true,
-                                      "armActionContext": {
-                                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                        "headers": [],
-                                        "params": [],
-                                        "body": "{ \n  \"function\": \"policymgmt\",\n  \"functionBody\" : {\n    \"SolutionTag\":\"MonitorStarterPacks\",\n    \"Action\": \"Unassign\",\n    \"policies\": [{policyseletedpolicy}]\n  }\n}",
-                                        "httpMethod": "POST",
-                                        "title": "Unassign Policies",
-                                        "description": "# Unassign policy or policies below from their scopes.\n\n## Policy\n\n{policyseletedpolicy}\n\n",
-                                        "actionName": "Unassign Policies",
-                                        "runLabel": "Unassign"
-                                      }
-                                    }
-                                  ]
-                                },
-                                "customWidth": "25",
-                                "conditionalVisibilities": [
-                                  {
-                                    "parameterName": "policyseletedpolicy",
-                                    "comparison": "isNotEqualTo"
-                                  },
-                                  {
-                                    "parameterName": "policyTab",
-                                    "comparison": "isEqualTo",
-                                    "value": "assignment"
-                                  }
-                                ],
-                                "name": "links - 2 - Copy"
-                              },
-                              {
-                                "type": 1,
-                                "content": {
-                                  "json": "## Policies To Assign: \n\n`{policyseletedpolicy}`\n\n## Scopes: \n\n{policyscopes}"
-                                },
-                                "conditionalVisibilities": [
-                                  {
-                                    "parameterName": "policyseletedpolicy",
-                                    "comparison": "isNotEqualTo"
-                                  },
-                                  {
-                                    "parameterName": "showHelp",
-                                    "comparison": "isEqualTo",
-                                    "value": "yes"
-                                  }
-                                ],
-                                "name": "text - 4"
-                              }
-                            ]
-                          },
-                          "conditionalVisibility": {
-                            "parameterName": "tabSelection",
-                            "comparison": "isEqualTo",
-                            "value": "policystatus"
-                          },
-                          "name": "policymgmt"
-                        },
-                        {
-                          "type": 12,
-                          "content": {
-                            "version": "NotebookGroup/1.0",
-                            "groupType": "editable",
                             "title": "Agent Management",
                             "items": [
                               {
@@ -7389,14 +6891,6 @@
                                       "style": "link"
                                     },
                                     {
-                                      "id": "2c17bf03-2295-4b97-850f-3208602c9e50",
-                                      "cellValue": "discTab",
-                                      "linkTarget": "parameter",
-                                      "linkLabel": "Discovery Policies",
-                                      "subTarget": "discPolicies",
-                                      "style": "link"
-                                    },
-                                    {
                                       "id": "3a11d108-b694-4989-9302-48010831377a",
                                       "cellValue": "discTab",
                                       "linkTarget": "parameter",
@@ -7620,9 +7114,7 @@
                                                   },
                                                   "queryType": 1,
                                                   "resourceType": "microsoft.resourcegraph/resources",
-                                                  "value": [
-                                                    "LxDisc"
-                                                  ]
+                                                  "value": []
                                                 }
                                               ],
                                               "style": "pills",
@@ -7762,9 +7254,7 @@
                                                   },
                                                   "queryType": 1,
                                                   "resourceType": "microsoft.resources/tenants",
-                                                  "value": [
-                                                    "WinDisc"
-                                                  ]
+                                                  "value": []
                                                 }
                                               ],
                                               "style": "pills",
@@ -7831,68 +7321,6 @@
                                   "value": "discConfig"
                                 },
                                 "name": "Servers - Discovery",
-                                "styleSettings": {
-                                  "showBorder": true
-                                }
-                              },
-                              {
-                                "type": 3,
-                                "content": {
-                                  "version": "KqlItem/1.0",
-                                  "query": "policyresources | where type == \"microsoft.policyinsights/policystates\" | extend policyName=tostring(properties.policyDefinitionName),complianceState=properties.complianceState\n| join \n    (policyresources | where type == \"microsoft.authorization/policydefinitions\" and properties.metadata.MonitoringPackType == 'Discovery'  \n        | project policyId=id, policyName=name) \n        on policyName\n| project Name=policyName, State=tostring(complianceState), type='Policy',policyId\n| union( policyresources\n| where type =~ 'Microsoft.PolicyInsights/PolicyStates'\n| extend complianceState = tostring(properties.complianceState)\n| extend\n\tresourceId = tostring(properties.resourceId),\n\tpolicyAssignmentId = tostring(properties.policyAssignmentId),\n\tpolicyAssignmentScope = tostring(properties.policyAssignmentScope),\n\tpolicyAssignmentName = tostring(properties.policyAssignmentName),\n\tpolicyDefinitionId = tostring(properties.policyDefinitionId),\n    policySetDefinitionId=tostring(properties.policySetDefinitionId),\n\tpolicyDefinitionReferenceId = tostring(properties.policyDefinitionReferenceId),\n\tstateWeight = iff(complianceState == 'NonCompliant', int(300), iff(complianceState == 'Compliant', int(200), iff(complianceState == 'Conflict', int(100), iff(complianceState == 'Exempt', int(50), int(0)))))\n| summarize max(stateWeight) by resourceId, policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| summarize counts = count() by policyAssignmentId, policyAssignmentScope, max_stateWeight, policyAssignmentName,policySetDefinitionId\n| summarize overallStateWeight = max(max_stateWeight),\nnonCompliantCount = sumif(counts, max_stateWeight == 300),\ncompliantCount = sumif(counts, max_stateWeight == 200),\nconflictCount = sumif(counts, max_stateWeight == 100),\nexemptCount = sumif(counts, max_stateWeight == 50) by policyAssignmentId, policyAssignmentScope, policyAssignmentName,policySetDefinitionId\n| extend totalResources = todouble(nonCompliantCount + compliantCount + conflictCount + exemptCount)\n| extend compliancePercentage = iff(totalResources == 0, todouble(100), 100 * todouble(compliantCount + exemptCount) / totalResources)\n| project policyAssignmentName, scope = policyAssignmentScope,policySetDefinitionId,\ncomplianceState = iff(overallStateWeight == 300, 'nonCompliant', iff(overallStateWeight == 200, 'Compliant', iff(overallStateWeight == 100, 'conflict', iff(overallStateWeight == 50, 'exempt', 'notstarted')))),\ncompliancePercentage,\ncompliantCount,\nnonCompliantCount,\nconflictCount,\nexemptCount\n| where isnotempty(policySetDefinitionId)\n| join (policyresources\n| where type =~ 'microsoft.authorization/policysetdefinitions' and properties.metadata.MonitoringPackType=='Discovery'\n| extend policySetDefinitionId=tostring(id)) on policySetDefinitionId\n| project Name=name,State=complianceState, type='Set',policyId=policySetDefinitionId)",
-                                  "size": 0,
-                                  "title": "Assignment Status (Compliance) - Discovery",
-                                  "exportedParameters": [
-                                    {
-                                      "parameterName": "policiesToRemediate",
-                                      "parameterType": 5
-                                    }
-                                  ],
-                                  "queryType": 1,
-                                  "resourceType": "microsoft.resources/tenants",
-                                  "crossComponentResources": [
-                                    "value::tenant"
-                                  ],
-                                  "gridSettings": {
-                                    "formatters": [
-                                      {
-                                        "columnMatch": "State",
-                                        "formatter": 18,
-                                        "formatOptions": {
-                                          "thresholdsOptions": "icons",
-                                          "thresholdsGrid": [
-                                            {
-                                              "operator": "==",
-                                              "thresholdValue": "NonCompliant",
-                                              "representation": "2",
-                                              "text": "{0}{1}"
-                                            },
-                                            {
-                                              "operator": "==",
-                                              "thresholdValue": "nonCompliant",
-                                              "representation": "2",
-                                              "text": "{0}{1}"
-                                            },
-                                            {
-                                              "operator": "Default",
-                                              "thresholdValue": null,
-                                              "representation": "success",
-                                              "text": "{0}{1}"
-                                            }
-                                          ]
-                                        }
-                                      }
-                                    ],
-                                    "filter": true
-                                  }
-                                },
-                                "customWidth": "75",
-                                "conditionalVisibility": {
-                                  "parameterName": "discTab",
-                                  "comparison": "isEqualTo",
-                                  "value": "discPolicies"
-                                },
-                                "name": "Query DiscoveryPolicies",
                                 "styleSettings": {
                                   "showBorder": true
                                 }

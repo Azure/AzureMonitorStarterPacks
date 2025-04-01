@@ -181,6 +181,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     InstanceName: instanceName
     AMBAJsonURL: ambaJsonURL
     servicesBaseURL: 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/services'
+    storageaccount: discoveryStorage.name
   }
 }
 
