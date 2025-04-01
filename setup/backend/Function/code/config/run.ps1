@@ -7,156 +7,158 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 # Interact with query parameters or the body of the request.
-# $Request
+$Request
+
 $Action = $Request.Query.Action
 "Action: $Action"
+$ambaURL=$env:AMBAJsonURL
 # "Headers:"
 #$Request.Headers.resourceFilter
 # "Body"
 # $Request.Body
 # "EoB"
 
-$tagMapping = @"
-{
-  "tags": [
-    {
-      "tag": "KeyVault",
-      "nameSpace": "Microsoft.KeyVault/vaults",
-      "type": "PaaS"
-    },
-    {
-      "tag": "LogicApps",
-      "nameSpace": "Microsoft.Logic/workflows",
-      "type": "PaaS"
-    },
-    {
-      "tag": "ServiceBus",
-      "nameSpace": "Microsoft.ServiceBus/namespaces",
-      "type": "PaaS"
-    },
-    {
-      "tag": "Storage",
-      "nameSpace": "Microsoft.Storage/storageaccounts",
-      "type": "PaaS"
-    },
-    {
-      "tag": "WebApps",
-      "nameSpace": "Microsoft.Web/sites",
-      "type": "PaaS"
-    },
-    {
-      "tag": "SQLSrv",
-      "nameSpace": "Microsoft.Sql/servers",
-      "type": "PaaS"
-    },
-    {
-      "tag": "SQLMI",
-      "nameSpace": "Microsoft.Sql/managedinstances",
-      "type": "PaaS"
-    },
-    {
-      "tag": "WebServer",
-      "nameSpace": "Microsoft.Web/serverfarms",
-      "type": "PaaS"
-    },
-    {
-      "tag": "AppGW",
-      "nameSpace": "Microsoft.Network/applicationgateways",
-      "type": "PaaS"
-    },
-    {
-      "tag": "AzFW",
-      "nameSpace": "Microsoft.Network/azurefirewalls",
-      "type": "PaaS"
-    },
-    {
-      "tag": "PrivZones",
-      "nameSpace": "Microsoft.Network/privatednszones",
-      "type": "PaaS"
-    },
-    {
-      "tag": "PIP",
-      "nameSpace": "Microsoft.Network/publicipaddresses",
-      "type": "PaaS"
-    },
-    {
-      "tag": "UDR",
-      "nameSpace": "Microsoft.Network/routetables",
-      "type": "PaaS"
-    },
-    {
-      "tag": "AA",
-      "nameSpace": "Microsoft.Automation/automationaccounts",
-      "type": "PaaS"
-    },
-    {
-      "tag": "NSG",
-      "nameSpace": "Microsoft.Network/networksecuritygroups",
-      "type": "PaaS"
-    },
-    {
-      "tag": "AzFD",
-      "nameSpace": "Microsoft.Network/frontdoors",
-      "type": "PaaS"
-    },
-    {
-      "tag": "ALB",
-      "nameSpace": "Microsoft.Network/loadbalancers",
-      "type": "PaaS"
-    },
-    {
-      "tag": "Bastion",
-      "nameSpace": "Microsoft.Network/bastionhosts",
-      "type": "PaaS"
-    },
-    {
-      "tag": "VPNG",
-      "nameSpace": "Microsoft.Network/vpngateways",
-      "type": "PaaS"
-    },
-    {
-      "tag": "VnetGW",
-      "nameSpace": "Microsoft.Network/virtualNetworkgateways",
-      "type": "PaaS"
-    },
-    {
-      "tag": "VNET",
-      "nameSpace": "Microsoft.Network/virtualnetworks",
-      "type": "PaaS"
-    },
-    {
-      "tag": "MLWS",
-      "nameSpace": "Microsoft.MachineLearningServices/workspaces",
-      "type": "PaaS"
-    },
-    {
-      "tag": "EVNS",
-      "nameSpace": "Microsoft.EventHub/namespaces",
-      "type": "PaaS"
-    },
-    {
-      "tag": "EVCL",
-      "nameSpace": "Microsoft.EventHub/clusters",
-      "type": "PaaS"
-    },
-    {
-      "tag": "MDB",
-      "nameSpace": "Microsoft.DBforMariaDB/servers",
-      "type": "PaaS"
-    },
-    {
-      "tag": "CDN",
-      "nameSpace": "Microsoft.Cdn/profiles",
-      "type": "PaaS"
-    },
-    {
-      "tag": "APIM",
-      "nameSpace": "Microsoft.ApiManagement/service",
-      "type": "PaaS"
-    }
-  ]
-}
-"@ | ConvertFrom-Json
+# $tagMapping = @"
+# {
+#   "tags": [
+#     {
+#       "tag": "KeyVault",
+#       "nameSpace": "Microsoft.KeyVault/vaults",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "LogicApps",
+#       "nameSpace": "Microsoft.Logic/workflows",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "ServiceBus",
+#       "nameSpace": "Microsoft.ServiceBus/namespaces",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "Storage",
+#       "nameSpace": "Microsoft.Storage/storageaccounts",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "WebApps",
+#       "nameSpace": "Microsoft.Web/sites",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "SQLSrv",
+#       "nameSpace": "Microsoft.Sql/servers",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "SQLMI",
+#       "nameSpace": "Microsoft.Sql/managedinstances",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "WebServer",
+#       "nameSpace": "Microsoft.Web/serverfarms",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "AppGW",
+#       "nameSpace": "Microsoft.Network/applicationgateways",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "AzFW",
+#       "nameSpace": "Microsoft.Network/azurefirewalls",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "PrivZones",
+#       "nameSpace": "Microsoft.Network/privatednszones",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "PIP",
+#       "nameSpace": "Microsoft.Network/publicipaddresses",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "UDR",
+#       "nameSpace": "Microsoft.Network/routetables",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "AA",
+#       "nameSpace": "Microsoft.Automation/automationaccounts",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "NSG",
+#       "nameSpace": "Microsoft.Network/networksecuritygroups",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "AzFD",
+#       "nameSpace": "Microsoft.Network/frontdoors",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "ALB",
+#       "nameSpace": "Microsoft.Network/loadbalancers",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "Bastion",
+#       "nameSpace": "Microsoft.Network/bastionhosts",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "VPNG",
+#       "nameSpace": "Microsoft.Network/vpngateways",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "VnetGW",
+#       "nameSpace": "Microsoft.Network/virtualNetworkgateways",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "VNET",
+#       "nameSpace": "Microsoft.Network/virtualnetworks",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "MLWS",
+#       "nameSpace": "Microsoft.MachineLearningServices/workspaces",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "EVNS",
+#       "nameSpace": "Microsoft.EventHub/namespaces",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "EVCL",
+#       "nameSpace": "Microsoft.EventHub/clusters",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "MDB",
+#       "nameSpace": "Microsoft.DBforMariaDB/servers",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "CDN",
+#       "nameSpace": "Microsoft.Cdn/profiles",
+#       "type": "PaaS"
+#     },
+#     {
+#       "tag": "APIM",
+#       "nameSpace": "Microsoft.ApiManagement/service",
+#       "type": "PaaS"
+#     }
+#   ]
+# }
+# "@ | ConvertFrom-Json
 
 switch ($Action) {
   # Returns the tag based on the nameSpace provided
@@ -177,17 +179,17 @@ switch ($Action) {
 "@ | convertfrom-json
   }
   # Gets a list of tags (all) or for a specific type (PaaS)
-  # 'getAllServiceTags' {
-  #   $type = $Request.Query.Type
-  #   if ([string]::IsNullOrEmpty($type)) {
-  #     $body = $tagMapping.tags  | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
-  #   }
-  #   else {
-  #     "Type"
-  #     $body = $tagMapping.tags  | where-object { $_.type -eq $type } | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json
+  'getAllServiceTags' {
+    $type = $Request.Query.Type
+    if ([string]::IsNullOrEmpty($type)) {
+      $body = $tagMapping.tags  | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
+    }
+    else {
+      "Type"
+      $body = $tagMapping.tags  | where-object { $_.type -eq $type } | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json
             
-  #   }
-  # }
+    }
+  }
   # returns a list of discovery mapping directions.
   'getDiscoveryMappings' {
     $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
@@ -293,8 +295,9 @@ switch ($Action) {
       | where tolower(type) in ($($Request.Query.resourceFilter))
 "@        
     }
+    $ambaURL=$env:AMBAJsonURL
     "Fetching AMBA Catalog from $ambaURL"
-    if ($null -eq $ambaURL) {
+    if ($ambaURL -eq $null) {
     "Error fetching AMBA URL, stopping function"
     $body = "Error fetching AMBA URL, stopping function"
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
@@ -322,24 +325,23 @@ switch ($Action) {
         
 "@
     "PaasQuery"
-    $PaaSQuery
-        $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
-        if ($resourcesThatHavealertsAvailable.Count -gt 0) {
-            $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
-        }
-        else {$body = '{}'}
+        $PaaSQuery
+            $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+            if ($resourcesThatHavealertsAvailable.Count -gt 0) {
+                $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+            }
+            else {$body = '{}'}
     }
     else {
         $body = "{}"
     }
 }
-
-"getSupportedServices" {
-    # uset $tagmapping to return only the namespace column in a json body
-    $body=(get-AmbaCatalog -ambaJsonURL $ambaURL | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }} | convertto-json
-    #$body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
-  }
-  default { $body = '{}' }
+    "getSupportedServices" {
+        # uset $tagmapping to return only the namespace column in a json body
+        $body=(get-AmbaCatalog -ambaJsonURL $ambaURL | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }} | convertto-json
+        #$body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
+    }
+  default { $body = '{"No results"}' }
 }
 
 # # Associate values to output bindings by calling 'Push-OutputBinding'.

@@ -29,40 +29,6 @@ function configure-systemAssignedIdentity {
         Write-Host "Error setting identity. $($_.Exception.Message)"
     }
 }
-function Remove-PaaSAlertRules {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$resourceId)
-    # for the specific Resource ID, find alert rules that have the tag "MonitorStarterPacks" and the resource Id as target(scope)
-    Write-Host "Removing PaaS alerts for $resourceId"
-    $AlertsToRemoveQuery = @"
-    resources
-| where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-| where isnotempty(tags.MonitorStarterPacks)
-| extend scopes = (properties.scopes)
-| where scopes contains '$ResourceId'
-"@
-    $AlertsToRemoveQuery
-    $AlertsToRemove = Search-AzGraph -Query $AlertsToRemoveQuery -UseTenantScope
-    Write-Host "Found $($AlertsToRemove.Count) alert rules to remove."
-    if ($AlertsToRemove) {
-        foreach ($alert in $AlertsToRemove) {
-            Write-Host "Removing alert rule $($alert.name)"
-            if ($alert.type -eq 'microsoft.insights/scheduledqueryrules') {
-                Remove-AzScheduledQueryRule -ResourceGroupName $alert.resourceGroup -Name $alert.name -Force
-            }
-            elseif ($alert.type -eq 'microsoft.insights/metricalerts') {
-                Remove-AzMetricAlertRuleV2 -ResourceGroupName $alert.resourceGroup -Name $alert.name -Force
-            }
-            elseif ($alert.type -eq 'microsoft.insights/activitylogalerts') {
-                Remove-AzActivityLogAlert -ResourceGroupName $alert.resourceGroup -Name $alert.name
-            }
-        }
-    }
-    else {
-        Write-Host "No alerts found to remove."
-    }
-}
 function install-extension {
     param(
         [Parameter(Mandatory = $true)]
@@ -132,6 +98,7 @@ function Install-azMonitorAgent {
         [Parameter(Mandatory = $false)]
         [string]$InstallDependencyAgent=$false #1.2 for windows, 1.27 for linux,
     )
+    "Installing "
     "Subscription Id: $subscriptionId"
     configure-systemAssignedIdentity -subscriptionId $subscriptionId `
                                      -resourceGroupName $resourceGroupName `
@@ -573,9 +540,8 @@ function Remove-Tag {
                         else {
                             "No diagnostic setting found."
                         }
+                        Write-Host "Debug(Remove-Tag): removing alert rule for $resourceId"
                         Remove-PaaSAlertRules -resourceId $resourceId
-                      
-
                     }
                 }
                 #Update-AzTag -ResourceId $resource.Resource -Tag $tag
@@ -1061,6 +1027,40 @@ function Add-Tag {
         }
     }
 }
+function Remove-PaaSAlertRules {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId)
+    # for the specific Resource ID, find alert rules that have the tag "MonitorStarterPacks" and the resource Id as target(scope)
+    Write-Host "Removing PaaS alerts for $resourceId"
+    $AlertsToRemoveQuery = @"
+    resources
+| where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+| where isnotempty(tags.MonitorStarterPacks)
+| extend scopes = (properties.scopes)
+| where scopes contains '$ResourceId'
+"@
+    $AlertsToRemoveQuery
+    $AlertsToRemove = Search-AzGraph -Query $AlertsToRemoveQuery -UseTenantScope
+    Write-Host "Found $($AlertsToRemove.Count) alert rules to remove."
+    if ($AlertsToRemove) {
+        foreach ($alert in $AlertsToRemove) {
+            Write-Host "Removing alert rule $($alert.name)"
+            if ($alert.type -eq 'microsoft.insights/scheduledqueryrules') {
+                Remove-AzScheduledQueryRule -ResourceGroupName $alert.resourceGroup -Name $alert.name -Force
+            }
+            elseif ($alert.type -eq 'microsoft.insights/metricalerts') {
+                Remove-AzMetricAlertRuleV2 -ResourceGroupName $alert.resourceGroup -Name $alert.name -Force
+            }
+            elseif ($alert.type -eq 'microsoft.insights/activitylogalerts') {
+                Remove-AzActivityLogAlert -ResourceGroupName $alert.resourceGroup -Name $alert.name
+            }
+        }
+    }
+    else {
+        Write-Host "No alerts found to remove."
+    }
+}
 function new-PaaSAlert {
     param (
     [Parameter(Mandatory=$true)]
@@ -1085,10 +1085,10 @@ function new-PaaSAlert {
     [string]$location
 )
     #Register-PackageSource -Name Nuget.Org -Provider NuGet -Location "https://api.nuget.org/v3/index.json"
-    $ambaURL=$env:repoURL
+    $ambaURL=$env:AMBAJsonURL
     $category=$resourceType.Split('/')[0].split(".")[1]
     $subCategory=$resourceType.Split('/')[1]
-    
+    "Creating New PaaS alert for $resourceId"
     $ambaAlerts=(Invoke-WebRequest -uri $ambaURL | convertfrom-json).$category.$subCategory 
     # $resourceName=($resourceId -split '/')[8]
     # $alerts=get-ambaAlertsForResourceType -resourceId $resourceId -serviceFolder $serviceFolder
@@ -1102,6 +1102,7 @@ function new-PaaSAlert {
             $alertType=$alert.Properties.criterionType
             switch ($alertType) {
                 'StaticThresholdCriterion' {
+                    "Creating StaticThresholdCriterion alert."
                     $condition=New-AzMetricAlertRuleV2Criteria -MetricName $alert.Properties.metricName `
                                                             -MetricNamespace $alert.Properties.metricNameSpace `
                                                             -Operator $alert.Properties.operator `
@@ -1126,6 +1127,7 @@ function new-PaaSAlert {
                                             Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
                 }
                 'DynamicThresholdCriterion' {
+                    "Creating DynamicThresholdCriterion alert."
                     $condition=New-AzMetricAlertRuleV2Criteria  -MetricName $alert.Properties.metricName `
                                                                 -MetricNamespace $alert.Properties.metricNameSpace `
                                                                 -Operator $alert.Properties.operator `
@@ -1153,7 +1155,8 @@ function new-PaaSAlert {
             }
         }
         #Activity Log
-        if ($alert.type -eq 'ActivityLog') {       
+        if ($alert.type -eq 'ActivityLog') {
+            "Creating Activity Log Alert."       
             $condition1=New-AzActivityLogAlertAlertRuleAnyOfOrLeafConditionObject -Equal Administrative -Field category
             $any1=New-AzActivityLogAlertAlertRuleLeafConditionObject -Field properties.status -Equal "$($alert.properties.status)"
             $any2=New-AzActivityLogAlertAlertRuleLeafConditionObject -Equal "$($alert.properties.operationName)" -Field operationName
@@ -1170,35 +1173,9 @@ function new-PaaSAlert {
         }
     }
 }
-function check-storageaccountForBlob {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$storageAccountName,
-        [Parameter(Mandatory = $true)]
-        [string]$containerName,
-        [Parameter(Mandatory = $true)]
-        [string]$blobName
-    )
-    # Check if the blob exists in the storage account
-    $blobUri = "https://$storageAccountName.blob.core.windows.net/$containerName/$blobName"
-    $blobExists = Test-Path -Path $blobUri -ErrorAction SilentlyContinue
-    return $blobExists
-}
+
 function get-AmbaCatalog {
     param ($ambaJsonURL)
-    #################################################################################################################
-    # Remember that the results are returned so if anything is output to standard output, it will be returned as well.
-    # If logging is needed, use Write-Host or Write-Verbose to log to the console.
-
-    # This function is used to get the AMBA catalog from the URL provided in the parameter.
-    # It will check if the file exists in the storage account and if not, it will download it from the URL.
-    # If the file exists and is older than a week, it will download it again and overwrite.
-    # It will then write the catalog to a storage account in the format of a JSON file.
-    # It will then use the catalog in the SA to create the list of available services and alerts.
-    # 
-    # The function will return the catalog in the format of a JSON file.
-
-
     Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from URL: $ambaJsonURL"
           $aaa=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json -Depth 10
           $Categories=$aaa.psobject.properties.Name
@@ -1271,7 +1248,7 @@ function get-AmbaCatalog {
 #     )
 #     $tag=($tagMappings.tags | Where-Object { $_.nameSpace -eq $namespace }).tag
 #     return $tag
-# # }
+# }
 # function get-paasquery {
 #     return  @"
 #         | where tolower(type) in (

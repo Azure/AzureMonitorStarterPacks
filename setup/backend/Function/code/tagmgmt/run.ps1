@@ -2,7 +2,7 @@ using namespace System.Net
 
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
-$RepoUrl = $env:repoURL
+$RepoUrl = $env:AMBAJsonURL
 $instanceName=$env:INSTANCENAME
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
@@ -77,13 +77,13 @@ if ($resources) {
               "PackType: $PackType"
               "Removing Tag from service."
               Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType
-              # if ($TagValue -eq 'Avd') {
-              #   # Create AVD alerts function.
-              #   $hostPoolName = ($resource.Resource -split '/')[8]
-              #   $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-              #   Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
-              #   -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
-              # }
+              if ($TagValue -eq 'Avd') {
+                # Create AVD alerts function.
+                $hostPoolName = ($resource.Resource -split '/')[8]
+                $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+                Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
+                -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+              }
             }
             # Add Tag Based condition.
           }  # End of resource loop
