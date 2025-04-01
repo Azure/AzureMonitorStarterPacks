@@ -7,11 +7,10 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 # Interact with query parameters or the body of the request.
-$Request
-
+# $Request
 $Action = $Request.Query.Action
 "Action: $Action"
-"Headers:"
+# "Headers:"
 #$Request.Headers.resourceFilter
 # "Body"
 # $Request.Body
@@ -178,17 +177,17 @@ switch ($Action) {
 "@ | convertfrom-json
   }
   # Gets a list of tags (all) or for a specific type (PaaS)
-  'getAllServiceTags' {
-    $type = $Request.Query.Type
-    if ([string]::IsNullOrEmpty($type)) {
-      $body = $tagMapping.tags  | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
-    }
-    else {
-      "Type"
-      $body = $tagMapping.tags  | where-object { $_.type -eq $type } | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json
+  # 'getAllServiceTags' {
+  #   $type = $Request.Query.Type
+  #   if ([string]::IsNullOrEmpty($type)) {
+  #     $body = $tagMapping.tags  | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json # | Select @{l='metricNamespace';e={$_}},@{l='tag';e={$tagMapping.$_}}
+  #   }
+  #   else {
+  #     "Type"
+  #     $body = $tagMapping.tags  | where-object { $_.type -eq $type } | Select-Object tag, @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() } }, type | convertto-json
             
-    }
-  }
+  #   }
+  # }
   # returns a list of discovery mapping directions.
   'getDiscoveryMappings' {
     $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
@@ -254,51 +253,39 @@ switch ($Action) {
         | where tolower(type) in ($($Request.Query.resourceFilter))
 "@        
       }
-      $ambaURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+      $ambaURL=$env:AMBAJsonURL
+      "Fetching AMBA Catalog from $ambaURL"
+      if ($ambaURL -eq $null) {
+        "Error fetching AMBA URL, stopping function"
+        $body = "Error fetching AMBA URL, stopping function"
+        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+            StatusCode = [HttpStatusCode]::BadRequest
+            Body       = $body
+          })
+      }
+      "About to try and call get-AmbaCatalog..."
       $ambaCatalog=get-AmbaCatalog -ambaJsonURL $ambaURL | ConvertFrom-Json -Depth 10
-      $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
-      #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
-      $nameSpacesWithAlerts=($nameSpacesWithAlerts | % { "'$_'" }) -join ','
-      # use a kql azure resource graph query to find all the namespaces with alerts
-      $PassQuery="resources | where isempty(tags.MonitorStarterPacks)
-      | where type in~ ($nameSpacesWithAlerts)
-      | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
-      | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-      $resourceFilter"
-      $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
-      $body="{""Non-Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
-      #$PaaSQuery
-#       $resourceQuery=@"
-#       resources
-#       $PaaSQuery
-#       | where isempty(tags.MonitorStarterPacks)
-#       | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-#       $resourceFilter
-# "@
-#       $alertsQuery=@"
-#       resources
-#       | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-#       | where isnotempty(tags.MonitorStarterPacks)
-#       | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
-# "@
-      # $resources=Search-AzGraph -Query $resourceQuery
-      # $resourceQuery
-      # # $alerts=Search-AzGraph -Query $alertsQuery
+      "After AmbaCatalog"
+      if ($ambaCatalog) {
+        $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
+        #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+        $nameSpacesWithAlerts=($nameSpacesWithAlerts | % { "'$_'" }) -join ','
+        # use a kql azure resource graph query to find all the namespaces with alerts
+        $PassQuery="resources | where isempty(tags.MonitorStarterPacks)
+        | where type in~ ($nameSpacesWithAlerts)
+        | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+        $resourceFilter"
+        $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+        if ($resourcesThatHavealertsAvailable.Count -gt 0) {
+            $body="{""Non-Monitored Resources"" : $resourcesThatHavealertsAvailable }"
+        }
+        else { $body = '{}'}
 
-      # # determine if the resources have alerts and shows total
-      # $results="{""Monitored Resources"" : ["
-
-      # $results+=foreach ($res in $resources) {
-      #         "{""Resource"" : ""$($res.Resource)"","
-      #         """type"" : ""$($res.""type"")"","
-      #         """tag"" : ""$(get-serviceTag -namespace $res.type -tagMappings $tagMapping)"","
-      #         """resourceGroup"" : ""$($res.""resourceGroup"")"","
-      #         """location"" : ""$($res.""location"")"","
-      #         """kind"" : ""$($res.""kind"")"","
-      #         """subscriptionId"" : ""$($res.""subscriptionId"")""},"
-      # }
-      # $resultsString=$results -join ""
-      # $body=$resultsString.TrimEnd(",")+"]}" | convertfrom-json | convertto-json
+      }
+      else {
+        $body="{}"
+      }
   }
   "getMonitoredPaaS" {
     if ($Request.Query.resourceFilter) {
@@ -306,37 +293,53 @@ switch ($Action) {
       | where tolower(type) in ($($Request.Query.resourceFilter))
 "@        
     }
-    $ambaURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+    "Fetching AMBA Catalog from $ambaURL"
+    if ($null -eq $ambaURL) {
+    "Error fetching AMBA URL, stopping function"
+    $body = "Error fetching AMBA URL, stopping function"
+    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+        StatusCode = [HttpStatusCode]::BadRequest
+        Body       = $body
+        })
+    }
     $ambaCatalog=get-AmbaCatalog -ambaJsonURL $ambaURL | ConvertFrom-Json -Depth 10
-    $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
-    #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
-    $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
-    # use a kql azure resource graph query to find all the namespaces with alerts
-    $PassQuery=@"
-    resources | where isnotempty(tags.MonitorStarterPacks)
-    | where type in~ ($nameSpacesWithAlerts)
-    | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
-    | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-    | join (resources
-        | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-        | where isnotempty(tags.MonitorStarterPacks)
-        | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
-    $resourceFilter
-    | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind
-    
+    if ($ambaCatalog) {
+        $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
+        #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+        $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
+        # use a kql azure resource graph query to find all the namespaces with alerts
+        $PassQuery=@"
+        resources | where isnotempty(tags.MonitorStarterPacks)
+        | where type in~ ($nameSpacesWithAlerts)
+        | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+        | join (resources
+            | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+            | where isnotempty(tags.MonitorStarterPacks)
+            | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
+        $resourceFilter
+        | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind
+        
 "@
-"PaasQuery"
-$PaaSQuery
-    $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
-    
-    $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+    "PaasQuery"
+    $PaaSQuery
+        $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+        if ($resourcesThatHavealertsAvailable.Count -gt 0) {
+            $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+        }
+        else {$body = '{}'}
+    }
+    else {
+        $body = "{}"
+    }
 }
 
-  "getSupportedServices" {
+"getSupportedServices" {
     # uset $tagmapping to return only the namespace column in a json body
-    $body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
+    $body=(get-AmbaCatalog -ambaJsonURL $ambaURL | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }} | convertto-json
+    #$body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
   }
-  default { $body = '' }
+  default { $body = '{}' }
 }
 
 # # Associate values to output bindings by calling 'Push-OutputBinding'.
