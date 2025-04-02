@@ -18,166 +18,24 @@ $ambaURL=$env:AMBAJsonURL
 # $Request.Body
 # "EoB"
 
-# $tagMapping = @"
-# {
-#   "tags": [
-#     {
-#       "tag": "KeyVault",
-#       "nameSpace": "Microsoft.KeyVault/vaults",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "LogicApps",
-#       "nameSpace": "Microsoft.Logic/workflows",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "ServiceBus",
-#       "nameSpace": "Microsoft.ServiceBus/namespaces",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "Storage",
-#       "nameSpace": "Microsoft.Storage/storageaccounts",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "WebApps",
-#       "nameSpace": "Microsoft.Web/sites",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "SQLSrv",
-#       "nameSpace": "Microsoft.Sql/servers",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "SQLMI",
-#       "nameSpace": "Microsoft.Sql/managedinstances",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "WebServer",
-#       "nameSpace": "Microsoft.Web/serverfarms",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "AppGW",
-#       "nameSpace": "Microsoft.Network/applicationgateways",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "AzFW",
-#       "nameSpace": "Microsoft.Network/azurefirewalls",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "PrivZones",
-#       "nameSpace": "Microsoft.Network/privatednszones",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "PIP",
-#       "nameSpace": "Microsoft.Network/publicipaddresses",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "UDR",
-#       "nameSpace": "Microsoft.Network/routetables",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "AA",
-#       "nameSpace": "Microsoft.Automation/automationaccounts",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "NSG",
-#       "nameSpace": "Microsoft.Network/networksecuritygroups",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "AzFD",
-#       "nameSpace": "Microsoft.Network/frontdoors",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "ALB",
-#       "nameSpace": "Microsoft.Network/loadbalancers",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "Bastion",
-#       "nameSpace": "Microsoft.Network/bastionhosts",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "VPNG",
-#       "nameSpace": "Microsoft.Network/vpngateways",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "VnetGW",
-#       "nameSpace": "Microsoft.Network/virtualNetworkgateways",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "VNET",
-#       "nameSpace": "Microsoft.Network/virtualnetworks",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "MLWS",
-#       "nameSpace": "Microsoft.MachineLearningServices/workspaces",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "EVNS",
-#       "nameSpace": "Microsoft.EventHub/namespaces",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "EVCL",
-#       "nameSpace": "Microsoft.EventHub/clusters",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "MDB",
-#       "nameSpace": "Microsoft.DBforMariaDB/servers",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "CDN",
-#       "nameSpace": "Microsoft.Cdn/profiles",
-#       "type": "PaaS"
-#     },
-#     {
-#       "tag": "APIM",
-#       "nameSpace": "Microsoft.ApiManagement/service",
-#       "type": "PaaS"
-#     }
-#   ]
-# }
-# "@ | ConvertFrom-Json
-
 switch ($Action) {
   # Returns the tag based on the nameSpace provided
-  'getTagbyService' {
-    $svc = $Request.body.metricNamespace
-    if ($svc) {
-      $tag = $tagMapping.tags | ? { $_.nameSpace -eq $svc } 
-    }
-    else {
-      $tag = 'Undetermined'
-    }
-    $body = @"
-        {
-            "tag":"$($tag.tag)",
-            "nameSpace":"$($tag.nameSpace)",
-            "type":"$($tag.type)"
-        }
-"@ | convertfrom-json
-  }
+#   'getTagbyService' {
+#     $svc = $Request.body.metricNamespace
+#     if ($svc) {
+#       $tag = $tagMapping.tags | ? { $_.nameSpace -eq $svc } 
+#     }
+#     else {
+#       $tag = 'Undetermined'
+#     }
+#     $body = @"
+#         {
+#             "tag":"$($tag.tag)",
+#             "nameSpace":"$($tag.nameSpace)",
+#             "type":"$($tag.type)"
+#         }
+# "@ | convertfrom-json
+#   }
   # Gets a list of tags (all) or for a specific type (PaaS)
   'getAllServiceTags' {
     $type = $Request.Query.Type
