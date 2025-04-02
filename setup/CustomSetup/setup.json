@@ -534,7 +534,8 @@
                 "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]"
             },
             "kind": "Subscription",
-            "location": "[steps('basics').resourceScope.location.name]"
+            "location": "[steps('basics').resourceScope.location.name]",
+            "subscriptionId": "[steps('Configuration').subscriptionId]"
         }
     }
 }
