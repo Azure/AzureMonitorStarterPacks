@@ -17,6 +17,7 @@ param subscriptionId string
 param resourceGroupName string
 param imageGalleryName string
 param collectTelemetry bool
+param deployDiscovery bool
 
 var packPolicyRoleDefinitionIds=[
   // '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
@@ -65,7 +66,7 @@ module telemetry './nested_telemetry.bicep' =  if (collectTelemetry) {
 //   signedProtocol: 'https'
 //   keyToSign: 'key2'
 // }
-module gallery './modules/aig.bicep' = {
+module gallery './modules/aig.bicep' = if (deployDiscovery) {
   name: imageGalleryName
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {

@@ -188,6 +188,7 @@ module backend '../backend/bicep/backend.bicep' = {
     logicappname: logicAppName
     instanceName: instanceName
     collectTelemetry: collectTelemetry
+    deployDiscovery: deployDiscovery
   }
 }
 

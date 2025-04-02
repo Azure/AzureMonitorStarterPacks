@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16722395976196280940"
+      "templateHash": "5872351193012176205"
     }
   },
   "parameters": {
@@ -1938,6 +1938,9 @@
           },
           "solutionTag": {
             "value": "[variables('solutionTag')]"
+          },
+          "instanceName": {
+            "value": "[parameters('instanceName')]"
           }
         },
         "template": {
@@ -1947,7 +1950,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14855733454842223127"
+              "templateHash": "3386978890188642965"
             }
           },
           "parameters": {
@@ -1961,6 +1964,9 @@
               "type": "object"
             },
             "solutionTag": {
+              "type": "string"
+            },
+            "instanceName": {
               "type": "string"
             }
           },
@@ -2009,6 +2015,9 @@
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
+                  },
+                  "instanceName": {
+                    "value": "[parameters('instanceName')]"
                   }
                 },
                 "template": {
@@ -2018,7 +2027,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5009626312759808178"
+                      "templateHash": "12046791720435112264"
                     }
                   },
                   "parameters": {
@@ -2040,6 +2049,9 @@
                     "utcValue": {
                       "type": "string",
                       "defaultValue": "[utcNow()]"
+                    },
+                    "instanceName": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -2049,7 +2061,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
+                      "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]",
                       "properties": {
                         "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                         "principalId": "[parameters('principalId')]",
@@ -2061,7 +2073,7 @@
                   "outputs": {
                     "roleassignmentname": {
                       "type": "string",
-                      "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
+                      "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]"
                     }
                   }
                 }
@@ -2301,6 +2313,9 @@
           },
           "collectTelemetry": {
             "value": "[parameters('collectTelemetry')]"
+          },
+          "deployDiscovery": {
+            "value": "[parameters('deployDiscovery')]"
           }
         },
         "template": {
@@ -2310,7 +2325,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8587765391888985123"
+              "templateHash": "1009202439158634967"
             }
           },
           "parameters": {
@@ -2357,6 +2372,9 @@
               "type": "string"
             },
             "collectTelemetry": {
+              "type": "bool"
+            },
+            "deployDiscovery": {
               "type": "bool"
             }
           },
@@ -2409,6 +2427,7 @@
               }
             },
             {
+              "condition": "[parameters('deployDiscovery')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[parameters('imageGalleryName')]",
@@ -7869,6 +7888,9 @@
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
+                  },
+                  "instanceName": {
+                    "value": "[parameters('instanceName')]"
                   }
                 },
                 "template": {
@@ -7878,7 +7900,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16004275356895274058"
+                      "templateHash": "17842332302260083262"
                     }
                   },
                   "parameters": {
@@ -7905,6 +7927,9 @@
                       "defaultValue": false
                     },
                     "solutionTag": {
+                      "type": "string"
+                    },
+                    "instanceName": {
                       "type": "string"
                     }
                   },
@@ -8013,6 +8038,9 @@
                           },
                           "roleShortName": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -8022,7 +8050,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "5009626312759808178"
+                              "templateHash": "12046791720435112264"
                             }
                           },
                           "parameters": {
@@ -8044,6 +8072,9 @@
                             "utcValue": {
                               "type": "string",
                               "defaultValue": "[utcNow()]"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
@@ -8053,7 +8084,7 @@
                             {
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
-                              "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
+                              "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]",
                               "properties": {
                                 "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                                 "principalId": "[parameters('principalId')]",
@@ -8065,7 +8096,7 @@
                           "outputs": {
                             "roleassignmentname": {
                               "type": "string",
-                              "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
+                              "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]"
                             }
                           }
                         }
@@ -8215,6 +8246,9 @@
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
+                  },
+                  "instanceName": {
+                    "value": "[parameters('instanceName')]"
                   }
                 },
                 "template": {
@@ -8224,7 +8258,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16004275356895274058"
+                      "templateHash": "17842332302260083262"
                     }
                   },
                   "parameters": {
@@ -8251,6 +8285,9 @@
                       "defaultValue": false
                     },
                     "solutionTag": {
+                      "type": "string"
+                    },
+                    "instanceName": {
                       "type": "string"
                     }
                   },
@@ -8359,6 +8396,9 @@
                           },
                           "roleShortName": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
+                          },
+                          "instanceName": {
+                            "value": "[parameters('instanceName')]"
                           }
                         },
                         "template": {
@@ -8368,7 +8408,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "5009626312759808178"
+                              "templateHash": "12046791720435112264"
                             }
                           },
                           "parameters": {
@@ -8390,6 +8430,9 @@
                             "utcValue": {
                               "type": "string",
                               "defaultValue": "[utcNow()]"
+                            },
+                            "instanceName": {
+                              "type": "string"
                             }
                           },
                           "variables": {
@@ -8399,7 +8442,7 @@
                             {
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
-                              "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
+                              "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]",
                               "properties": {
                                 "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                                 "principalId": "[parameters('principalId')]",
@@ -8411,7 +8454,7 @@
                           "outputs": {
                             "roleassignmentname": {
                               "type": "string",
-                              "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
+                              "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]"
                             }
                           }
                         }
@@ -8665,6 +8708,9 @@
                   },
                   "roleShortName": {
                     "value": "[variables('logicappRequiredRoleassignments')[copyIndex()]]"
+                  },
+                  "instanceName": {
+                    "value": "[parameters('instanceName')]"
                   }
                 },
                 "template": {
@@ -8674,7 +8720,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5009626312759808178"
+                      "templateHash": "12046791720435112264"
                     }
                   },
                   "parameters": {
@@ -8696,6 +8742,9 @@
                     "utcValue": {
                       "type": "string",
                       "defaultValue": "[utcNow()]"
+                    },
+                    "instanceName": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -8705,7 +8754,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
+                      "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]",
                       "properties": {
                         "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                         "principalId": "[parameters('principalId')]",
@@ -8717,7 +8766,7 @@
                   "outputs": {
                     "roleassignmentname": {
                       "type": "string",
-                      "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
+                      "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'), parameters('instanceName'))]"
                     }
                   }
                 }
