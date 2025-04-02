@@ -5,6 +5,7 @@ param filename string
 param containerName string
 //param resourceName string
 param tags object
+param instanceName string
 var discoveryContainerName = 'applications'
 
 
@@ -22,7 +23,7 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-addappdiscovery'
+  name: 'deployscript-addappdiscovery-${instanceName}-${location}'
   tags: tags
   location: location
   kind: 'AzureCLI'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5872351193012176205"
+      "templateHash": "15163009977717073992"
     }
   },
   "parameters": {
@@ -2313,9 +2313,6 @@
           },
           "collectTelemetry": {
             "value": "[parameters('collectTelemetry')]"
-          },
-          "deployDiscovery": {
-            "value": "[parameters('deployDiscovery')]"
           }
         },
         "template": {
@@ -2325,7 +2322,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1009202439158634967"
+              "templateHash": "4290289380514843596"
             }
           },
           "parameters": {
@@ -2372,9 +2369,6 @@
               "type": "string"
             },
             "collectTelemetry": {
-              "type": "bool"
-            },
-            "deployDiscovery": {
               "type": "bool"
             }
           },
@@ -2427,7 +2421,6 @@
               }
             },
             {
-              "condition": "[parameters('deployDiscovery')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[parameters('imageGalleryName')]",
@@ -8872,7 +8865,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15973545561669172518"
+              "templateHash": "5848841075450586357"
             }
           },
           "parameters": {
@@ -9118,7 +9111,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10563635281544086158"
+                      "templateHash": "7865430594809635395"
                     }
                   },
                   "parameters": {
@@ -9250,7 +9243,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "11040957902283796920"
+                              "templateHash": "9172702804273965046"
                             }
                           },
                           "parameters": {
@@ -9593,7 +9586,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "6845953741684185836"
+                                      "templateHash": "5259099012799328015"
                                     }
                                   },
                                   "parameters": {
@@ -9674,7 +9667,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "addscollectionapp",
+                                      "name": "[format('addscollectionapp-{0}', parameters('instanceName'))]",
                                       "subscriptionId": "[parameters('subscriptionId')]",
                                       "resourceGroup": "[variables('resourceGroupName')]",
                                       "properties": {
@@ -9751,7 +9744,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "upload-addscollectionapp",
+                                      "name": "[format('upload-addscollectionapp-{0}', parameters('instanceName'))]",
                                       "subscriptionId": "[parameters('subscriptionId')]",
                                       "resourceGroup": "[variables('resourceGroupName')]",
                                       "properties": {
@@ -9774,6 +9767,9 @@
                                           },
                                           "tags": {
                                             "value": "[parameters('tags')]"
+                                          },
+                                          "instanceName": {
+                                            "value": "[parameters('instanceName')]"
                                           }
                                         },
                                         "template": {
@@ -9783,7 +9779,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "4498386373395502236"
+                                              "templateHash": "9749958818365986474"
                                             }
                                           },
                                           "parameters": {
@@ -9805,6 +9801,9 @@
                                             },
                                             "tags": {
                                               "type": "object"
+                                            },
+                                            "instanceName": {
+                                              "type": "string"
                                             }
                                           },
                                           "variables": {
@@ -9824,7 +9823,7 @@
                                             {
                                               "type": "Microsoft.Resources/deploymentScripts",
                                               "apiVersion": "2020-10-01",
-                                              "name": "deployscript-addappdiscovery",
+                                              "name": "[format('deployscript-addappdiscovery-{0}-{1}', parameters('instanceName'), parameters('location'))]",
                                               "tags": "[parameters('tags')]",
                                               "location": "[parameters('location')]",
                                               "kind": "AzureCLI",
@@ -9862,7 +9861,7 @@
                                     {
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "addscollectionappversion",
+                                      "name": "[format('addscollectionappversion-{0}', parameters('instanceName'))]",
                                       "subscriptionId": "[parameters('subscriptionId')]",
                                       "resourceGroup": "[variables('resourceGroupName')]",
                                       "properties": {
@@ -9887,7 +9886,7 @@
                                             "value": "[parameters('location')]"
                                           },
                                           "mediaLink": {
-                                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'upload-addscollectionapp'), '2022-09-01').outputs.fileURL.value]"
+                                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-addscollectionapp-{0}', parameters('instanceName'))), '2022-09-01').outputs.fileURL.value]"
                                           },
                                           "installCommands": {
                                             "value": "powershell -command \"ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1\""
@@ -9987,8 +9986,8 @@
                                         }
                                       },
                                       "dependsOn": [
-                                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'addscollectionapp')]",
-                                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'upload-addscollectionapp')]"
+                                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('addscollectionapp-{0}', parameters('instanceName')))]",
+                                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-addscollectionapp-{0}', parameters('instanceName')))]"
                                       ]
                                     },
                                     {

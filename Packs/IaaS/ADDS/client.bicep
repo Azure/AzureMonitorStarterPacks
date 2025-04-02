@@ -34,7 +34,7 @@ var lawFriendlyName = split(workspaceId,'/')[8]
 // VM Application to collect the data - this would be ideally an extension
 module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
-  name: 'addscollectionapp'
+  name: 'addscollectionapp-${instanceName}'
   params: {
     aigname: imageGalleryName
     appDescription: appDescription
@@ -45,7 +45,7 @@ module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
   }
 }
 module upload 'uploadDSADDS.bicep' = {
-  name: 'upload-addscollectionapp'
+  name: 'upload-addscollectionapp-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     containerName: 'applications'
@@ -53,11 +53,12 @@ module upload 'uploadDSADDS.bicep' = {
     storageAccountName: storageAccountname
     location: location
     tags: tags
+    instanceName: instanceName
   }
 }
 
 module addscollectionappversion '../../../setup/discovery/modules/aigappversion.bicep' = {
-  name: 'addscollectionappversion'
+  name: 'addscollectionappversion-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     addscollectionapp
