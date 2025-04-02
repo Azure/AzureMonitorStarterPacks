@@ -1,10 +1,9 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 // param _artifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AzureMonitorStarterPacks/JCore-AVD/'
 // @secure()
 // param _artifactsLocationSasToken string = ''
 
-param mgname string
 param subscriptionId string
 param resourceGroupName string
 param createNewResourceGroup bool = false
@@ -144,7 +143,6 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     dceId: backend.outputs.dceId
     imageGalleryName: ImageGalleryName
     lawResourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
-    mgname: mgname
     storageAccountname: storageAccountName
     tableName: 'Discovery'
     userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
@@ -180,7 +178,6 @@ module backend '../backend/bicep/backend.bicep' = {
     functionname: functionName
     lawresourceid: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     location: location
-    mgname: mgname
     resourceGroupName: resourceGroupName
     Tags: Tags
     storageAccountName: storageAccountName
@@ -203,7 +200,6 @@ module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
     // _artifactsLocationSasToken: _artifactsLocationSasToken
     location: location
     dceId: backend.outputs.dceId
-    mgname: mgname
     customerTags: customerTags
     subscriptionId: subscriptionId
     useExistingAG: useExistingAG

@@ -1,4 +1,6 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope='subscription'
+
 // Action Group to be created
 param subscriptionId string
 param actionGroupName string

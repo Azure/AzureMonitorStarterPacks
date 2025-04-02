@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 @description('The Tag value for this pack')
 param packtag string = 'VMI'
 // @description('Name of the DCR rule to be created')
@@ -12,7 +13,6 @@ param solutionTag string
 param solutionVersion string
 param dceId string
 param userManagedIdentityResourceId string
-param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 //param assignmentLevel string

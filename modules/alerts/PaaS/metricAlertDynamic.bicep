@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 param assignmentSuffix string //used to differenciate the assignment names, based on some criteria
 param alertname string
 param alertDisplayName string

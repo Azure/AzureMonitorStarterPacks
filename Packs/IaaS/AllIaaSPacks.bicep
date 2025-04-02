@@ -1,6 +1,6 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
-param mgname string // this the last part of the management group id
+//param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 @description('location for the deployment.')
@@ -45,7 +45,7 @@ module ADDS './ADDS/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     solutionTag: solutionTag
     subscriptionId: subscriptionId
     userManagedIdentityResourceId: userManagedIdentityResourceId
@@ -67,7 +67,7 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
@@ -85,7 +85,7 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
 //     assignmentLevel: assignmentLevel
 //     dceId: dceId
 //     location: location
-//     mgname: mgname
+// 
 //     resourceGroupId: resourceGroupId
 //     solutionTag: solutionTag
 //     solutionVersion: solutionVersion
@@ -104,7 +104,7 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
 //     assignmentLevel: assignmentLevel
 //     dceId: dceId
 //     location: location
-//     mgname: mgname
+// 
 //     resourceGroupId: resourceGroupId
 //     solutionTag: solutionTag
 //     solutionVersion: solutionVersion
@@ -122,7 +122,7 @@ module IIS './IIS/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
@@ -140,7 +140,7 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
@@ -158,7 +158,7 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
@@ -176,7 +176,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     solutionVersion: solutionVersion
@@ -194,7 +194,7 @@ module Nginx './Nginx/monitoring.bicep' = {
     //assignmentLevel: assignmentLevel
     dceId: dceId
     location: location
-    mgname: mgname
+
     resourceGroupId: resourceGroupId
     solutionTag: solutionTag
     solutionVersion: solutionVersion

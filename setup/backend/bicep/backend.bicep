@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 @description('The name for the function app that you wish to create')
 param functionname string
@@ -15,7 +15,6 @@ param appInsightsLocation string
 param Tags object
 param subscriptionId string
 param resourceGroupName string
-param mgname string
 param imageGalleryName string
 param collectTelemetry bool
 
@@ -152,7 +151,6 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     Tags: Tags
     roleDefinitionIds: packPolicyRoleDefinitionIds
     userIdentityName: 'AMP-${instanceName}-UMI-Packs'
-    mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
     addRGRoleAssignments: true
@@ -174,7 +172,6 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     Tags: Tags
     roleDefinitionIds: backendFunctionRoleDefinitionIds//,array('${customRemdiationRole.outputs.roleDefId}'))
     userIdentityName: 'AMP-${instanceName}-UMI-Function'
-    mgname: mgname
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
     solutionTag: solutionTag
@@ -197,9 +194,9 @@ module keyvault 'modules/keyvault.bicep' = {
 }
 
 //Add permissions for loginapp as a user to keyvault
-module userIdentityRoleAssignments '../../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in logicappRequiredRoleassignments:  {
+module userIdentityRoleAssignments '../../../modules/rbac/subscription/roleassignment.bicep' =  [for (roledefinitionId, i) in logicappRequiredRoleassignments:  {
   name: 'logiapprbac-${i}'
-  scope: managementGroup(mgname)
+  //scope: managementGroup(mgname)
   params: {
     resourcename: keyvault.outputs.kvResourceId
     principalId: logicapp.outputs.logicAppPrincipalId

@@ -1,4 +1,5 @@
-targetScope = 'managementGroup' 
+////targetScope = 'managementGroup'
+targetScope = 'subscription' 
 
 @maxLength(64)
 @description('PolicySet name')

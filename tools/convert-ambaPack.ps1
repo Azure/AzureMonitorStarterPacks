@@ -38,7 +38,8 @@ else {
  
 
 $packContent=@"
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 param solutionTag string
 param packTag string
 param subscriptionId string

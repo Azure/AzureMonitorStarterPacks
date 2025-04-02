@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 param vmapplicationResourceId string
 param policyName string
 param policyDisplayName string

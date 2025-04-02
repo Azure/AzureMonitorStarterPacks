@@ -1,4 +1,5 @@
-targetScope='managementGroup'
+//targetScope='managementGroup'
+targetScope='subscription'
 // @description('Name of the DCR rule to be created')
 @description('location for the deployment.')
 param location string //= resourceGroup().location
@@ -9,7 +10,7 @@ param packtag string = 'DNS2016'
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param mgname string // this the last part of the management group id
+//param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 ////param assignmentLevel string

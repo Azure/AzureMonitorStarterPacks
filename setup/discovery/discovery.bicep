@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 param location string 
 param solutionTag string
@@ -10,7 +10,6 @@ param imageGalleryName string
 param lawResourceId string
 param tableName string
 param userManagedIdentityResourceId string
-param mgname string
 param dceId string
 param Tags object
 param instanceName string
@@ -43,7 +42,6 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     lawResourceId: lawResourceId
     tableNameToUse: tableNameToUse
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
     dceId: dceId
     tags: Tags
     instanceName: instanceName
@@ -65,7 +63,6 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     lawResourceId: lawResourceId
     tableNameToUse: tableNameToUse
     userManagedIdentityResourceId: userManagedIdentityResourceId
-    mgname: mgname
     dceId: dceId
     tags: Tags
     instanceName: instanceName

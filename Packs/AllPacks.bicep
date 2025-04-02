@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 
 // param _artifactsLocation string
@@ -6,7 +6,7 @@ targetScope = 'managementGroup'
 // param _artifactsLocationSasToken string
 // param workspaceIdAVD string
 
-param mgname string // this the last part of the management group id
+//param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 @description('location for the deployment.')
@@ -76,7 +76,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     //grafanaResourceId: grafanaResourceId
     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId
     customerTags: customerTags
-    mgname: mgname
+    //mgname: mgname
     resourceGroupId: resourceGroupId
     subscriptionId: subscriptionId
     storageAccountName: storageAccountName

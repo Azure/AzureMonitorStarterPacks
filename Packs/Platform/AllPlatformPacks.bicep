@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope='subscription'
 
 // @description('Name of the Action Group to be used or created.')
 // param actionGroupName string = ''

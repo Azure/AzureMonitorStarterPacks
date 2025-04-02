@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 @description('The Tag value for this pack')
 param packtag string = 'InsightsDep'
 // @description('Name of the DCR rule to be created')

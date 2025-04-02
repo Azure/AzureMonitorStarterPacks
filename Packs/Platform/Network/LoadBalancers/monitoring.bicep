@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 param packtag string = 'ALB'
 param solutionTag string = 'MonitorStarterPacks'
 param solutionVersion string 

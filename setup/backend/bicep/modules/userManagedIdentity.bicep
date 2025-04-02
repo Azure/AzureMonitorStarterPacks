@@ -1,9 +1,9 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 param location string
 param Tags object
 param roleDefinitionIds array
 param userIdentityName string
-param mgname string
 param subscriptionId string
 param resourceGroupName string
 param addRGRoleAssignments bool = false
@@ -35,9 +35,9 @@ module userManagedIdentity './umidentityresource.bicep' = {
   }
 }
 
-module userIdentityRoleAssignments '../../../../modules/rbac/mg/roleassignment.bicep' =  [for (roledefinitionId, i) in roleDefinitionIds:  {
+module userIdentityRoleAssignments '../../../../modules/rbac/subscription/roleassignment.bicep' =  [for (roledefinitionId, i) in roleDefinitionIds:  {
   name: '${userIdentityName}-${i}-${location}'
-  scope: managementGroup(mgname)
+//  scope: managementGroup(mgname)
   params: {
     resourcename: userIdentityName
     principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId

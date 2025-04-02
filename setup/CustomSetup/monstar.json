@@ -1,17 +1,14 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2253491763225913570"
+      "templateHash": "16722395976196280940"
     }
   },
   "parameters": {
-    "mgname": {
-      "type": "string"
-    },
     "subscriptionId": {
       "type": "string"
     },
@@ -531,15 +528,12 @@
             "value": "[parameters('subscriptionId')]"
           },
           "dceId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.dceId.value]"
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.dceId.value]"
           },
           "imageGalleryName": {
             "value": "[variables('ImageGalleryName')]"
           },
           "lawResourceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
-          "mgname": {
-            "value": "[parameters('mgname')]"
-          },
           "storageAccountname": {
             "value": "[parameters('storageAccountName')]"
           },
@@ -547,7 +541,7 @@
             "value": "Discovery"
           },
           "userManagedIdentityResourceId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.packsUserManagedResourceId.value]"
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.packsUserManagedResourceId.value]"
           },
           "Tags": {
             "value": "[variables('Tags')]"
@@ -557,13 +551,13 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "591116481738387430"
+              "templateHash": "8988969204822844684"
             }
           },
           "parameters": {
@@ -595,9 +589,6 @@
               "type": "string"
             },
             "userManagedIdentityResourceId": {
-              "type": "string"
-            },
-            "mgname": {
               "type": "string"
             },
             "dceId": {
@@ -725,9 +716,6 @@
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "dceId": {
                     "value": "[parameters('dceId')]"
                   },
@@ -739,13 +727,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13331780847572411691"
+                      "templateHash": "7926704064855259971"
                     }
                   },
                   "parameters": {
@@ -771,9 +759,6 @@
                       "type": "string"
                     },
                     "userManagedIdentityResourceId": {
-                      "type": "string"
-                    },
-                    "mgname": {
                       "type": "string"
                     },
                     "dceId": {
@@ -1345,9 +1330,6 @@
                   "userManagedIdentityResourceId": {
                     "value": "[parameters('userManagedIdentityResourceId')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "dceId": {
                     "value": "[parameters('dceId')]"
                   },
@@ -1359,13 +1341,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13440623184375052361"
+                      "templateHash": "7382661391065213462"
                     }
                   },
                   "parameters": {
@@ -1397,9 +1379,6 @@
                       "type": "string"
                     },
                     "userManagedIdentityResourceId": {
-                      "type": "string"
-                    },
-                    "mgname": {
                       "type": "string"
                     },
                     "dceId": {
@@ -1931,7 +1910,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]"
       ]
     },
@@ -2296,9 +2275,6 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "mgname": {
-            "value": "[parameters('mgname')]"
-          },
           "resourceGroupName": {
             "value": "[parameters('resourceGroupName')]"
           },
@@ -2328,13 +2304,13 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9584432210996006162"
+              "templateHash": "8587765391888985123"
             }
           },
           "parameters": {
@@ -2375,9 +2351,6 @@
               "type": "string"
             },
             "resourceGroupName": {
-              "type": "string"
-            },
-            "mgname": {
               "type": "string"
             },
             "imageGalleryName": {
@@ -2524,13 +2497,13 @@
                     "value": "[parameters('storageAccountName')]"
                   },
                   "userManagedIdentity": {
-                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-AzFun-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
+                    "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-AzFun-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
                   },
                   "userManagedIdentityClientId": {
-                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-AzFun-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityClientId.value]"
+                    "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-AzFun-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityClientId.value]"
                   },
                   "packsUserManagedId": {
-                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
+                    "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
                   },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
@@ -2546,7 +2519,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "6505480495650829545"
+                      "templateHash": "15474348743875473476"
                     }
                   },
                   "parameters": {
@@ -2597,7 +2570,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "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",
+                    "$fxv#0": "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",
                     "discoveryContainerName": "discovery",
                     "tempfilename": "[format('{0}.tmp', parameters('filename'))]",
                     "ambaJsonURL": "https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json",
@@ -2820,8 +2793,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-AzFun-{1}', parameters('instanceName'), parameters('location')))]",
-                "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location')))]"
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-AzFun-{1}', parameters('instanceName'), parameters('location')))]",
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location')))]"
               ]
             },
             {
@@ -7885,9 +7858,6 @@
                   "userIdentityName": {
                     "value": "[format('AMP-{0}-UMI-Packs', parameters('instanceName'))]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupName": {
                     "value": "[parameters('resourceGroupName')]"
                   },
@@ -7902,13 +7872,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1419658493773483259"
+                      "templateHash": "16004275356895274058"
                     }
                   },
                   "parameters": {
@@ -7922,9 +7892,6 @@
                       "type": "array"
                     },
                     "userIdentityName": {
-                      "type": "string"
-                    },
-                    "mgname": {
                       "type": "string"
                     },
                     "subscriptionId": {
@@ -8025,7 +7992,6 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-{1}-{2}', parameters('userIdentityName'), copyIndex(), parameters('location'))]",
-                      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -8050,13 +8016,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "13770438938236428861"
+                              "templateHash": "5009626312759808178"
                             }
                           },
                           "parameters": {
@@ -8087,7 +8053,7 @@
                             {
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
-                              "name": "[guid(managementGroup().name, parameters('principalId'), parameters('roleDefinitionId'))]",
+                              "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
                               "properties": {
                                 "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                                 "principalId": "[parameters('principalId')]",
@@ -8099,7 +8065,7 @@
                           "outputs": {
                             "roleassignmentname": {
                               "type": "string",
-                              "value": "[guid(managementGroup().name, parameters('principalId'), parameters('roleDefinitionId'))]"
+                              "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
                             }
                           }
                         }
@@ -8241,9 +8207,6 @@
                   "userIdentityName": {
                     "value": "[format('AMP-{0}-UMI-Function', parameters('instanceName'))]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupName": {
                     "value": "[parameters('resourceGroupName')]"
                   },
@@ -8255,13 +8218,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1419658493773483259"
+                      "templateHash": "16004275356895274058"
                     }
                   },
                   "parameters": {
@@ -8275,9 +8238,6 @@
                       "type": "array"
                     },
                     "userIdentityName": {
-                      "type": "string"
-                    },
-                    "mgname": {
                       "type": "string"
                     },
                     "subscriptionId": {
@@ -8378,7 +8338,6 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-{1}-{2}', parameters('userIdentityName'), copyIndex(), parameters('location'))]",
-                      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -8403,13 +8362,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "13770438938236428861"
+                              "templateHash": "5009626312759808178"
                             }
                           },
                           "parameters": {
@@ -8440,7 +8399,7 @@
                             {
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
-                              "name": "[guid(managementGroup().name, parameters('principalId'), parameters('roleDefinitionId'))]",
+                              "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
                               "properties": {
                                 "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                                 "principalId": "[parameters('principalId')]",
@@ -8452,7 +8411,7 @@
                           "outputs": {
                             "roleassignmentname": {
                               "type": "string",
-                              "value": "[guid(managementGroup().name, parameters('principalId'), parameters('roleDefinitionId'))]"
+                              "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
                             }
                           }
                         }
@@ -8685,7 +8644,6 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('logiapprbac-{0}', copyIndex())]",
-              "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('mgname'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -8710,13 +8668,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13770438938236428861"
+                      "templateHash": "5009626312759808178"
                     }
                   },
                   "parameters": {
@@ -8747,7 +8705,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "name": "[guid(managementGroup().name, parameters('principalId'), parameters('roleDefinitionId'))]",
+                      "name": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]",
                       "properties": {
                         "description": "[format('{0}-{1}-{2}-{3}', parameters('solutionTag'), parameters('roleShortName'), parameters('resourcename'), parameters('utcValue'))]",
                         "principalId": "[parameters('principalId')]",
@@ -8759,7 +8717,7 @@
                   "outputs": {
                     "roleassignmentname": {
                       "type": "string",
-                      "value": "[guid(managementGroup().name, parameters('principalId'), parameters('roleDefinitionId'))]"
+                      "value": "[guid(subscription().id, parameters('principalId'), parameters('roleDefinitionId'))]"
                     }
                   }
                 }
@@ -8773,11 +8731,11 @@
           "outputs": {
             "packsUserManagedIdentityId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
+              "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityPrincipalId.value]"
             },
             "packsUserManagedResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
+              "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AMP-{0}-UMI-Packs-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.userManagedIdentityResourceId.value]"
             },
             "dceId": {
               "type": "string",
@@ -8807,10 +8765,7 @@
             "value": "[parameters('location')]"
           },
           "dceId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.dceId.value]"
-          },
-          "mgname": {
-            "value": "[parameters('mgname')]"
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.dceId.value]"
           },
           "customerTags": {
             "value": "[parameters('customerTags')]"
@@ -8822,7 +8777,7 @@
             "value": "[parameters('useExistingAG')]"
           },
           "userManagedIdentityResourceId": {
-            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.packsUserManagedResourceId.value]"
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.packsUserManagedResourceId.value]"
           },
           "workspaceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
           "actionGroupName": {
@@ -8862,19 +8817,16 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2544590526198049511"
+              "templateHash": "15973545561669172518"
             }
           },
           "parameters": {
-            "mgname": {
-              "type": "string"
-            },
             "subscriptionId": {
               "type": "string"
             },
@@ -9094,9 +9046,6 @@
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -9114,19 +9063,16 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10483075205654096954"
+                      "templateHash": "10563635281544086158"
                     }
                   },
                   "parameters": {
-                    "mgname": {
-                      "type": "string"
-                    },
                     "subscriptionId": {
                       "type": "string"
                     },
@@ -9208,9 +9154,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "solutionTag": {
                             "value": "[parameters('solutionTag')]"
                           },
@@ -9252,13 +9195,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "13721024895843585629"
+                              "templateHash": "11040957902283796920"
                             }
                           },
                           "parameters": {
@@ -9302,9 +9245,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -9557,9 +9497,6 @@
                                   "imageGalleryName": {
                                     "value": "[parameters('imageGalleryName')]"
                                   },
-                                  "mgname": {
-                                    "value": "[parameters('mgname')]"
-                                  },
                                   "resourceGroupId": {
                                     "value": "[parameters('resourceGroupId')]"
                                   },
@@ -9601,13 +9538,13 @@
                                   }
                                 },
                                 "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                                   "contentVersion": "1.0.0.0",
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "1338942321988296595"
+                                      "templateHash": "6845953741684185836"
                                     }
                                   },
                                   "parameters": {
@@ -9644,9 +9581,6 @@
                                       "metadata": {
                                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                                       }
-                                    },
-                                    "mgname": {
-                                      "type": "string"
                                     },
                                     "subscriptionId": {
                                       "type": "string"
@@ -10288,9 +10222,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -10320,13 +10251,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "9005525137683410162"
+                              "templateHash": "7423306630869613208"
                             }
                           },
                           "parameters": {
@@ -10362,9 +10293,6 @@
                               "type": "string"
                             },
                             "userManagedIdentityResourceId": {
-                              "type": "string"
-                            },
-                            "mgname": {
                               "type": "string"
                             },
                             "subscriptionId": {
@@ -11302,9 +11230,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -11334,13 +11259,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "16679733599436842141"
+                              "templateHash": "17534859391202854246"
                             }
                           },
                           "parameters": {
@@ -11377,9 +11302,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -12702,9 +12624,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -12734,13 +12653,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "13900852997455490309"
+                              "templateHash": "1996276289550204623"
                             }
                           },
                           "parameters": {
@@ -12781,9 +12700,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -14128,9 +14044,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -14160,13 +14073,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "5222498176192057785"
+                              "templateHash": "15095836579749806306"
                             }
                           },
                           "parameters": {
@@ -14197,9 +14110,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -15767,9 +15677,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -15799,13 +15706,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "3719283826261946328"
+                              "templateHash": "14932330406794107409"
                             }
                           },
                           "parameters": {
@@ -15848,9 +15755,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -16819,9 +16723,6 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -16851,13 +16752,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "4733957926130615059"
+                              "templateHash": "15723327484299479063"
                             }
                           },
                           "parameters": {
@@ -16897,9 +16798,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -17915,13 +17813,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "14230917094621121622"
+                              "templateHash": "8958640379218679332"
                             }
                           },
                           "parameters": {
@@ -18229,7 +18127,7 @@
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('azureManagedGrafana-{0}', parameters('instanceName')))]",
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
         "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]

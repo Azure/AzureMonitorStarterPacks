@@ -1,4 +1,5 @@
-targetScope='managementGroup'
+//targetScope='managementGroup'
+targetScope='subscription'
 param packtag string
 param solutionTag string
 param location string

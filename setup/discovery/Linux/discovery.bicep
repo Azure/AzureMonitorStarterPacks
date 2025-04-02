@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 param location string 
 param solutionTag string
@@ -10,7 +11,6 @@ param imageGalleryName string
 param lawResourceId string
 param tableNameToUse string
 param userManagedIdentityResourceId string
-param mgname string
 param dceId string
 param tags object
 param instanceName string

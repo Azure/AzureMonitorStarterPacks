@@ -1,17 +1,14 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2544590526198049511"
+      "templateHash": "15973545561669172518"
     }
   },
   "parameters": {
-    "mgname": {
-      "type": "string"
-    },
     "subscriptionId": {
       "type": "string"
     },
@@ -231,9 +228,6 @@
           "customerTags": {
             "value": "[parameters('customerTags')]"
           },
-          "mgname": {
-            "value": "[parameters('mgname')]"
-          },
           "resourceGroupId": {
             "value": "[parameters('resourceGroupId')]"
           },
@@ -251,19 +245,16 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10483075205654096954"
+              "templateHash": "10563635281544086158"
             }
           },
           "parameters": {
-            "mgname": {
-              "type": "string"
-            },
             "subscriptionId": {
               "type": "string"
             },
@@ -345,9 +336,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "solutionTag": {
                     "value": "[parameters('solutionTag')]"
                   },
@@ -389,13 +377,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13721024895843585629"
+                      "templateHash": "11040957902283796920"
                     }
                   },
                   "parameters": {
@@ -439,9 +427,6 @@
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "mgname": {
-                      "type": "string"
                     },
                     "subscriptionId": {
                       "type": "string"
@@ -694,9 +679,6 @@
                           "imageGalleryName": {
                             "value": "[parameters('imageGalleryName')]"
                           },
-                          "mgname": {
-                            "value": "[parameters('mgname')]"
-                          },
                           "resourceGroupId": {
                             "value": "[parameters('resourceGroupId')]"
                           },
@@ -738,13 +720,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "1338942321988296595"
+                              "templateHash": "6845953741684185836"
                             }
                           },
                           "parameters": {
@@ -781,9 +763,6 @@
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "mgname": {
-                              "type": "string"
                             },
                             "subscriptionId": {
                               "type": "string"
@@ -1425,9 +1404,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -1457,13 +1433,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "9005525137683410162"
+                      "templateHash": "7423306630869613208"
                     }
                   },
                   "parameters": {
@@ -1499,9 +1475,6 @@
                       "type": "string"
                     },
                     "userManagedIdentityResourceId": {
-                      "type": "string"
-                    },
-                    "mgname": {
                       "type": "string"
                     },
                     "subscriptionId": {
@@ -2439,9 +2412,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -2471,13 +2441,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16679733599436842141"
+                      "templateHash": "17534859391202854246"
                     }
                   },
                   "parameters": {
@@ -2514,9 +2484,6 @@
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "mgname": {
-                      "type": "string"
                     },
                     "subscriptionId": {
                       "type": "string"
@@ -3839,9 +3806,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -3871,13 +3835,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13900852997455490309"
+                      "templateHash": "1996276289550204623"
                     }
                   },
                   "parameters": {
@@ -3918,9 +3882,6 @@
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "mgname": {
-                      "type": "string"
                     },
                     "subscriptionId": {
                       "type": "string"
@@ -5265,9 +5226,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -5297,13 +5255,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5222498176192057785"
+                      "templateHash": "15095836579749806306"
                     }
                   },
                   "parameters": {
@@ -5334,9 +5292,6 @@
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "mgname": {
-                      "type": "string"
                     },
                     "subscriptionId": {
                       "type": "string"
@@ -6904,9 +6859,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -6936,13 +6888,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "3719283826261946328"
+                      "templateHash": "14932330406794107409"
                     }
                   },
                   "parameters": {
@@ -6985,9 +6937,6 @@
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "mgname": {
-                      "type": "string"
                     },
                     "subscriptionId": {
                       "type": "string"
@@ -7956,9 +7905,6 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "mgname": {
-                    "value": "[parameters('mgname')]"
-                  },
                   "resourceGroupId": {
                     "value": "[parameters('resourceGroupId')]"
                   },
@@ -7988,13 +7934,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "4733957926130615059"
+                      "templateHash": "15723327484299479063"
                     }
                   },
                   "parameters": {
@@ -8034,9 +7980,6 @@
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "mgname": {
-                      "type": "string"
                     },
                     "subscriptionId": {
                       "type": "string"
@@ -9052,13 +8995,13 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14230917094621121622"
+                      "templateHash": "8958640379218679332"
                     }
                   },
                   "parameters": {

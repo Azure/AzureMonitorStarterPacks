@@ -1,4 +1,5 @@
-// targetScope = 'managementGroup'
+// ////targetScope = 'managementGroup'
+targetScope = 'subscription'
 // param location string
 // param solutionTag string
 // param solutionVersion string

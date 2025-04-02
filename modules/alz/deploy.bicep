@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 @sys.description('Required. Specifies the name of the policy definition. Maximum length is 64 characters.')
 @maxLength(64)

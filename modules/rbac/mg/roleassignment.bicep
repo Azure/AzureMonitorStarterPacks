@@ -1,4 +1,5 @@
-  targetScope = 'managementGroup'
+  ////targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 param resourcename string
 param solutionTag string

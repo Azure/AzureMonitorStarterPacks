@@ -12,16 +12,7 @@
                         {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
-                            "kind": "ManagementGroup",
                             "instanceDetailsLabel": "MonStar Packs Deployment Details"
-                        },
-                        {
-                            "name": "mgmtGroupAPI",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "providers/Microsoft.Management/managementGroups?api-version=2020-05-01"
-                            }
                         },
 						{
                             "name": "subscriptionAPI",
@@ -514,7 +505,6 @@
         },
         "outputs": {
             "parameters": {
-                "mgname": "[steps('basics').resourceScope.managementGroup.name]",
                 "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
                 "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
                 "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",                
@@ -543,9 +533,8 @@
 				"collectTelemetry": "[steps('Configuration').collectTelemetry]",
                 "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]"
             },
-            "kind": "ManagementGroup",
-            "location": "[steps('basics').resourceScope.location.name]",
-            "managementGroupId": "[steps('basics').resourceScope.managementGroup.id]"
+            "kind": "Subscription",
+            "location": "[steps('basics').resourceScope.location.name]"
         }
     }
 }

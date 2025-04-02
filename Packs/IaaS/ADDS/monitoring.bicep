@@ -1,4 +1,5 @@
-targetScope = 'managementGroup'
+////targetScope = 'managementGroup'
+targetScope='subscription'
 
 @description('Name of the DCR rule to be created')
 
@@ -14,7 +15,7 @@ param solutionVersion string
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param mgname string // this the last part of the management group id
+//param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 //param assignmentLevel string
@@ -116,7 +117,6 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
 //     rulename: rulename
 //     location: location
 //     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     mgname: mgname
 //     ruleshortname: '${ruleshortname}-1'
 //     assignmentLevel: assignmentLevel
 //     subscriptionId: subscriptionId
@@ -132,7 +132,6 @@ module client 'client.bicep' = {
     instanceName: instanceName
     location: location
     imageGalleryName: imageGalleryName
-    mgname: mgname
     resourceGroupId: resourceGroupId
     storageAccountname: storageAccountname
     subscriptionId: subscriptionId

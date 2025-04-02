@@ -1,4 +1,5 @@
-targetScope='managementGroup'
+//targetScope='managementGroup'
+targetScope='subscription'
 //Pack Specific parameters
 // @description('Name of the DCR rule to be created')
 // param rulename string = 'AMSP-Windows-PS2016'
@@ -17,7 +18,7 @@ param solutionVersion string
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
 param userManagedIdentityResourceId string
-param mgname string // this the last part of the management group id
+//param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
 //param assignmentLevel string
