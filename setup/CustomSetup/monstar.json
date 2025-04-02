@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15163009977717073992"
+      "templateHash": "17576211287304663888"
     }
   },
   "parameters": {
@@ -8865,7 +8865,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5848841075450586357"
+              "templateHash": "521722359653771966"
             }
           },
           "parameters": {
@@ -9111,7 +9111,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7865430594809635395"
+                      "templateHash": "6127935660436792819"
                     }
                   },
                   "parameters": {
@@ -9168,15 +9168,13 @@
                     }
                   },
                   "variables": {
-                    "solutionTagComponents": "MonitorStarterPacksComponents",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "BackendComponent",
                       "solutionVersion": "[parameters('solutionVersion')]",
                       "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS"
                     },
-                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
-                    "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]"
+                    "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]"
                   },
                   "resources": [
                     {
@@ -9217,9 +9215,6 @@
                           "tableName": {
                             "value": "addsmonitoring"
                           },
-                          "tags": {
-                            "value": "[variables('Tags')]"
-                          },
                           "actionGroupResourceId": {
                             "value": "[parameters('actionGroupResourceId')]"
                           },
@@ -9243,7 +9238,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "9172702804273965046"
+                              "templateHash": "9430016841999804802"
                             }
                           },
                           "parameters": {
@@ -9251,7 +9246,7 @@
                               "type": "string",
                               "defaultValue": "ADDS",
                               "metadata": {
-                                "description": "Name of the DCR rule to be created"
+                                "description": "The Tag value for this pack"
                               }
                             },
                             "actionGroupResourceId": {
@@ -9297,9 +9292,6 @@
                             "instanceName": {
                               "type": "string"
                             },
-                            "customerTags": {
-                              "type": "object"
-                            },
                             "storageAccountname": {
                               "type": "string"
                             },
@@ -9309,7 +9301,7 @@
                             "tableName": {
                               "type": "string"
                             },
-                            "tags": {
+                            "customerTags": {
                               "type": "object"
                             }
                           },
@@ -9324,7 +9316,7 @@
                             "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                             "kind": "Windows",
-                            "ruleshortname": "[format('{0}-collection', parameters('packtag'))]",
+                            "ruleshortname": "[format('{0}-collection-{1}', parameters('packtag'), parameters('instanceName'))]",
                             "appName": "[format('{0}-collection', parameters('packtag'))]",
                             "appDescription": "[format('{0} Collection - {1}', parameters('packtag'), parameters('instanceName'))]",
                             "OS": "Windows",
@@ -9552,7 +9544,7 @@
                                     "value": "[parameters('tableName')]"
                                   },
                                   "tags": {
-                                    "value": "[parameters('tags')]"
+                                    "value": "[variables('Tags')]"
                                   },
                                   "userManagedIdentityResourceId": {
                                     "value": "[parameters('userManagedIdentityResourceId')]"

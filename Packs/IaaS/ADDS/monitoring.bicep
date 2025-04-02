@@ -1,8 +1,6 @@
 ////targetScope = 'managementGroup'
 targetScope='subscription'
-
-@description('Name of the DCR rule to be created')
-
+@description('The Tag value for this pack')
 param packtag string = 'ADDS'
 param actionGroupResourceId string
 @description('location for the deployment.')
@@ -20,6 +18,9 @@ param subscriptionId string
 param resourceGroupId string
 //param assignmentLevel string
 param instanceName string
+param storageAccountname string
+param imageGalleryName string
+param tableName string
 
 var rulename = 'AMP-${instanceName}-${packtag}'
 param customerTags object
@@ -33,14 +34,8 @@ var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var workspaceFriendlyName = split(workspaceId, '/')[8]
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
-
-param storageAccountname string
-param imageGalleryName string
-param tableName string
-param tags object
-
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = '${packtag}-collection'
+var ruleshortname = '${packtag}-collection-${instanceName}'
 var appName = '${packtag}-collection'
 var appDescription = '${packtag} Collection - ${instanceName}'
 var OS = 'Windows'
@@ -90,7 +85,6 @@ var performanceCounters=[
   '\\DirectoryServices(NTDS)\\ATQ Threads LDAP'
   '\\DirectoryServices(NTDS)\\ATQ Threads Total'
 ]
-
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
 module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   name: 'dcrPerformance-${packtag}-${instanceName}-${location}'
@@ -136,7 +130,7 @@ module client 'client.bicep' = {
     storageAccountname: storageAccountname
     subscriptionId: subscriptionId
     tableName: tableName //no _CL suffix
-    tags: tags
+    tags: Tags
     userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     packtag: packtag

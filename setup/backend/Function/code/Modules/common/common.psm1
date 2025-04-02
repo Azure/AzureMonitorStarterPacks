@@ -127,72 +127,7 @@ function Install-azMonitorAgent {
             -publisher "Microsoft.Azure.Monitoring.DependencyAgent"
     }
 }
-function get-discovermappings {
-    $discoveringMappings = @{
-        "ADDS"  = "AD-Domain-Services"
-        "DNS"   = "DNS"
-        "IIS"   = "Web-Server"
-        "Nginx" = "nginx-core"
-    }
-    return $discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
-}
-function get-discoveryresults {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$LogAnalyticsWSResourceId
-    )
-    Write-host "Running Discovery"
-    $DiscoveryQuery=@"
-let maxts=Discovery_CL | summarize timestamp=max(tostring(split(RawData,",")[0]));
-Discovery_CL
-| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)
-| extend fields=split(RawData,",")
-| extend timestamp=todatetime(fields[0])
-| extend type=tostring(fields[1])
-| extend platform=tostring(fields[2])
-| extend OSVersion=tostring(fields[3])
-| extend name=tostring(fields[4])
-| extend othertype=tostring(fields[5])
-| extend vendor=tostring(fields[6])
-| where timestamp == toscalar(maxts)
-| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor
-"@
-    $wsname=$LogAnalyticsWSResourceId.split('/')[8]
-    $wsresourceGroupname=$LogAnalyticsWSResourceId.split('/')[4]    
-    # Write-host "Getting WS"
-    $subscriptionId = $LogAnalyticsWSResourceId.split('/')[2]
-    # # change context to subscription
-    Set-AzContext -Subscription $subscriptionId | out-null
-    try {
-        $workspace = Get-AzOperationalInsightsWorkspace -ResourceGroupName $wsresourceGroupname -Name $wsname
-    }
-    catch {
-        Write-Error "Error finding workspace."
-        break
-    }
-    # Select subscription from workspace
 
-    if ($workspace) {
-        Write-host "Running Query"
-        $DiscoveryData=Invoke-AzOperationalInsightsQuery -Workspace $workspace -Query $DiscoveryQuery | select -ExpandProperty Results
-    }
-    else {
-        $DiscoveryData=@()
-    }
-    Write-host "Found $($DiscoveryData.Count) entries in discovery."
-    $DMs=get-discovermappings
-    $results=@()
-    foreach ($app in $DiscoveryData | Where-Object { $_.name -in $DMs.application }) {
-        Write-host "Finding applications in the Discovery mappings"
-        # For each DM in DMs we need to find computers in $DiscoveryData that match the DM
-        # get the tag for the application
-        $result=$app
-        $result | Add-Member -MemberType Noteproperty -Name 'tag' -Value ($DMs | Where-Object { $_.application -eq $app.name } | select -ExpandProperty tag)
-        $results+=$result
-    }
-    Write-host "Found $($results.count) results for discovery."
-    return $results | ConvertTo-Json
-}
 # Depends on Function Install-azMonitorAgent
 function Add-Agent {
     param (
@@ -347,46 +282,6 @@ function Add-Agent {
     }
     #End of agent installation
 }
-# function Add-Tag {
-#     param (
-#         [Parameter(Mandatory = $true)]
-#         [string]$resourceId,
-#         [Parameter(Mandatory = $true)]
-#         [string]$TagName,
-#         [Parameter(Mandatory = $true)]
-#         [string]$TagValue
-#     )
-#     $resourceName = $resourceId.split('/')[8]
-#     "Resource: $resourceId"
-#     "Running $action for $resourceName resource. TagValue: $TagValue"
-#     #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
-#     $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
-#     #"Current tags: $($tag)"
-#     if ($null -eq $tag) {
-#         # initializes if no tag is there.
-#         $tag = @{}
-#     }
-#     if ($tag.Keys -notcontains $TagName) {
-#         # doesn´t have the monitoring tag
-#         $tag.Add($TagName, $TagValue)
-#         Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-#         #Check and add DCRa
-#         Add-DCRa -resourceId $resourceId -TagValue $TagValue
-#         #Check if agent exists. If not, install it.
-#     }
-#     else {
-#         #Monitoring Tag exists  
-#         if ($tag.$tagName.Split(',') -notcontains $TagValue) {
-#             $tag[$TagName] += ",$TagValue"
-#             #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
-#             Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-#             Add-DCRa -resourceId $resourceId -TagValue $TagValue
-#         }
-#         else {
-#             "$TagName already has the $TagValue value"
-#         }
-#     }
-# }
 function Add-DCRa {
     param (
         [Parameter(Mandatory = $true)]

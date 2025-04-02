@@ -29,7 +29,7 @@ param storageAccountName string
 param imageGalleryName string
 param instanceName string
 
-var solutionTagComponents='MonitorStarterPacksComponents'
+//var solutionTagComponents='MonitorStarterPacksComponents'
 var tempTags= {
   '${solutionTag}': 'BackendComponent'
   solutionVersion: solutionVersion
@@ -37,7 +37,7 @@ var tempTags= {
   MonitoringPackType: 'IaaS'
 }
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
-var resourceGroupName = split(resourceGroupId, '/')[4]
+//var resourceGroupName = split(resourceGroupId, '/')[4]
 
 module ADDS './ADDS/monitoring.bicep' = {
   name: 'ADDSPack-${instanceName}-${location}'
@@ -53,7 +53,6 @@ module ADDS './ADDS/monitoring.bicep' = {
     resourceGroupId: resourceGroupId
     storageAccountname: storageAccountName
     tableName: 'addsmonitoring'
-    tags: Tags
     actionGroupResourceId: actionGroupResourceId
     customerTags: customerTags
     workspaceId: workspaceId

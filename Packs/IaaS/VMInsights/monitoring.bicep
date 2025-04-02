@@ -2,8 +2,6 @@
 targetScope = 'subscription'
 @description('The Tag value for this pack')
 param packtag string = 'VMI'
-// @description('Name of the DCR rule to be created')
-// param rulename string = 'AMSP-Windows-OS'
 param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
@@ -29,38 +27,6 @@ var tempTags ={
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 //var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
-
-// Action Group
-// module ag '../../../modules/actiongroups/ag.bicep' =  {
-//   name: 'actiongroup'
-//   params: {
-//     actionGroupName: actionGroupName
-//     existingAGRG: existingAGRG
-//     emailreceiver: emailreceiver
-//     emailreiceversemail: emailreiceversemail
-//     useExistingAG: useExistingAG
-//     newRGresourceGroup: resourceGroupName
-//     solutionTag: solutionTag
-//     subscriptionId: subscriptionId
-//     location: location
-//     Tags: Tags
-//     //location: location defailt is global
-//   }
-// }
-
-// // Alerts - Event viewer based alerts. Depend on the event viewer logs being enabled on the VMs events are being sent to the workspace via DCRs.
-// module eventAlerts 'eventAlerts.bicep' = {
-//   name: 'eventAlerts-${packtag}'
-//   params: {
-//     AGId: ag.outputs.actionGroupResourceId
-//     location: location
-//     workspaceId: workspaceId
-//     packtag: packtag
-//     solutionTag: solutionTag
-//     solutionVersion: solutionVersion
-
-//   }
-// } 
 
 // This option uses an existing VMI rule but this can be a tad problematic.
 // resource vmInsightsDCR 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' existing = if(enableInsightsAlerts == 'true') {
