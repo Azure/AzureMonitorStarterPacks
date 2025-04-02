@@ -383,6 +383,8 @@ function Remove-Tag {
                 foreach ($tagv in $taglist) {
                     "Removing association for $tagv. on $resourceId."
                     Remove-DCRa -resourceId $resourceId -TagValue $tagv
+                    "Removing vm application(s) if any."
+                    remove-vmapp -ResourceId $resourceId -packtag $tagv
                 }
                 $tag.Remove($tagName)
                 if ($tag.count -ne 0) {
@@ -855,10 +857,12 @@ function Add-Tag {
         $tag.Add($TagName, $TagValue)
         if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
             if (Add-DCRa -resourceId $resourceId -TagValue $TagValue ) {
-                Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+                if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
+                    Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+                }
             }
         }
-        else {
+        else { #PaaS
             try {
                 new-PaaSAlert -packTag $resourceType `
                               -packType $packType `
