@@ -163,6 +163,7 @@ module amg '../backend/bicep/modules/grafana.bicep' = if (newGrafana && deployGr
     location: grafanaLocation
     grafanaName: grafanaName
     solutionTag: solutionTag
+    instanceName: instanceName
     //userObjectId: currentUserIdObject
     //lawresourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
   }

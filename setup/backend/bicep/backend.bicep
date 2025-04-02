@@ -155,6 +155,7 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     subscriptionId: subscriptionId
     addRGRoleAssignments: true
     solutionTag: solutionTag
+    instanceName: instanceName
   }
 }
 
@@ -175,6 +176,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     resourceGroupName: resourceGroupName
     subscriptionId: subscriptionId
     solutionTag: solutionTag
+    instanceName: instanceName
   }
 }
 
@@ -203,6 +205,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/subscription/roleassig
     solutionTag: solutionTag
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
+    instanceName: instanceName
   }
 }]
 

@@ -8,6 +8,7 @@ param subscriptionId string
 param resourceGroupName string
 param addRGRoleAssignments bool = false
 param solutionTag string
+param instanceName string
 var RGroleDefinitionIds=[
 
   //contributor roles
@@ -44,6 +45,7 @@ module userIdentityRoleAssignments '../../../../modules/rbac/subscription/roleas
     solutionTag: solutionTag
     roleDefinitionId: roledefinitionId
     roleShortName: roledefinitionId
+    instanceName: instanceName
   }
 }]
 

@@ -4,6 +4,7 @@ param grafanaName string
 param location string
 param Tags object
 param solutionTag string
+param instanceName string
 //param userObjectId string
 // param utcValue string = utcNow()
 // param lawresourceId string
@@ -48,6 +49,7 @@ module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignm
     roleDefinitionId: ReaderRoleId
     roleShortName: 'Reader'
     solutionTag: solutionTag
+    instanceName: instanceName
   }
 }
 module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
