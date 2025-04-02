@@ -4,7 +4,51 @@
 
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
-function configure-systemAssignedIdentity {
+function get-AMBAJsonFromRepo {
+    param (
+        [string]$AMBAJsonURL = "https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
+    )
+    $AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
+    return $AMBAJson
+}
+function get-AMBAJsonContent {
+    $StorageAccountName=$env:storaceAccountName
+    $ResourceGroupName=$env:ResourceGroupName
+    $StorageAccount=Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName
+    $sacontext=New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
+    $ContainerName = "amba"
+    $BlobName = "amba-alerts.json"
+    $Blob2HT = @{
+        Container        = $ContainerName
+        Blob             = $BlobName
+        Context          = $sacontext
+    }
+    $currentblob = Get-AzStorageBlob @Blob2HT #-ErrorAction SilentlyContinue
+    if ($null -ne $currentblob -and $currentblob.LastModified -gt (Get-Date).AddDays(-30)) {
+        $BlobContent = Get-AzStorageBlobContent @Blob2HT -Force -Context $sacontext
+        $AMBAJson = get-content $blobcontent.name
+    } 
+    else {
+        Write-Host "Blob not found. Please check the blob name and container name."
+        # $AMBAJsonURL="https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
+        # Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content 
+        get-AMBAJsonFromRepo | Out-File -FilePath "amba-alerts.json" -Encoding utf8
+        # Write json contetnt to a blog in the storage account under the amba container using managed identity
+        $Blob1HT = @{
+            File             = "amba-alerts.json"
+            Container        = $ContainerName
+            Blob             = $BlobName
+            Context          = $sacontext
+            StandardBlobTier = 'Hot'
+        }
+        Set-AzStorageBlobContent @Blob1HT
+        $AMBAJson = get-content $BlobName
+    }
+    #$AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
+    return $AMBAJson
+}
+
+function set-systemAssignedIdentity {
     param (
         [Parameter(Mandatory = $true)]
         [string]$subscriptionId,
@@ -50,7 +94,7 @@ function install-extension {
         [Parameter(Mandatory = $true)]
         [string]$publisher
     )
-    $Method = "PUT"
+    #$Method = "PUT"
     $URL = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName/extensions/$ExtensionName" + "?api-version=2023-09-01"
     $Body = @"
     {
@@ -100,7 +144,7 @@ function Install-azMonitorAgent {
     )
     "Installing "
     "Subscription Id: $subscriptionId"
-    configure-systemAssignedIdentity -subscriptionId $subscriptionId `
+    set-systemAssignedIdentity -subscriptionId $subscriptionId `
                                      -resourceGroupName $resourceGroupName `
                                      -vmName $vmName
     # Extension
@@ -293,7 +337,7 @@ function Add-DCRa {
     foreach ($DCR in $DCRs) {
     #Check if the DCR is associated with the VM
         $associated=Get-AzDataCollectionRuleAssociation -ResourceUri $resourceId | Where-Object { $_.DataCollectionRuleId -eq $DCR.Id }
-        if ($associated -eq $null) {
+        if ($null -eq $associated) {
             Write-Output "VM: $resourceName Pack: $TagValue) DCR: $($DCR.Name) not associated"
             # Create the association
             New-AzDataCollectionRuleAssociation -ResourceUri $resourceId -DataCollectionRuleId $DCR.Id -AssociationName "Association for $resourceName and $($DCR.Name)"
@@ -357,7 +401,9 @@ function Remove-Tag {
         [Parameter(Mandatory = $true)]
         [string]$TagValue,
         [Parameter(Mandatory = $true)]
-        [string]$PackType
+        [string]$PackType,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
     )
     "Running $action for $($resourceId) resource. TagValue: $TagValue"
     #[System.Object]$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
@@ -384,7 +430,7 @@ function Remove-Tag {
                     "Removing association for $tagv. on $resourceId."
                     Remove-DCRa -resourceId $resourceId -TagValue $tagv
                     "Removing vm application(s) if any."
-                    remove-vmapp -ResourceId $resourceId -packtag $tagv
+                    remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
                 }
                 $tag.Remove($tagName)
                 if ($tag.count -ne 0) {
@@ -420,6 +466,8 @@ function Remove-Tag {
                     if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
                         "Removing DCR Association."
                         Remove-DCRa -resourceId $resourceId -TagValue $TagValue
+                        "Removing vm application(s) if any."
+                        remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
                     }
                     elseif ($TagName -ne 'Avd') {
                         "Paas Pack. No need to remove association."
@@ -984,11 +1032,11 @@ function new-PaaSAlert {
     [string]$location
 )
     #Register-PackageSource -Name Nuget.Org -Provider NuGet -Location "https://api.nuget.org/v3/index.json"
-    $ambaURL=$env:AMBAJsonURL
+#    $ambaURL=$env:AMBAJsonURL
     $category=$resourceType.Split('/')[0].split(".")[1]
     $subCategory=$resourceType.Split('/')[1]
     "Creating New PaaS alert for $resourceId"
-    $ambaAlerts=(Invoke-WebRequest -uri $ambaURL | convertfrom-json).$category.$subCategory 
+    $ambaAlerts=(get-AMBAJsonContent | convertfrom-json).$category.$subCategory 
     # $resourceName=($resourceId -split '/')[8]
     # $alerts=get-ambaAlertsForResourceType -resourceId $resourceId -serviceFolder $serviceFolder
     # if (($alerts | Where-Object {$_.visible -eq $true}).count -eq 0) {
@@ -1074,25 +1122,25 @@ function new-PaaSAlert {
 }
 
 function get-AmbaCatalog {
-    param ($ambaJsonURL)
-    Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from URL: $ambaJsonURL"
-          $aaa=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json -Depth 10
-          $Categories=$aaa.psobject.properties.Name
-          #$Categories
-          $body=@"
+    Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from URL."
+    $ambaJSONContent=get-AMBAJsonContent #-ambaJsonURL $ambaJsonURL
+    $aaa=$ambaJSONContent | convertfrom-json -Depth 10
+    $Categories=$aaa.psobject.properties.Name
+    #$Categories
+    $body=@"
     {
         "Categories": [
 "@
-        $i=0
-              foreach ($category in $Categories) {
-                  $svcs=$aaa.$($category).psobject.properties.Name
-                  foreach ($svc in $svcs) {
-                      $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-                      if ($aaa.$category.$svc.name -ne $null) {                  
-                          if ($aaa.$category.$svc[0].properties.metricNamespace -ne $null) {
-                            $metricnamespace=$aaa.$category.$svc[0].properties.metricNamespace.tolower()
-                            $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
-                              $bodyt=@"
+    $i=0
+    foreach ($category in $Categories) {
+        $svcs=$aaa.$($category).psobject.properties.Name
+        foreach ($svc in $svcs) {
+            $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
+            if ($null -ne $aaa.$category.$svc.name) {                  
+                if ($null -ne $aaa.$category.$svc[0].properties.metricNamespace) {
+                $metricnamespace=$aaa.$category.$svc[0].properties.metricNamespace.tolower()
+                #$ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
+                    $bodyt=@"
           {
             "category" : "$category",
             "service" : "$svc",
@@ -1101,12 +1149,12 @@ function get-AmbaCatalog {
             "tag": "$namespace"
           }
 "@
-                          }
-                          else {
-                            $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-                            $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
-                            #"$namespace $ambafolder"
-                              $bodyt=@"
+                }
+                else {
+                    $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
+                    #$ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+                    #"$namespace $ambafolder"
+                    $bodyt=@"
             {
                 "category" : "$category",
               "service" : "$svc",
@@ -1115,18 +1163,17 @@ function get-AmbaCatalog {
               "tag" : "$namespace"
             }
 "@  
-                          }
-                          if ($i -eq 0) {
-                              $body+=@"
-                              $bodyt
+                }
+                if ($i -eq 0) {
+                    $body+=@"
+                    $bodyt
 "@
-        
-                              $i++
-                          }
-                          else {
-                              $body+=@"
-        ,
-                              $bodyt
+                    $i++
+                }
+                else {
+                    $body+=@"
+            ,
+                 $bodyt
 "@
                           }
                       }
@@ -1136,38 +1183,5 @@ function get-AmbaCatalog {
             ]
             }
 "@
-        return $body
-    }
-# Depends on Functions Add-Tag, Add-Agent, Remove-DCRa
-
-# function get-serviceTag {
-#     param (
-#         [string]$namespace,
-#         [PSCustomObject]$tagMappings
-#     )
-#     $tag=($tagMappings.tags | Where-Object { $_.nameSpace -eq $namespace }).tag
-#     return $tag
-# }
-# function get-paasquery {
-#     return  @"
-#         | where tolower(type) in (
-#           'microsoft.storage/storageaccounts',
-#           'microsoft.desktopvirtualization/hostpools',
-#           'microsoft.logic/workflows',
-#           'microsoft.sql/managedinstances',
-#           'microsoft.sql/servers/databases',
-#           'microsoft.network/vpngateways',
-#           'microsoft.network/virtualnetworkgateways',
-#           'microsoft.keyvault/vaults',
-#           'microsoft.network/networksecuritygroups',
-#           'microsoft.network/publicipaddresses',
-#           'microsoft.network/privatednszones',
-#           'microsoft.network/frontdoors',
-#           'microsoft.network/azurefirewalls',
-#           'microsoft.network/applicationgateways'
-#       )
-#       or (
-#           tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')
-# "@
-# }
+    return $body
+}

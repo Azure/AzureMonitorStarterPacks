@@ -37,11 +37,11 @@ var backendFunctionRoleDefinitionIds = [
   '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor
   '36243c78-bf99-498c-9df9-86d9f8d28608' // policy contributor
   'f1a07417-d97a-45cb-824c-7a7467783830' // Managed identity Operator
+  'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //Blob Data Contributor role is needed to allow the function to write to the blob storage account 
 ]
 var logicappRequiredRoleassignments = [
   '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
 ]
-
 var telemetryInfo = json(loadTextContent('./telemetry.json'))
 
 module telemetry './nested_telemetry.bicep' =  if (collectTelemetry) {
@@ -79,9 +79,9 @@ module gallery './modules/aig.bicep' ={
 module backendFunction 'modules/function.bicep' = {
   name: functionname
   scope: resourceGroup(subscriptionId, resourceGroupName)
-  dependsOn: [
-    functionUserManagedIdentity
-  ]
+  // dependsOn: [
+  //   functionUserManagedIdentity
+  // ]
   params: {
     appInsightsLocation: appInsightsLocation
     functionname: functionname

@@ -2,7 +2,7 @@
 targetScope='subscription'
 @description('The Tag value for this pack')
 param packtag string = 'ADDS'
-param actionGroupResourceId string
+//param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')

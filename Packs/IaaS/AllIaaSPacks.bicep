@@ -53,7 +53,7 @@ module ADDS './ADDS/monitoring.bicep' = {
     resourceGroupId: resourceGroupId
     storageAccountname: storageAccountName
     tableName: 'addsmonitoring'
-    actionGroupResourceId: actionGroupResourceId
+    //actionGroupResourceId: actionGroupResourceId
     customerTags: customerTags
     workspaceId: workspaceId
     instanceName: instanceName
@@ -71,7 +71,7 @@ module VMInsightsPack './VMInsights/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
@@ -144,7 +144,7 @@ module IIS2016 './IIS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
@@ -198,7 +198,7 @@ module Nginx './Nginx/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId

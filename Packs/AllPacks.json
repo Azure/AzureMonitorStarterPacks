@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "521722359653771966"
+      "templateHash": "4998778908946167145"
     }
   },
   "parameters": {
@@ -251,7 +251,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6127935660436792819"
+              "templateHash": "7529876683445239663"
             }
           },
           "parameters": {
@@ -355,9 +355,6 @@
                   "tableName": {
                     "value": "addsmonitoring"
                   },
-                  "actionGroupResourceId": {
-                    "value": "[parameters('actionGroupResourceId')]"
-                  },
                   "customerTags": {
                     "value": "[parameters('customerTags')]"
                   },
@@ -378,7 +375,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "9430016841999804802"
+                      "templateHash": "8691214777888217412"
                     }
                   },
                   "parameters": {
@@ -388,9 +385,6 @@
                       "metadata": {
                         "description": "The Tag value for this pack"
                       }
-                    },
-                    "actionGroupResourceId": {
-                      "type": "string"
                     },
                     "location": {
                       "type": "string",
@@ -1414,9 +1408,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
@@ -1437,7 +1428,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7423306630869613208"
+                      "templateHash": "2103818318995570260"
                     }
                   },
                   "parameters": {
@@ -1472,9 +1463,6 @@
                     "dceId": {
                       "type": "string"
                     },
-                    "userManagedIdentityResourceId": {
-                      "type": "string"
-                    },
                     "subscriptionId": {
                       "type": "string"
                     },
@@ -1490,7 +1478,6 @@
                   },
                   "variables": {
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                       "MonitoringPackType": "IaaS",
@@ -3816,9 +3803,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
@@ -3839,7 +3823,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1996276289550204623"
+                      "templateHash": "5638347817411156209"
                     }
                   },
                   "parameters": {
@@ -3875,14 +3859,11 @@
                         "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
-                    "userManagedIdentityResourceId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "subscriptionId": {
-                      "type": "string"
                     },
                     "resourceGroupId": {
                       "type": "string"
@@ -3896,7 +3877,6 @@
                   },
                   "variables": {
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                       "MonitoringPackType": "IaaS",
@@ -7915,9 +7895,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
@@ -7938,7 +7915,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15723327484299479063"
+                      "templateHash": "11175652254599956339"
                     }
                   },
                   "parameters": {
@@ -7973,14 +7950,11 @@
                         "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
-                    "userManagedIdentityResourceId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "subscriptionId": {
-                      "type": "string"
                     },
                     "resourceGroupId": {
                       "type": "string"
@@ -7997,7 +7971,6 @@
                     "tableNameToUse": "[format('{0}_CL', variables('tableName'))]",
                     "lawFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                       "MonitoringPackType": "IaaS",
@@ -8999,7 +8972,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8958640379218679332"
+                      "templateHash": "16590800373883425005"
                     }
                   },
                   "parameters": {
@@ -9046,7 +9019,6 @@
                   },
                   "variables": {
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                       "MonitoringPackType": "IaaS",

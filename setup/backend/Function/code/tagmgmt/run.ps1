@@ -76,7 +76,7 @@ if ($resources) {
             else { #Paas or Platform
               "PackType: $PackType"
               "Removing Tag from service."
-              Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType
+              Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
               if ($TagValue -eq 'Avd') {
                 # Create AVD alerts function.
                 $hostPoolName = ($resource.Resource -split '/')[8]

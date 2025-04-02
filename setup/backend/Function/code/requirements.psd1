@@ -13,4 +13,5 @@
     'Az.ConnectedMachine' = '1.1.1'
     'Az.Compute' = '9.1.0'
     'Az.OperationalInsights' = '3.3.0'
+    'Az.Storage' = '8.3.0'
 }

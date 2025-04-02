@@ -94,7 +94,7 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
     location: location
     logAnalyticsWorkspaceName: newLogAnalyticsWSName
     Tags: Tags
-    createNewLogAnalyticsWS: createNewLogAnalyticsWS
+    //createNewLogAnalyticsWS: createNewLogAnalyticsWS
   }
 }
 

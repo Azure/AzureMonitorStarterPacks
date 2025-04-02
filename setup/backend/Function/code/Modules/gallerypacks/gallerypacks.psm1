@@ -24,7 +24,20 @@ function New-vmApp {
         # get latest application version
         $appversion=(Get-AzGalleryApplicationVersion -GalleryApplicationName $galleryapplications.Name -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName | Sort-Object -Descending PublishingProfilePublishedDate)[0]
         # install version to VM
+
         if ($appversion) {
+            $VM=Get-AzVM -ResourceId $resourceId
+            # check if VM already has the application with the same version installed
+            if (!($VM.ApplicationProfile.GalleryApplications)) {
+                Write-Host "No applications installed in $($resourceId)."
+            }
+            else{
+                $installedApp=$VM.ApplicationProfile.GalleryApplications | Where-Object { $_.PackageReferenceId.Contains($ga.id)} -ErrorAction SilentlyContinue
+                if ($installedApp) {
+                    Write-Warning "Application $($ga.Name) version $($installedApp.PublishingProfile.PublishedDate) already installed in $($resourceId)."
+                    return $true
+                }
+            }
             Write-Host "Installing $($appversion.Name) version $($appversion.PublishingProfile.PublishedDate) to $($resourceId)"
         }
         else {
@@ -32,7 +45,6 @@ function New-vmApp {
             return $false
         }
         $newAppConfig=New-AzVmGalleryApplication -PackageReferenceId $appversion.Id
-        $VM=Get-AzVM -ResourceId $resourceId
         if ($VM) {
             Add-AzVmGalleryApplication -VM $VM -GalleryApplication $newAppConfig -TreatFailureAsDeploymentFailure
             $VM | Update-AzVM
@@ -47,9 +59,11 @@ function New-vmApp {
 }
 function remove-vmapp {
     [Parameter(Mandatory = $true)]
-        [string]$resourceId, # VM Resource ID to delete the application from.
+    [string]$resourceId, # VM Resource ID to delete the application from.
     [Parameter(Mandatory = $true)]
-    [string]$packtag
+    [string]$packtag,
+    [Parameter(Mandatory = $true)]
+    [string]$instanceName
 
     #find application related to the tag
     # remove the application from the VM

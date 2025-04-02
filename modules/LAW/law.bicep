@@ -1,7 +1,7 @@
 param logAnalyticsWorkspaceName string
 param location string
-param newLogAnalyticsWSName string = ''
-param createNewLogAnalyticsWS bool = false
+// param newLogAnalyticsWSName string = ''
+// param createNewLogAnalyticsWS bool = false
 param Tags object
 
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {

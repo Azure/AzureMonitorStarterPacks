@@ -16,7 +16,7 @@ param resourceGroupId string
 param customerTags object
 param instanceName string
 var rulename = 'AMP-${instanceName}-${packtag}'
-var ruleshortname = 'AMP-${instanceName}-${packtag}'
+//var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'

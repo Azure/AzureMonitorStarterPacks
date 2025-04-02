@@ -10,14 +10,14 @@ param workspaceId string
 param solutionTag string
 param solutionVersion string
 param dceId string
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 param subscriptionId string
 param resourceGroupId string
 //param assignmentLevel string
 param customerTags object
 param instanceName string
 var rulename = 'AMP-${instanceName}-${packtag}'
-var ruleshortname = 'AMP-${instanceName}-${packtag}'
+//var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var tempTags ={
   '${solutionTag}': packtag
   MonitoringPackType: 'IaaS'
