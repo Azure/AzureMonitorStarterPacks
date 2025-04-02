@@ -5,12 +5,12 @@
     # For latest supported version, go to 'https://www.powershellgallery.com/packages/Az'. 
     # To use the Az module in your function app, please uncomment the line below.
     #'Az' = '10.*' # need to reduce this to make it for a faster start
-    'Az.Accounts' = '2.10.1'
-    'Az.Resources' = '6.12.1'
-    'Az.ResourceGraph' = '0.13.0'
-    'Az.Monitor' = '4.5.0'
-    'Az.PolicyInsights' = '1.6.2'
-    'Az.ConnectedMachine' = '0.5.2'
-    'Az.Compute' = '6.2.0'
-    'powershell-yaml'= '0.4.7'
+    'Az.Accounts' = '4.0.2'
+    'Az.Resources' = '7.9.0'
+    'Az.ResourceGraph' = '1.2.0'
+    'Az.Monitor' = '6.0.1'
+    'Az.PolicyInsights' = '1.7.1'
+    'Az.ConnectedMachine' = '1.1.1'
+    'Az.Compute' = '9.1.0'
+    'Az.OperationalInsights' = '3.3.0'
 }
