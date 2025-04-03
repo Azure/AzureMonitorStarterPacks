@@ -41,7 +41,7 @@ resource AzureManagedGrafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
 // }
 
 module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignment.bicep' = {
-  name: 'AMGRReadP-${grafanaName}-${location}'
+  name: 'AMGRReadP_${grafanaName}_${instanceName}'
   scope: subscription()
   params: {
     principalId: AzureManagedGrafana.identity.principalId
@@ -53,7 +53,7 @@ module grafanaReadPermissions '../../../../modules/rbac/subscription/roleassignm
   }
 }
 module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
-  name: 'AMGLAWP-${grafanaName}-${location}'
+  name: 'AMGLAWP-${grafanaName}_${instanceName}'
   params: {
     principalId: AzureManagedGrafana.identity.principalId
     resourcename: grafanaName
@@ -63,7 +63,7 @@ module grafanaLAWPermissions '../../../../modules/rbac/resourceGroup/roleassignm
   }
 }
 module grafanaMonitorPermissions '../../../../modules/rbac/resourceGroup/roleassignment.bicep' = {
-  name: 'AMGMonitorP-${grafanaName}-${location}'
+  name: 'AMGMonP_${grafanaName}_${instanceName}'
   params: {
     principalId: AzureManagedGrafana.identity.principalId
     resourcename: grafanaName
