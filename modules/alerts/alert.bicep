@@ -15,7 +15,7 @@ param evaluationFrequency string = 'PT15M'
 param autoMitigate bool = false
 param query string
 //param starterPackName string
-param packtag string
+//param packtag string
 param Tags object
 
 param threshold int = 0

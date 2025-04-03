@@ -8,13 +8,13 @@ param resourceGroupName string
 param storageAccountname string
 param imageGalleryName string
 param lawResourceId string
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 param dceId string
 param tags object
 param instanceName string
 param tableNameToUse string
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'amp${instanceName}windisc'
+//var ruleshortname = 'amp${instanceName}windisc'
 var appName = '${instanceName}-windiscovery'
 var appDescription = 'Windows Workload discovery'
 var OS = 'Windows'

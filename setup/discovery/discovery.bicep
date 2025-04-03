@@ -41,7 +41,7 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     imageGalleryName: imageGalleryName
     lawResourceId: lawResourceId
     tableNameToUse: tableNameToUse
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     dceId: dceId
     tags: Tags
     instanceName: instanceName
@@ -55,14 +55,14 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
   params: {
     location: location
     solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    //solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     resourceGroupName: resourceGroupName
     storageAccountname: storageAccountname
     imageGalleryName: imageGalleryName
     lawResourceId: lawResourceId
     tableNameToUse: tableNameToUse
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     dceId: dceId
     tags: Tags
     instanceName: instanceName

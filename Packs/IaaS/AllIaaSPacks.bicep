@@ -30,13 +30,13 @@ param imageGalleryName string
 param instanceName string
 
 //var solutionTagComponents='MonitorStarterPacksComponents'
-var tempTags= {
-  '${solutionTag}': 'BackendComponent'
-  solutionVersion: solutionVersion
-  instanceName: instanceName
-  MonitoringPackType: 'IaaS'
-}
-var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+// var tempTags= {
+//   '${solutionTag}': 'BackendComponent'
+//   solutionVersion: solutionVersion
+//   instanceName: instanceName
+//   MonitoringPackType: 'IaaS'
+// }
+//var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 //var resourceGroupName = split(resourceGroupId, '/')[4]
 
 module ADDS './ADDS/monitoring.bicep' = {
@@ -126,7 +126,7 @@ module IIS './IIS/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
@@ -162,7 +162,7 @@ module DNS2016 './DNS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
@@ -180,7 +180,7 @@ module PS2016 './PS2016/monitoring.bicep' = {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId

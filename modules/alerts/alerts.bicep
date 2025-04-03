@@ -21,7 +21,7 @@ module Alerts './alert.bicep' = [for (alert,i) in alertlist:  {
     scope: workspaceId
     query: alert.query
     dimensions: contains(alert, 'dimensions') ? alert.dimensions : null
-    packtag: packtag
+    //packtag: packtag
     Tags: Tags
     alertType: alert.alertType
     metricMeasureColumn: alert.alertType == 'Aggregated' ? alert.metricMeasureColumn : null

@@ -3,19 +3,19 @@ targetScope = 'subscription'
 
 param location string 
 param solutionTag string
-param solutionVersion string
+//param solutionVersion string
 param subscriptionId string
 param resourceGroupName string
 param storageAccountname string
 param imageGalleryName string
 param lawResourceId string
 param tableNameToUse string
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 param dceId string
 param tags object
 param instanceName string
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'amp${instanceName}lxdisc'
+//var ruleshortname = 'amp${instanceName}lxdisc'
 var appName = '${instanceName}-LxDiscovery'
 var appDescription = 'Linux Workload discovery'
 var OS = 'Linux'

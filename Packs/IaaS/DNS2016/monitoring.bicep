@@ -9,7 +9,7 @@ param packtag string = 'DNS2016'
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 //param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
@@ -29,7 +29,7 @@ var tempTags ={
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 
 var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = 'AMP-${instanceName}-${packtag}'
+//var ruleshortname = 'AMP-${instanceName}-${packtag}'
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 

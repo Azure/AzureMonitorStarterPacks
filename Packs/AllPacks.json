@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4998778908946167145"
+      "templateHash": "15487517547198257239"
     }
   },
   "parameters": {
@@ -251,7 +251,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7529876683445239663"
+              "templateHash": "9498072894345945"
             }
           },
           "parameters": {
@@ -306,15 +306,6 @@
             "instanceName": {
               "type": "string"
             }
-          },
-          "variables": {
-            "tempTags": {
-              "[format('{0}', parameters('solutionTag'))]": "BackendComponent",
-              "solutionVersion": "[parameters('solutionVersion')]",
-              "instanceName": "[parameters('instanceName')]",
-              "MonitoringPackType": "IaaS"
-            },
-            "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]"
           },
           "resources": [
             {
@@ -375,7 +366,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8691214777888217412"
+                      "templateHash": "7052075511743689632"
                     }
                   },
                   "parameters": {
@@ -680,9 +671,6 @@
                           "tags": {
                             "value": "[variables('Tags')]"
                           },
-                          "userManagedIdentityResourceId": {
-                            "value": "[parameters('userManagedIdentityResourceId')]"
-                          },
                           "workspaceId": {
                             "value": "[parameters('workspaceId')]"
                           },
@@ -700,9 +688,6 @@
                           },
                           "OS": {
                             "value": "[variables('OS')]"
-                          },
-                          "ruleshortname": {
-                            "value": "[variables('ruleshortname')]"
                           }
                         },
                         "template": {
@@ -712,7 +697,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "5259099012799328015"
+                              "templateHash": "9265401424011783279"
                             }
                           },
                           "parameters": {
@@ -744,14 +729,11 @@
                                 "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                               }
                             },
-                            "userManagedIdentityResourceId": {
+                            "subscriptionId": {
                               "type": "string",
                               "metadata": {
                                 "description": "Full resource ID of the user managed identity to be used for the deployment"
                               }
-                            },
-                            "subscriptionId": {
-                              "type": "string"
                             },
                             "resourceGroupId": {
                               "type": "string"
@@ -769,9 +751,6 @@
                               "type": "object"
                             },
                             "instanceName": {
-                              "type": "string"
-                            },
-                            "ruleshortname": {
                               "type": "string"
                             },
                             "appName": {
@@ -1227,7 +1206,7 @@
                                     "value": "[variables('tableNameToUse')]"
                                   },
                                   "packtag": {
-                                    "value": "ADDS"
+                                    "value": "[parameters('packtag')]"
                                   },
                                   "packtype": {
                                     "value": "IaaS"
@@ -1428,7 +1407,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2103818318995570260"
+                      "templateHash": "5682312366954639562"
                     }
                   },
                   "parameters": {
@@ -1637,7 +1616,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "17027824023029962763"
+                              "templateHash": "14928589511603225909"
                             }
                           },
                           "parameters": {
@@ -1845,7 +1824,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "17858688129795365440"
+                                      "templateHash": "10126210992653483443"
                                     }
                                   },
                                   "parameters": {
@@ -1920,9 +1899,6 @@
                                             "value": "[parameters('alertlist')[copyIndex()].query]"
                                           },
                                           "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
-                                          "packtag": {
-                                            "value": "[parameters('packtag')]"
-                                          },
                                           "Tags": {
                                             "value": "[parameters('Tags')]"
                                           },
@@ -1940,7 +1916,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "10159755056440989647"
+                                              "templateHash": "3423972995500502116"
                                             }
                                           },
                                           "parameters": {
@@ -1985,9 +1961,6 @@
                                               "defaultValue": false
                                             },
                                             "query": {
-                                              "type": "string"
-                                            },
-                                            "packtag": {
                                               "type": "string"
                                             },
                                             "Tags": {
@@ -2409,9 +2382,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
@@ -2432,7 +2402,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "17534859391202854246"
+                      "templateHash": "4860700485439477102"
                     }
                   },
                   "parameters": {
@@ -2464,14 +2434,11 @@
                         "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
-                    "userManagedIdentityResourceId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "subscriptionId": {
-                      "type": "string"
                     },
                     "resourceGroupId": {
                       "type": "string"
@@ -2495,7 +2462,6 @@
                     },
                     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "kind": "Windows",
                     "xPathQueries": [
@@ -2599,7 +2565,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "9461356001780640398"
+                              "templateHash": "12975440119358491723"
                             }
                           },
                           "parameters": {
@@ -2964,7 +2930,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "17858688129795365440"
+                                      "templateHash": "10126210992653483443"
                                     }
                                   },
                                   "parameters": {
@@ -3039,9 +3005,6 @@
                                             "value": "[parameters('alertlist')[copyIndex()].query]"
                                           },
                                           "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
-                                          "packtag": {
-                                            "value": "[parameters('packtag')]"
-                                          },
                                           "Tags": {
                                             "value": "[parameters('Tags')]"
                                           },
@@ -3059,7 +3022,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "10159755056440989647"
+                                              "templateHash": "3423972995500502116"
                                             }
                                           },
                                           "parameters": {
@@ -3104,9 +3067,6 @@
                                               "defaultValue": false
                                             },
                                             "query": {
-                                              "type": "string"
-                                            },
-                                            "packtag": {
                                               "type": "string"
                                             },
                                             "Tags": {
@@ -3823,7 +3783,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5638347817411156209"
+                      "templateHash": "8450005364765786123"
                     }
                   },
                   "parameters": {
@@ -4012,7 +3972,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "9461356001780640398"
+                              "templateHash": "12975440119358491723"
                             }
                           },
                           "parameters": {
@@ -4377,7 +4337,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "17858688129795365440"
+                                      "templateHash": "10126210992653483443"
                                     }
                                   },
                                   "parameters": {
@@ -4452,9 +4412,6 @@
                                             "value": "[parameters('alertlist')[copyIndex()].query]"
                                           },
                                           "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
-                                          "packtag": {
-                                            "value": "[parameters('packtag')]"
-                                          },
                                           "Tags": {
                                             "value": "[parameters('Tags')]"
                                           },
@@ -4472,7 +4429,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "10159755056440989647"
+                                              "templateHash": "3423972995500502116"
                                             }
                                           },
                                           "parameters": {
@@ -4517,9 +4474,6 @@
                                               "defaultValue": false
                                             },
                                             "query": {
-                                              "type": "string"
-                                            },
-                                            "packtag": {
                                               "type": "string"
                                             },
                                             "Tags": {
@@ -5216,9 +5170,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
@@ -5239,7 +5190,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15095836579749806306"
+                      "templateHash": "17227013649006963056"
                     }
                   },
                   "parameters": {
@@ -5265,14 +5216,11 @@
                         "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
-                    "userManagedIdentityResourceId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "subscriptionId": {
-                      "type": "string"
                     },
                     "resourceGroupId": {
                       "type": "string"
@@ -5302,7 +5250,6 @@
                     },
                     "Tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "kind": "Windows",
                     "xPathQueries": [
@@ -5481,7 +5428,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "10681976057115393931"
+                              "templateHash": "7168443845964973674"
                             }
                           },
                           "parameters": {
@@ -6143,7 +6090,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "17858688129795365440"
+                                      "templateHash": "10126210992653483443"
                                     }
                                   },
                                   "parameters": {
@@ -6218,9 +6165,6 @@
                                             "value": "[parameters('alertlist')[copyIndex()].query]"
                                           },
                                           "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
-                                          "packtag": {
-                                            "value": "[parameters('packtag')]"
-                                          },
                                           "Tags": {
                                             "value": "[parameters('Tags')]"
                                           },
@@ -6238,7 +6182,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "10159755056440989647"
+                                              "templateHash": "3423972995500502116"
                                             }
                                           },
                                           "parameters": {
@@ -6283,9 +6227,6 @@
                                               "defaultValue": false
                                             },
                                             "query": {
-                                              "type": "string"
-                                            },
-                                            "packtag": {
                                               "type": "string"
                                             },
                                             "Tags": {
@@ -6849,9 +6790,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "workspaceId": {
                     "value": "[parameters('workspaceId')]"
                   },
@@ -6872,7 +6810,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14932330406794107409"
+                      "templateHash": "14224070556606491117"
                     }
                   },
                   "parameters": {
@@ -6910,14 +6848,11 @@
                         "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
-                    "userManagedIdentityResourceId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "subscriptionId": {
-                      "type": "string"
                     },
                     "resourceGroupId": {
                       "type": "string"
@@ -6931,7 +6866,6 @@
                   },
                   "variables": {
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
-                    "ruleshortname": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
                       "MonitoringPackType": "IaaS",
@@ -7142,7 +7076,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "5768752023116223663"
+                              "templateHash": "4308249626851584162"
                             }
                           },
                           "parameters": {
@@ -7331,7 +7265,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "17858688129795365440"
+                                      "templateHash": "10126210992653483443"
                                     }
                                   },
                                   "parameters": {
@@ -7406,9 +7340,6 @@
                                             "value": "[parameters('alertlist')[copyIndex()].query]"
                                           },
                                           "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
-                                          "packtag": {
-                                            "value": "[parameters('packtag')]"
-                                          },
                                           "Tags": {
                                             "value": "[parameters('Tags')]"
                                           },
@@ -7426,7 +7357,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "10159755056440989647"
+                                              "templateHash": "3423972995500502116"
                                             }
                                           },
                                           "parameters": {
@@ -7471,9 +7402,6 @@
                                               "defaultValue": false
                                             },
                                             "query": {
-                                              "type": "string"
-                                            },
-                                            "packtag": {
                                               "type": "string"
                                             },
                                             "Tags": {
@@ -7915,7 +7843,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11175652254599956339"
+                      "templateHash": "18061872407659603578"
                     }
                   },
                   "parameters": {
@@ -8312,7 +8240,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "17575300843145168501"
+                              "templateHash": "17557896785032083094"
                             }
                           },
                           "parameters": {
@@ -8391,7 +8319,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "17858688129795365440"
+                                      "templateHash": "10126210992653483443"
                                     }
                                   },
                                   "parameters": {
@@ -8466,9 +8394,6 @@
                                             "value": "[parameters('alertlist')[copyIndex()].query]"
                                           },
                                           "dimensions": "[if(contains(parameters('alertlist')[copyIndex()], 'dimensions'), createObject('value', parameters('alertlist')[copyIndex()].dimensions), createObject('value', null()))]",
-                                          "packtag": {
-                                            "value": "[parameters('packtag')]"
-                                          },
                                           "Tags": {
                                             "value": "[parameters('Tags')]"
                                           },
@@ -8486,7 +8411,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "10159755056440989647"
+                                              "templateHash": "3423972995500502116"
                                             }
                                           },
                                           "parameters": {
@@ -8531,9 +8456,6 @@
                                               "defaultValue": false
                                             },
                                             "query": {
-                                              "type": "string"
-                                            },
-                                            "packtag": {
                                               "type": "string"
                                             },
                                             "Tags": {

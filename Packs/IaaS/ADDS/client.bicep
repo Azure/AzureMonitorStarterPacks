@@ -12,7 +12,7 @@ param solutionTag string
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 param subscriptionId string
 param resourceGroupId string
 //param assignmentLevel string
@@ -22,7 +22,7 @@ param imageGalleryName string
 param tableName string
 param tags object
 param instanceName string
-param ruleshortname string
+//param ruleshortname string
 param appName string
 param appDescription string
 param OS string
@@ -150,7 +150,7 @@ module addscollectionDCR '../../../setup/discovery/modules/discoveryrule.bicep' 
     OS: 'Windows'
     solutionTag: solutionTag
     tableName: tableNameToUse
-    packtag: 'ADDS'
+    packtag: packtag
     packtype: 'IaaS'
     instanceName: instanceName
   }

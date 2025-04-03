@@ -131,14 +131,14 @@ module client 'client.bicep' = {
     subscriptionId: subscriptionId
     tableName: tableName //no _CL suffix
     tags: Tags
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     workspaceId: workspaceId
     packtag: packtag
     solutionTag: solutionTag
     appDescription: appDescription
     appName: appName
     OS: OS
-    ruleshortname: ruleshortname
+    //ruleshortname: ruleshortname
    }
 }
 
