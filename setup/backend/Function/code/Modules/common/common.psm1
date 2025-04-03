@@ -12,8 +12,10 @@ function get-AMBAJsonFromRepo {
     return $AMBAJson
 }
 function get-AMBAJsonContent {
-    $StorageAccountName=$env:storaceAccountName
-    $ResourceGroupName=$env:ResourceGroupName
+    $StorageAccountName=$env:StorageAccountName
+    $ResourceGroupName=$env:ResourceGroup
+    Write-host "Storage Account: $StorageAccountName"
+    Write-host "RG: $ResourceGroupName"
     $StorageAccount=Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName
     $sacontext=New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
     $ContainerName = "amba"
@@ -48,7 +50,7 @@ function get-AMBAJsonContent {
     return $AMBAJson
 }
 
-function set-systemAssignedIdentity {
+function configure-systemAssignedIdentity {
     param (
         [Parameter(Mandatory = $true)]
         [string]$subscriptionId,
@@ -94,7 +96,7 @@ function install-extension {
         [Parameter(Mandatory = $true)]
         [string]$publisher
     )
-    #$Method = "PUT"
+    $Method = "PUT"
     $URL = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Compute/virtualMachines/$vmName/extensions/$ExtensionName" + "?api-version=2023-09-01"
     $Body = @"
     {
@@ -144,7 +146,7 @@ function Install-azMonitorAgent {
     )
     "Installing "
     "Subscription Id: $subscriptionId"
-    set-systemAssignedIdentity -subscriptionId $subscriptionId `
+    configure-systemAssignedIdentity -subscriptionId $subscriptionId `
                                      -resourceGroupName $resourceGroupName `
                                      -vmName $vmName
     # Extension
@@ -337,7 +339,7 @@ function Add-DCRa {
     foreach ($DCR in $DCRs) {
     #Check if the DCR is associated with the VM
         $associated=Get-AzDataCollectionRuleAssociation -ResourceUri $resourceId | Where-Object { $_.DataCollectionRuleId -eq $DCR.Id }
-        if ($null -eq $associated) {
+        if ($associated -eq $null) {
             Write-Output "VM: $resourceName Pack: $TagValue) DCR: $($DCR.Name) not associated"
             # Create the association
             New-AzDataCollectionRuleAssociation -ResourceUri $resourceId -DataCollectionRuleId $DCR.Id -AssociationName "Association for $resourceName and $($DCR.Name)"
@@ -427,9 +429,9 @@ function Remove-Tag {
                 $taglist=$tag.$tagName.split(',')
                 "Removing all associations $($taglist.count) for $taglist."
                 foreach ($tagv in $taglist) {
-                    "Removing association for $tagv. on $resourceId."
+                    Write-Host "Removing association for $tagv. on $resourceId."
                     Remove-DCRa -resourceId $resourceId -TagValue $tagv
-                    "Removing vm application(s) if any."
+                    "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
                     remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
                 }
                 $tag.Remove($tagName)
@@ -466,8 +468,8 @@ function Remove-Tag {
                     if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
                         "Removing DCR Association."
                         Remove-DCRa -resourceId $resourceId -TagValue $TagValue
-                        "Removing vm application(s) if any."
-                        remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
+                        "Removing vm application(s) if any for $tagvalue tag and instance name $instanceName, if any."
+                        remove-vmapp -ResourceId $resourceId -packtag $tagvalue -instanceName $instanceName
                     }
                     elseif ($TagName -ne 'Avd') {
                         "Paas Pack. No need to remove association."
@@ -1136,10 +1138,10 @@ function get-AmbaCatalog {
         $svcs=$aaa.$($category).psobject.properties.Name
         foreach ($svc in $svcs) {
             $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-            if ($null -ne $aaa.$category.$svc.name) {                  
-                if ($null -ne $aaa.$category.$svc[0].properties.metricNamespace) {
+            if ($aaa.$category.$svc.name -ne $null) {                  
+                if ($aaa.$category.$svc[0].properties.metricNamespace -ne $null) {
                 $metricnamespace=$aaa.$category.$svc[0].properties.metricNamespace.tolower()
-                #$ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
+                $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
                     $bodyt=@"
           {
             "category" : "$category",
@@ -1152,7 +1154,7 @@ function get-AmbaCatalog {
                 }
                 else {
                     $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-                    #$ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+                    $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
                     #"$namespace $ambafolder"
                     $bodyt=@"
             {

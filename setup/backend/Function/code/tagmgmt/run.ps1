@@ -3,7 +3,7 @@ using namespace System.Net
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
 $RepoUrl = $env:AMBAJsonURL
-$instanceName=$env:INSTANCENAME
+$instanceName=$env:InstanceName
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 # Interact with query parameters or the body of the request.
@@ -70,12 +70,12 @@ if ($resources) {
             # Tagging
             if ($PackType -in ('IaaS', 'Discovery')) {
               foreach ($TagValue in $TagList) {
-                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
+                Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
+                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType -instanceName $instanceName
               }
             }
             else { #Paas or Platform
-              "PackType: $PackType"
-              "Removing Tag from service."
+              Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
               Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
               if ($TagValue -eq 'Avd') {
                 # Create AVD alerts function.

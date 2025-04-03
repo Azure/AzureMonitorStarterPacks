@@ -58,17 +58,24 @@ function New-vmApp {
     return $true
 }
 function remove-vmapp {
-    [Parameter(Mandatory = $true)]
-    [string]$resourceId, # VM Resource ID to delete the application from.
-    [Parameter(Mandatory = $true)]
-    [string]$packtag,
-    [Parameter(Mandatory = $true)]
-    [string]$instanceName
-
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId, # VM Resource ID to delete the application from.
+        [Parameter(Mandatory = $true)]
+        [string]$packtag,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
+    )
+    Write-Host "Removing VM Application from $instanceName instance for $packtag pack on $resourceId"
     #find application related to the tag
     # remove the application from the VM
+    Write-host "Fetching gallery."
     $gallery=Get-AzGallery | Where-Object { $_.Tags.instanceName -eq $instanceName }
+    if ($gallery -eq $null) {
+        Write-Host "Gallery not found for instance $instanceName"
+    }
     # Find gallery application by packtag
+    Write-host "Fetching applications that match pack and belong to the packs"
     $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | where {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
     if ($galleryapplications.Count -eq 0) {
         Write-Warning "No gallery applications found for $($packtag). No need to install."
@@ -82,7 +89,7 @@ function remove-vmapp {
         $VM=Get-AzVM -ResourceId $resourceId
         if ($VM) {
             $installedApp=$VM.ApplicationProfile.GalleryApplications | Where-Object { $_.PackageReferenceId.Contains($ga.id)}
-            "Removing $($ga.Name) from $($resourceId)"
+            Write-host "Removing $($ga.Name) from $($resourceId)"
             try {
                 Remove-AzVmGalleryApplication -VM $VM -GalleryApplicationsReferenceId $installedApp.PackageReferenceId
                 $VM | Update-AzVM
