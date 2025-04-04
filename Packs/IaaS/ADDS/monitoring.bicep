@@ -12,7 +12,7 @@ param solutionVersion string
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 //param mgname string // this the last part of the management group id
 param subscriptionId string
 param resourceGroupId string
@@ -35,7 +35,7 @@ var workspaceFriendlyName = split(workspaceId, '/')[8]
 var resourceGroupName = split(resourceGroupId, '/')[4]
 var kind= 'Windows'
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
-var ruleshortname = '${packtag}-collection-${instanceName}'
+//var ruleshortname = '${packtag}-collection-${instanceName}'
 var appName = '${packtag}-collection'
 var appDescription = '${packtag} Collection - ${instanceName}'
 var OS = 'Windows'

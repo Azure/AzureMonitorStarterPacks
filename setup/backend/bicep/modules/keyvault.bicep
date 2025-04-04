@@ -10,7 +10,7 @@ resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functionName
 }
 
-resource vault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
+resource vault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
   name: kvName
   location: location
   tags: Tags
@@ -26,7 +26,6 @@ resource vault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     enableSoftDelete: true
     softDeleteRetentionInDays: 90
     enableRbacAuthorization: true
-    vaultUri: vaultUri
     provisioningState: 'Succeeded'
     publicNetworkAccess: 'Enabled'
     enablePurgeProtection: true //CAF

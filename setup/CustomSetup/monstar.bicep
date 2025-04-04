@@ -131,21 +131,18 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
 
 module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
   name: 'DeployDiscovery-${instanceName}'
-  dependsOn: [
-    backend
-  ]
   params: {
     location: location
     resourceGroupName: resourceGroupName
     solutionTag: solutionTag
-    solutionVersion: solutionVersion
+    //solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     dceId: backend.outputs.dceId
     imageGalleryName: ImageGalleryName
     lawResourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     storageAccountname: storageAccountName
     tableName: 'Discovery'
-    userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
+    //userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     Tags: Tags
     instanceName: instanceName
   }
@@ -193,9 +190,6 @@ module backend '../backend/bicep/backend.bicep' = {
 
 module AllPacks '../../Packs/AllPacks.bicep' = if (deployPacks) {
   name: 'DeployAllPacks'
-  dependsOn: [
-    backend
-  ]
   params: {
     // _artifactsLocation: _artifactsLocation
     // _artifactsLocationSasToken: _artifactsLocationSasToken

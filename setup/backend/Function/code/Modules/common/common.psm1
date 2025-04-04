@@ -50,7 +50,7 @@ function get-AMBAJsonContent {
     return $AMBAJson
 }
 
-function configure-systemAssignedIdentity {
+function set-systemAssignedIdentity {
     param (
         [Parameter(Mandatory = $true)]
         [string]$subscriptionId,
@@ -121,7 +121,7 @@ function install-extension {
 }
 "@
     try {
-        Invoke-AzRestMethod -URI $URL -Method "PUT" -Payload $Body
+        Invoke-AzRestMethod -URI $URL -Method $Method -Payload $Body
     }
     catch {
         Write-Host "Error installing agent. $($_.Exception.Message)"
@@ -146,7 +146,7 @@ function Install-azMonitorAgent {
     )
     "Installing "
     "Subscription Id: $subscriptionId"
-    configure-systemAssignedIdentity -subscriptionId $subscriptionId `
+    set-systemAssignedIdentity -subscriptionId $subscriptionId `
                                      -resourceGroupName $resourceGroupName `
                                      -vmName $vmName
     # Extension
@@ -339,7 +339,7 @@ function Add-DCRa {
     foreach ($DCR in $DCRs) {
     #Check if the DCR is associated with the VM
         $associated=Get-AzDataCollectionRuleAssociation -ResourceUri $resourceId | Where-Object { $_.DataCollectionRuleId -eq $DCR.Id }
-        if ($associated -eq $null) {
+        if ($null -eq $associated) {
             Write-Output "VM: $resourceName Pack: $TagValue) DCR: $($DCR.Name) not associated"
             # Create the association
             New-AzDataCollectionRuleAssociation -ResourceUri $resourceId -DataCollectionRuleId $DCR.Id -AssociationName "Association for $resourceName and $($DCR.Name)"
@@ -1166,10 +1166,10 @@ function get-AmbaCatalog {
         $svcs=$aaa.$($category).psobject.properties.Name
         foreach ($svc in $svcs) {
             $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-            if ($aaa.$category.$svc.name -ne $null) {                  
-                if ($aaa.$category.$svc[0].properties.metricNamespace -ne $null) {
+            if ($null -ne $aaa.$category.$svc.name) {                  
+                if ($null -ne $aaa.$category.$svc[0].properties.metricNamespace) {
                 $metricnamespace=$aaa.$category.$svc[0].properties.metricNamespace.tolower()
-                $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
+                # $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
                     $bodyt=@"
           {
             "category" : "$category",
@@ -1182,8 +1182,8 @@ function get-AmbaCatalog {
                 }
                 else {
                     $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-                    $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
-                    #"$namespace $ambafolder"
+                    # $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
+                    # #"$namespace $ambafolder"
                     $bodyt=@"
             {
                 "category" : "$category",

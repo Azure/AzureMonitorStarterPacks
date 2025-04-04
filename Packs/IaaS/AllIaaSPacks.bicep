@@ -20,7 +20,7 @@ param solutionVersion string
 @description('Full resource ID of the data collection endpoint to be used for the deployment.')
 param dceId string
 @description('Full resource ID of the user managed identity to be used for the deployment')
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 //param assignmentLevel string
 //param grafanaResourceId string
 param customerTags object
@@ -48,7 +48,7 @@ module ADDS './ADDS/monitoring.bicep' = {
 
     solutionTag: solutionTag
     subscriptionId: subscriptionId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     imageGalleryName: imageGalleryName
     resourceGroupId: resourceGroupId
     storageAccountname: storageAccountName

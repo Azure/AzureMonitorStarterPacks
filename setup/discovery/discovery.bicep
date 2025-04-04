@@ -2,14 +2,14 @@ targetScope = 'subscription'
 
 param location string 
 param solutionTag string
-param solutionVersion string
+//param solutionVersion string
 param subscriptionId string
 param resourceGroupName string
 param storageAccountname string
 param imageGalleryName string
 param lawResourceId string
 param tableName string
-param userManagedIdentityResourceId string
+//param userManagedIdentityResourceId string
 param dceId string
 param Tags object
 param instanceName string

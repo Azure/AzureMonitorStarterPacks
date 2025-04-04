@@ -71,7 +71,7 @@ module IaaSPacks './IaaS/AllIaaSPacks.bicep' = if (deployIaaSPacks) {
     solutionTag: solutionTag
     solutionVersion: solutionVersion
     dceId: dceId
-    userManagedIdentityResourceId: userManagedIdentityResourceId
+    //userManagedIdentityResourceId: userManagedIdentityResourceId
     //assignmentLevel: assignmentLevel
     //grafanaResourceId: grafanaResourceId
     actionGroupResourceId: useExistingAG ? existingActionGroupResourceId : ag.outputs.agGroupId

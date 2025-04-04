@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15487517547198257239"
+      "templateHash": "9419670808148653440"
     }
   },
   "parameters": {
@@ -221,9 +221,6 @@
           "dceId": {
             "value": "[parameters('dceId')]"
           },
-          "userManagedIdentityResourceId": {
-            "value": "[parameters('userManagedIdentityResourceId')]"
-          },
           "actionGroupResourceId": "[if(parameters('useExistingAG'), createObject('value', parameters('existingActionGroupResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('deployAG-new-{0}-{1}', parameters('actionGroupName'), parameters('location'))), '2022-09-01').outputs.agGroupId.value))]",
           "customerTags": {
             "value": "[parameters('customerTags')]"
@@ -251,7 +248,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9498072894345945"
+              "templateHash": "12547627548078689061"
             }
           },
           "parameters": {
@@ -285,14 +282,11 @@
                 "description": "Full resource ID of the data collection endpoint to be used for the deployment."
               }
             },
-            "userManagedIdentityResourceId": {
-              "type": "string",
+            "customerTags": {
+              "type": "object",
               "metadata": {
                 "description": "Full resource ID of the user managed identity to be used for the deployment"
               }
-            },
-            "customerTags": {
-              "type": "object"
             },
             "actionGroupResourceId": {
               "type": "string"
@@ -331,9 +325,6 @@
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
                   },
-                  "userManagedIdentityResourceId": {
-                    "value": "[parameters('userManagedIdentityResourceId')]"
-                  },
                   "imageGalleryName": {
                     "value": "[parameters('imageGalleryName')]"
                   },
@@ -366,7 +357,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7052075511743689632"
+                      "templateHash": "14828894926390471974"
                     }
                   },
                   "parameters": {
@@ -402,14 +393,11 @@
                         "description": "Full resource ID of the data collection endpoint to be used for the deployment."
                       }
                     },
-                    "userManagedIdentityResourceId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Full resource ID of the user managed identity to be used for the deployment"
                       }
-                    },
-                    "subscriptionId": {
-                      "type": "string"
                     },
                     "resourceGroupId": {
                       "type": "string"
@@ -441,7 +429,6 @@
                     "workspaceFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
                     "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                     "kind": "Windows",
-                    "ruleshortname": "[format('{0}-collection-{1}', parameters('packtag'), parameters('instanceName'))]",
                     "appName": "[format('{0}-collection', parameters('packtag'))]",
                     "appDescription": "[format('{0} Collection - {1}', parameters('packtag'), parameters('instanceName'))]",
                     "OS": "Windows",
@@ -1407,7 +1394,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5682312366954639562"
+                      "templateHash": "3374097089826437785"
                     }
                   },
                   "parameters": {
@@ -1616,7 +1603,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "14928589511603225909"
+                              "templateHash": "441596469503115402"
                             }
                           },
                           "parameters": {
@@ -1824,7 +1811,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "10126210992653483443"
+                                      "templateHash": "15764200979143302092"
                                     }
                                   },
                                   "parameters": {
@@ -1916,7 +1903,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "3423972995500502116"
+                                              "templateHash": "15099210657234279739"
                                             }
                                           },
                                           "parameters": {
@@ -2058,7 +2045,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "16566470716356207302"
+                                                      "templateHash": "10353769743463236098"
                                                     }
                                                   },
                                                   "parameters": {
@@ -2114,7 +2101,6 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -2222,7 +2208,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "18444959286864838274"
+                                                      "templateHash": "4930792206411203464"
                                                     }
                                                   },
                                                   "parameters": {
@@ -2295,7 +2281,7 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
+                                                        "resolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -2402,7 +2388,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "4860700485439477102"
+                      "templateHash": "8985062792556442633"
                     }
                   },
                   "parameters": {
@@ -2565,7 +2551,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "12975440119358491723"
+                              "templateHash": "17670526884179520411"
                             }
                           },
                           "parameters": {
@@ -2930,7 +2916,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "10126210992653483443"
+                                      "templateHash": "15764200979143302092"
                                     }
                                   },
                                   "parameters": {
@@ -3022,7 +3008,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "3423972995500502116"
+                                              "templateHash": "15099210657234279739"
                                             }
                                           },
                                           "parameters": {
@@ -3164,7 +3150,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "16566470716356207302"
+                                                      "templateHash": "10353769743463236098"
                                                     }
                                                   },
                                                   "parameters": {
@@ -3220,7 +3206,6 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -3328,7 +3313,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "18444959286864838274"
+                                                      "templateHash": "4930792206411203464"
                                                     }
                                                   },
                                                   "parameters": {
@@ -3401,7 +3386,7 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
+                                                        "resolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -3783,7 +3768,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8450005364765786123"
+                      "templateHash": "9107967602645538883"
                     }
                   },
                   "parameters": {
@@ -3972,7 +3957,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "12975440119358491723"
+                              "templateHash": "17670526884179520411"
                             }
                           },
                           "parameters": {
@@ -4337,7 +4322,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "10126210992653483443"
+                                      "templateHash": "15764200979143302092"
                                     }
                                   },
                                   "parameters": {
@@ -4429,7 +4414,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "3423972995500502116"
+                                              "templateHash": "15099210657234279739"
                                             }
                                           },
                                           "parameters": {
@@ -4571,7 +4556,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "16566470716356207302"
+                                                      "templateHash": "10353769743463236098"
                                                     }
                                                   },
                                                   "parameters": {
@@ -4627,7 +4612,6 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -4735,7 +4719,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "18444959286864838274"
+                                                      "templateHash": "4930792206411203464"
                                                     }
                                                   },
                                                   "parameters": {
@@ -4808,7 +4792,7 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
+                                                        "resolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -5190,7 +5174,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "17227013649006963056"
+                      "templateHash": "10855137980420918236"
                     }
                   },
                   "parameters": {
@@ -5428,7 +5412,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "7168443845964973674"
+                              "templateHash": "2242651672666900077"
                             }
                           },
                           "parameters": {
@@ -6090,7 +6074,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "10126210992653483443"
+                                      "templateHash": "15764200979143302092"
                                     }
                                   },
                                   "parameters": {
@@ -6182,7 +6166,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "3423972995500502116"
+                                              "templateHash": "15099210657234279739"
                                             }
                                           },
                                           "parameters": {
@@ -6324,7 +6308,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "16566470716356207302"
+                                                      "templateHash": "10353769743463236098"
                                                     }
                                                   },
                                                   "parameters": {
@@ -6380,7 +6364,6 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -6488,7 +6471,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "18444959286864838274"
+                                                      "templateHash": "4930792206411203464"
                                                     }
                                                   },
                                                   "parameters": {
@@ -6561,7 +6544,7 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
+                                                        "resolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -6810,7 +6793,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14224070556606491117"
+                      "templateHash": "6089609181828454992"
                     }
                   },
                   "parameters": {
@@ -7076,7 +7059,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "4308249626851584162"
+                              "templateHash": "15765766080278968796"
                             }
                           },
                           "parameters": {
@@ -7265,7 +7248,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "10126210992653483443"
+                                      "templateHash": "15764200979143302092"
                                     }
                                   },
                                   "parameters": {
@@ -7357,7 +7340,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "3423972995500502116"
+                                              "templateHash": "15099210657234279739"
                                             }
                                           },
                                           "parameters": {
@@ -7499,7 +7482,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "16566470716356207302"
+                                                      "templateHash": "10353769743463236098"
                                                     }
                                                   },
                                                   "parameters": {
@@ -7555,7 +7538,6 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -7663,7 +7645,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "18444959286864838274"
+                                                      "templateHash": "4930792206411203464"
                                                     }
                                                   },
                                                   "parameters": {
@@ -7736,7 +7718,7 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
+                                                        "resolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -7843,7 +7825,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18061872407659603578"
+                      "templateHash": "18335752668898297375"
                     }
                   },
                   "parameters": {
@@ -8240,7 +8222,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "17557896785032083094"
+                              "templateHash": "5549703878882572224"
                             }
                           },
                           "parameters": {
@@ -8319,7 +8301,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "10126210992653483443"
+                                      "templateHash": "15764200979143302092"
                                     }
                                   },
                                   "parameters": {
@@ -8411,7 +8393,7 @@
                                             "_generator": {
                                               "name": "bicep",
                                               "version": "0.32.4.45862",
-                                              "templateHash": "3423972995500502116"
+                                              "templateHash": "15099210657234279739"
                                             }
                                           },
                                           "parameters": {
@@ -8553,7 +8535,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "16566470716356207302"
+                                                      "templateHash": "10353769743463236098"
                                                     }
                                                   },
                                                   "parameters": {
@@ -8609,7 +8591,6 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [
@@ -8717,7 +8698,7 @@
                                                     "_generator": {
                                                       "name": "bicep",
                                                       "version": "0.32.4.45862",
-                                                      "templateHash": "18444959286864838274"
+                                                      "templateHash": "4930792206411203464"
                                                     }
                                                   },
                                                   "parameters": {
@@ -8790,7 +8771,7 @@
                                                       "tags": "[parameters('Tags')]",
                                                       "properties": {
                                                         "description": "[parameters('alertRuleDescription')]",
-                                                        "ruleResolveConfiguration": {},
+                                                        "resolveConfiguration": {},
                                                         "displayName": "[parameters('alertRuleDisplayName')]",
                                                         "enabled": true,
                                                         "scopes": [

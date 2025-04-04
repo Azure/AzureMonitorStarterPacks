@@ -32,9 +32,7 @@ resource rule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
   tags: Tags
   properties: {
     description: alertRuleDescription
-    ruleResolveConfiguration: {
-      
-    }
+    resolveConfiguration: {}
     displayName: alertRuleDisplayName
     enabled: true
     scopes: [
