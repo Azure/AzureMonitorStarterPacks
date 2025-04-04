@@ -5,7 +5,37 @@
 # Still needs to check if AMA is present and install if the case
 # Discovery is equal to have the application installed on the VM, having the VM associated with the proper DCR.
 
-
+# Discovery sources:
+# MSI - result of query
+# Registry - All or some
+# File system - All or some
+# Process - All or some
+# Roles - All or some
+# Services - all or some
+# Programs - All or some
+# OS Version - Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName ?
+# $DiscoveryRequest=@{
+#     "ADDS"  = @{
+#         "tag"        = "ADDS"
+#         "role"= "AD-Domain-Services"
+#     }
+#     "DNS2016"   = @{
+#         "tag"        = "DNS"
+#         "role"= "DNS"
+#         "OSVersion"= "Windows Server 2016"
+#     }
+#     "IIS"   = @{
+#         "tag"        = "IIS"
+#         "application"= "Web-Server"
+#         "OSVersion"= "Windows Server 2012"
+#     }
+#     "IIS2016"   = @{
+#         "tag"        = "IIS2016"
+#         "application"= "Web-Server"
+#         "OSVersion"= "Windows Server 2016"
+#     }
+#     # Add more mappings as needed
+# }
 function get-discovermappings {
     $discoveringMappings = @{
         "ADDS"  = "AD-Domain-Services"
