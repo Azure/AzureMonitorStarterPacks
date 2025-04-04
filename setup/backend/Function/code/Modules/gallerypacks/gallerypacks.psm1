@@ -15,7 +15,7 @@ function New-vmApp {
     #Find gallery by instanceName tag
     $gallery=Get-AzGallery | Where-Object { $_.Tags.instanceName -eq $instanceName }
     # Find gallery application by packtag
-    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | where {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
+    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | Where-Object {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
     if ($galleryapplications.Count -eq 0) {
         Write-Warning "No gallery applications found for $($packtag). No need to install."
         return $true
@@ -71,12 +71,12 @@ function remove-vmapp {
     # remove the application from the VM
     Write-host "Fetching gallery."
     $gallery=Get-AzGallery | Where-Object { $_.Tags.instanceName -eq $instanceName }
-    if ($gallery -eq $null) {
+    if ($null -eq $gallery) {
         Write-Host "Gallery not found for instance $instanceName"
     }
     # Find gallery application by packtag
     Write-host "Fetching applications that match pack and belong to the packs"
-    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | where {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
+    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | Where-Object {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
     if ($galleryapplications.Count -eq 0) {
         Write-Warning "No gallery applications found for $($packtag). No need to install."
         return $false

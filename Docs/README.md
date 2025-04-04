@@ -41,7 +41,7 @@ The first time certain areas are accessed, the following configuration will need
 
 ## Monitoring Packs
 
-Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
+IaaS Packs are deployed along with the solution. Optionally, they can be skipped and not deployed. PaaS monitoring is a dynamic configuration based on the current AMBA Catalog and are deployed once monitoring is enabled for specific resources.
 
 Review Packs documentation [here](./Packs/README.md).
 

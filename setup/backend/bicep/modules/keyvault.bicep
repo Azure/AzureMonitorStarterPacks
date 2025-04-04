@@ -3,7 +3,7 @@ param location string
 param Tags object 
 param functionName string
 
-var vaultUri = 'https://${kvName}.vault.azure.net'
+//var vaultUri = 'https://${kvName}.vault.azure.net'
 
 
 resource azfunctionsite 'Microsoft.Web/sites@2022-09-01' existing = {

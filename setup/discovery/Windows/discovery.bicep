@@ -1,5 +1,14 @@
 ////targetScope = 'managementGroup'
 targetScope = 'subscription'
+param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+var sasConfig = {
+  signedResourceTypes: 'sco'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: sasExpiry
+  signedProtocol: 'https'
+  keyToSign: 'key2'
+}
 
 param location string 
 param solutionTag string
@@ -44,7 +53,10 @@ module upload 'uploadDSWindows.bicep' = {
     tags: tags
   }
 }
-
+resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  name: storageAccountname
+}
 module windiscovery '../modules/aigappversion.bicep' = {
   name: 'amp-${instanceName}-Discovery-${OS}-App'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -57,7 +69,7 @@ module windiscovery '../modules/aigappversion.bicep' = {
     appVersionName: appVersionName
     location: location
     targetRegion: location
-    mediaLink: upload.outputs.fileURL
+    mediaLink: '${upload.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
     installCommands: 'powershell -command "ren windiscovery discover.zip; expand-archive ./discover.zip . ; ./install.ps1"'
     removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'Monstar Packs Discovery\' \'\\\'"'
     tags: tags

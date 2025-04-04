@@ -30,6 +30,15 @@ var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(workspaceId,'/')[8]
+param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+var sasConfig = {
+  signedResourceTypes: 'sco'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: sasExpiry
+  signedProtocol: 'https'
+  keyToSign: 'key2'
+}
 
 // VM Application to collect the data - this would be ideally an extension
 module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
@@ -56,7 +65,10 @@ module upload 'uploadDSADDS.bicep' = {
     instanceName: instanceName
   }
 }
-
+resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  name: storageAccountname
+}
 module addscollectionappversion '../../../setup/discovery/modules/aigappversion.bicep' = {
   name: 'addscollectionappversion-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -69,7 +81,7 @@ module addscollectionappversion '../../../setup/discovery/modules/aigappversion.
     appVersionName: '1.0.0'
     location: location
     targetRegion: location
-    mediaLink: upload.outputs.fileURL
+    mediaLink: '${upload.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
     installCommands: 'powershell -command "ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1"'
     removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'AD DS Collection Task\' \'\\\' "'
     tags: tags

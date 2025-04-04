@@ -83,7 +83,7 @@ Discovery_CL
 
     if ($workspace) {
         Write-host "Running Query"
-        $DiscoveryData=Invoke-AzOperationalInsightsQuery -Workspace $workspace -Query $DiscoveryQuery | select -ExpandProperty Results
+        $DiscoveryData=Invoke-AzOperationalInsightsQuery -Workspace $workspace -Query $DiscoveryQuery | Select-Object -ExpandProperty Results
     }
     else {
         $DiscoveryData=@()
@@ -96,7 +96,7 @@ Discovery_CL
         # For each DM in DMs we need to find computers in $DiscoveryData that match the DM
         # get the tag for the application
         $result=$app
-        $result | Add-Member -MemberType Noteproperty -Name 'tag' -Value ($DMs | Where-Object { $_.application -eq $app.name } | select -ExpandProperty tag)
+        $result | Add-Member -MemberType Noteproperty -Name 'tag' -Value ($DMs | Where-Object { $_.application -eq $app.name } | Select-Object -ExpandProperty tag)
         $results+=$result
     }
     Write-host "Found $($results.count) results for discovery."

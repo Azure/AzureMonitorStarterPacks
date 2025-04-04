@@ -47,6 +47,7 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     instanceName: instanceName
   }
 }
+
 module LinuxDiscovery 'Linux/discovery.bicep' = {
   name: 'LinuxDiscovery-${instanceName}-${location}'
   dependsOn: [

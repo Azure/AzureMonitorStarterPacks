@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14504526449199362098"
+      "templateHash": "6041578098899149849"
     }
   },
   "parameters": {
@@ -248,7 +248,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "889229320752720840"
+              "templateHash": "1125323627580801421"
             }
           },
           "parameters": {
@@ -357,7 +357,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14828894926390471974"
+                      "templateHash": "18289885286383929849"
                     }
                   },
                   "parameters": {
@@ -684,7 +684,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "9265401424011783279"
+                              "templateHash": "8530312510660963114"
                             }
                           },
                           "parameters": {
@@ -748,12 +748,24 @@
                             },
                             "OS": {
                               "type": "string"
+                            },
+                            "sasExpiry": {
+                              "type": "string",
+                              "defaultValue": "[dateTimeAdd(utcNow(), 'PT2H')]"
                             }
                           },
                           "variables": {
                             "resourceGroupName": "[split(parameters('resourceGroupId'), '/')[4]]",
                             "tableNameToUse": "[format('{0}_CL', parameters('tableName'))]",
-                            "lawFriendlyName": "[split(parameters('workspaceId'), '/')[8]]"
+                            "lawFriendlyName": "[split(parameters('workspaceId'), '/')[8]]",
+                            "sasConfig": {
+                              "signedResourceTypes": "sco",
+                              "signedPermission": "r",
+                              "signedServices": "b",
+                              "signedExpiry": "[parameters('sasExpiry')]",
+                              "signedProtocol": "https",
+                              "keyToSign": "key2"
+                            }
                           },
                           "resources": [
                             {
@@ -871,7 +883,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "9749958818365986474"
+                                      "templateHash": "4897587020282941710"
                                     }
                                   },
                                   "parameters": {
@@ -880,10 +892,6 @@
                                     },
                                     "storageAccountName": {
                                       "type": "string"
-                                    },
-                                    "sasExpiry": {
-                                      "type": "string",
-                                      "defaultValue": "[dateTimeAdd(utcNow(), 'PT2H')]"
                                     },
                                     "filename": {
                                       "type": "string"
@@ -901,15 +909,7 @@
                                   "variables": {
                                     "$fxv#0": "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",
                                     "discoveryContainerName": "applications",
-                                    "tempfilename": "download.tmp",
-                                    "sasConfig": {
-                                      "signedResourceTypes": "sco",
-                                      "signedPermission": "r",
-                                      "signedServices": "b",
-                                      "signedExpiry": "[parameters('sasExpiry')]",
-                                      "signedProtocol": "https",
-                                      "keyToSign": "key2"
-                                    }
+                                    "tempfilename": "download.tmp"
                                   },
                                   "resources": [
                                     {
@@ -944,7 +944,7 @@
                                   "outputs": {
                                     "fileURL": {
                                       "type": "string",
-                                      "value": "[format('{0}{1}/{2}?{3}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), parameters('filename'), listAccountSAS(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
+                                      "value": "[format('{0}{1}/{2}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, parameters('containerName'), parameters('filename'))]"
                                     }
                                   }
                                 }
@@ -978,7 +978,7 @@
                                     "value": "[parameters('location')]"
                                   },
                                   "mediaLink": {
-                                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-addscollectionapp-{0}', parameters('instanceName'))), '2022-09-01').outputs.fileURL.value]"
+                                    "value": "[format('{0}?{1}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('upload-addscollectionapp-{0}', parameters('instanceName'))), '2022-09-01').outputs.fileURL.value, listAccountSAS(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('resourceGroupName')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountname')), '2023-01-01', variables('sasConfig')).accountSasToken)]"
                                   },
                                   "installCommands": {
                                     "value": "powershell -command \"ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1\""

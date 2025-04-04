@@ -20,7 +20,15 @@ var appName = '${instanceName}-LxDiscovery'
 var appDescription = 'Linux Workload discovery'
 var OS = 'Linux'
 var appVersionName = '1.0.0'
-
+param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+var sasConfig = {
+  signedResourceTypes: 'sco'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: sasExpiry
+  signedProtocol: 'https'
+  keyToSign: 'key2'
+}
 // VM Application to collect the data - this would be ideally an extension
 module linuxdiscoveryapp '../modules/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -46,7 +54,10 @@ module uploadLinux './uploadDSLinux.bicep' = {
     tags: tags
   }
 }
-
+resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  name: storageAccountname
+}
 module linuxDiscovery '../modules/aigappversion.bicep' = {
   name: 'amp-${instanceName}-Discovery-${OS}-App-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -59,7 +70,7 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     appVersionName: appVersionName
     location: location
     targetRegion: location
-    mediaLink: uploadLinux.outputs.fileURL
+    mediaLink: '${uploadLinux.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
     installCommands: 'tar -xvf ${appName} && chmod +x ./install.sh && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
     tags: tags
