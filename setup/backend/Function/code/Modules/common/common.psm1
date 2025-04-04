@@ -1037,8 +1037,16 @@ function new-PaaSAlert {
 #    $ambaURL=$env:AMBAJsonURL
     $category=$resourceType.Split('/')[0].split(".")[1]
     $subCategory=$resourceType.Split('/')[1]
-    "Creating New PaaS alert for $resourceId"
-    $ambaAlerts=(get-AMBAJsonContent | convertfrom-json).$category.$subCategory 
+    $resourceType="{0}/{1}" -f $resourceId.Split('/')[6],$resourceId.Split('/')[7]
+    "Creating New PaaS alert for $resourceId of type $resourceType."
+    $ambaAlerts=(get-AMBAJsonContent | convertfrom-json).$category.$subCategory # | where {$_.properties.metricNamespace -eq $resourceType -and $_.properties.metricName -ne $null}
+    if ($ambaAlerts.count -eq 0) {
+        Write-Host "No alerts found for $resourceType."
+        exit
+    }
+    else {
+        Write-Host "Found $($ambaAlerts.count) alerts for $resourceType."
+    }
     # $resourceName=($resourceId -split '/')[8]
     # $alerts=get-ambaAlertsForResourceType -resourceId $resourceId -serviceFolder $serviceFolder
     # if (($alerts | Where-Object {$_.visible -eq $true}).count -eq 0) {
@@ -1048,58 +1056,78 @@ function new-PaaSAlert {
     # "Total Alerts found in the file: $($alerts.count)."
     foreach ($alert in $ambaAlerts ) {
         if ($alert.type -eq 'metric') {
-            $alertType=$alert.Properties.criterionType
-            switch ($alertType) {
-                'StaticThresholdCriterion' {
-                    "Creating StaticThresholdCriterion alert."
-                    $condition=New-AzMetricAlertRuleV2Criteria -MetricName $alert.Properties.metricName `
-                                                            -MetricNamespace $alert.Properties.metricNameSpace `
-                                                            -Operator $alert.Properties.operator `
-                                                            -Threshold $alert.Properties.threshold `
-                                                            -TimeAggregation $alert.Properties.timeAggregation
-                    $automaticMitigation=$null -eq $alert.Properties.autoMitigate ? $false : $alert.Properties.autoMitigate
-
-                    $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
-                                            -ResourceGroupName $resourceGroupName `
-                                            -TargetResourceId $resourceId `
-                                            -Description $alert.description `
-                                            -Severity $alert.Properties.severity `
-                                            -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
-                                            -Condition $condition `
-                                            -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
-                                            -ActionGroupId $actionGroupId `
-                                            -AutoMitigate $automaticMitigation `
-                                            -Verbose                                           
-                                            #
-
-                                            $tag = @{$tagName=$packtag}
-                                            Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
-                }
-                'DynamicThresholdCriterion' {
-                    "Creating DynamicThresholdCriterion alert."
-                    $condition=New-AzMetricAlertRuleV2Criteria  -MetricName $alert.Properties.metricName `
+            # Check if the metric applies to the resource in question.
+            if ($alert.properties.metricNamespace -ne $resourceType) {
+                Write-Host "Alert $($alert.name) does not apply to $resourceType. Metric Name space is : $($alert.properties.metricNamespace).Skipping."
+                continue
+            }
+            else {
+                $alertType=$alert.Properties.criterionType
+                switch ($alertType) {
+                    'StaticThresholdCriterion' {
+                        "Creating StaticThresholdCriterion alert."
+                        $condition=New-AzMetricAlertRuleV2Criteria -MetricName $alert.Properties.metricName `
                                                                 -MetricNamespace $alert.Properties.metricNameSpace `
                                                                 -Operator $alert.Properties.operator `
-                                                                -DynamicThreshold `
-                                                                -TimeAggregation $alert.Properties.timeAggregation `
-                                                                -ViolationCount $alert.properties.failingPeriods.numberOfEvaluationPeriods `
-                                                                -ThresholdSensitivity $alert.Properties.alertSensitivity 
-                    $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
-                                                    -ResourceGroupName $resourceGroupName `
-                                                    -TargetResourceId $resourceId `
-                                                    -Description $alert.description `
-                                                    -Severity $alert.Properties.severity `
-                                                    -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
-                                                    -Condition $condition `
-                                                    -AutoMitigate $automaticMitigation `
-                                                    -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
-                                                    -ActionGroupId $actionGroupId 
-                    #update rule with new tags
-                    $tag = @{$tagName=$packTag}
-                    Update-AzTag -ResourceId $newRule.Id -Tag $tag  -Operation Replace
-                }
-                default {
-                    Write-Host "Unknown criterion type"
+                                                                -Threshold $alert.Properties.threshold `
+                                                                -TimeAggregation $alert.Properties.timeAggregation
+                        $automaticMitigation=$null -eq $alert.Properties.autoMitigate ? $false : $alert.Properties.autoMitigate
+#                         Write-host @"
+#     Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
+#                                                 -ResourceGroupName $resourceGroupName `
+#                                                 -TargetResourceId $resourceId `
+#                                                 -Description $($alert.description) `
+#                                                 -Severity $($alert.Properties.severity) `
+#                                                 -Frequency $([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
+#                                                 -Condition $condition `
+#                                                 -WindowSize $([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
+#                                                 -ActionGroupId $actionGroupId `
+#                                                 -AutoMitigate $automaticMitigation `
+#                                                 -Debug    
+# "@
+                        $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
+                                                -ResourceGroupName $resourceGroupName `
+                                                -TargetResourceId $resourceId `
+                                                -Description $alert.description `
+                                                -Severity $alert.Properties.severity `
+                                                -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
+                                                -Condition $condition `
+                                                -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
+                                                -ActionGroupId $actionGroupId `
+                                                -AutoMitigate $automaticMitigation `
+                                                -Verbose                                           
+                                                #
+
+                                                $tag = @{$tagName=$packtag}
+                                                Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
+                    }
+                    'DynamicThresholdCriterion' {
+                        "Creating DynamicThresholdCriterion alert."
+                        $condition=New-AzMetricAlertRuleV2Criteria  -MetricName $alert.Properties.metricName `
+                                                                    -MetricNamespace $alert.Properties.metricNameSpace `
+                                                                    -Operator $alert.Properties.operator `
+                                                                    -DynamicThreshold `
+                                                                    -TimeAggregation $alert.Properties.timeAggregation `
+                                                                    -ViolationCount $alert.properties.failingPeriods.numberOfEvaluationPeriods `
+                                                                    -ThresholdSensitivity $alert.Properties.alertSensitivity 
+                        $newRule=Add-AzMetricAlertRuleV2 -Name "AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace.Replace("/","-"))" `
+                                                        -ResourceGroupName $resourceGroupName `
+                                                        -TargetResourceId $resourceId `
+                                                        -Description $alert.description `
+                                                        -Severity $alert.Properties.severity `
+                                                        -Frequency ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.evaluationFrequency)) `
+                                                        -Condition $condition `
+                                                        -AutoMitigate $automaticMitigation `
+                                                        -WindowSize ([System.Xml.XmlConvert]::ToTimeSpan($alert.Properties.windowSize)) `
+                                                        -ActionGroupId $actionGroupId 
+                        #update rule with new tags
+                        $tag = @{$tagName=$packTag}
+                        "Adding tag $($tagName) with value $($packTag) to rule $($newRule.Id)."
+                        Update-AzTag -ResourceId $newRule.Id -Tag $tag  -Operation Replace
+                    }
+                    default {
+                        Write-Host "Unknown criterion type"
+                    }
                 }
             }
         }
