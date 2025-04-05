@@ -27,7 +27,7 @@
 							"type": "Microsoft.Solutions.ArmApiControl",
 							"request": {
 								"method": "GET",
-								"path": "[concat(steps('Configuration').subscriptionId,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
+								"path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
 								"transforms": {
 									"list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
 								}
@@ -38,7 +38,7 @@
 							"type": "Microsoft.Solutions.ArmApiControl",
 							"request": {
 								"method": "GET",
-								"path": "[concat(steps('Configuration').subscriptionId,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
+								"path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
 								"transforms": {
 									"list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
 								}
@@ -55,7 +55,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
                             }
                         },
                         {
@@ -63,7 +63,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
                             }
                         },
                         {
@@ -97,7 +97,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
                             }
                         },
                         {
@@ -139,7 +139,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('Configuration').subscriptionId,'/resourceGroups?api-version=2021-04-01')]"
+                                "path": "[concat(steps('basics').resourceScope.subscription.id,'/resourceGroups?api-version=2021-04-01')]"
                             }
                         },
                         {
@@ -183,8 +183,8 @@
 							},
 							"scope": {
 								"location": "[steps('basics').resourceScope.location.name]",
-								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
-								"subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]"
+								"resourceGroupName": "[steps('basics').resourceScope.resourceGroup.name)]",
+								"subscriptionId": "[last(split(steps('basics').resourceScope.subscription.id,'/'))]"
 							},
 							"constraints": {
 								"allowedTypes": []
@@ -321,7 +321,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Name for the new Grafana environment.",
                             "subLabel": "",
-                            "defaultValue": "[concat('AMSP',first(split(last(split(steps('Configuration').subscriptionId,'/')),'-')))]",
+                            "defaultValue": "[concat('AMSP',first(split(last(split(steps('basics').resourceScope.subscription.id,'/')),'-')))]",
                             "toolTip": "TBD",
                             "constraints": {
                                 "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
@@ -505,9 +505,9 @@
         },
         "outputs": {
             "parameters": {
-                "subscriptionId": "[last(split(steps('Configuration').subscriptionId,'/'))]",
-                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
-                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",                
+                "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+                "resourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]",
+                "createNewResourceGroup": "[equals(steps('basics').resourceScope.resourceGroup.mode,'New')]",                
                 "location": "[steps('basics').resourceScope.location.name]",
                 "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
                 "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
@@ -518,7 +518,7 @@
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
                 "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
-                "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
+                "resourceGroupId":"[steps('basics').resourceScope.resourceGroup.id]",
 				"instanceName":  "[steps('Configuration').instanceName]",
                 "deployGrafana": "[steps('Configuration').deployGrafana]",
                 "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
@@ -535,7 +535,7 @@
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
-            "subscriptionId": "[steps('Configuration').subscriptionId]"
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
         }
     }
 }
