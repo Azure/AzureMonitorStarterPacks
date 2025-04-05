@@ -1,7 +1,6 @@
-############################
-# Tagging Functions
-############################
-
+#######################################################################
+# Common functions used in the Monitoring Packs backend functions.
+#######################################################################
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
 function get-AMBAJsonFromRepo {
@@ -49,7 +48,6 @@ function get-AMBAJsonContent {
     #$AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
     return $AMBAJson
 }
-
 function set-systemAssignedIdentity {
     param (
         [Parameter(Mandatory = $true)]
@@ -173,7 +171,6 @@ function Install-azMonitorAgent {
             -publisher "Microsoft.Azure.Monitoring.DependencyAgent"
     }
 }
-
 # Depends on Function Install-azMonitorAgent
 function Add-Agent {
     param (
@@ -496,11 +493,10 @@ function Remove-Tag {
         }
     }
 }
-function get-alertApiVersion (
+function get-alertApiVersion {
+    param (
     [Parameter(Mandatory = $true)]
-    [string]$alertId
-)
-{
+    [string]$alertId)
     # Get the specific resource
     $resource = Get-AzResource -ResourceId $alertId
     # Get the resource provider and resource type
@@ -514,10 +510,6 @@ function get-alertApiVersion (
     $apiVersion = $apiVersions[0]
     return $apiVersion
 }
-#######################################################################
-# Common functions used in the Monitoring Packs backend functions.
-#######################################################################
-
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
 function Install-azMonitorAgent {
@@ -870,8 +862,6 @@ function Add-Agent {
 #     }
 #     #End of agent installation
 # }
-
-
 function Add-Tag {
     param (
         [Parameter(Mandatory = $true)]
@@ -1150,7 +1140,6 @@ function new-PaaSAlert {
         }
     }
 }
-
 function get-AmbaCatalog {
     Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from URL."
     $ambaJSONContent=get-AMBAJsonContent #-ambaJsonURL $ambaJsonURL
