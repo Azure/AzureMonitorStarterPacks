@@ -170,6 +170,7 @@ module backend '../backend/bicep/backend.bicep' = {
   name: 'MonitoringPacks-backend-${instanceName}'
   dependsOn: [
     resourgeGroup
+    storageAccount
   ]
   params: {
     appInsightsLocation: appInsightsLocation
