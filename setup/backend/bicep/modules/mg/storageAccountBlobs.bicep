@@ -24,6 +24,17 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing 
         publicAccess: 'None'
       }
     }
+    resource container3 'containers'={
+      name: 'amba'
+      properties: {
+        immutableStorageWithVersioning: {
+            enabled: false
+        }
+        denyEncryptionScopeOverride: false
+        defaultEncryptionScope: '$account-encryption-key'
+        publicAccess: 'None'
+      }
+    }
   }
 }
 output storageAccountName string = storageAccount.name

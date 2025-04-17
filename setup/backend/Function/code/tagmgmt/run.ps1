@@ -4,12 +4,18 @@ using namespace System.Net
 param($Request, $TriggerMetadata)
 $RepoUrl = $env:AMBAJsonURL
 $instanceName=$env:InstanceName
+$InformationPreference='SilentlyContinue'
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
+$Request | convertto-json
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
 $action = $Request.Body.Action
-$TagList = $Request.Body.Pack.split(',')
+if ($null -ne $Request.Body.Pack) {
+  $TagList = $Request.Body.Pack.split(',')
+} else {
+  $TagList = @() # probably discovery pack
+}
 $PackType = $Request.Body.PackType
 $LogAnalyticsWSAVD = $Request.Body.AVDLAW
 $ResourceType = $Request.Body.Type
@@ -25,46 +31,61 @@ if ($resources) {
     # Add the option for multiple tags, comma separated
     "Working on $($resources.count) resource(s). Action: $action. Altering $TagName in the resource."
     switch ($action) {
-        'AddTag' {
-          foreach ($resource in $resources) {
-              # Tagging
-              if ($PackType -in ('IaaS', 'Discovery')) {
-                foreach ($TagValue in $TagList) {
-                  $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
-                  Add-Tag -resourceId $resource.Resource `
-                  -TagName $TagName `
-                  -TagValue $TagValue `
-                  -instanceName $instanceName `
-                  -packType $PackType `
-                  -resourceType 'Compute'
-         #-instanceName $instanceName `
-                 # -packType $PackType -actionGroupId $defaultAG -resourceType "microsoft.compute"
-                  # Add Agent
-                  Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
-                }
-              }
-              else { #Paas or Platform
-                "PackType: $PackType"
-                "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
+      'AddTag' {
+        foreach ($resource in $resources) {
+          # Tagging
+          if ($PackType -ne 'Paas') {
+            if ($PackType -eq 'Discovery') {
+              $TagValue = $resource.Pack
+              # Add Agent if not installed yet.
+              $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
+              Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag is $TagValue"
+              Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
+              Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
+              Add-Tag -resourceId $resource.Resource `
+              -TagName $TagName `
+              -TagValue $TagValue `
+              -instanceName $instanceName `
+              -packType $PackType `
+              -resourceType 'Compute'
+            }
+            else {
+              # Add Agent if not installed yet.
+              $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
+              Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag is $TagValue"
+              Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
+              foreach ($TagValue in $TagList) {
                 Add-Tag -resourceId $resource.Resource `
-                 -TagName $TagName `
-                 -TagValue $ResourceType `
-                 -resourceType $ResourceType `
-                 -actionGroupId $defaultAG `
-                 -packtype $packType `
-                 -instanceName $instanceName `
-                 -location $resource.location
-                if ($TagValue -eq 'Avd') {
-                  # Create AVD alerts function.
-                  $hostPoolName = ($resource.Resource -split '/')[8]
-                  $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                  Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
-                  -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
-                }
+                -TagName $TagName `
+                -TagValue $TagValue `
+                -instanceName $instanceName `
+                -packType $PackType `
+                -resourceType 'Compute'
               }
-              # Add Tag Based condition.
-            }  # End of resource loop
-        } # End of AddTag
+            }
+          }
+          else { #Paas or Platform
+            "PackType: $PackType"
+            "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
+            Add-Tag -resourceId $resource.Resource `
+             -TagName $TagName `
+             -TagValue $ResourceType `
+             -resourceType $ResourceType `
+             -actionGroupId $defaultAG `
+             -packtype $packType `
+             -instanceName $instanceName `
+             -location $resource.location
+            if ($TagValue -eq 'Avd') {
+              # Create AVD alerts function.
+              $hostPoolName = ($resource.Resource -split '/')[8]
+              $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
+              Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
+              -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
+            }
+          }
+          # Add Tag Based condition.
+        }  # End of resource loop
+      } # End of AddTag
         'RemoveTag' {
           foreach ($resource in $resources) {
             # Tagging

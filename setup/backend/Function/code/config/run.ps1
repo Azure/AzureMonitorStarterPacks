@@ -37,6 +37,14 @@ switch ($Action) {
 # "@ | convertfrom-json
 #   }
   # Gets a list of tags (all) or for a specific type (PaaS)
+  'getInstanceName' {
+    $instanceName=$env:InstanceName
+    $body = @"
+        {
+            "InstanceName":"$($instanceName)"
+        }
+"@ | convertfrom-json
+  }
   'getAllServiceTags' {
     $type = $Request.Query.Type
     if ([string]::IsNullOrEmpty($type)) {
@@ -156,7 +164,7 @@ switch ($Action) {
     $ambaURL=$env:AMBAJsonURL
     "Fetching AMBA Catalog from $ambaURL"
     if ($ambaURL -eq $null) {
-    "Error fetching AMBA URL, stopping function"
+    Write-host "Error fetching AMBA URL, stopping function"
     $body = "Error fetching AMBA URL, stopping function"
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
         StatusCode = [HttpStatusCode]::BadRequest

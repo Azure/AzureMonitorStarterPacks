@@ -1,6 +1,6 @@
 ////targetScope = 'managementGroup'
 targetScope = 'subscription'
-
+param packtag string = 'LxDisc'
 param location string 
 param solutionTag string
 //param solutionVersion string
@@ -12,8 +12,15 @@ param lawResourceId string
 param tableNameToUse string
 //param userManagedIdentityResourceId string
 param dceId string
-param tags object
+param customerTags object
 param instanceName string
+param solutionVersion string
+var tempTags ={
+  '${solutionTag}': packtag
+  MonitoringPackType: 'Discovery'
+  solutionVersion: solutionVersion
+}
+var tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 //var ruleshortname = 'amp${instanceName}lxdisc'
 var appName = '${instanceName}-LxDiscovery'

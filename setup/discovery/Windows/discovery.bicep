@@ -19,11 +19,19 @@ param imageGalleryName string
 param lawResourceId string
 //param userManagedIdentityResourceId string
 param dceId string
-param tags object
 param instanceName string
+param packtag string = 'WinDisc'
 param tableNameToUse string
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 //var ruleshortname = 'amp${instanceName}windisc'
+param customerTags object
+param solutionVersion string
+var tempTags ={
+  '${solutionTag}': packtag
+  MonitoringPackType: 'Discovery'
+  solutionVersion: solutionVersion
+}
+var tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var appName = '${instanceName}-windiscovery'
 var appDescription = 'Windows Workload discovery'
 var OS = 'Windows'

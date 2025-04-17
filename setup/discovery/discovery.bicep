@@ -11,8 +11,9 @@ param lawResourceId string
 param tableName string
 //param userManagedIdentityResourceId string
 param dceId string
-param Tags object
+param customerTags object
 param instanceName string
+param solutionVersion string
 // Table to receive the data
 var tableNameToUse = '${tableName}_CL'
 var lawFriendlyName = split(lawResourceId,'/')[8]
@@ -43,8 +44,11 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     tableNameToUse: tableNameToUse
     //userManagedIdentityResourceId: userManagedIdentityResourceId
     dceId: dceId
-    tags: Tags
     instanceName: instanceName
+    customerTags: customerTags
+    solutionVersion: solutionVersion
+    packtag: 'WinDisc'
+
   }
 }
 
@@ -65,8 +69,10 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     tableNameToUse: tableNameToUse
     //userManagedIdentityResourceId: userManagedIdentityResourceId
     dceId: dceId
-    tags: Tags
     instanceName: instanceName
+    customerTags: customerTags
+    solutionVersion: solutionVersion
+    packtag: 'LxDisc'
   }
 }
 

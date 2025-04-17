@@ -77,7 +77,7 @@ module storageAccount '../backend/bicep/modules/mg/storageAccount.bicep' = if (c
   }
 }
 module existingStorageAccount '../backend/bicep/modules/mg/storageAccountBlobs.bicep' = if (!createNewStorageAccount) {
-  name:'existingstorage-deployment'
+  name:'existingstorage-depl-${location}-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     storageAccountName: storageAccountName
@@ -85,7 +85,7 @@ module existingStorageAccount '../backend/bicep/modules/mg/storageAccountBlobs.b
 }
 
 module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS) {
-  name: 'logAnalytics-Deployment'
+  name: 'logAnalytics-Deployment-${location}-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
     resourgeGroup
@@ -130,7 +130,7 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
 // }
 
 module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
-  name: 'DeployDiscovery-${instanceName}'
+  name: 'DeployDiscovery-${location}-${instanceName}'
   params: {
     location: location
     resourceGroupName: resourceGroupName
@@ -143,8 +143,9 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     storageAccountname: storageAccountName
     tableName: 'Discovery'
     //userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
-    Tags: Tags
+    customerTags: customerTags
     instanceName: instanceName
+    solutionVersion: solutionVersion
   }
 }
 

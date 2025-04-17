@@ -15,7 +15,7 @@ function New-vmApp {
     #Find gallery by instanceName tag
     $gallery=Get-AzGallery | Where-Object { $_.Tags.instanceName -eq $instanceName }
     # Find gallery application by packtag
-    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | Where-Object {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
+    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | Where-Object {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag}
     if ($galleryapplications.Count -eq 0) {
         Write-Warning "No gallery applications found for $($packtag). No need to install."
         return $true
@@ -47,8 +47,15 @@ function New-vmApp {
         $newAppConfig=New-AzVmGalleryApplication -PackageReferenceId $appversion.Id
         if ($VM) {
             Add-AzVmGalleryApplication -VM $VM -GalleryApplication $newAppConfig -TreatFailureAsDeploymentFailure
-            $VM | Update-AzVM
-            Write-Host "Installed $($appversion.Name) version $($appversion.PublishingProfile.PublishedDate) to $($resourceId)"
+            try {
+                $VM | Update-AzVM
+                Write-Host "Installed $($appversion.Name) version $($appversion.PublishingProfile.PublishedDate) to $($resourceId)"
+                return $true
+            }
+            catch {
+                Write-Error "Error installing application $($appversion.Name) version $($appversion.PublishingProfile.PublishedDate) to $($resourceId)"
+                return $false
+            }
         }
         else {
             Write-Error "VM not found"
@@ -76,7 +83,7 @@ function remove-vmapp {
     }
     # Find gallery application by packtag
     Write-host "Fetching applications that match pack and belong to the packs"
-    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | Where-Object {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag -and $_.Tag.AdditionalProperties.instanceName -eq $instanceName}
+    $galleryapplications=(Get-AzGalleryApplication -GalleryName $gallery.Name -ResourceGroupName $gallery.ResourceGroupName) | Where-Object {$_.Tag.AdditionalProperties.MonitorStarterPacks -eq $packtag }
     if ($galleryapplications.Count -eq 0) {
         Write-Warning "No gallery applications found for $($packtag). No need to install."
         return $false
