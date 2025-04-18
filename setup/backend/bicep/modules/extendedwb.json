@@ -3837,7 +3837,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
+                    "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| extend Packs = iff(MPs contains 'WinDisc','WinDisc','LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
                     "size": 0,
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
@@ -3848,27 +3848,7 @@
                       "formatters": [
                         {
                           "columnMatch": "Packs",
-                          "formatter": 18,
-                          "formatOptions": {
-                            "thresholdsOptions": "icons",
-                            "thresholdsGrid": [
-                              {
-                                "operator": "contains",
-                                "thresholdValue": "WinDisc",
-                                "text": "WinDisc"
-                              },
-                              {
-                                "thresholdValue": "LxDisc",
-                                "text": "LxDisc"
-                              },
-                              {
-                                "operator": "Default",
-                                "thresholdValue": null,
-                                "representation": "unknown",
-                                "text": "{0}{1}"
-                              }
-                            ]
-                          }
+                          "formatter": 1
                         },
                         {
                           "columnMatch": "subscriptionId",
@@ -3972,51 +3952,6 @@
                         }
                       },
                       {
-                        "type": 9,
-                        "content": {
-                          "version": "KqlParameterItem/1.0",
-                          "crossComponentResources": [
-                            "{Workspace}"
-                          ],
-                          "parameters": [
-                            {
-                              "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
-                              "version": "KqlParameterItem/1.0",
-                              "name": "PackTagsLeftDiscovery",
-                              "label": "Remove",
-                              "type": 2,
-                              "isGlobal": true,
-                              "multiSelect": true,
-                              "quote": "",
-                              "delimiter": ",",
-                              "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=~'discovery'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
-                              "crossComponentResources": [
-                                "{Workspace}"
-                              ],
-                              "typeSettings": {
-                                "additionalResourceOptions": [],
-                                "showDefault": false
-                              },
-                              "timeContext": {
-                                "durationMs": 86400000
-                              },
-                              "queryType": 1,
-                              "resourceType": "microsoft.resourcegraph/resources",
-                              "value": []
-                            }
-                          ],
-                          "style": "pills",
-                          "queryType": 1,
-                          "resourceType": "microsoft.resourcegraph/resources"
-                        },
-                        "customWidth": "25",
-                        "conditionalVisibility": {
-                          "parameterName": "taggedVMsDiscovery",
-                          "comparison": "isNotEqualTo"
-                        },
-                        "name": "param-IaaS-tagged"
-                      },
-                      {
                         "type": 11,
                         "content": {
                           "version": "LinkItem/1.0",
@@ -4026,7 +3961,7 @@
                               "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                               "cellValue": "",
                               "linkTarget": "ArmAction",
-                              "linkLabel": "Remove Discovery {PackTagsLeftDiscovery} Pack(s)",
+                              "linkLabel": "Remove Discovery Pack(s)",
                               "preText": "",
                               "style": "primary",
                               "linkIsContextBlade": true,
@@ -4039,10 +3974,10 @@
                                     "value": "removeTag"
                                   }
                                 ],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\",\n    \"PackType\":\"Discovery\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"PackType\":\"Discovery\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Remove Monitoring",
-                                "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftDiscovery} Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
+                                "description": "# Please confirm the change.\n\nRemove Monitoring for Discovery Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
                                 "runLabel": "Confirm"
                               }
                             }
@@ -4071,9 +4006,10 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, Subscription=subscriptionId, Location=location\n| extend Pack=iff(OS=~'Windows',\"WinDisc\", \"LxDisk\")\n\n",
+                          "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, Subscription=subscriptionId, Location=location\n| extend Pack=iff(OS=~'Windows',\"WinDisc\", \"LxDisc\")\n\n",
                           "size": 0,
                           "title": "Non-discoverable Machines",
+                          "showRefreshButton": true,
                           "exportMultipleValues": true,
                           "exportedParameters": [
                             {
@@ -4082,6 +4018,7 @@
                               "quote": ""
                             }
                           ],
+                          "showExportToExcel": true,
                           "queryType": 1,
                           "resourceType": "microsoft.resourcegraph/resources",
                           "crossComponentResources": [

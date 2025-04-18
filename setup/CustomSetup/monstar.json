@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10107449525136017585"
+      "templateHash": "3712588434952465958"
     }
   },
   "parameters": {
@@ -343,7 +343,7 @@
       "condition": "[not(parameters('createNewStorageAccount'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "existingstorage-deployment",
+      "name": "[format('existingstorage-depl-{0}-{1}', parameters('location'), parameters('instanceName'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -363,7 +363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2152510934760472014"
+              "templateHash": "17947763426648198191"
             }
           },
           "parameters": {
@@ -376,6 +376,22 @@
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'discovery')]",
+              "properties": {
+                "immutableStorageWithVersioning": {
+                  "enabled": false
+                },
+                "denyEncryptionScopeOverride": false,
+                "defaultEncryptionScope": "$account-encryption-key",
+                "publicAccess": "None"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'amba')]",
               "properties": {
                 "immutableStorageWithVersioning": {
                   "enabled": false
@@ -419,7 +435,7 @@
       "condition": "[parameters('createNewLogAnalyticsWS')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "logAnalytics-Deployment",
+      "name": "[format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName'))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -493,7 +509,7 @@
       "condition": "[parameters('deployDiscovery')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('DeployDiscovery-{0}', parameters('instanceName'))]",
+      "name": "[format('DeployDiscovery-{0}-{1}', parameters('location'), parameters('instanceName'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -519,18 +535,21 @@
           "imageGalleryName": {
             "value": "[variables('ImageGalleryName')]"
           },
-          "lawResourceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
+          "lawResourceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName'))), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
           "storageAccountname": {
             "value": "[parameters('storageAccountName')]"
           },
           "tableName": {
             "value": "Discovery"
           },
-          "Tags": {
-            "value": "[variables('Tags')]"
+          "customerTags": {
+            "value": "[parameters('customerTags')]"
           },
           "instanceName": {
             "value": "[parameters('instanceName')]"
+          },
+          "solutionVersion": {
+            "value": "[variables('solutionVersion')]"
           }
         },
         "template": {
@@ -540,7 +559,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1151082757761210549"
+              "templateHash": "7479482066944906309"
             }
           },
           "parameters": {
@@ -571,10 +590,13 @@
             "dceId": {
               "type": "string"
             },
-            "Tags": {
+            "customerTags": {
               "type": "object"
             },
             "instanceName": {
+              "type": "string"
+            },
+            "solutionVersion": {
               "type": "string"
             }
           },
@@ -693,11 +715,17 @@
                   "dceId": {
                     "value": "[parameters('dceId')]"
                   },
-                  "tags": {
-                    "value": "[parameters('Tags')]"
-                  },
                   "instanceName": {
                     "value": "[parameters('instanceName')]"
+                  },
+                  "customerTags": {
+                    "value": "[parameters('customerTags')]"
+                  },
+                  "solutionVersion": {
+                    "value": "[parameters('solutionVersion')]"
+                  },
+                  "packtag": {
+                    "value": "WinDisc"
                   }
                 },
                 "template": {
@@ -707,7 +735,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10641480497175098120"
+                      "templateHash": "13830991558373698515"
                     }
                   },
                   "parameters": {
@@ -739,13 +767,20 @@
                     "dceId": {
                       "type": "string"
                     },
-                    "tags": {
-                      "type": "object"
-                    },
                     "instanceName": {
                       "type": "string"
                     },
+                    "packtag": {
+                      "type": "string",
+                      "defaultValue": "WinDisc"
+                    },
                     "tableNameToUse": {
+                      "type": "string"
+                    },
+                    "customerTags": {
+                      "type": "object"
+                    },
+                    "solutionVersion": {
                       "type": "string"
                     }
                   },
@@ -758,6 +793,12 @@
                       "signedProtocol": "https",
                       "keyToSign": "key2"
                     },
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "Discovery",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "appName": "[format('{0}-windiscovery', parameters('instanceName'))]",
                     "appDescription": "Windows Workload discovery",
                     "OS": "Windows",
@@ -792,7 +833,7 @@
                             "value": "[variables('OS')]"
                           },
                           "tags": {
-                            "value": "[parameters('tags')]"
+                            "value": "[variables('tags')]"
                           }
                         },
                         "template": {
@@ -866,7 +907,7 @@
                             "value": "[parameters('location')]"
                           },
                           "tags": {
-                            "value": "[parameters('tags')]"
+                            "value": "[variables('tags')]"
                           }
                         },
                         "template": {
@@ -977,7 +1018,7 @@
                             "value": "powershell -command \"Unregister-ScheduledTask -TaskName 'Monstar Packs Discovery' '\\'\""
                           },
                           "tags": {
-                            "value": "[parameters('tags')]"
+                            "value": "[variables('tags')]"
                           },
                           "packageFileName": {
                             "value": "discover.zip"
@@ -1297,11 +1338,17 @@
                   "dceId": {
                     "value": "[parameters('dceId')]"
                   },
-                  "tags": {
-                    "value": "[parameters('Tags')]"
-                  },
                   "instanceName": {
                     "value": "[parameters('instanceName')]"
+                  },
+                  "customerTags": {
+                    "value": "[parameters('customerTags')]"
+                  },
+                  "solutionVersion": {
+                    "value": "[parameters('solutionVersion')]"
+                  },
+                  "packtag": {
+                    "value": "LxDisc"
                   }
                 },
                 "template": {
@@ -1311,10 +1358,14 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "9742438161012875364"
+                      "templateHash": "10955342974509433862"
                     }
                   },
                   "parameters": {
+                    "packtag": {
+                      "type": "string",
+                      "defaultValue": "LxDisc"
+                    },
                     "location": {
                       "type": "string"
                     },
@@ -1342,10 +1393,13 @@
                     "dceId": {
                       "type": "string"
                     },
-                    "tags": {
+                    "customerTags": {
                       "type": "object"
                     },
                     "instanceName": {
+                      "type": "string"
+                    },
+                    "solutionVersion": {
                       "type": "string"
                     },
                     "sasExpiry": {
@@ -1354,6 +1408,12 @@
                     }
                   },
                   "variables": {
+                    "tempTags": {
+                      "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "MonitoringPackType": "Discovery",
+                      "solutionVersion": "[parameters('solutionVersion')]"
+                    },
+                    "tags": "[if(equals(parameters('customerTags'), createObject()), variables('tempTags'), union(variables('tempTags'), parameters('customerTags').All))]",
                     "appName": "[format('{0}-LxDiscovery', parameters('instanceName'))]",
                     "appDescription": "Linux Workload discovery",
                     "OS": "Linux",
@@ -1396,7 +1456,7 @@
                             "value": "[variables('OS')]"
                           },
                           "tags": {
-                            "value": "[parameters('tags')]"
+                            "value": "[variables('tags')]"
                           }
                         },
                         "template": {
@@ -1470,7 +1530,7 @@
                             "value": "[parameters('location')]"
                           },
                           "tags": {
-                            "value": "[parameters('tags')]"
+                            "value": "[variables('tags')]"
                           }
                         },
                         "template": {
@@ -1581,7 +1641,7 @@
                             "value": "/opt/microsoft/discovery/uninstall.sh"
                           },
                           "tags": {
-                            "value": "[parameters('tags')]"
+                            "value": "[variables('tags')]"
                           },
                           "packageFileName": {
                             "value": "discover.tar"
@@ -1868,7 +1928,7 @@
       },
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     },
     {
@@ -2219,7 +2279,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName')))]",
         "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     },
@@ -2240,7 +2300,7 @@
           "functionname": {
             "value": "[variables('functionName')]"
           },
-          "lawresourceid": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
+          "lawresourceid": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName'))), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -2279,7 +2339,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13672692759808164165"
+              "templateHash": "14672416240524509873"
             }
           },
           "parameters": {
@@ -3073,7 +3133,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "171292952624058976"
+                      "templateHash": "5142052074037562451"
                     }
                   },
                   "parameters": {
@@ -3261,10 +3321,25 @@
                                 "type": 9,
                                 "content": {
                                   "version": "KqlParameterItem/1.0",
-                                  "crossComponentResources": [
-                                    "value::tenant"
-                                  ],
                                   "parameters": [
+                                    {
+                                      "id": "04f4ebcc-705a-4c79-a15a-bcba40d8dd51",
+                                      "version": "KqlParameterItem/1.0",
+                                      "name": "instanceName",
+                                      "label": "Instance",
+                                      "type": 2,
+                                      "isRequired": true,
+                                      "query": "resources\r\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\r\n| where isnotempty(tags.MonitorStarterPacksComponents)\r\n| project instanceNames=tags.instanceName",
+                                      "typeSettings": {
+                                        "additionalResourceOptions": []
+                                      },
+                                      "timeContext": {
+                                        "durationMs": 86400000
+                                      },
+                                      "queryType": 1,
+                                      "resourceType": "microsoft.resourcegraph/resources",
+                                      "value": "mcp2"
+                                    },
                                     {
                                       "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
                                       "version": "KqlParameterItem/1.0",
@@ -3286,33 +3361,8 @@
                                         "durationMs": 86400000
                                       },
                                       "value": [
-                                        "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                                        "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8"
                                       ]
-                                    },
-                                    {
-                                      "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
-                                      "version": "KqlParameterItem/1.0",
-                                      "name": "logicAppResource",
-                                      "label": "Logic App",
-                                      "type": 5,
-                                      "isRequired": true,
-                                      "query": "resources\n| where type == \"microsoft.logic/workflows\" \n| where isnotempty(tags.MonitorStarterPacksComponents)\n| project Id=id, Name=name",
-                                      "crossComponentResources": [
-                                        "value::tenant"
-                                      ],
-                                      "typeSettings": {
-                                        "resourceTypeFilter": {
-                                          "microsoft.logic/workflows": true
-                                        },
-                                        "additionalResourceOptions": [],
-                                        "showDefault": false
-                                      },
-                                      "timeContext": {
-                                        "durationMs": 86400000
-                                      },
-                                      "queryType": 1,
-                                      "resourceType": "microsoft.resources/tenants",
-                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-vss-LogicApp"
                                     },
                                     {
                                       "id": "16d48fd3-189f-4604-9582-da7cf5c93d7c",
@@ -3323,15 +3373,14 @@
                                       "description": "Select the function to provide the access key.",
                                       "isRequired": true,
                                       "isGlobal": true,
-                                      "query": "resources\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\n| where isnotempty(tags.MonitorStarterPacksComponents)\n| project id,name",
-                                      "crossComponentResources": [
-                                        "value::tenant"
-                                      ],
+                                      "query": "resources\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\n| where isnotempty(tags.MonitorStarterPacksComponents)\n| where tags.instanceName == '{instanceName}'\n| project id,name",
                                       "typeSettings": {
-                                        "additionalResourceOptions": []
+                                        "additionalResourceOptions": [],
+                                        "showDefault": false
                                       },
                                       "queryType": 1,
-                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-vss-b1e924f9-Function"
+                                      "resourceType": "microsoft.resourcegraph/resources",
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
                                     },
                                     {
                                       "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -3356,7 +3405,7 @@
                                       "type": 5,
                                       "isRequired": true,
                                       "isGlobal": true,
-                                      "query": "resources\n| where type == \"microsoft.operationalinsights/workspaces\"\n| project id",
+                                      "query": "resources\n| where type == \"microsoft.operationalinsights/workspaces\"\n| where tags.instanceName =~ '{instanceName}'\n| project id",
                                       "crossComponentResources": [
                                         "value::all"
                                       ],
@@ -3365,22 +3414,23 @@
                                         "showDefault": false
                                       },
                                       "queryType": 1,
-                                      "resourceType": "microsoft.resourcegraph/resources",
-                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LA"
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
                                     },
                                     {
-                                      "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
+                                      "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
                                       "version": "KqlParameterItem/1.0",
-                                      "name": "GrafanaInstance",
-                                      "label": "Azure Managed Grafana",
-                                      "type": 2,
+                                      "name": "logicAppResource",
+                                      "label": "Logic App",
+                                      "type": 5,
                                       "isRequired": true,
-                                      "isGlobal": true,
-                                      "query": "resources\n| where type =~ \"microsoft.dashboard/grafana\"\n| where isnotempty(tags.monitorStarterPacksComponents) or isnotempty(tags.MonitorStarterPacksComponents)\n| project id, label=properties.endpoint",
+                                      "query": "resources\n| where type == \"microsoft.logic/workflows\" \n| where isnotempty(tags.MonitorStarterPacksComponents)\n| where tags.instanceName =~ '{instanceName}'\n| project Id=id, Name=name",
                                       "crossComponentResources": [
                                         "value::tenant"
                                       ],
                                       "typeSettings": {
+                                        "resourceTypeFilter": {
+                                          "microsoft.logic/workflows": true
+                                        },
                                         "additionalResourceOptions": [],
                                         "showDefault": false
                                       },
@@ -3389,7 +3439,27 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks/providers/Microsoft.Dashboard/grafana/AMSPb1e924f9"
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-mcp2-LogicApp"
+                                    },
+                                    {
+                                      "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
+                                      "version": "KqlParameterItem/1.0",
+                                      "name": "GrafanaInstance",
+                                      "label": "Azure Managed Grafana",
+                                      "type": 2,
+                                      "description": "Select an Azure Managed Grafana instance, if available.",
+                                      "isGlobal": true,
+                                      "query": "resources\n| where type =~ \"microsoft.dashboard/grafana\"\n| where isnotempty(tags.monitorStarterPacksComponents) or isnotempty(tags.MonitorStarterPacksComponents)\n| where tags.instanceName == '{instanceName}'\n| project id, label=properties.endpoint",
+                                      "typeSettings": {
+                                        "additionalResourceOptions": [],
+                                        "showDefault": false
+                                      },
+                                      "timeContext": {
+                                        "durationMs": 86400000
+                                      },
+                                      "queryType": 1,
+                                      "resourceType": "microsoft.resourcegraph/resources",
+                                      "value": null
                                     },
                                     {
                                       "id": "7961f447-f72b-401d-a26b-283a44e45b2e",
@@ -3410,12 +3480,12 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/NetworkWatcherRG/providers/microsoft.insights/actiongroups/Jose"
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/Default-ActivityLogAlerts/providers/Microsoft.Insights/actiongroups/AGOwner"
                                     }
                                   ],
                                   "style": "above",
                                   "queryType": 1,
-                                  "resourceType": "microsoft.resources/tenants"
+                                  "resourceType": "microsoft.resourcegraph/resources"
                                 },
                                 "customWidth": "100",
                                 "conditionalVisibility": {
@@ -3429,27 +3499,22 @@
                                 "type": 9,
                                 "content": {
                                   "version": "KqlParameterItem/1.0",
-                                  "crossComponentResources": [
-                                    "value::tenant"
-                                  ],
                                   "parameters": [
                                     {
                                       "id": "03340268-1ac8-4d74-a76e-bc37a4bdd45c",
                                       "version": "KqlParameterItem/1.0",
                                       "name": "appInsightsName",
+                                      "label": "",
                                       "type": 1,
                                       "isRequired": true,
                                       "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id",
-                                      "crossComponentResources": [
-                                        "value::tenant"
-                                      ],
                                       "queryType": 1,
-                                      "resourceType": "microsoft.resources/tenants"
+                                      "resourceType": "microsoft.resourcegraph/resources"
                                     }
                                   ],
                                   "style": "above",
                                   "queryType": 1,
-                                  "resourceType": "microsoft.resources/tenants"
+                                  "resourceType": "microsoft.resourcegraph/resources"
                                 },
                                 "conditionalVisibility": {
                                   "parameterName": "showHidden",
@@ -4099,7 +4164,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId=tolower(tostring(resourceId))//ruleId=properties.dataCollectionRuleId\n| join kind= inner  (\nresources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| summarize by resourceId, Pack\n| summarize Packs=tostring(make_list(Pack)) by resourceId\n| project Packs2=tostring(Packs), resourceId",
+                                  "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId=tolower(tostring(resourceId))//ruleId=properties.dataCollectionRuleId\n| join kind= inner  (\nresources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where MPs !in~ ('WinDisc', 'LxDisc')\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| summarize by resourceId, Pack\n| summarize Packs=tostring(make_list(Pack)) by resourceId\n| project Packs2=tostring(Packs), resourceId",
                                   "size": 0,
                                   "queryType": 1,
                                   "resourceType": "microsoft.resources/tenants",
@@ -4127,7 +4192,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks)) and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+                                  "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks)) and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
                                   "size": 0,
                                   "queryType": 1,
                                   "resourceType": "microsoft.resources/tenants",
@@ -4143,6 +4208,14 @@
                                       {
                                         "columnMatch": "OS",
                                         "formatter": 1
+                                      },
+                                      {
+                                        "columnMatch": "Subscription",
+                                        "formatter": 13,
+                                        "formatOptions": {
+                                          "linkTarget": null,
+                                          "showIcon": true
+                                        }
                                       }
                                     ]
                                   }
@@ -4165,7 +4238,7 @@
                                       "type": 3,
                                       "content": {
                                         "version": "KqlItem/1.0",
-                                        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"}]}",
+                                        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"}]}",
                                         "size": 0,
                                         "title": "Monitored Machines",
                                         "exportMultipleValues": true,
@@ -4184,10 +4257,39 @@
                                           "formatters": [
                                             {
                                               "columnMatch": "Associations",
-                                              "formatter": 0,
+                                              "formatter": 18,
+                                              "formatOptions": {
+                                                "linkColumn": "Associations",
+                                                "linkTarget": "CellDetails",
+                                                "linkIsContextBlade": true,
+                                                "thresholdsOptions": "icons",
+                                                "thresholdsGrid": [
+                                                  {
+                                                    "operator": "is Empty",
+                                                    "representation": "cancelled",
+                                                    "text": "",
+                                                    "tooltipFormat": {
+                                                      "tooltip": "{0}{1}"
+                                                    }
+                                                  },
+                                                  {
+                                                    "operator": "Default",
+                                                    "thresholdValue": null,
+                                                    "representation": "success",
+                                                    "text": "",
+                                                    "tooltipFormat": {
+                                                      "tooltip": "{0}{1}"
+                                                    }
+                                                  }
+                                                ]
+                                              },
                                               "tooltipFormat": {
-                                                "tooltip": "If empty, no DCR associations have been created by the policies yet."
+                                                "tooltip": "Click to see associations."
                                               }
+                                            },
+                                            {
+                                              "columnMatch": "resourceId",
+                                              "formatter": 5
                                             },
                                             {
                                               "columnMatch": "Associated Packs",
@@ -4362,6 +4464,7 @@
                                         "query": "resources | where type =~ 'microsoft.hybridcompute/machines' | where isempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| union (resources | where type =~ 'microsoft.compute/virtualmachinescalesets' and properties.orchestrationMode == 'Uniform'\n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.virtualMachineProfile.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter  (\n    resourcecontainers| where type =~ 'microsoft.resources/subscriptions'\n    | project Subscription=name,subscriptionId\n    ) \non subscriptionId| project-away subscriptionId, subscriptionId1",
                                         "size": 0,
                                         "title": "Non-monitored Machines",
+                                        "noDataMessage": "No unmonitored servers. Good job!",
                                         "exportMultipleValues": true,
                                         "exportedParameters": [
                                           {
@@ -4439,7 +4542,7 @@
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
                                             "value": [
-                                              "Nginx"
+                                              "InsightsDep"
                                             ]
                                           }
                                         ],
@@ -5732,7 +5835,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| extend ds=properties.dataSources\n| project id,Type=kind, location,syslog=ds.syslog[0].streams[0], windowsEventLogs=ds.windowsEventLogs[0].streams[0], logsettings=ds.logFiles, performanceCounters=ds.performanceCounters[0].streams[0],provisioningState=properties.provisioningState, \ndataCollectionEndpointId=properties.dataCollectionEndpointId,transformKql=properties.dataFlows[0].transformKql,workspaceResourceId=properties.destinations.logAnalytics[0].workspaceResourceId\n",
+                                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| extend ds=properties.dataSources\n| project id,Type=kind, location,syslog=ds.syslog[0].streams[0], windowsEventLogs=ds.windowsEventLogs[0].streams[0], logsettings=ds.logFiles[0].name,iislogs=ds.iisLogs[0].name,performanceCounters=ds.performanceCounters[0].streams[0],\ndataCollectionEndpointId=properties.dataCollectionEndpointId,transformKql=properties.dataFlows[0].transformKql,workspaceResourceId=properties.destinations.logAnalytics[0].workspaceResourceId,State=properties.provisioningState\n",
                                   "size": 0,
                                   "title": "List of Currently Configured Data Collection Rules",
                                   "showRefreshButton": true,
@@ -5876,8 +5979,6 @@
                                         "columnMatch": "windowsEventLogs",
                                         "formatter": 18,
                                         "formatOptions": {
-                                          "linkTarget": "CellDetails",
-                                          "linkIsContextBlade": true,
                                           "thresholdsOptions": "icons",
                                           "thresholdsGrid": [
                                             {
@@ -5904,16 +6005,37 @@
                                             {
                                               "operator": "is Empty",
                                               "representation": "cancelled",
-                                              "text": "Not Configured"
+                                              "text": ""
                                             },
                                             {
                                               "operator": "Default",
                                               "thresholdValue": null,
                                               "representation": "success",
-                                              "text": "Configured"
+                                              "text": ""
                                             }
                                           ],
-                                          "customColumnWidthSetting": "20ch"
+                                          "customColumnWidthSetting": "10ch"
+                                        }
+                                      },
+                                      {
+                                        "columnMatch": "iislogs",
+                                        "formatter": 18,
+                                        "formatOptions": {
+                                          "thresholdsOptions": "icons",
+                                          "thresholdsGrid": [
+                                            {
+                                              "operator": "is Empty",
+                                              "representation": "cancelled",
+                                              "text": ""
+                                            },
+                                            {
+                                              "operator": "Default",
+                                              "thresholdValue": null,
+                                              "representation": "success",
+                                              "text": ""
+                                            }
+                                          ],
+                                          "customColumnWidthSetting": "10ch"
                                         }
                                       },
                                       {
@@ -5938,34 +6060,6 @@
                                             }
                                           ],
                                           "customColumnWidthSetting": "20ch"
-                                        }
-                                      },
-                                      {
-                                        "columnMatch": "provisioningState",
-                                        "formatter": 18,
-                                        "formatOptions": {
-                                          "thresholdsOptions": "icons",
-                                          "thresholdsGrid": [
-                                            {
-                                              "operator": "contains",
-                                              "thresholdValue": "succeeded",
-                                              "representation": "success",
-                                              "text": "{0}{1}"
-                                            },
-                                            {
-                                              "operator": "Default",
-                                              "thresholdValue": null,
-                                              "representation": "success",
-                                              "text": "{0}{1}"
-                                            }
-                                          ],
-                                          "customColumnWidthSetting": "17ch"
-                                        },
-                                        "numberFormat": {
-                                          "unit": 0,
-                                          "options": {
-                                            "style": "decimal"
-                                          }
                                         }
                                       },
                                       {
@@ -6033,6 +6127,26 @@
                                           "linkTarget": "Resource",
                                           "showIcon": true,
                                           "customColumnWidthSetting": "16.8571ch"
+                                        }
+                                      },
+                                      {
+                                        "columnMatch": "State",
+                                        "formatter": 18,
+                                        "formatOptions": {
+                                          "thresholdsOptions": "icons",
+                                          "thresholdsGrid": [
+                                            {
+                                              "operator": "is Empty",
+                                              "representation": "cancelled",
+                                              "text": "{0}{1}"
+                                            },
+                                            {
+                                              "operator": "Default",
+                                              "thresholdValue": null,
+                                              "representation": "success",
+                                              "text": "{0}{1}"
+                                            }
+                                          ]
                                         }
                                       },
                                       {
@@ -6873,7 +6987,7 @@
                                       "type": 3,
                                       "content": {
                                         "version": "KqlItem/1.0",
-                                        "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
+                                        "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| extend Packs = iff(MPs contains 'WinDisc','WinDisc','LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
                                         "size": 0,
                                         "queryType": 1,
                                         "resourceType": "microsoft.resources/tenants",
@@ -6884,27 +6998,7 @@
                                           "formatters": [
                                             {
                                               "columnMatch": "Packs",
-                                              "formatter": 18,
-                                              "formatOptions": {
-                                                "thresholdsOptions": "icons",
-                                                "thresholdsGrid": [
-                                                  {
-                                                    "operator": "contains",
-                                                    "thresholdValue": "WinDisc",
-                                                    "text": "WinDisc"
-                                                  },
-                                                  {
-                                                    "thresholdValue": "LxDisc",
-                                                    "text": "LxDisc"
-                                                  },
-                                                  {
-                                                    "operator": "Default",
-                                                    "thresholdValue": null,
-                                                    "representation": "unknown",
-                                                    "text": "{0}{1}"
-                                                  }
-                                                ]
-                                              }
+                                              "formatter": 1
                                             },
                                             {
                                               "columnMatch": "subscriptionId",
@@ -7008,51 +7102,6 @@
                                             }
                                           },
                                           {
-                                            "type": 9,
-                                            "content": {
-                                              "version": "KqlParameterItem/1.0",
-                                              "crossComponentResources": [
-                                                "{Workspace}"
-                                              ],
-                                              "parameters": [
-                                                {
-                                                  "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
-                                                  "version": "KqlParameterItem/1.0",
-                                                  "name": "PackTagsLeftDiscovery",
-                                                  "label": "Remove",
-                                                  "type": 2,
-                                                  "isGlobal": true,
-                                                  "multiSelect": true,
-                                                  "quote": "",
-                                                  "delimiter": ",",
-                                                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=~'discovery'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
-                                                  "crossComponentResources": [
-                                                    "{Workspace}"
-                                                  ],
-                                                  "typeSettings": {
-                                                    "additionalResourceOptions": [],
-                                                    "showDefault": false
-                                                  },
-                                                  "timeContext": {
-                                                    "durationMs": 86400000
-                                                  },
-                                                  "queryType": 1,
-                                                  "resourceType": "microsoft.resourcegraph/resources",
-                                                  "value": []
-                                                }
-                                              ],
-                                              "style": "pills",
-                                              "queryType": 1,
-                                              "resourceType": "microsoft.resourcegraph/resources"
-                                            },
-                                            "customWidth": "25",
-                                            "conditionalVisibility": {
-                                              "parameterName": "taggedVMsDiscovery",
-                                              "comparison": "isNotEqualTo"
-                                            },
-                                            "name": "param-IaaS-tagged"
-                                          },
-                                          {
                                             "type": 11,
                                             "content": {
                                               "version": "LinkItem/1.0",
@@ -7062,7 +7111,7 @@
                                                   "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                                                   "cellValue": "",
                                                   "linkTarget": "ArmAction",
-                                                  "linkLabel": "Remove Discovery {PackTagsLeftDiscovery} Pack(s)",
+                                                  "linkLabel": "Remove Discovery Pack(s)",
                                                   "preText": "",
                                                   "style": "primary",
                                                   "linkIsContextBlade": true,
@@ -7075,10 +7124,10 @@
                                                         "value": "removeTag"
                                                       }
                                                     ],
-                                                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"Pack\": \"{PackTagsLeftDiscovery}\",\n    \"PackType\":\"Discovery\"\n  }\n}",
+                                                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"PackType\":\"Discovery\"\n  }\n}",
                                                     "httpMethod": "POST",
                                                     "title": "Remove Monitoring",
-                                                    "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeftDiscovery} Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
+                                                    "description": "# Please confirm the change.\n\nRemove Monitoring for Discovery Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
                                                     "runLabel": "Confirm"
                                                   }
                                                 }
@@ -7107,9 +7156,10 @@
                                             "type": 3,
                                             "content": {
                                               "version": "KqlItem/1.0",
-                                              "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n| join kind= leftouter   (resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project Subscription=name,subscriptionId) on subscriptionId\n| project-away subscriptionId, subscriptionId1",
+                                              "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, Subscription=subscriptionId, Location=location\n| extend Pack=iff(OS=~'Windows',\"WinDisc\", \"LxDisc\")\n\n",
                                               "size": 0,
                                               "title": "Non-discoverable Machines",
+                                              "showRefreshButton": true,
                                               "exportMultipleValues": true,
                                               "exportedParameters": [
                                                 {
@@ -7118,6 +7168,7 @@
                                                   "quote": ""
                                                 }
                                               ],
+                                              "showExportToExcel": true,
                                               "queryType": 1,
                                               "resourceType": "microsoft.resourcegraph/resources",
                                               "crossComponentResources": [
@@ -7125,20 +7176,31 @@
                                               ],
                                               "visualization": "table",
                                               "gridSettings": {
-                                                "filter": true,
-                                                "sortBy": [
+                                                "formatters": [
                                                   {
-                                                    "itemKey": "$gen_link_Resource_0",
-                                                    "sortOrder": 1
+                                                    "columnMatch": "Resource Group",
+                                                    "formatter": 14,
+                                                    "formatOptions": {
+                                                      "linkTarget": null,
+                                                      "showIcon": true
+                                                    }
+                                                  },
+                                                  {
+                                                    "columnMatch": "tag",
+                                                    "formatter": 5
+                                                  },
+                                                  {
+                                                    "columnMatch": "subscriptionId",
+                                                    "formatter": 13,
+                                                    "formatOptions": {
+                                                      "linkTarget": null,
+                                                      "showIcon": true
+                                                    }
                                                   }
-                                                ]
+                                                ],
+                                                "filter": true
                                               },
-                                              "sortBy": [
-                                                {
-                                                  "itemKey": "$gen_link_Resource_0",
-                                                  "sortOrder": 1
-                                                }
-                                              ]
+                                              "sortBy": []
                                             },
                                             "name": "Non Discoverable Servers",
                                             "styleSettings": {
@@ -7146,51 +7208,6 @@
                                               "padding": "400",
                                               "showBorder": true
                                             }
-                                          },
-                                          {
-                                            "type": 9,
-                                            "content": {
-                                              "version": "KqlParameterItem/1.0",
-                                              "crossComponentResources": [
-                                                "value::tenant"
-                                              ],
-                                              "parameters": [
-                                                {
-                                                  "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
-                                                  "version": "KqlParameterItem/1.0",
-                                                  "name": "PackTagsDiscovery",
-                                                  "label": "Select to Enable",
-                                                  "type": 2,
-                                                  "isGlobal": true,
-                                                  "multiSelect": true,
-                                                  "quote": "",
-                                                  "delimiter": ",",
-                                                  "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=~'Discovery'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
-                                                  "crossComponentResources": [
-                                                    "value::tenant"
-                                                  ],
-                                                  "typeSettings": {
-                                                    "additionalResourceOptions": [],
-                                                    "showDefault": false
-                                                  },
-                                                  "timeContext": {
-                                                    "durationMs": 86400000
-                                                  },
-                                                  "queryType": 1,
-                                                  "resourceType": "microsoft.resources/tenants",
-                                                  "value": []
-                                                }
-                                              ],
-                                              "style": "pills",
-                                              "queryType": 1,
-                                              "resourceType": "microsoft.resources/tenants"
-                                            },
-                                            "customWidth": "50",
-                                            "conditionalVisibility": {
-                                              "parameterName": "vmstotagDiscovery",
-                                              "comparison": "isNotEqualTo"
-                                            },
-                                            "name": "param-IaaS-vmstotag"
                                           },
                                           {
                                             "type": 11,
@@ -7201,7 +7218,7 @@
                                                 {
                                                   "id": "91fb0fed-0e4f-41ce-9024-98a3cc4432a7",
                                                   "linkTarget": "ArmAction",
-                                                  "linkLabel": "Enable Monitoring for {PackTagsDiscovery} Pack",
+                                                  "linkLabel": "Enable Discovery for servers.",
                                                   "preText": "",
                                                   "style": "primary",
                                                   "linkIsContextBlade": true,
@@ -7214,10 +7231,10 @@
                                                         "value": "addTag"
                                                       }
                                                     ],
-                                                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"Pack\": \"{PackTagsDiscovery}\",\n    \"PackType\": \"Discovery\"\n  }\n}",
+                                                    "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"PackType\": \"Discovery\"\n  }\n}",
                                                     "httpMethod": "POST",
                                                     "title": "Enable Monitoring Packs",
-                                                    "description": "# This will enable the pack for the following servers:\n{vmstotagDiscovery}\n\nby adding the {PackTagsDiscovery} Pack(s) to the resource(s).",
+                                                    "description": "# This will enable the pack for the following servers:\n{vmstotagDiscovery}\n\nby adding the Pack(s) to the resource(s).\n",
                                                     "actionName": "EnableMonitoring",
                                                     "runLabel": "Confirm"
                                                   }
@@ -7713,7 +7730,7 @@
                         }
                       ],
                       "fallbackResourceIds": [
-                        "Azure Monitor"
+                        "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
                       ],
                       "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
                     },
@@ -8740,7 +8757,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName')))]",
         "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('STOmonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
@@ -8775,7 +8792,7 @@
           "userManagedIdentityResourceId": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName'))), '2022-09-01').outputs.packsUserManagedResourceId.value]"
           },
-          "workspaceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment'), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
+          "workspaceId": "[if(parameters('createNewLogAnalyticsWS'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName'))), '2022-09-01').outputs.lawresourceid.value), createObject('value', parameters('existingLogAnalyticsWSId')))]",
           "actionGroupName": {
             "value": "[parameters('actionGroupName')]"
           },
@@ -17997,7 +18014,7 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('azureManagedGrafana-{0}', parameters('instanceName')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('MonitoringPacks-backend-{0}', parameters('instanceName')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'logAnalytics-Deployment')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('logAnalytics-Deployment-{0}-{1}', parameters('location'), parameters('instanceName')))]",
         "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('RGMonitoringPacks-{0}-{1}', parameters('location'), parameters('instanceName')))]"
       ]
     }

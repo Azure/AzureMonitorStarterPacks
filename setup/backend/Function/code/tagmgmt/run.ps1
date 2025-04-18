@@ -75,6 +75,41 @@ if ($resources) {
              -packtype $packType `
              -instanceName $instanceName `
              -location $resource.location
+          }
+          # Add Tag Based condition.
+        }  # End of resource loop
+      } # End of AddTag
+      'RemoveTag' {
+        foreach ($resource in $resources) {
+          # Tagging
+          if ($PackType -ne 'Paas') {
+            if ($PackType -eq 'Discovery') {
+              $TagValue = $resource.Packs
+              # Add Agent if not installed yet.
+              Write-Host "PackType: $PackType. Removing tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
+              if ($TagValue -ne '') {
+                Remove-Tag -resourceId $resource.Resource `
+                  -TagName $TagName `
+                  -TagValue $TagValue `
+                  -instanceName $instanceName `
+                  -packType $PackType
+              }
+              else {
+                Write-host " Error: No tag value found for $($resource.Resource)"
+              }
+            }
+            else {
+              foreach ($TagValue in $TagList) {
+                Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
+                Remove-Tag -resourceId $resource.Resource `
+                            -TagName $TagName -TagValue $TagValue `
+                            -PackType $PackType -instanceName $instanceName
+              }
+            }
+          }
+          else { #Paas or Platform
+            Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
+            Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
             if ($TagValue -eq 'Avd') {
               # Create AVD alerts function.
               $hostPoolName = ($resource.Resource -split '/')[8]
@@ -85,48 +120,10 @@ if ($resources) {
           }
           # Add Tag Based condition.
         }  # End of resource loop
-      } # End of AddTag
-        'RemoveTag' {
-          foreach ($resource in $resources) {
-            # Tagging
-            if ($PackType -in ('IaaS', 'Discovery')) {
-              foreach ($TagValue in $TagList) {
-                Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType -instanceName $instanceName
-              }
-            }
-            else { #Paas or Platform
-              Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-              Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
-              if ($TagValue -eq 'Avd') {
-                # Create AVD alerts function.
-                $hostPoolName = ($resource.Resource -split '/')[8]
-                $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-                Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
-                -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
-              }
-            }
-            # Add Tag Based condition.
-          }  # End of resource loop
-        }  # End of Remove Tag
-
-            # foreach ($TagValue in $TagList) {
-            #     foreach ($resource in $resources) {
-            #         # Tagging
-            #         Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $TagValue -PackType $PackType
-            #     }
-            #     if ($TagValue -eq 'Avd') {
-            #         $hostPoolName = ($resource.Resource -split '/')[8]
-            #         $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-            #         Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName `
-            #                     -location $resource.Location -TagName $TagName -TagValue $TagValue `
-            #                     -action $action `
-            #                     -LogAnalyticsWSAVD $LogAnalyticsWSAVD
-            #     }
-            # }
-        default {
-            Write-Host "Invalid Action"
-        }
+      }  # End of Remove Tag
+      default {
+          Write-Host "Invalid Action"
+      }
     }
 }
 else {
