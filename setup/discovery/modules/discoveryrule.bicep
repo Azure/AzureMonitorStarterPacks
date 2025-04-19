@@ -19,6 +19,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
   location: location
   tags: {
     '${solutionTag}': packtag
+      instanceName: instanceName
     MonitoringPackType: packtype
   }
   kind: kind

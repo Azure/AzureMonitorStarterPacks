@@ -17,6 +17,7 @@ param instanceName string
 param solutionVersion string
 var tempTags ={
   '${solutionTag}': packtag
+  instanceName: instanceName
   MonitoringPackType: 'Discovery'
   solutionVersion: solutionVersion
 }

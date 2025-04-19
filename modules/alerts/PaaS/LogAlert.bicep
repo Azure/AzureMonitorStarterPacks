@@ -95,7 +95,8 @@ module alert '../../alz/deploy.bicep' = {
             version: '1.0.0'
             Category: 'Monitoring'
             source: 'https://github.com/Azure/AzureMonitorStarterPacks'
-            '${solutionTag}': packTag
+            '${solutionTag}': packtag
+            instanceName: instanceName
             MonitoringPackType: packtype
             initiativeMember: initiativeMember
         }

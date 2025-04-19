@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6041578098899149849"
+      "templateHash": "13893768147688003443"
     }
   },
   "parameters": {
@@ -248,7 +248,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1125323627580801421"
+              "templateHash": "8213851072276288634"
             }
           },
           "parameters": {
@@ -357,7 +357,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18289885286383929849"
+                      "templateHash": "12125278499973626344"
                     }
                   },
                   "parameters": {
@@ -422,6 +422,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -684,7 +685,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "8530312510660963114"
+                              "templateHash": "12079709288981904285"
                             }
                           },
                           "parameters": {
@@ -1209,7 +1210,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "1128108251442731456"
+                                      "templateHash": "10543326254836805846"
                                     }
                                   },
                                   "parameters": {
@@ -1262,6 +1263,7 @@
                                       "location": "[parameters('location')]",
                                       "tags": {
                                         "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                                        "instanceName": "[parameters('instanceName')]",
                                         "MonitoringPackType": "[parameters('packtype')]"
                                       },
                                       "kind": "[parameters('kind')]",
@@ -1394,7 +1396,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5687806784805562562"
+                      "templateHash": "13433362485930018363"
                     }
                   },
                   "parameters": {
@@ -1446,6 +1448,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -2388,7 +2391,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10987756482010353262"
+                      "templateHash": "1160422427630539842"
                     }
                   },
                   "parameters": {
@@ -2443,6 +2446,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -3768,7 +3772,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1142818808596874693"
+                      "templateHash": "3138148042977917120"
                     }
                   },
                   "parameters": {
@@ -3824,6 +3828,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -5174,7 +5179,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11192010329413137214"
+                      "templateHash": "16027899539375031464"
                     }
                   },
                   "parameters": {
@@ -5229,6 +5234,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -6793,7 +6799,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10271972942788368267"
+                      "templateHash": "13931565531177821388"
                     }
                   },
                   "parameters": {
@@ -6851,6 +6857,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -7825,7 +7832,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14674606170595929932"
+                      "templateHash": "15580970237111583276"
                     }
                   },
                   "parameters": {
@@ -7883,6 +7890,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },
@@ -8875,7 +8883,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16590800373883425005"
+                      "templateHash": "17769849577531187967"
                     }
                   },
                   "parameters": {
@@ -8924,6 +8932,7 @@
                     "rulename": "[format('AMP-{0}-{1}', parameters('instanceName'), parameters('packtag'))]",
                     "tempTags": {
                       "[format('{0}', parameters('solutionTag'))]": "[parameters('packtag')]",
+                      "instanceName": "[parameters('instanceName')]",
                       "MonitoringPackType": "IaaS",
                       "solutionVersion": "[parameters('solutionVersion')]"
                     },

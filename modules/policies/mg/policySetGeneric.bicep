@@ -35,6 +35,7 @@ resource policySetDef 'Microsoft.Authorization/policySetDefinitions@2021-06-01' 
       category: category
       version: version
       '${solutionTag}': packtag
+            instanceName: instanceName
     }
     parameters: {}
     policyDefinitions:  policyDefinitions

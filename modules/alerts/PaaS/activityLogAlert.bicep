@@ -42,7 +42,8 @@ module ActivityLogAlert '../../alz/deploy.bicep' = {
           version: '1.0.0'
           Category: 'ActivityLog'
           source: 'https://azure.github.io/azure-monitor-baseline-alerts/services/'
-          '${solutionTag}': packTag
+          '${solutionTag}': packtag
+          instanceName: instanceName
           MonitoringPackType: packtype
           initiativeMember: initiativeMember
       }

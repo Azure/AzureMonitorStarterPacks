@@ -21,6 +21,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
       category: 'Monitoring'
       '${solutionTag}': packtag
       instanceName: instanceName
+      instanceName: instanceName
     }
     policyType: 'Custom'
     mode: 'Indexed'

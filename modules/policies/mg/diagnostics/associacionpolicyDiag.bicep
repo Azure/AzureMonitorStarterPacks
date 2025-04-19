@@ -27,6 +27,7 @@ resource diagPolicy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
     metadata: {
       category: 'Monitoring'
       '${solutionTag}': packtag
+      instanceName: instanceName
       MonitoringPackType: packtype
       initiativeMember: initiativeMember
     }

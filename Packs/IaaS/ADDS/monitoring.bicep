@@ -26,6 +26,7 @@ var rulename = 'AMP-${instanceName}-${packtag}'
 param customerTags object
 var tempTags ={
   '${solutionTag}': packtag
+  instanceName: instanceName
   MonitoringPackType: 'IaaS'
   solutionVersion: solutionVersion
 }
