@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15359930414414421602"
+      "templateHash": "12799352510181480484"
     }
   },
   "parameters": {
@@ -2343,7 +2343,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11820265063026459735"
+              "templateHash": "10047862674749739413"
             }
           },
           "parameters": {
@@ -3137,7 +3137,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5142052074037562451"
+                      "templateHash": "18160201628204829594"
                     }
                   },
                   "parameters": {
@@ -3333,16 +3333,18 @@
                                       "label": "Instance",
                                       "type": 2,
                                       "isRequired": true,
+                                      "isGlobal": true,
                                       "query": "resources\r\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\r\n| where isnotempty(tags.MonitorStarterPacksComponents)\r\n| project instanceNames=tags.instanceName",
                                       "typeSettings": {
-                                        "additionalResourceOptions": []
+                                        "additionalResourceOptions": [],
+                                        "showDefault": false
                                       },
                                       "timeContext": {
                                         "durationMs": 86400000
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resourcegraph/resources",
-                                      "value": "mcp2"
+                                      "value": "mcp1"
                                     },
                                     {
                                       "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -3384,7 +3386,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resourcegraph/resources",
-                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-mcp1-e315fe54-Function"
                                     },
                                     {
                                       "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -3418,7 +3420,7 @@
                                         "showDefault": false
                                       },
                                       "queryType": 1,
-                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
                                     },
                                     {
                                       "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -3443,7 +3445,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-mcp2-LogicApp"
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-mcp1-LogicApp"
                                     },
                                     {
                                       "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -3549,7 +3551,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources\n| where isnotempty(tags.MonitorStarterPacks) or isnotempty(tags.MonitorStarterPacksComponents)\n|union ( \npolicyresources | where isnotempty(properties.metadata.MonitorStarterPacks))\n| summarize count() by type\n| sort by count_ desc ",
+                                  "query": "resources\n| where (isnotempty(tags.MonitorStarterPacks) or isnotempty(tags.MonitorStarterPacksComponents)) and (tags.instanceName == '{instanceName}')\n|union ( \npolicyresources | where isnotempty(properties.metadata.MonitorStarterPacks))\n| summarize count() by type, tostring(tags.instanceName)\n| sort by count_ desc ",
                                   "size": 0,
                                   "title": "Monitoring Packs resources and Components",
                                   "queryType": 1,
@@ -3599,7 +3601,7 @@
                         {
                           "type": 1,
                           "content": {
-                            "json": "# Getting Started\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance, if you enabled it. Make sure to property set permissions before attemping to access it.\n\n## <span style=\"color: #FF0000\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
+                            "json": "# Getting Started\n\n## Instance: <span style=\"color: #0000FF\"> {instanceName} </span>\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance, if you enabled it. Make sure to property set permissions before attemping to access it.\n\n## <span style=\"color: #FF0000\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
                           },
                           "conditionalVisibility": {
                             "parameterName": "tabSelection",
@@ -4154,7 +4156,7 @@
                           "content": {
                             "version": "NotebookGroup/1.0",
                             "groupType": "editable",
-                            "title": "Servers",
+                            "title": "Servers - {instanceName} instance",
                             "items": [
                               {
                                 "type": 1,
@@ -4196,7 +4198,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| where isnotempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isnotempty(tolower(tags.MonitorStarterPacks)) and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
+                                  "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
                                   "size": 0,
                                   "queryType": 1,
                                   "resourceType": "microsoft.resources/tenants",
@@ -4242,7 +4244,7 @@
                                       "type": 3,
                                       "content": {
                                         "version": "KqlItem/1.0",
-                                        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"}]}",
+                                        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].instanceName\",\"mergedName\":\"instanceName\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].MP\",\"mergedName\":\"MP\",\"fromId\":\"unknown\"}]}",
                                         "size": 0,
                                         "title": "Monitored Machines",
                                         "exportMultipleValues": true,
@@ -4628,7 +4630,7 @@
                           "content": {
                             "version": "NotebookGroup/1.0",
                             "groupType": "editable",
-                            "title": "Azure Services",
+                            "title": "Azure Services - {instanceName} instance",
                             "items": [
                               {
                                 "type": 1,
@@ -4824,10 +4826,7 @@
                                             "timeContext": {
                                               "durationMs": 86400000
                                             },
-                                            "queryType": 10,
-                                            "value": [
-                                              "value::all"
-                                            ]
+                                            "queryType": 10
                                           }
                                         ],
                                         "style": "above",
@@ -5022,6 +5021,7 @@
                           "content": {
                             "version": "NotebookGroup/1.0",
                             "groupType": "editable",
+                            "title": "Alerts - {instanceName} instance",
                             "items": [
                               {
                                 "type": 11,
@@ -5088,7 +5088,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "microsoft.keyvault/vaults"
+                                      "value": null
                                     }
                                   ],
                                   "style": "pills",
@@ -5106,7 +5106,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources\n| where tolower(type) in (\"microsoft.insights/scheduledqueryrules\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1]\n| union (\nresources\n| where tolower(type) in (\"microsoft.insights/metricalerts\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])\n| union (resources\n| where tolower(type) in (\"microsoft.insights/activitylogalerts\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])\n| where MP=='{AlertPack}'",
+                                  "query": "resources\n| where tolower(type) in (\"microsoft.insights/scheduledqueryrules\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0],\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1]\n| union (\nresources\n| where tolower(type) in (\"microsoft.insights/metricalerts\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])\n| union (resources\n| where tolower(type) in (\"microsoft.insights/activitylogalerts\")\n| where isnotempty(tags.MonitorStarterPacks)\n| where tags.instanceName == '{instanceName}'\n| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, ['Action Group']=split(properties.actions.actionGroups[0].actionGroupId,\"/\")[8], location, Target=split(properties.scopes[0],\"/\")[-1])\n| where MP=='{AlertPack}'",
                                   "size": 0,
                                   "exportMultipleValues": true,
                                   "exportedParameters": [
@@ -7734,7 +7734,7 @@
                         }
                       ],
                       "fallbackResourceIds": [
-                        "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
+                        "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
                       ],
                       "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
                     },
