@@ -63,10 +63,10 @@ switch ($Action) {
   'getdiscoveryresults' {
     $WSId= $Request.Query.WSId
     if ($WSId) {
-      $body = get-discoveryresults -LogAnalyticsWSResourceId $WSId
+      $body = get-discoveryresults -instanceName $instanceName
     }
     else {
-      $body = 'No Workspace ID provided'
+      $body = '{}'
     }
   }
   'getPaaSquery' {

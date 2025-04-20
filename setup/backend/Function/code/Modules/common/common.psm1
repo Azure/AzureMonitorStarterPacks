@@ -340,17 +340,25 @@ function Add-DCRa {
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
         [Parameter(Mandatory = $true)]
-        [string]$TagValue
+        [string]$TagValue,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
     )
-    $DCRs=Get-AzDataCollectionRule | Where-Object {$_.Tag["MonitorStarterPacks"] -eq $TagValue}
+    Write-Host "Adding DCR association for $resourceId with tag $TagValue"
+    Write-Host "Looging for DCR(s) with tag $TagValue"
+    $DCRs=Get-AzDataCollectionRule | Where-Object {$_.Tag["MonitorStarterPacks"] -eq $TagValue -and $_.Tag["instanceName"] -eq $instanceName}
+    Write-host "Found $($DCRs.count) rule(s)."
+    Write-host "DCR id (s): $($DCRs.id)"
     foreach ($DCR in $DCRs) {
     #Check if the DCR is associated with the VM
+        Write-host "Checking if DCR $($DCR.Name) is associated with $resourceId"
         $associated=Get-AzDataCollectionRuleAssociation -ResourceUri $resourceId | Where-Object { $_.DataCollectionRuleId -eq $DCR.Id }
         if ($null -eq $associated) {
             Write-Output "VM: $resourceName Pack: $TagValue) DCR: $($DCR.Name) not associated"
             # Create the association
             try {
                 New-AzDataCollectionRuleAssociation -ResourceUri $resourceId -DataCollectionRuleId $DCR.Id -AssociationName "Association for $resourceName and $($DCR.Name)"
+                Write-Output "Association created successfully."
                 return $true
             }
             catch {
@@ -372,14 +380,16 @@ function Remove-DCRa {
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
         [Parameter(Mandatory = $true)]
-        [string]$TagValue
+        [string]$TagValue,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
     )
 
     $DCRQuery = @"
 resources
 | where type == "microsoft.insights/datacollectionrules"
-| extend MPs=tostring(['tags'].MonitorStarterPacks)
-| where MPs=~'$TagValue'
+| extend MPs=tostring(['tags'].MonitorStarterPacks), instanceName=tostring(['tags'].instanceName)
+| where MPs=~'$TagValue' and instanceName=~'$instanceName'
 | summarize by name, id
 "@
     $DCRs = Search-AzGraph -Query $DCRQuery
@@ -448,7 +458,7 @@ function Remove-Tag {
                 "Removing all associations $($taglist.count) for $taglist."
                 foreach ($tagv in $taglist) {
                     Write-Host "Removing association for $tagv. on $resourceId."
-                    Remove-DCRa -resourceId $resourceId -TagValue $tagv
+                    Remove-DCRa -resourceId $resourceId -TagValue $tagv -instanceName $instanceName
                     "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
                     remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
                 }
@@ -492,7 +502,7 @@ function Remove-Tag {
                     # find rule
                     if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
                         "Removing DCR Association."
-                        Remove-DCRa -resourceId $resourceId -TagValue $TagValue
+                        Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
                         "Removing vm application(s) if any for $tagvalue tag and instance name $instanceName, if any."
                         remove-vmapp -ResourceId $resourceId -packtag $tagvalue -instanceName $instanceName
                     }
@@ -929,7 +939,7 @@ function Add-Tag {
             $tag.Add('instanceName', $instanceName)
         }
         if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
-            if (Add-DCRa -resourceId $resourceId -TagValue $TagValue ) {
+            if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                 Write-host "Addinng VM application for $TagValue."
                 if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
                     Write-host "VM application created for $TagValue, if any. Adding tag."
@@ -967,7 +977,7 @@ function Add-Tag {
             $tag[$TagName] += ",$TagValue"
             #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
             if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
-                if (Add-DCRa -resourceId $resourceId -TagValue $TagValue ) {
+                if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                     Write-host "Addinng VM application for $TagValue."
                     if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
                         Write-host "VM application created for $TagValue, if any. Adding tag."
@@ -1001,7 +1011,7 @@ function Add-Tag {
             # if the tag is already there we hope the instance name is there as well.
             if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
                 "Trying adding the DCRa anyway in case it is missing."
-                Add-DCRa -resourceId $resourceId -TagValue $TagValue #-instanceName $instanceName
+                Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
             }
             # Add a test to see if the alerts actually exist
         }

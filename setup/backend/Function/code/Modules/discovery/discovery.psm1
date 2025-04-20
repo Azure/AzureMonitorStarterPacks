@@ -36,6 +36,8 @@
 #     }
 #     # Add more mappings as needed
 # }
+
+
 function get-discovermappings {
     $discoveringMappings = @{
         "ADDS"  = "AD-Domain-Services"
@@ -48,8 +50,23 @@ function get-discovermappings {
 function get-discoveryresults {
     param (
         [Parameter(Mandatory = $true)]
-        [string]$LogAnalyticsWSResourceId
+        [string]$instanceName
     )
+    # Get the right log analytics workspace
+    # use resource graph to get the workspace id with the instance name as the tag
+    $wsquery = @"
+Resources
+| where type =~ 'microsoft.operationalinsights/workspaces'
+| where tags['instanceName'] =~ '$instanceName'
+| project id, name, type, tags, properties
+| limit 1
+"@
+    $ws = Search-azgraph -Query $wsquery 
+    if ($ws -eq $null) {
+        Write-Error "No workspace found for instance name $instanceName"
+        return $null
+    }
+
     Write-host "Running Discovery"
     $DiscoveryQuery=@"
 let maxts=Discovery_CL | summarize timestamp=max(tostring(split(RawData,",")[0]));
@@ -66,14 +83,13 @@ Discovery_CL
 | where timestamp == toscalar(maxts)
 | project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor
 "@
-    $wsname=$LogAnalyticsWSResourceId.split('/')[8]
-    $wsresourceGroupname=$LogAnalyticsWSResourceId.split('/')[4]    
+    $wsresourceGroupname=$ws.ResourceId.split('/')[4]    
     # Write-host "Getting WS"
-    $subscriptionId = $LogAnalyticsWSResourceId.split('/')[2]
+    $subscriptionId = $ws.ResourceId.split('/')[2]
     # # change context to subscription
     Set-AzContext -Subscription $subscriptionId | out-null
     try {
-        $workspace = Get-AzOperationalInsightsWorkspace -ResourceGroupName $wsresourceGroupname -Name $wsname
+        $workspace = Get-AzOperationalInsightsWorkspace -ResourceGroupName $wsresourceGroupname -Name $ws.name
     }
     catch {
         Write-Error "Error finding workspace."
@@ -89,6 +105,10 @@ Discovery_CL
         $DiscoveryData=@()
     }
     Write-host "Found $($DiscoveryData.Count) entries in discovery."
+    if ($DiscoveryData.Count -eq 0) {
+        Write-host "No discovery data found."
+        return "{}"
+    }
     $DMs=get-discovermappings
     $results=@()
     foreach ($app in $DiscoveryData | Where-Object { $_.name -in $DMs.application }) {

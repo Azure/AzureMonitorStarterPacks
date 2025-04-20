@@ -506,6 +506,222 @@
                 {
                   "type": 1,
                   "content": {
+                    "json": "## Active Alerts List\n\nThis tab shows all Monitoring Packs related alerts that are currently active.",
+                    "style": "info"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "showHelp",
+                    "comparison": "isEqualTo",
+                    "value": "yes"
+                  },
+                  "name": "text - Summary - Active Alerts"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "parameters": [
+                      {
+                        "id": "6fa5185a-2f1d-4fbd-8ce7-9050d66312a6",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "alertsInstance",
+                        "label": "Instance",
+                        "type": 2,
+                        "isRequired": true,
+                        "multiSelect": true,
+                        "quote": "'",
+                        "delimiter": ",",
+                        "query": "resources\r\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\r\n| where isnotempty(tags.MonitorStarterPacksComponents)\r\n| project instanceNames=tags.instanceName",
+                        "crossComponentResources": [
+                          "value::tenant"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resources/tenants",
+                        "value": [
+                          "mcp1"
+                        ]
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants"
+                  },
+                  "name": "parameters - 6"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status,severity=properties.context.context.severity\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName in ({alertsInstance})\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| project id, ['Alert Name']=name,['Details']=['Alert Id'], Status=status, Resource=resourceId, Sev=severity\n| where Status=='Activated'\n",
+                    "size": 0,
+                    "title": "Active Alerts",
+                    "exportedParameters": [
+                      {
+                        "fieldName": "Details",
+                        "parameterName": "selectedAlertId",
+                        "parameterType": 5
+                      }
+                    ],
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "Details",
+                          "formatter": 7,
+                          "formatOptions": {
+                            "linkTarget": "OpenBlade",
+                            "linkLabel": "Details",
+                            "linkIsContextBlade": true,
+                            "bladeOpenContext": {
+                              "bladeName": "AlertDetails.ReactView",
+                              "extensionName": "Microsoft_Azure_Monitoring_Alerts",
+                              "bladeJsonParameters": "{\n    \"alertId\": \"{selectedAlertId}\",\n    \"invokedFrom\": \"CopyLinkFeature\"\n}"
+                            }
+                          }
+                        },
+                        {
+                          "columnMatch": "Status",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "==",
+                                "thresholdValue": "Activated",
+                                "representation": "up",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "columnMatch": "Resource",
+                          "formatter": 13,
+                          "formatOptions": {
+                            "linkTarget": "Resource",
+                            "linkIsContextBlade": true,
+                            "showIcon": true
+                          }
+                        },
+                        {
+                          "columnMatch": "Sev",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "==",
+                                "thresholdValue": "1",
+                                "representation": "Sev1",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "2",
+                                "representation": "Sev2",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "3",
+                                "representation": "Sev3",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "4",
+                                "representation": "Sev4",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "0",
+                                "representation": "Sev0",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "unknown",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "columnMatch": "Alert Id",
+                          "formatter": 7,
+                          "formatOptions": {
+                            "linkTarget": "Resource",
+                            "linkLabel": "Details",
+                            "linkIsContextBlade": true
+                          }
+                        },
+                        {
+                          "columnMatch": "Target",
+                          "formatter": 13,
+                          "formatOptions": {
+                            "linkTarget": null,
+                            "showIcon": true
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "customWidth": "66",
+                  "name": "activeAlertsquery"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName in ({alertsInstance})\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| summarize count() by AlertType=type\n\n",
+                    "size": 0,
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
+                    "visualization": "piechart"
+                  },
+                  "customWidth": "33",
+                  "name": "activeAlertsQueryPie"
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "dashTab",
+              "comparison": "isEqualTo",
+              "value": "alerts"
+            },
+            "name": "groupDashAlerts"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
                     "json": "## IaaS Information\n\nThe summary below shows details related to the IaaS Monitoring packs.",
                     "style": "info"
                   },
@@ -726,183 +942,6 @@
               "value": "iaas"
             },
             "name": "groupDashboardIaaS"
-          },
-          {
-            "type": 12,
-            "content": {
-              "version": "NotebookGroup/1.0",
-              "groupType": "editable",
-              "items": [
-                {
-                  "type": 1,
-                  "content": {
-                    "json": "## Active Alerts List\n\nThis tab shows all Monitoring Packs related alerts that are currently active.",
-                    "style": "info"
-                  },
-                  "conditionalVisibility": {
-                    "parameterName": "showHelp",
-                    "comparison": "isEqualTo",
-                    "value": "yes"
-                  },
-                  "name": "text - Summary - Active Alerts"
-                },
-                {
-                  "type": 3,
-                  "content": {
-                    "version": "KqlItem/1.0",
-                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status,severity=properties.context.context.severity\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks)\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| project id, ['Alert Name']=name,['Details']=['Alert Id'], Status=status, Resource=resourceId, Sev=severity\n| where Status=='Activated'\n",
-                    "size": 0,
-                    "title": "Active Alerts",
-                    "exportedParameters": [
-                      {
-                        "fieldName": "Details",
-                        "parameterName": "selectedAlertId",
-                        "parameterType": 5
-                      }
-                    ],
-                    "queryType": 1,
-                    "resourceType": "microsoft.resources/tenants",
-                    "crossComponentResources": [
-                      "value::tenant"
-                    ],
-                    "gridSettings": {
-                      "formatters": [
-                        {
-                          "columnMatch": "Details",
-                          "formatter": 7,
-                          "formatOptions": {
-                            "linkTarget": "OpenBlade",
-                            "linkLabel": "Details",
-                            "linkIsContextBlade": true,
-                            "bladeOpenContext": {
-                              "bladeName": "AlertDetails.ReactView",
-                              "extensionName": "Microsoft_Azure_Monitoring_Alerts",
-                              "bladeJsonParameters": "{\n    \"alertId\": \"{selectedAlertId}\",\n    \"invokedFrom\": \"CopyLinkFeature\"\n}"
-                            }
-                          }
-                        },
-                        {
-                          "columnMatch": "Status",
-                          "formatter": 18,
-                          "formatOptions": {
-                            "thresholdsOptions": "icons",
-                            "thresholdsGrid": [
-                              {
-                                "operator": "==",
-                                "thresholdValue": "Activated",
-                                "representation": "up",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "Default",
-                                "thresholdValue": null,
-                                "representation": "success",
-                                "text": "{0}{1}"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "columnMatch": "Resource",
-                          "formatter": 13,
-                          "formatOptions": {
-                            "linkTarget": "Resource",
-                            "linkIsContextBlade": true,
-                            "showIcon": true
-                          }
-                        },
-                        {
-                          "columnMatch": "Sev",
-                          "formatter": 18,
-                          "formatOptions": {
-                            "thresholdsOptions": "icons",
-                            "thresholdsGrid": [
-                              {
-                                "operator": "==",
-                                "thresholdValue": "1",
-                                "representation": "Sev1",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "==",
-                                "thresholdValue": "2",
-                                "representation": "Sev2",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "==",
-                                "thresholdValue": "3",
-                                "representation": "Sev3",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "==",
-                                "thresholdValue": "4",
-                                "representation": "Sev4",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "==",
-                                "thresholdValue": "0",
-                                "representation": "Sev0",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "Default",
-                                "thresholdValue": null,
-                                "representation": "unknown",
-                                "text": "{0}{1}"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "columnMatch": "Alert Id",
-                          "formatter": 7,
-                          "formatOptions": {
-                            "linkTarget": "Resource",
-                            "linkLabel": "Details",
-                            "linkIsContextBlade": true
-                          }
-                        },
-                        {
-                          "columnMatch": "Target",
-                          "formatter": 13,
-                          "formatOptions": {
-                            "linkTarget": null,
-                            "showIcon": true
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  "customWidth": "66",
-                  "name": "activeAlertsquery"
-                },
-                {
-                  "type": 3,
-                  "content": {
-                    "version": "KqlItem/1.0",
-                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks)\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| summarize count() by AlertType=type\n\n",
-                    "size": 0,
-                    "queryType": 1,
-                    "resourceType": "microsoft.resources/tenants",
-                    "crossComponentResources": [
-                      "value::tenant"
-                    ],
-                    "visualization": "piechart"
-                  },
-                  "customWidth": "33",
-                  "name": "activeAlertsQueryPie"
-                }
-              ]
-            },
-            "conditionalVisibility": {
-              "parameterName": "dashTab",
-              "comparison": "isEqualTo",
-              "value": "alerts"
-            },
-            "name": "groupDashAlerts"
           },
           {
             "type": 3,
