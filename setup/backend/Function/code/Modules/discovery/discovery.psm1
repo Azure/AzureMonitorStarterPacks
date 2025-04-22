@@ -53,6 +53,19 @@ function get-discoveryresults {
         [string]$instanceName
     )
     # Get the right log analytics workspace
+    $discoveryData=@"
+{
+    "Packs": [
+        {
+            "Name": "nginx",
+            "Tag": "nginx",
+            "Description": "Nginx is a high-performance HTTP server and reverse proxy.",
+            "OS": "Linux",
+            "Query": "let maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
+        }
+    ]
+}
+"@ | ConvertFrom-Json -Depth 10
     # use resource graph to get the workspace id with the instance name as the tag
     $wsquery = @"
 Resources
@@ -66,23 +79,8 @@ Resources
         Write-Error "No workspace found for instance name $instanceName"
         return $null
     }
-
     Write-host "Running Discovery"
-    $DiscoveryQuery=@"
-let maxts=Discovery_CL | summarize timestamp=max(tostring(split(RawData,",")[0]));
-Discovery_CL
-| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)
-| extend fields=split(RawData,",")
-| extend timestamp=todatetime(fields[0])
-| extend type=tostring(fields[1])
-| extend platform=tostring(fields[2])
-| extend OSVersion=tostring(fields[3])
-| extend name=tostring(fields[4])
-| extend othertype=tostring(fields[5])
-| extend vendor=tostring(fields[6])
-| where timestamp == toscalar(maxts)
-| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor
-"@
+  
     $wsresourceGroupname=$ws.ResourceId.split('/')[4]    
     # Write-host "Getting WS"
     $subscriptionId = $ws.ResourceId.split('/')[2]
@@ -97,27 +95,34 @@ Discovery_CL
     }
     # Select subscription from workspace
 
+    $results=@()
     if ($workspace) {
-        Write-host "Running Query"
-        $DiscoveryData=Invoke-AzOperationalInsightsQuery -Workspace $workspace -Query $DiscoveryQuery | Select-Object -ExpandProperty Results
+        Write-host "Found workspace $($workspace.Name) in resource group $($workspace.ResourceGroupName) with id $($workspace.ResourceId)"
+    
+        foreach ($pack in $discoveryData.Packs) {
+            Write-host "Running discovery for $($pack.Name)"
+            $DiscoveryQuery = $pack.Query
+            # replace the workspace id in the query with the workspace id from the resource graph query
+            $queryResults=Invoke-AzOperationalInsightsQuery -WorkspaceId $workspace.CustomerId.Guid -Query $DiscoveryQuery | Select-Object -ExpandProperty Results
+            if ($queryResults.Count -eq 0) {
+                Write-host "No discovery data found for $($pack.Name)"
+                return "{}"
+            }
+            else {
+                #Return resourceID and tag for the pack
+                $queryResults | ForEach-Object {
+                    $result = @{} # Initialize as a hashtable
+                    $result['Tag'] = $pack.Tag
+                    $result['ResourceId'] = $_.Computer
+                    $result['OS'] = $pack.OS
+                    $results += $result
+                }
+            }
+        }
     }
     else {
-        $DiscoveryData=@()
-    }
-    Write-host "Found $($DiscoveryData.Count) entries in discovery."
-    if ($DiscoveryData.Count -eq 0) {
-        Write-host "No discovery data found."
-        return "{}"
-    }
-    $DMs=get-discovermappings
-    $results=@()
-    foreach ($app in $DiscoveryData | Where-Object { $_.name -in $DMs.application }) {
-        Write-host "Finding applications in the Discovery mappings"
-        # For each DM in DMs we need to find computers in $DiscoveryData that match the DM
-        # get the tag for the application
-        $result=$app
-        $result | Add-Member -MemberType Noteproperty -Name 'tag' -Value ($DMs | Where-Object { $_.application -eq $app.name } | Select-Object -ExpandProperty tag)
-        $results+=$result
+        Write-Error "No workspace found for instance name $instanceName"
+        return {}
     }
     Write-host "Found $($results.count) results for discovery."
     return $results | ConvertTo-Json

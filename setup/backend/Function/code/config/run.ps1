@@ -57,64 +57,65 @@ switch ($Action) {
     }
   }
   # returns a list of discovery mapping directions.
-  'getDiscoveryMappings' {
-    $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
-  }
+  # 'getDiscoveryMappings' {
+  #   $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
+  # }
   'getdiscoveryresults' {
-    $WSId= $Request.Query.WSId
-    if ($WSId) {
-      $body = get-discoveryresults -instanceName $instanceName
+    #$WSId= $Request.Query.instanceName
+    $instanceName=$env:InstanceName
+    if ($instanceName) {
+      $body="{""Discovered"" : $(get-discoveryresults -instanceName $instanceName) }"
     }
     else {
       $body = '{}'
     }
   }
-  'getPaaSquery' {
-    $body = get-paasquery
-#     @"
-#         {
-#             "Query": "
-#         | where tolower(type) in (
-#           'microsoft.storage/storageaccounts',
-#           'microsoft.desktopvirtualization/hostpools',
-#           'microsoft.logic/workflows',
-#           'microsoft.sql/managedinstances',
-#           'microsoft.sql/servers/databases',
-#           'microsoft.network/vpngateways',
-#           'microsoft.network/virtualnetworkgateways',
-#           'microsoft.keyvault/vaults',
-#           'microsoft.network/networksecuritygroups',
-#           'microsoft.network/publicipaddresses',
-#           'microsoft.network/privatednszones',
-#           'microsoft.network/frontdoors',
-#           'microsoft.network/azurefirewalls',
-#           'microsoft.network/applicationgateways'
-#       )
-#       or (
-#           tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
-#       }
-# "@
-  }
-  'getPlatformquery' {
-    $body='{}'
-#     $body = @'
-#         {
-#             "Query":"
-#         | where tolower(type) in (
-#           'microsoft.network/vpngateways',
-#           'microsoft.network/virtualnetworkgateways',
-#           'microsoft.keyvault/vaults',
-#           'microsoft.network/networksecuritygroups',
-#           'microsoft.network/publicipaddresses',
-#           'microsoft.network/privatednszones',
-#           'microsoft.network/frontdoors',
-#           'microsoft.network/azurefirewalls',
-#           'microsoft.network/applicationgateways'
-#       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
-#     }
-# '@
-  }
+#   'getPaaSquery' {
+#     $body = get-paasquery
+# #     @"
+# #         {
+# #             "Query": "
+# #         | where tolower(type) in (
+# #           'microsoft.storage/storageaccounts',
+# #           'microsoft.desktopvirtualization/hostpools',
+# #           'microsoft.logic/workflows',
+# #           'microsoft.sql/managedinstances',
+# #           'microsoft.sql/servers/databases',
+# #           'microsoft.network/vpngateways',
+# #           'microsoft.network/virtualnetworkgateways',
+# #           'microsoft.keyvault/vaults',
+# #           'microsoft.network/networksecuritygroups',
+# #           'microsoft.network/publicipaddresses',
+# #           'microsoft.network/privatednszones',
+# #           'microsoft.network/frontdoors',
+# #           'microsoft.network/azurefirewalls',
+# #           'microsoft.network/applicationgateways'
+# #       )
+# #       or (
+# #           tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
+# #       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+# #       }
+# # "@
+#   }
+#   'getPlatformquery' {
+#     $body='{}'
+# #     $body = @'
+# #         {
+# #             "Query":"
+# #         | where tolower(type) in (
+# #           'microsoft.network/vpngateways',
+# #           'microsoft.network/virtualnetworkgateways',
+# #           'microsoft.keyvault/vaults',
+# #           'microsoft.network/networksecuritygroups',
+# #           'microsoft.network/publicipaddresses',
+# #           'microsoft.network/privatednszones',
+# #           'microsoft.network/frontdoors',
+# #           'microsoft.network/azurefirewalls',
+# #           'microsoft.network/applicationgateways'
+# #       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
+# #     }
+# # '@
+#   }
   "getNonMonitoredPaaS" {
       if ($Request.Query.resourceFilter) {
         $resourceFilter = @"

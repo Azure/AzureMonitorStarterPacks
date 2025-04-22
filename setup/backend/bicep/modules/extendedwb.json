@@ -545,7 +545,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "mcp1"
+                          "mcp2"
                         ]
                       }
                     ],
@@ -1083,7 +1083,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' \n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
               "size": 0,
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
@@ -1560,10 +1560,7 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10,
-                        "value": [
-                          "value::all"
-                        ]
+                        "queryType": 10
                       }
                     ],
                     "style": "above",
@@ -3741,7 +3738,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
+              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| extend splitFields = split(apps.packageReferenceId, '/')\n| extend Gallery = strcat('/',strcat_array(array_slice(splitFields, 1, 8), '/'))\n| project Computer=id, ['Application Version']=tostring(apps.packageReferenceId), Gallery\n| summarize by Gallery,['Application Version'], Computer\n| sort by Gallery asc",
               "size": 0,
               "title": "Client Status (VM Applications)",
               "showExportToExcel": true,
@@ -3752,20 +3749,35 @@
                 "value::tenant"
               ],
               "gridSettings": {
-                "filter": true,
-                "sortBy": [
+                "formatters": [
                   {
-                    "itemKey": "Computer",
-                    "sortOrder": 1
+                    "columnMatch": "Gallery",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource",
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "Application Name",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource",
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "Computer",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource",
+                      "showIcon": true
+                    }
                   }
-                ]
+                ],
+                "filter": true
               },
-              "sortBy": [
-                {
-                  "itemKey": "Computer",
-                  "sortOrder": 1
-                }
-              ]
+              "sortBy": []
             },
             "conditionalVisibility": {
               "parameterName": "agentTab",
@@ -4245,9 +4257,10 @@
                 {
                   "id": "079a4550-40c9-44cd-a223-40097e453659",
                   "version": "KqlParameterItem/1.0",
-                  "name": "Computer",
-                  "type": 2,
-                  "query": "\nDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)\n\n",
+                  "name": "ComputerDiscovery",
+                  "label": "Select Server",
+                  "type": 5,
+                  "query": "Discovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=_ResourceId,timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)",
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
@@ -4257,8 +4270,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null,
-                  "label": "Select Server"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/lx1"
                 },
                 {
                   "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
@@ -4307,7 +4319,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 14400000
+                    "durationMs": 86400000
                   }
                 }
               ],
@@ -4326,7 +4338,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let maxts=Discovery_CL | summarize timestamp=max(tostring(split(RawData,\",\")[0]));\nDiscovery_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend OSVersion=tostring(fields[3])\n| extend name=tostring(fields[4])\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor",
+              "query": "//let maxts=\nlet maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0])), _ResourceId\n| where isnotempty(timestamp) and _ResourceId =~ '{ComputerDiscovery}'\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| where Computer =~ '{ComputerDiscovery}'\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor",
               "size": 0,
               "title": "All Discovery Data",
               "timeContextFromParameter": "discoveryPeriod",
@@ -4352,25 +4364,24 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.ResourceId\",\"columnid\":\"resourceId\"},{\"path\":\"$.OS\",\"columnid\":\"OS\"},{\"path\":\"$.Tag\",\"columnid\":\"Tag\"}]}}]}",
               "size": 0,
-              "exportedParameters": [
-                {
-                  "fieldName": "",
-                  "parameterName": "vmsDiscoveryTag",
-                  "parameterType": 1
-                },
-                {
-                  "fieldName": "tag",
-                  "parameterName": "vmsDiscoveryTagValue",
-                  "parameterType": 1
-                }
-              ],
+              "title": "Discovery Results",
+              "exportFieldName": "",
+              "exportParameterName": "vmsDiscoveryTag",
               "queryType": 10,
               "gridSettings": {
                 "formatters": [
                   {
-                    "columnMatch": "tag",
+                    "columnMatch": "resourceId",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "Tag",
                     "formatter": 7,
                     "formatOptions": {
                       "linkTarget": "ArmAction",
@@ -4379,20 +4390,22 @@
                         "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                         "headers": [],
                         "params": [],
-                        "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                        "body": "{ \r\n  \"function\": \"tagmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddTag\",\r\n    \"Resources\": [{vmsDiscoveryTag}]\r\n  }\r\n}",
                         "httpMethod": "POST",
                         "title": "TagDiscovery",
-                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag:$.Computer}]\n\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag:$.ResourceId}]\n",
                         "actionName": "TagDiscovery",
                         "runLabel": "TagDiscovery"
                       }
-                    },
-                    "tooltipFormat": {
-                      "tooltip": "Click to Enable monitoring"
                     }
                   }
                 ]
               }
+            },
+            "conditionalVisibility": {
+              "parameterName": "discTab",
+              "comparison": "isEqualTo",
+              "value": "discResults"
             },
             "name": "query - 0"
           }

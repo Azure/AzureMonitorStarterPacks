@@ -7,7 +7,7 @@ $instanceName=$env:InstanceName
 $InformationPreference='SilentlyContinue'
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
-$Request | convertto-json
+#$Request | convertto-json
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
 $action = $Request.Body.Action

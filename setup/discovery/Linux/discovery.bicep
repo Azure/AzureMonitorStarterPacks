@@ -15,6 +15,7 @@ param dceId string
 param customerTags object
 param instanceName string
 param solutionVersion string
+var filename = 'discover.tar'
 var tempTags ={
   '${solutionTag}': packtag
   instanceName: instanceName
@@ -56,7 +57,7 @@ module uploadLinux './uploadDSLinux.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     containerName: 'discovery'
-    filename: 'discover.tar'
+    filename: filename
     storageAccountName: storageAccountname
     location: location
     tags: tags
@@ -79,10 +80,10 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     location: location
     targetRegion: location
     mediaLink: '${uploadLinux.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
-    installCommands: 'tar -xvf ${appName} && chmod +x ./install.sh && ./install.sh'
+    installCommands: 'tar -xvf ${filename} && chmod +x ./install.sh && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
     tags: tags
-    packageFileName: 'discover.tar'
+    packageFileName: filename
   }
 }
 // module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {

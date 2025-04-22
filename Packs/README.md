@@ -1,18 +1,11 @@
 # Packs documentation
 
-The recommended experience to deploy the packs is by using the provided interface. You can also use ARM and Bicep Templates. See section below.
-
-To deploy only packs, click the icon below. The solution must have been deployed before in order to deploy the packs.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2FPacks%2FAllPacks.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2FPacks%2FCustomSetup%2Fsetup.json)
-
 ## Details about the packs
 
 The packs are divided into three categories: IaaS, PaaS and Platform. Each pack contains a set of rules and alerts that are deployed to the Log Analytics workspace. The packs also contain Grafana dashboards that are deployed to the Grafana environment.
 
 - [IaaS Packs](#iaas-packs): These packs are designed to monitor VMs and other IaaS resources. They are based on the AMA agent.
-- [PaaS Packs](#paas-packs): These packs are designed to monitor PaaS resources. They are based on the Azure Monitor metrics and diagnostics settings (optional).
-- [Platform Packs](#platform-packs): These packs are designed to monitor platform resources. They are based on the Azure Monitor metrics and diagnostics settings (optional).
+- [Services Packs](#paas-packs): These packs are designed to monitor any service other than Virtual machines, Arc Servers and VMSS resources. They are based on the Azure Monitor metrics and diagnostics settings (optional) and are deployed as per the definitions in the AMBA API.
 
 ## IaaS Packs
 
@@ -68,74 +61,10 @@ TBD
 
 TBD
 
-## PaaS Packs
+## Services Packs
 
-### Storage Account (Storage)
-
-[Storage Account Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Storage/storageAccounts/)
-
-### OpenAI (OpenAI)
-
-TBD
-
-### Azure SQL (SQL)
-
-[SQL Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Sql/servers/)
-
-### Azure SQL Managed Instance (SQLMI)
-
-[SQLMI Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Sql/managedInstances/)
-
-### Azure Web Apps (WebApps)
-
-[Web Apps Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Web/sites/)
-
-### Logic Apps (LogicApps)
-
-[Logic Apps Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Logic/workflows/)
-
-### AVD
-
-[AVD Baseline Alerts](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/brownfield/alerts/readme.md)
-
-## Platform Packs
-
-### vWan (vWan)
-
-## Azure Load balancer (ALB)
-
-[Azure Load Balancer Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/loadBalancers/)
-
-## Key Vault (KV)
-
-[Key Vault Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/KeyVault/vaults/)
-
-## Azure Firewall (AF)
-[Firewall Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/azureFirewalls/)
-
-## Azure Application Gateway (AGW)
-
-[Application Gateway Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/applicationGateways/)
-
-## Azure Front Door (AFD)
-
-[Front Door Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/frontdoors/)
-
-## Automation Account (AA)
-
-[Automation Accounts Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Automation/automationAccounts/)
-
-## Network Security Group (NSG)
-
-[NSG Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/networkSecurityGroups/)
-
-## Public IP (PIP)
-
-[Public IP Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/publicIPAddresses/)
-
-## DNS Private Zones (DNSPZ)
-[DNS Private Zones Baseline Alerts](https://azure.github.io/azure-monitor-baseline-alerts/services/Network/privateDnsZones/)
+Please refer to aka.ms/amba for a full reference of provided monitor configurations.
 
 # Using ARM and Bicep Templates.
 
-Each pack is composed of a bicep template that contains the rules and alerts. There is an equivalente ARM template that can be used instead. The ARM template is generated from the bicep template. The ARM template is used by the interface to deploy the packs and, same as bicep template, it can be used to deploy the packs using Azure CLI or PowerShell, in a pipeline for example.
+Each IaaS pack is composed of a bicep template that contains the rules and alerts. There is an equivalente ARM template that can be used instead. The ARM template is generated from the bicep template. The ARM template is used by the interface to deploy the packs and, same as bicep template, it can be used to deploy the packs using Azure CLI or PowerShell, in a pipeline for example.

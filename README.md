@@ -15,15 +15,13 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 ## Pre-requisites and recommendations
 
 - Azure Subscription - an Azure subscription to deploy the components
-- A Management group structure with at least one management group. Most of the elements like policies and permissions need to be deployed at a management group level.
+- An Azure subscription with Owner permissions.
 
 ## Setup
 
 The Main solution can be deployed by clicking the link below.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2Fsetup%2FCustomSetup%2Fsetup.json)
-
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2Fsetup%2FCustomSetup%2Fsetup.json)
 
 ## Initial Configuration
 
@@ -41,7 +39,7 @@ The first time certain areas are accessed, the following configuration will need
 
 ## Monitoring Packs
 
-Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
+The IaaS packs are deployed along with the main solution. The Services packs are deployed when needed, directly from the AMBA website API.
 
 Review Packs documentation [here](./Packs/README.md).
 
@@ -53,7 +51,7 @@ If you are deploying the solution in multiple regions, a few additional steps ar
 
 ## Grafana Dashboards
 
-Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed as a package during the packs deployment. Using Grafana is optional but will limit the visuazliation capabilities of the solution.
+Each pack may have its own Grafana dashboard. The Grafana dashboards are deployed as a package during the packs deployment. Using Grafana is optional but will limit the visuazliation capabilities of the solution.
 In order for the current user to have access to the Grafana environment, the user needs to be added to the Grafana Admins group. This can be done by running the following these instructions.
 
 1. Navigate the recently deployed Grafana environment and click on Access Control (IAM) and click on Add role assignment.
@@ -66,27 +64,8 @@ In order for the current user to have access to the Grafana environment, the use
 
 ## Removing the solution
 
-In order to remove the solution, you can run the following script in this [link](https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1). The script will remove all the resources created by the solution.
-
-- Open the Azure CLI with PowerShell:
-
-```powershell
-wget https://github.com/Azure/AzureMonitorStarterPacks/raw/main/setup/Cleanup/cleanup.ps1
-./cleanup.ps1 -RG <Resource Group Name> -RemoveAll
-```
-
-Alternatively, you can select to remove specific components of the solution by using the following parameters:
-
-- RemovePacks : Removes all the packs deployed by the solution
-- RemoveAMAPolicySet : Removes the policy set deployed by the solution
-- RemoveMainSolution : Removes the main components of the deployed solution
-- RemoveDiscovery : Removes the discovery deployed by the solution
-
-Once completed, some resources will remain in the resource group. These resources are not removed by the script and need to be removed manually. The resources are:
-
-- Storage Account
-- Log Analytics Workspace
-- Application Gallery
+The solution can be removed by simply removing the components in the resource group. However, it is recommended to remove the monitoring in the solution to remove tags and VM applications from the resources (if any).
+ployed by the solution
 
 Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
 
