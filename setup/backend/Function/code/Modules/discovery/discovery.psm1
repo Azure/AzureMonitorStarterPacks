@@ -36,23 +36,7 @@
 #     }
 #     # Add more mappings as needed
 # }
-
-
-function get-discovermappings {
-    $discoveringMappings = @{
-        "ADDS"  = "AD-Domain-Services"
-        "DNS"   = "DNS"
-        "IIS"   = "Web-Server"
-        "Nginx" = "nginx-core"
-    }
-    return $discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
-}
-function get-discoveryresults {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$instanceName
-    )
-    # Get the right log analytics workspace
+function get-discoveryData {
     $discoveryData=@"
 {
     "Packs": [
@@ -62,10 +46,36 @@ function get-discoveryresults {
             "Description": "Nginx is a high-performance HTTP server and reverse proxy.",
             "OS": "Linux",
             "Query": "let maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
+        },
+        {
+            "Name": "ADDS",
+            "Tag": "ADDS",
+            "Description": "Active Directory Domain Services",
+            "OS": "Windows",
+            "Query": "let maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'windows'\n| where name == \"AD-Domain-Services\""
         }
     ]
 }
 "@ | ConvertFrom-Json -Depth 10
+    return $discoveryData
+}
+
+# function get-discovermappings {
+#     $discoveringMappings = @{
+#         "ADDS"  = "AD-Domain-Services"
+#         "DNS"   = "DNS"
+#         "IIS"   = "Web-Server"
+#         "Nginx" = "nginx-core"
+#     }
+#     return $discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
+# }
+function get-discoveryresults {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
+    )
+    # Get the right log analytics workspace
+    $discoveryData=get-discoveryData
     # use resource graph to get the workspace id with the instance name as the tag
     $wsquery = @"
 Resources
@@ -75,12 +85,11 @@ Resources
 | limit 1
 "@
     $ws = Search-azgraph -Query $wsquery 
-    if ($ws -eq $null) {
+    if ($null -eq $ws) {
         Write-Error "No workspace found for instance name $instanceName"
         return $null
     }
     Write-host "Running Discovery"
-  
     $wsresourceGroupname=$ws.ResourceId.split('/')[4]    
     # Write-host "Getting WS"
     $subscriptionId = $ws.ResourceId.split('/')[2]
@@ -93,12 +102,9 @@ Resources
         Write-Error "Error finding workspace."
         break
     }
-    # Select subscription from workspace
-
     $results=@()
     if ($workspace) {
         Write-host "Found workspace $($workspace.Name) in resource group $($workspace.ResourceGroupName) with id $($workspace.ResourceId)"
-    
         foreach ($pack in $discoveryData.Packs) {
             Write-host "Running discovery for $($pack.Name)"
             $DiscoveryQuery = $pack.Query
