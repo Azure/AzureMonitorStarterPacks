@@ -41,80 +41,41 @@ module resultstable '../../modules/LAW/resultstable.bicep' = {
     retentionDays: 31
   }
 }
+
 module discoveryDCR '../../modules/DCRs/discoveryDCR.bicep' = {
-  name: 'DiscoveryDCR-${instanceName}-${location}'
+  name: 'DiscoveryResults-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
-    table
+    resultstable
   ]
   params: {
     location: location
     workspaceResourceId: lawResourceId
     Tags: customerTags
-    ruleName: 'discoveryDRC-${lawFriendlyName}'
+    ruleName: 'discoveryResults-${lawFriendlyName}'
     dceId: dceId
     tableName: resultstableNameToUse
   }
 }
 
-module WindowsDiscovery './Windows/discovery.bicep' = {
-  name: 'WindowsDiscovery-${instanceName}-${location}'
-  dependsOn: [
-    table
-  ]
-  params: {
-    location: location
-    solutionTag: solutionTag
-    subscriptionId: subscriptionId
-    resourceGroupName: resourceGroupName
-    storageAccountname: storageAccountname
-    imageGalleryName: imageGalleryName
-    lawResourceId: lawResourceId
-    tableNameToUse: tableNameToUse
-    //userManagedIdentityResourceId: userManagedIdentityResourceId
-    dceId: dceId
-    instanceName: instanceName
-    customerTags: customerTags
-    solutionVersion: solutionVersion
-    packtag: 'WinDisc'
-
-  }
-}
-
-module LinuxDiscovery 'Linux/discovery.bicep' = {
-  name: 'LinuxDiscovery-${instanceName}-${location}'
-  dependsOn: [
-    table
-  ]
-  params: {
-    location: location
-    solutionTag: solutionTag
-    //solutionVersion: solutionVersion
-    subscriptionId: subscriptionId
-    resourceGroupName: resourceGroupName
-    storageAccountname: storageAccountname
-    imageGalleryName: imageGalleryName
-    lawResourceId: lawResourceId
-    tableNameToUse: tableNameToUse
-    //userManagedIdentityResourceId: userManagedIdentityResourceId
-    dceId: dceId
-    instanceName: instanceName
-    customerTags: customerTags
-    solutionVersion: solutionVersion
-    packtag: 'LxDisc'
-  }
+resource webApp 'Microsoft.Web/sites@2024-04-01' existing = {
+  name: functionName
+  scope: resourceGroup(resourceGroupName)
 }
 
 module updateSiteConfig '../backend/bicep/modules/appsettings.bicep' = {
   name: 'updateSiteConfig-${instanceName}-${location}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  dependsOn: [
+    webApp
+    discoveryDCR
+  ]
+  scope: resourceGroup(resourceGroupName)
   params: {
     functionName: functionName
     appSettings: {
-      appSettings: {
         discoveryDCRImmutableId: discoveryDCR.outputs.dcrImmutableId
         DiscoveryResultsTableName: resultstableNameToUse
-      }
     }
+    currentAppSettings: list(resourceId(subscriptionId,resourceGroupName, 'Microsoft.Web/sites/config', webApp.name, 'appsettings'), webApp.apiVersion).properties
   }
 }

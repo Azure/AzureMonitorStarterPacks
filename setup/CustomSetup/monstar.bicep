@@ -131,6 +131,9 @@ module logAnalytics '../../modules/LAW/law.bicep' = if (createNewLogAnalyticsWS)
 
 module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
   name: 'DeployDiscovery-${location}-${instanceName}'
+  dependsOn: [
+   backend
+  ]
   params: {
     location: location
     resourceGroupName: resourceGroupName

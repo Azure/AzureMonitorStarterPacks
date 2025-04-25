@@ -86,7 +86,7 @@ resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
     zoneRedundant: false
   }
 }
-resource azfunctionsite 'Microsoft.Web/sites@2023-01-01' = {
+resource azfunctionsite 'Microsoft.Web/sites@2024-04-01' = {
   name: functionname
   location: location
   kind: 'functionapp'
