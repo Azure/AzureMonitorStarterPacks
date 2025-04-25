@@ -545,7 +545,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "mcp2"
+                          "mcp1"
                         ]
                       }
                     ],
@@ -1928,7 +1928,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "DNS2016"
                 }
               ],
               "style": "pills",
@@ -4335,7 +4335,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "DiscoveryResults_CL\r\n| project ResourceId, OS, Location, Tag",
+              "query": "let maxts=DiscoveryResults_CL\r\n| summarize maxts=max(TimeGenerated);\r\nDiscoveryResults_CL\r\n| where TimeGenerated == toscalar(maxts)\r\n| project Resource=ResourceId, OS, Pack=Tag, Location, ['Discovery Time']=TimeGenerated",
               "size": 0,
               "title": "Discovery Results",
               "exportMultipleValues": true,

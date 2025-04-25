@@ -155,7 +155,7 @@ function new-discoveryData {
     else {
         $scope="https://monitor.azure.com"
         $bearerToken = (Get-AzAccessToken -ResourceUrl $scope -TenantId $tenantId ).Token
-        $bearerToken
+        #$bearerToken
     }
     # When using a managed identity, use the following line to get the token:
     # $scope = [System.Web.HttpUtility]::UrlEncode("https://monitor.azure.com//.default")   
@@ -175,7 +175,7 @@ function new-discoveryData {
     Write-host "Sending data to DCR at $uri"
     try {
         #$uploadResponse = Invoke-RestMethod -Uri $uri -Method "Post" -Body $body -Headers $headers;
-        Invoke-RestMethod -Method Post -Uri $uri -Headers @{"Authorization"="Bearer $bearerToken"} -Body $body -ContentType "application/json"   
+        $uploadResponse=Invoke-RestMethod -Method Post -Uri $uri -Headers @{"Authorization"="Bearer $bearerToken"} -Body $body -ContentType "application/json"   
         Write-host "Data sent to DCR successfully."
         Write-host "Response: $($uploadResponse | ConvertTo-Json -Depth 10)"
     }

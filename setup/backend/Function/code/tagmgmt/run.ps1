@@ -11,10 +11,10 @@ $Request | convertto-json -Depth 10
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
 $action = $Request.Body.Action
-if ($null -ne $Request.Body.Pack) {
-  $TagList = $Request.Body.Pack.split(',')
+if ([string]::IsNullOrEmpty($Request.Body.Pack)) {
+  $TagList = @() # probably discovery pack or packs from discovery being assigned to the resource.
 } else {
-  $TagList = @() # probably discovery pack
+  $TagList = $Request.Body.Pack.split(',')
 }
 $PackType = $Request.Body.PackType
 $LogAnalyticsWSAVD = $Request.Body.AVDLAW
@@ -42,8 +42,10 @@ if ($resources) {
             if ($PackType -eq 'Discovery') {
               $TagValue = $resource.Pack
               # Add Agent if not installed yet.
-              $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
-              Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag is $TagValue"
+              $InstallDependencyAgent = ($Taglist -contains 'InsightsDep') ? $true : $false
+              if ($InstallDependencyAgent) {
+                Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag list is $Taglist"
+              }
               Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
               Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
               Add-Tag -resourceId $resource.Resource `
@@ -55,13 +57,17 @@ if ($resources) {
             }
             else {
               # Add Agent if not installed yet.
-              $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
-              if ($null -eq $TagList) {
+              $InstallDependencyAgent = ($Taglist -contains 'InsightsDep') ? $true : $false
+              if ($TagList.Count -eq 0) {
+                Write-host "Taglist is null. Setting to $($resource.Pack)"
                 $TagList = @($resource.Pack)
               }
-              Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag is $TagValue"
+              if ($InstallDependencyAgent) {
+                Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Taglist is $TagList"
+              }
               Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
               foreach ($TagValue in $TagList) {
+                Write-host "TAGMGMT: adding $TagValue tag to $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
                 Add-Tag -resourceId $resource.Resource `
                 -TagName $TagName `
                 -TagValue $TagValue `
@@ -85,7 +91,7 @@ if ($resources) {
           }
           # Add Tag Based condition.
         }  # End of resource loop
-      } # End of AddTag
+      }  # End of AddTag
       'RemoveTag' {
         foreach ($resource in $resources) {
           # Tagging
