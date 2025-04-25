@@ -7,8 +7,6 @@ $tableName = "supportedServices"
 $inventoryTime=(Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 #$key=$env:key
 
-# Get a token credential
-#$tokenCredential = Get-AzAccessToken -ResourceUrl "https://storage.azure.com/"
 # Create a storage context
 #$ctx = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
 $ctx= New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key

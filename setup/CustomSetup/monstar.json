@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12137207409431163334"
+      "templateHash": "1846925962555032778"
     }
   },
   "parameters": {
@@ -542,6 +542,9 @@
           "tableName": {
             "value": "Discovery"
           },
+          "resultstableName": {
+            "value": "DiscoveryResults"
+          },
           "customerTags": {
             "value": "[parameters('customerTags')]"
           },
@@ -550,6 +553,9 @@
           },
           "solutionVersion": {
             "value": "[variables('solutionVersion')]"
+          },
+          "functionName": {
+            "value": "[variables('functionName')]"
           }
         },
         "template": {
@@ -559,7 +565,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7652701560042123209"
+              "templateHash": "9558329432533166285"
             }
           },
           "parameters": {
@@ -587,6 +593,9 @@
             "tableName": {
               "type": "string"
             },
+            "resultstableName": {
+              "type": "string"
+            },
             "dceId": {
               "type": "string"
             },
@@ -598,10 +607,14 @@
             },
             "solutionVersion": {
               "type": "string"
+            },
+            "functionName": {
+              "type": "string"
             }
           },
           "variables": {
             "tableNameToUse": "[format('{0}_CL', parameters('tableName'))]",
+            "resultstableNameToUse": "[format('{0}_CL', parameters('resultstableName'))]",
             "lawFriendlyName": "[split(parameters('lawResourceId'), '/')[8]]"
           },
           "resources": [
@@ -676,6 +689,238 @@
                   ]
                 }
               }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('results{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location'))]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[parameters('resourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "parentname": {
+                    "value": "[variables('lawFriendlyName')]"
+                  },
+                  "tableName": {
+                    "value": "[variables('resultstableNameToUse')]"
+                  },
+                  "retentionDays": {
+                    "value": 31
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "1255332294702827265"
+                    }
+                  },
+                  "parameters": {
+                    "parentname": {
+                      "type": "string"
+                    },
+                    "tableName": {
+                      "type": "string"
+                    },
+                    "retentionDays": {
+                      "type": "int",
+                      "defaultValue": 31
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.OperationalInsights/workspaces/tables",
+                      "apiVersion": "2022-10-01",
+                      "name": "[format('{0}/{1}', parameters('parentname'), parameters('tableName'))]",
+                      "properties": {
+                        "totalRetentionInDays": "[parameters('retentionDays')]",
+                        "plan": "Analytics",
+                        "schema": {
+                          "name": "[parameters('tableName')]",
+                          "columns": [
+                            {
+                              "name": "TimeGenerated",
+                              "type": "datetime"
+                            },
+                            {
+                              "name": "Tag",
+                              "type": "string"
+                            },
+                            {
+                              "name": "ResourceId",
+                              "type": "string"
+                            },
+                            {
+                              "name": "OS",
+                              "type": "string"
+                            },
+                            {
+                              "name": "Location",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "retentionInDays": "[parameters('retentionDays')]"
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('DiscoveryDCR-{0}-{1}', parameters('instanceName'), parameters('location'))]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[parameters('resourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "workspaceResourceId": {
+                    "value": "[parameters('lawResourceId')]"
+                  },
+                  "Tags": {
+                    "value": "[parameters('customerTags')]"
+                  },
+                  "ruleName": {
+                    "value": "[format('discoveryDRC-{0}', variables('lawFriendlyName'))]"
+                  },
+                  "dceId": {
+                    "value": "[parameters('dceId')]"
+                  },
+                  "tableName": {
+                    "value": "[variables('resultstableNameToUse')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "8830504372643311254"
+                    }
+                  },
+                  "parameters": {
+                    "location": {
+                      "type": "string"
+                    },
+                    "workspaceResourceId": {
+                      "type": "string"
+                    },
+                    "Tags": {
+                      "type": "object"
+                    },
+                    "ruleName": {
+                      "type": "string"
+                    },
+                    "dceId": {
+                      "type": "string"
+                    },
+                    "tableName": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "streamname": "[format('Custom-{0}', parameters('tableName'))]",
+                    "wsfriendlyname": "[split(parameters('workspaceResourceId'), '/')[8]]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/dataCollectionRules",
+                      "apiVersion": "2023-03-11",
+                      "name": "[format('{0}-discovery', parameters('ruleName'))]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('Tags')]",
+                      "properties": {
+                        "description": "Data collection rule for workload discovery.",
+                        "dataCollectionEndpointId": "[parameters('dceId')]",
+                        "streamDeclarations": {
+                          "[format('{0}', variables('streamname'))]": {
+                            "columns": [
+                              {
+                                "name": "TimeGenerated",
+                                "type": "datetime"
+                              },
+                              {
+                                "name": "Tag",
+                                "type": "string"
+                              },
+                              {
+                                "name": "ResourceId",
+                                "type": "string"
+                              },
+                              {
+                                "name": "OS",
+                                "type": "string"
+                              },
+                              {
+                                "name": "Location",
+                                "type": "string"
+                              }
+                            ]
+                          }
+                        },
+                        "destinations": {
+                          "logAnalytics": [
+                            {
+                              "workspaceResourceId": "[parameters('workspaceResourceId')]",
+                              "name": "[variables('wsfriendlyname')]"
+                            }
+                          ]
+                        },
+                        "dataFlows": [
+                          {
+                            "streams": [
+                              "[format('{0}', variables('streamname'))]"
+                            ],
+                            "destinations": [
+                              "[variables('wsfriendlyname')]"
+                            ],
+                            "transformKql": "source | project TimeGenerated, Tag, ResourceId, OS, Location",
+                            "outputStream": "[variables('streamname')]"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "RuleId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', format('{0}-discovery', parameters('ruleName')))]"
+                    },
+                    "dcrImmutableId": {
+                      "type": "string",
+                      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionRules', format('{0}-discovery', parameters('ruleName'))), '2023-03-11').immutableId]"
+                    },
+                    "streamName": {
+                      "type": "string",
+                      "value": "[variables('streamname')]"
+                    },
+                    "tableName": {
+                      "type": "string",
+                      "value": "[format('{0}-discovery', parameters('ruleName'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
+              ]
             },
             {
               "type": "Microsoft.Resources/deployments",
@@ -1360,7 +1605,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8511999743568338877"
+                      "templateHash": "4778976284371876926"
                     }
                   },
                   "parameters": {
@@ -1544,7 +1789,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "4969783919559062648"
+                              "templateHash": "1707136680921947161"
                             }
                           },
                           "parameters": {
@@ -1565,7 +1810,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            "$fxv#0": "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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
                             "discoveryContainerName": "discovery",
                             "tempfilename": "download.tmp"
                           },
@@ -1926,6 +2171,68 @@
               },
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('updateSiteConfig-{0}-{1}', parameters('instanceName'), parameters('location'))]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[parameters('resourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "functionName": {
+                    "value": "[parameters('functionName')]"
+                  },
+                  "appSettings": {
+                    "value": {
+                      "appSettings": {
+                        "discoveryDCRImmutableId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DiscoveryDCR-{0}-{1}', parameters('instanceName'), parameters('location'))), '2022-09-01').outputs.dcrImmutableId.value]",
+                        "DiscoveryResultsTableName": "[variables('resultstableNameToUse')]"
+                      }
+                    }
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "11264768030673599946"
+                    }
+                  },
+                  "parameters": {
+                    "functionName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the function app."
+                      }
+                    },
+                    "appSettings": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "The new application settings to be added or updated."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Web/sites/config",
+                      "apiVersion": "2022-03-01",
+                      "name": "[format('{0}/{1}', parameters('functionName'), 'appsettings')]",
+                      "properties": "[union(list(resourceId('Microsoft.Web/sites/config', parameters('functionName'), 'appsettings'), '2024-04-01').properties, parameters('appSettings'))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('DiscoveryDCR-{0}-{1}', parameters('instanceName'), parameters('location')))]"
               ]
             }
           ]
@@ -2344,7 +2651,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15153276132088784307"
+              "templateHash": "7517082202994448535"
             }
           },
           "parameters": {
@@ -2408,7 +2715,8 @@
               "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
               "36243c78-bf99-498c-9df9-86d9f8d28608",
               "f1a07417-d97a-45cb-824c-7a7467783830",
-              "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+              "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+              "3913510d-42f4-4e42-8a64-420c390055eb"
             ],
             "logicappRequiredRoleassignments": [
               "4633458b-17de-408a-b874-0445c86b69e6"
@@ -3138,7 +3446,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "6295751860509563688"
+                      "templateHash": "9843249367030530431"
                     }
                   },
                   "parameters": {
@@ -3700,7 +4008,7 @@
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
                                             "value": [
-                                              "mcp1"
+                                              "mcp2"
                                             ]
                                           }
                                         ],
@@ -4238,7 +4546,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
+                                  "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' \n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
                                   "size": 0,
                                   "queryType": 1,
                                   "resourceType": "microsoft.resources/tenants",
@@ -4588,7 +4896,7 @@
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
                                             "value": [
-                                              "InsightsDep"
+                                              "Nginx"
                                             ]
                                           }
                                         ],
@@ -4866,7 +5174,10 @@
                                             "timeContext": {
                                               "durationMs": 86400000
                                             },
-                                            "queryType": 10
+                                            "queryType": 10,
+                                            "value": [
+                                              "value::all"
+                                            ]
                                           }
                                         ],
                                         "style": "above",
@@ -4950,54 +5261,6 @@
                                       "styleSettings": {
                                         "showBorder": true
                                       }
-                                    },
-                                    {
-                                      "type": 9,
-                                      "content": {
-                                        "version": "KqlParameterItem/1.0",
-                                        "crossComponentResources": [
-                                          "value::tenant"
-                                        ],
-                                        "parameters": [
-                                          {
-                                            "id": "27d8cc17-6eb9-4158-aff2-f5a2bbddff58",
-                                            "version": "KqlParameterItem/1.0",
-                                            "name": "AvdLAWPaaS",
-                                            "label": "Select AVD Log Analytics Workspace",
-                                            "type": 5,
-                                            "isGlobal": true,
-                                            "query": "resources\n| where type =~ \"Microsoft.OperationalInsights/workspaces\"\n",
-                                            "crossComponentResources": [
-                                              "value::tenant"
-                                            ],
-                                            "typeSettings": {
-                                              "additionalResourceOptions": [],
-                                              "showDefault": false
-                                            },
-                                            "timeContext": {
-                                              "durationMs": 86400000
-                                            },
-                                            "queryType": 1,
-                                            "resourceType": "microsoft.resources/tenants"
-                                          }
-                                        ],
-                                        "style": "pills",
-                                        "queryType": 1,
-                                        "resourceType": "microsoft.resources/tenants"
-                                      },
-                                      "customWidth": "50",
-                                      "conditionalVisibilities": [
-                                        {
-                                          "parameterName": "paastotag",
-                                          "comparison": "isNotEqualTo"
-                                        },
-                                        {
-                                          "parameterName": "PackTagsPaaS",
-                                          "comparison": "isEqualTo",
-                                          "value": "Avd"
-                                        }
-                                      ],
-                                      "name": "param-IaaS-AvdLaw"
                                     },
                                     {
                                       "type": 11,
@@ -6896,7 +7159,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| project Computer=name, ['Application Name']=tostring(split(apps.packageReferenceId,\"/\")[10]), Gallery=tostring(split(apps.packageReferenceId,\"/\")[8])\n| summarize by Gallery,['Application Name'], Computer\n| sort by Gallery asc",
+                                  "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| extend splitFields = split(apps.packageReferenceId, '/')\n| extend Gallery = strcat('/',strcat_array(array_slice(splitFields, 1, 8), '/'))\n| project Computer=id, ['Application Version']=tostring(apps.packageReferenceId), Gallery\n| summarize by Gallery,['Application Version'], Computer\n| sort by Gallery asc",
                                   "size": 0,
                                   "title": "Client Status (VM Applications)",
                                   "showExportToExcel": true,
@@ -6907,20 +7170,35 @@
                                     "value::tenant"
                                   ],
                                   "gridSettings": {
-                                    "filter": true,
-                                    "sortBy": [
+                                    "formatters": [
                                       {
-                                        "itemKey": "Computer",
-                                        "sortOrder": 1
+                                        "columnMatch": "Gallery",
+                                        "formatter": 13,
+                                        "formatOptions": {
+                                          "linkTarget": "Resource",
+                                          "showIcon": true
+                                        }
+                                      },
+                                      {
+                                        "columnMatch": "Application Name",
+                                        "formatter": 13,
+                                        "formatOptions": {
+                                          "linkTarget": "Resource",
+                                          "showIcon": true
+                                        }
+                                      },
+                                      {
+                                        "columnMatch": "Computer",
+                                        "formatter": 13,
+                                        "formatOptions": {
+                                          "linkTarget": "Resource",
+                                          "showIcon": true
+                                        }
                                       }
-                                    ]
+                                    ],
+                                    "filter": true
                                   },
-                                  "sortBy": [
-                                    {
-                                      "itemKey": "Computer",
-                                      "sortOrder": 1
-                                    }
-                                  ]
+                                  "sortBy": []
                                 },
                                 "conditionalVisibility": {
                                   "parameterName": "agentTab",
@@ -7398,24 +7676,6 @@
                                   "version": "KqlParameterItem/1.0",
                                   "parameters": [
                                     {
-                                      "id": "079a4550-40c9-44cd-a223-40097e453659",
-                                      "version": "KqlParameterItem/1.0",
-                                      "name": "Computer",
-                                      "type": 2,
-                                      "query": "\nDiscovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=split(_ResourceId,'/')[8],timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)\n\n",
-                                      "typeSettings": {
-                                        "additionalResourceOptions": [],
-                                        "showDefault": false
-                                      },
-                                      "timeContext": {
-                                        "durationMs": 86400000
-                                      },
-                                      "queryType": 0,
-                                      "resourceType": "microsoft.operationalinsights/workspaces",
-                                      "value": null,
-                                      "label": "Select Server"
-                                    },
-                                    {
                                       "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
                                       "version": "KqlParameterItem/1.0",
                                       "name": "discoveryPeriod",
@@ -7462,8 +7722,27 @@
                                         ]
                                       },
                                       "value": {
-                                        "durationMs": 14400000
+                                        "durationMs": 172800000
                                       }
+                                    },
+                                    {
+                                      "id": "079a4550-40c9-44cd-a223-40097e453659",
+                                      "version": "KqlParameterItem/1.0",
+                                      "name": "ComputerDiscovery",
+                                      "label": "Select Server",
+                                      "type": 5,
+                                      "query": "Discovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=_ResourceId,timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)",
+                                      "typeSettings": {
+                                        "additionalResourceOptions": [],
+                                        "showDefault": false
+                                      },
+                                      "timeContext": {
+                                        "durationMs": 0
+                                      },
+                                      "timeContextFromParameter": "discoveryPeriod",
+                                      "queryType": 0,
+                                      "resourceType": "microsoft.operationalinsights/workspaces",
+                                      "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/win1"
                                     }
                                   ],
                                   "style": "above",
@@ -7481,7 +7760,7 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "let maxts=Discovery_CL | summarize timestamp=max(tostring(split(RawData,\",\")[0]));\nDiscovery_CL\n| extend Computer=tostring(split(_ResourceId,'/')[8])//,timestamp=todatetime(timestamp)\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend OSVersion=tostring(fields[3])\n| extend name=tostring(fields[4])\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor",
+                                  "query": "//let maxts=\nlet maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0])), _ResourceId\n| where isnotempty(timestamp) and _ResourceId =~ '{ComputerDiscovery}'\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| where Computer =~ '{ComputerDiscovery}'\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor",
                                   "size": 0,
                                   "title": "All Discovery Data",
                                   "timeContextFromParameter": "discoveryPeriod",
@@ -7493,8 +7772,20 @@
                                   ],
                                   "gridSettings": {
                                     "rowLimit": 1000,
-                                    "filter": true
-                                  }
+                                    "filter": true,
+                                    "sortBy": [
+                                      {
+                                        "itemKey": "name",
+                                        "sortOrder": 1
+                                      }
+                                    ]
+                                  },
+                                  "sortBy": [
+                                    {
+                                      "itemKey": "name",
+                                      "sortOrder": 1
+                                    }
+                                  ]
                                 },
                                 "conditionalVisibility": {
                                   "parameterName": "discTab",
@@ -7507,49 +7798,81 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
+                                  "query": "DiscoveryResults_CL\r\n| project ResourceId, OS, Location, Tag",
                                   "size": 0,
+                                  "title": "Discovery Results",
+                                  "exportMultipleValues": true,
                                   "exportedParameters": [
                                     {
                                       "fieldName": "",
                                       "parameterName": "vmsDiscoveryTag",
-                                      "parameterType": 1
-                                    },
-                                    {
-                                      "fieldName": "tag",
-                                      "parameterName": "vmsDiscoveryTagValue",
-                                      "parameterType": 1
+                                      "parameterType": 1,
+                                      "quote": ""
                                     }
                                   ],
-                                  "queryType": 10,
+                                  "queryType": 0,
+                                  "resourceType": "microsoft.operationalinsights/workspaces",
+                                  "crossComponentResources": [
+                                    "{Workspace}"
+                                  ],
                                   "gridSettings": {
                                     "formatters": [
                                       {
-                                        "columnMatch": "tag",
-                                        "formatter": 7,
+                                        "columnMatch": "resourceId",
+                                        "formatter": 13,
                                         "formatOptions": {
-                                          "linkTarget": "ArmAction",
-                                          "linkIsContextBlade": true,
-                                          "armActionContext": {
-                                            "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                                            "headers": [],
-                                            "params": [],
-                                            "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
-                                            "httpMethod": "POST",
-                                            "title": "TagDiscovery",
-                                            "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag:$.Computer}]\n\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
-                                            "actionName": "TagDiscovery",
-                                            "runLabel": "TagDiscovery"
-                                          }
-                                        },
-                                        "tooltipFormat": {
-                                          "tooltip": "Click to Enable monitoring"
+                                          "linkTarget": null,
+                                          "showIcon": true
                                         }
                                       }
                                     ]
                                   }
                                 },
+                                "conditionalVisibility": {
+                                  "parameterName": "discTab",
+                                  "comparison": "isEqualTo",
+                                  "value": "discResults"
+                                },
                                 "name": "query - 0"
+                              },
+                              {
+                                "type": 11,
+                                "content": {
+                                  "version": "LinkItem/1.0",
+                                  "style": "list",
+                                  "links": [
+                                    {
+                                      "id": "af7d39e4-d1a9-40c5-89e7-d6fcfb191dc5",
+                                      "linkTarget": "ArmAction",
+                                      "linkLabel": "Enable Monitoring",
+                                      "style": "primary",
+                                      "linkIsContextBlade": true,
+                                      "armActionContext": {
+                                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                                        "headers": [],
+                                        "params": [],
+                                        "body": "{ \r\n  \"function\": \"tagmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddTag\",\r\n    \"Resources\": [{vmsDiscoveryTag}],\r\n    \"PackType\": \"IaaS\"\r\n  }\r\n}",
+                                        "httpMethod": "POST",
+                                        "title": "Enable Monitoring",
+                                        "description": "# Enable monitoring\n\nResources:\n\n{vmsDiscoveryTag}",
+                                        "actionName": "AddTag",
+                                        "runLabel": "Enable"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "conditionalVisibilities": [
+                                  {
+                                    "parameterName": "discTab",
+                                    "comparison": "isEqualTo",
+                                    "value": "discResults"
+                                  },
+                                  {
+                                    "parameterName": "vmsDiscoveryTag",
+                                    "comparison": "isNotEqualTo"
+                                  }
+                                ],
+                                "name": "links - enableDiscoveryMonitoring"
                               }
                             ]
                           },

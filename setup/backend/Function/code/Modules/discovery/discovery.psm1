@@ -1,41 +1,3 @@
-# Functions needed
-# Add discovery tags and installs required vm appliation
-# Can determine discovery by OS, so each OS will have its own discovery DCR with different tags:
-
-# Still needs to check if AMA is present and install if the case
-# Discovery is equal to have the application installed on the VM, having the VM associated with the proper DCR.
-
-# Discovery sources:
-# MSI - result of query
-# Registry - All or some
-# File system - All or some
-# Process - All or some
-# Roles - All or some
-# Services - all or some
-# Programs - All or some
-# OS Version - Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName ?
-# $DiscoveryRequest=@{
-#     "ADDS"  = @{
-#         "tag"        = "ADDS"
-#         "role"= "AD-Domain-Services"
-#     }
-#     "DNS2016"   = @{
-#         "tag"        = "DNS"
-#         "role"= "DNS"
-#         "OSVersion"= "Windows Server 2016"
-#     }
-#     "IIS"   = @{
-#         "tag"        = "IIS"
-#         "application"= "Web-Server"
-#         "OSVersion"= "Windows Server 2012"
-#     }
-#     "IIS2016"   = @{
-#         "tag"        = "IIS2016"
-#         "application"= "Web-Server"
-#         "OSVersion"= "Windows Server 2016"
-#     }
-#     # Add more mappings as needed
-# }
 function get-discoveryData {
     $discoveryData=@"
 {
@@ -45,14 +7,14 @@ function get-discoveryData {
             "Tag": "nginx",
             "Description": "Nginx is a high-performance HTTP server and reverse proxy.",
             "OS": "Linux",
-            "Query": "let maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
+            "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'linux'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
         },
         {
             "Name": "ADDS",
             "Tag": "ADDS",
             "Description": "Active Directory Domain Services",
             "OS": "Windows",
-            "Query": "let maxts=Discovery_CL\n| project timestamp=todatetime(tostring(split(RawData,\",\")[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'windows'\n| where name == \"AD-Domain-Services\""
+            "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'AD-Domain-Services'"
         }
     ]
 }
@@ -112,15 +74,17 @@ Resources
             $queryResults=Invoke-AzOperationalInsightsQuery -WorkspaceId $workspace.CustomerId.Guid -Query $DiscoveryQuery | Select-Object -ExpandProperty Results
             if ($queryResults.Count -eq 0) {
                 Write-host "No discovery data found for $($pack.Name)"
-                return "{}"
             }
             else {
                 #Return resourceID and tag for the pack
                 $queryResults | ForEach-Object {
+                    # Get location for the resource
+                    $location=Get-AzResource -ResourceId $_.Computer -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Location
                     $result = @{} # Initialize as a hashtable
                     $result['Tag'] = $pack.Tag
                     $result['ResourceId'] = $_.Computer
                     $result['OS'] = $pack.OS
+                    $result['Location'] = $location
                     $results += $result
                 }
             }
@@ -131,5 +95,92 @@ Resources
         return {}
     }
     Write-host "Found $($results.count) results for discovery."
-    return $results | ConvertTo-Json
+    $results
+
+   # try {
+        # Send the results to the DCR
+        Write-host "Sending discovery data to DCR..."
+        Write-host "DCR Immutable Id: $($env:discoveryDCRImmutableId)"
+        Write-host "Table Name: $($env:DiscoveryResultsTableName)"
+        new-discoveryData -instanceName $instanceName -data $results -DcrImmutableId $env:discoveryDCRImmutableId -tableName $env:DiscoveryResultsTableName
+        return $true
+    #}
+    #catch {
+    #    Write-Error "Error sending discovery data to DCR. $_"
+    #    return $null
+    #}
+}
+
+function new-discoveryData {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName,
+        [Parameter(Mandatory = $true)]
+        [object]$data,
+        [Parameter(Mandatory = $true)]
+        [string]$DcrImmutableId,
+        [Parameter(Mandatory = $true)]
+        [string]$tableName,
+        [Parameter(Mandatory = $false)]
+        [string]$streamname,
+        [Parameter(Mandatory = $false)]
+        [bool]$localtest,
+        [Parameter(Mandatory = $false)]
+        [string]$appId,
+        [Parameter(Mandatory = $false)]
+        [string]$appSecret
+
+    )
+    #$dceId="https://amp-mcp1-dce-canadacentral-6f18.canadacentral-1.ingest.monitor.azure.com"
+    # get DCE URL from the DCE Id, using a tag.
+    $DCE=Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}
+    $tenantId=(Get-AzContext).Tenant.Id
+    if ($null -eq $DCE) {
+        Write-Error "No DCE found for instance name $instanceName"
+        return $null
+    }
+    else {
+        Write-host "Found DCE $($DCE.Name) with id $($DCE.Id)"
+        $dceurl=$DCE.LogIngestionEndpoint
+        Write-host "DCE URL: $dceurl"
+    }
+    if ($localtest) {
+        Add-Type -AssemblyName System.Web
+        $scope = [System.Web.HttpUtility]::UrlEncode("https://monitor.azure.com//.default")   
+        $body = "client_id=$appId&scope=$scope&client_secret=$appSecret&grant_type=client_credentials";
+        $headers = @{"Content-Type" = "application/x-www-form-urlencoded" };
+        $uri = "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token"
+        $bearerToken = (Invoke-RestMethod -Uri $uri -Method "Post" -Body $body -Headers $headers).access_token
+    }
+    else {
+        $scope="https://monitor.azure.com"
+        $bearerToken = (Get-AzAccessToken -ResourceUrl $scope -TenantId $tenantId ).Token
+        $bearerToken
+    }
+    # When using a managed identity, use the following line to get the token:
+    # $scope = [System.Web.HttpUtility]::UrlEncode("https://monitor.azure.com//.default")   
+
+    $body = $data | ConvertTo-Json 
+    $body
+    if ([string]::IsNullOrEmpty($streamname)) {
+        $streamname=("Custom-$tableName") #.Replace("_CL","")
+        Write-host "No stream name provided, using default stream name. $streamname"
+    }
+    else {
+        Write-host "Using stream name $streamname"
+    }
+    #$headers = @{"Authorization" = "Bearer $bearerToken"; "Content-Type" = "application/json" };
+    # The stream name is what counts here and needs to match the stream name in the DCR.
+    $uri = "$dceurl/dataCollectionRules/$DcrImmutableId/streams/$streamname"+"?api-version=2023-01-01";
+    Write-host "Sending data to DCR at $uri"
+    try {
+        #$uploadResponse = Invoke-RestMethod -Uri $uri -Method "Post" -Body $body -Headers $headers;
+        Invoke-RestMethod -Method Post -Uri $uri -Headers @{"Authorization"="Bearer $bearerToken"} -Body $body -ContentType "application/json"   
+        Write-host "Data sent to DCR successfully."
+        Write-host "Response: $($uploadResponse | ConvertTo-Json -Depth 10)"
+    }
+    catch {
+        Write-Error "Error sending data to DCR: $_"
+        return $null
+    }
 }

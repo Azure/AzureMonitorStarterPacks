@@ -1433,7 +1433,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "InsightsDep"
+                          "Nginx"
                         ]
                       }
                     ],
@@ -1560,7 +1560,10 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10
+                        "queryType": 10,
+                        "value": [
+                          "value::all"
+                        ]
                       }
                     ],
                     "style": "above",
@@ -1708,7 +1711,10 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10
+                        "queryType": 10,
+                        "value": [
+                          "value::all"
+                        ]
                       }
                     ],
                     "style": "above",
@@ -1792,54 +1798,6 @@
                   "styleSettings": {
                     "showBorder": true
                   }
-                },
-                {
-                  "type": 9,
-                  "content": {
-                    "version": "KqlParameterItem/1.0",
-                    "crossComponentResources": [
-                      "value::tenant"
-                    ],
-                    "parameters": [
-                      {
-                        "id": "27d8cc17-6eb9-4158-aff2-f5a2bbddff58",
-                        "version": "KqlParameterItem/1.0",
-                        "name": "AvdLAWPaaS",
-                        "label": "Select AVD Log Analytics Workspace",
-                        "type": 5,
-                        "isGlobal": true,
-                        "query": "resources\n| where type =~ \"Microsoft.OperationalInsights/workspaces\"\n",
-                        "crossComponentResources": [
-                          "value::tenant"
-                        ],
-                        "typeSettings": {
-                          "additionalResourceOptions": [],
-                          "showDefault": false
-                        },
-                        "timeContext": {
-                          "durationMs": 86400000
-                        },
-                        "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants"
-                      }
-                    ],
-                    "style": "pills",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resources/tenants"
-                  },
-                  "customWidth": "50",
-                  "conditionalVisibilities": [
-                    {
-                      "parameterName": "paastotag",
-                      "comparison": "isNotEqualTo"
-                    },
-                    {
-                      "parameterName": "PackTagsPaaS",
-                      "comparison": "isEqualTo",
-                      "value": "Avd"
-                    }
-                  ],
-                  "name": "param-IaaS-AvdLaw"
                 },
                 {
                   "type": 11,
@@ -4255,24 +4213,6 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "079a4550-40c9-44cd-a223-40097e453659",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "ComputerDiscovery",
-                  "label": "Select Server",
-                  "type": 5,
-                  "query": "Discovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=_ResourceId,timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)",
-                  "typeSettings": {
-                    "additionalResourceOptions": [],
-                    "showDefault": false
-                  },
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/lx1"
-                },
-                {
                   "id": "d1f20750-4a22-4433-9c5d-a4d9a4f62f9d",
                   "version": "KqlParameterItem/1.0",
                   "name": "discoveryPeriod",
@@ -4319,8 +4259,27 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 86400000
+                    "durationMs": 172800000
                   }
+                },
+                {
+                  "id": "079a4550-40c9-44cd-a223-40097e453659",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "ComputerDiscovery",
+                  "label": "Select Server",
+                  "type": 5,
+                  "query": "Discovery_CL\n| parse RawData with timestamp \",\" rest1\n| extend Computer=_ResourceId,timestamp=todatetime(timestamp)\n| summarize by tostring(Computer)",
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "discoveryPeriod",
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/win1"
                 }
               ],
               "style": "above",
@@ -4350,8 +4309,20 @@
               ],
               "gridSettings": {
                 "rowLimit": 1000,
-                "filter": true
-              }
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "name",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "name",
+                  "sortOrder": 1
+                }
+              ]
             },
             "conditionalVisibility": {
               "parameterName": "discTab",
@@ -4364,12 +4335,23 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.ResourceId\",\"columnid\":\"resourceId\"},{\"path\":\"$.OS\",\"columnid\":\"OS\"},{\"path\":\"$.Tag\",\"columnid\":\"Tag\"}]}}]}",
+              "query": "DiscoveryResults_CL\r\n| project ResourceId, OS, Location, Tag",
               "size": 0,
               "title": "Discovery Results",
-              "exportFieldName": "",
-              "exportParameterName": "vmsDiscoveryTag",
-              "queryType": 10,
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "",
+                  "parameterName": "vmsDiscoveryTag",
+                  "parameterType": 1,
+                  "quote": ""
+                }
+              ],
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
               "gridSettings": {
                 "formatters": [
                   {
@@ -4378,25 +4360,6 @@
                     "formatOptions": {
                       "linkTarget": null,
                       "showIcon": true
-                    }
-                  },
-                  {
-                    "columnMatch": "Tag",
-                    "formatter": 7,
-                    "formatOptions": {
-                      "linkTarget": "ArmAction",
-                      "linkIsContextBlade": true,
-                      "armActionContext": {
-                        "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                        "headers": [],
-                        "params": [],
-                        "body": "{ \r\n  \"function\": \"tagmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddTag\",\r\n    \"Resources\": [{vmsDiscoveryTag}]\r\n  }\r\n}",
-                        "httpMethod": "POST",
-                        "title": "TagDiscovery",
-                        "description": "# Adding Tag(s) To VMs\n\n\"Resources\": [{vmsDiscoveryTag:$.ResourceId}]\n",
-                        "actionName": "TagDiscovery",
-                        "runLabel": "TagDiscovery"
-                      }
                     }
                   }
                 ]
@@ -4408,6 +4371,45 @@
               "value": "discResults"
             },
             "name": "query - 0"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "list",
+              "links": [
+                {
+                  "id": "af7d39e4-d1a9-40c5-89e7-d6fcfb191dc5",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Enable Monitoring",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \r\n  \"function\": \"tagmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddTag\",\r\n    \"Resources\": [{vmsDiscoveryTag}],\r\n    \"PackType\": \"IaaS\"\r\n  }\r\n}",
+                    "httpMethod": "POST",
+                    "title": "Enable Monitoring",
+                    "description": "# Enable monitoring\n\nResources:\n\n{vmsDiscoveryTag}",
+                    "actionName": "AddTag",
+                    "runLabel": "Enable"
+                  }
+                }
+              ]
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "discTab",
+                "comparison": "isEqualTo",
+                "value": "discResults"
+              },
+              {
+                "parameterName": "vmsDiscoveryTag",
+                "comparison": "isNotEqualTo"
+              }
+            ],
+            "name": "links - enableDiscoveryMonitoring"
           }
         ]
       },

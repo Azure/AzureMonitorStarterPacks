@@ -141,11 +141,13 @@ module discovery '../discovery/discovery.bicep' = if (deployDiscovery) {
     imageGalleryName: ImageGalleryName
     lawResourceId: createNewLogAnalyticsWS ? logAnalytics.outputs.lawresourceid : existingLogAnalyticsWSId
     storageAccountname: storageAccountName
-    tableName: 'Discovery'
+    tableName: 'Discovery' // to store discovery data, no the results of the discovery
+    resultstableName: 'DiscoveryResults' // to store the results of the discovery
     //userManagedIdentityResourceId: backend.outputs.packsUserManagedResourceId
     customerTags: customerTags
     instanceName: instanceName
     solutionVersion: solutionVersion
+    functionName: functionName
   }
 }
 

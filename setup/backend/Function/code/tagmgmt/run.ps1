@@ -7,7 +7,7 @@ $instanceName=$env:InstanceName
 $InformationPreference='SilentlyContinue'
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
-#$Request | convertto-json
+$Request | convertto-json -Depth 10
 # Interact with query parameters or the body of the request.
 $resources = $Request.Body.Resources
 $action = $Request.Body.Action
@@ -33,6 +33,10 @@ if ($resources) {
     switch ($action) {
       'AddTag' {
         foreach ($resource in $resources) {
+          Write-host "Resource: $resource"
+          Write-host "ResourceId: $($resource.Resource)"
+          Write-host "Resource Pack: $($resource.Pack)"
+          Write-host "Resource OS: $($resource.OS)"
           # Tagging
           if ($PackType -ne 'Paas') {
             if ($PackType -eq 'Discovery') {
@@ -52,6 +56,9 @@ if ($resources) {
             else {
               # Add Agent if not installed yet.
               $InstallDependencyAgent = ($TagValue -eq 'InsightsDep') ? $true : $false
+              if ($null -eq $TagList) {
+                $TagList = @($resource.Pack)
+              }
               Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag is $TagValue"
               Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
               foreach ($TagValue in $TagList) {

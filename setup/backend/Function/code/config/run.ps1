@@ -1,14 +1,10 @@
 using namespace System.Net
-
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
-
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
-
 # Interact with query parameters or the body of the request.
 $Request
-
 $Action = $Request.Query.Action
 "Action: $Action"
 $ambaURL=$env:AMBAJsonURL
@@ -17,25 +13,7 @@ $ambaURL=$env:AMBAJsonURL
 # "Body"
 # $Request.Body
 # "EoB"
-
 switch ($Action) {
-  # Returns the tag based on the nameSpace provided
-#   'getTagbyService' {
-#     $svc = $Request.body.metricNamespace
-#     if ($svc) {
-#       $tag = $tagMapping.tags | ? { $_.nameSpace -eq $svc } 
-#     }
-#     else {
-#       $tag = 'Undetermined'
-#     }
-#     $body = @"
-#         {
-#             "tag":"$($tag.tag)",
-#             "nameSpace":"$($tag.nameSpace)",
-#             "type":"$($tag.type)"
-#         }
-# "@ | convertfrom-json
-#   }
   # Gets a list of tags (all) or for a specific type (PaaS)
   'getInstanceName' {
     $instanceName=$env:InstanceName
@@ -56,10 +34,6 @@ switch ($Action) {
             
     }
   }
-  # returns a list of discovery mapping directions.
-  # 'getDiscoveryMappings' {
-  #   $body = get-discovermappings #$discoveringMappings.Keys | Select-Object @{l = 'tag'; e = { $_ } }, @{l = 'application'; e = { $discoveringMappings.$_ } }
-  # }
   'getdiscoveryresults' {
     #$WSId= $Request.Query.instanceName
     $instanceName=$env:InstanceName
@@ -70,52 +44,6 @@ switch ($Action) {
       $body = '{}'
     }
   }
-#   'getPaaSquery' {
-#     $body = get-paasquery
-# #     @"
-# #         {
-# #             "Query": "
-# #         | where tolower(type) in (
-# #           'microsoft.storage/storageaccounts',
-# #           'microsoft.desktopvirtualization/hostpools',
-# #           'microsoft.logic/workflows',
-# #           'microsoft.sql/managedinstances',
-# #           'microsoft.sql/servers/databases',
-# #           'microsoft.network/vpngateways',
-# #           'microsoft.network/virtualnetworkgateways',
-# #           'microsoft.keyvault/vaults',
-# #           'microsoft.network/networksecuritygroups',
-# #           'microsoft.network/publicipaddresses',
-# #           'microsoft.network/privatednszones',
-# #           'microsoft.network/frontdoors',
-# #           'microsoft.network/azurefirewalls',
-# #           'microsoft.network/applicationgateways'
-# #       )
-# #       or (
-# #           tolower(type) ==  'microsoft.cognitiveservices/accounts' and tolower(['kind']) == 'openai'
-# #       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
-# #       }
-# # "@
-#   }
-#   'getPlatformquery' {
-#     $body='{}'
-# #     $body = @'
-# #         {
-# #             "Query":"
-# #         | where tolower(type) in (
-# #           'microsoft.network/vpngateways',
-# #           'microsoft.network/virtualnetworkgateways',
-# #           'microsoft.keyvault/vaults',
-# #           'microsoft.network/networksecuritygroups',
-# #           'microsoft.network/publicipaddresses',
-# #           'microsoft.network/privatednszones',
-# #           'microsoft.network/frontdoors',
-# #           'microsoft.network/azurefirewalls',
-# #           'microsoft.network/applicationgateways'
-# #       ) or (tolower(type) == 'microsoft.network/loadbalancers' and tolower(sku.name) !='basic')"
-# #     }
-# # '@
-#   }
   "getNonMonitoredPaaS" {
       if ($Request.Query.resourceFilter) {
         $resourceFilter = @"
@@ -202,15 +130,23 @@ switch ($Action) {
     else {
         $body = "{}"
     }
-}
-    "getSupportedServices" {
-        # uset $tagmapping to return only the namespace column in a json body
-        $body=(get-AmbaCatalog -ambaJsonURL $ambaURL | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }} | convertto-json
-        #$body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
+  }
+  "getSupportedServices" {
+      # uset $tagmapping to return only the namespace column in a json body
+      $body=(get-AmbaCatalog -ambaJsonURL $ambaURL | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }} | convertto-json
+      #$body = $tagMapping.tags | Select-Object @{Label = "nameSpace"; Expression = { $_.nameSpace.ToLower() }} | convertto-json
+  }
+  "runDiscovery" {
+    $instanceName=$env:InstanceName
+    if ($instanceName) {
+      get-discoveryresults -instanceName $instanceName # analyses results and stores results in log analytics workspace under the resultsdiscovery table.
     }
+    else {
+        $body = '{}'
+    }
+  }
   default { $body = '{"No results"}' }
 }
-
 # # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = [HttpStatusCode]::OK

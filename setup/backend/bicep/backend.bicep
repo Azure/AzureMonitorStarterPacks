@@ -37,7 +37,8 @@ var backendFunctionRoleDefinitionIds = [
   '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor
   '36243c78-bf99-498c-9df9-86d9f8d28608' // policy contributor
   'f1a07417-d97a-45cb-824c-7a7467783830' // Managed identity Operator
-  'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //Blob Data Contributor role is needed to allow the function to write to the blob storage account 
+  'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Data Contributor role is needed to allow the function to write to the blob storage account 
+  '3913510d-42f4-4e42-8a64-420c390055eb' // Monitoring metrics publisher role is needed to allow the function to write to the log analytics workspace, for discovery results.
 ]
 var logicappRequiredRoleassignments = [
   '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
@@ -49,22 +50,7 @@ module telemetry './nested_telemetry.bicep' =  if (collectTelemetry) {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {}
 }
-//var subscriptionId = subscription().subscriptionId
-// var ContributorRoleDefinitionId='4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Contributor Role Definition Id for Tag Contributor
-// var VMContributorRoleDefinitionId='9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
-// var ArcContributorRoleDefinitionId='48b40c6e-82e0-4eb3-90d5-19e40f49b624'
-// var ReaderRoleDefinitionId='acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader Role Definition Id for Reader
-// var LogAnalyticsContributorRoleDefinitionId='92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
-// var MonitoringContributorRoleDefinitionId='749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
 
-// var sasConfig = {
-//   signedResourceTypes: 'sco'
-//   signedPermission: 'r'
-//   signedServices: 'b'
-//   signedExpiry: sasExpiry
-//   signedProtocol: 'https'
-//   keyToSign: 'key2'
-// }
 module gallery './modules/aig.bicep' ={
   name: imageGalleryName
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -112,15 +98,6 @@ module logicapp './modules/logicapp.bicep' = {
     subscriptionId: subscriptionId
   }
 }
-// module workbook './modules/workbook.bicep' = {
-//   name: 'workbookdeployment'
-//   scope: resourceGroup(subscriptionId, resourceGroupName)
-//   params: {
-//     lawresourceid: lawresourceid
-//     location: location
-//     Tags: Tags
-//   }
-// }
 
 module extendedWorkbook './modules/extendedworkbook.bicep' = {
   name: 'workbook2deployment'
@@ -159,12 +136,6 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   }
 }
 
-// module customRemdiationRole '../../../modules/rbac/subscription/remediationContributor.bicep' = {
-//   name: 'customRemediationRole'
-//   scope: subscription(subscriptionId)
-//   params: {
-//   }
-// }
 
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'AMP-${instanceName}-UMI-AzFun-${location}'
