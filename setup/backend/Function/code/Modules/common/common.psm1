@@ -940,6 +940,14 @@ function Add-Tag {
         }
         if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
             # If this is an IaaS Pack, I now need to first call the function to install the pack if not installed.
+            # Add pack if not installed. The funcion tests if DCR exists and if not creates it. Alerts are created only if the pack is not installed.
+            new-pack -location $location `
+            -instanceName $instanceName `
+            -resourceGroup $env:resourceGroup `
+            -workspaceId $env:workspaceId `
+            -packtag $TagValue `
+            -AGId $actionGroupId `
+            -urlDeployment
             if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                 Write-host "Addinng VM application for $TagValue."
                 if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
@@ -1269,9 +1277,6 @@ function new-pack {
         #resource group
         [Parameter(Mandatory=$false, HelpMessage="Enter the name of the resource group.")]
         [string]$resourceGroup = $env:ResourceGroupName,
-        #dceId
-        [Parameter(Mandatory=$false, HelpMessage="Enter the name of the dceId.")]
-        [string]$dceId = $env:dceId,
         #workspaceId
         [Parameter(Mandatory=$true, HelpMessage="Enter the name of the workspaceId.")]
         [string]$workspaceId,
@@ -1281,12 +1286,12 @@ function new-pack {
         #urlDeploymentSwitch
         [Parameter(Mandatory=$false, HelpMessage="Enter the name of the urlDeploymentSwitch.")]
         [switch]$urlDeployment
-        
     )
     $modulesRoot = "./modules"
     $modulesURLroot="https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/modules"
     $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
     $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
+    $DceId=(Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}).Id
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     Write-host "Found $($packlist.Packs.Count) packs in the file."
     $packs=$packlist.Packs | Where-Object { $_.Tag -eq $packtag }
@@ -1332,14 +1337,13 @@ function new-pack {
                         $newPack=$true
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
-                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "./$dcrname"
+                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
                             New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                        -TemplateFile "./$dcrname" `
+                                                        -TemplateFile "$($env:temp)/$dcrname" `
                                                         -ResourceGroupName $resourceGroup `
                                                         -Location $location `
                                                         -rulename $ruleName `
                                                         -workspaceResourceId $WorkspaceId `
-                                                        -kind $rule.Kind `
                                                         -xPathQueries $rule.XPathQueries `
                                                         -Tags $TagsToUse `
                                                         -dceId $dceId
@@ -1371,9 +1375,13 @@ function new-pack {
             $alertlist=ConvertPSObjectToHashtable $alertlistT
             $modulePrefix="AMP-$instanceName-$packtag"
             if ($urlDeployment) {
-                $templateUri = "$modulesURLroot/Alerts/alerts.bicep"
+                $alertfilestoDownload =@('alert.bicep','alerts.bicep','scheduledqueryruleAggregate.bicep','scheduledqueryruleRows.bicep')
+                foreach ($file in $alertfilestoDownload) {
+                    $templateUri = "$modulesURLroot/alerts/$file"
+                    (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$file"
+                }
                 New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
-                -TemplateUri $templateUri `
+                -TemplateFile "$($env:temp)/alerts.bicep" `
                 -ResourceGroupName $resourceGroup `
                 -Location $location `
                 -TemplateParameterObject @{
@@ -1387,7 +1395,7 @@ function new-pack {
                 }
             }
             else {
-                $alertTemplateFile = "$modulesRoot/Alerts/alerts.bicep"    <# Action when all if and elseif conditions are false #>
+                $alertTemplateFile = "$modulesRoot/alerts/alerts.bicep"    <# Action when all if and elseif conditions are false #>
                 New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
                 -TemplateFile $alertTemplateFile `
                 -ResourceGroupName $resourceGroup `

@@ -12,7 +12,7 @@ var wsfriendlyname=split(workspaceResourceId, '/')[8]
 
 resource VMIRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   location: location
-  name: '${ruleName}-VMI'
+  name: ruleName
   tags: Tags
   properties: {
     description: 'Data collection rule for VM Insights.'
