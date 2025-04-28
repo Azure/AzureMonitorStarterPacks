@@ -190,7 +190,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "mcp1"
+                  "value": "mcp2"
                 },
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -232,7 +232,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.Web/sites/AMP-mcp1-e315fe54-Function"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -266,7 +266,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -291,7 +291,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.Logic/workflows/AMP-mcp1-LogicApp"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-mcp2-LogicApp"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -332,7 +332,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/Default-ActivityLogAlerts/providers/Microsoft.Insights/actiongroups/AGOwner"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-Hub/providers/microsoft.insights/actiongroups/Jose"
                 }
               ],
               "style": "above",
@@ -3818,7 +3818,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId=tostring(resourceId)//ruleId=properties.dataCollectionRuleId\n| join kind= inner  (\nresources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs =~ 'WinDisc' or MPs =~ 'LxDisc')//or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| summarize by resourceId, Pack\n| summarize Packs=make_list(Pack) by resourceId",
+                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId=tostring(resourceId)//ruleId=properties.dataCollectionRuleId\n| join kind= inner  (\nresources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks), instanceName = ['tags'].instanceName\n| where instanceName == '{instanceName}'\n| where isnotempty(MPs) and (MPs =~ 'WinDisc' or MPs =~ 'LxDisc')//or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| summarize by resourceId, Pack\n| summarize Packs=make_list(Pack) by resourceId",
                     "size": 0,
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
@@ -3846,7 +3846,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| extend Packs = iff(MPs contains 'WinDisc','WinDisc','LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
+                    "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks), instanceName = ['tags'].instanceName\n| where instanceName == '{instanceName}'\n| where isnotempty(MPs) and (MPs contains 'WinDisc' or MPs contains 'LxDisc')\n| extend Packs = iff(MPs contains 'WinDisc','WinDisc','LxDisc')\n| project Resource=id,['Resource Group']=resourceGroup,Packs, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location\n",
                     "size": 0,
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
@@ -4279,7 +4279,7 @@
                   "timeContextFromParameter": "discoveryPeriod",
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/win1"
+                  "value": null
                 }
               ],
               "style": "above",
@@ -4338,6 +4338,9 @@
               "query": "let maxts=DiscoveryResults_CL\r\n| summarize maxts=max(TimeGenerated);\r\nDiscoveryResults_CL\r\n| where TimeGenerated == toscalar(maxts)\r\n| project Resource=ResourceId, OS, Pack=Tag, Location, ['Discovery Time']=TimeGenerated",
               "size": 0,
               "title": "Discovery Results",
+              "timeContext": {
+                "durationMs": 259200000
+              },
               "exportMultipleValues": true,
               "exportedParameters": [
                 {
@@ -4634,7 +4637,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
