@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10274512770225372895"
+      "templateHash": "18339908755964949012"
     }
   },
   "parameters": {
@@ -7958,7 +7958,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13893768147688003443"
+              "templateHash": "4609111307172212326"
             }
           },
           "parameters": {
@@ -8201,7 +8201,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8213851072276288634"
+                      "templateHash": "4250281468957369624"
                     }
                   },
                   "parameters": {
@@ -8310,7 +8310,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "12125278499973626344"
+                              "templateHash": "11573280958881355791"
                             }
                           },
                           "parameters": {
@@ -8479,7 +8479,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "15691414683408659274"
+                                      "templateHash": "12000306122152158092"
                                     }
                                   },
                                   "parameters": {
@@ -8540,16 +8540,7 @@
                                         },
                                         "dataSources": {
                                           "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
-                                          "performanceCounters": [
-                                            {
-                                              "streams": [
-                                                "Microsoft-Perf"
-                                              ],
-                                              "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
-                                              "counterSpecifiers": "[parameters('counterSpecifiers')]",
-                                              "name": "PerfCountersDataSource"
-                                            }
-                                          ]
+                                          "performanceCounters": "[if(empty(parameters('counterSpecifiers')), null(), createArray(createObject('streams', createArray('Microsoft-Perf'), 'samplingFrequencyInSeconds', parameters('samplingFrequencyInSeconds'), 'counterSpecifiers', parameters('counterSpecifiers'), 'name', 'PerfCountersDataSource')))]"
                                         },
                                         "dataFlows": [
                                           {
@@ -10344,7 +10335,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "1160422427630539842"
+                              "templateHash": "14946012808486326980"
                             }
                           },
                           "parameters": {
@@ -11444,7 +11435,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "15691414683408659274"
+                                      "templateHash": "12000306122152158092"
                                     }
                                   },
                                   "parameters": {
@@ -11505,16 +11496,7 @@
                                         },
                                         "dataSources": {
                                           "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
-                                          "performanceCounters": [
-                                            {
-                                              "streams": [
-                                                "Microsoft-Perf"
-                                              ],
-                                              "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
-                                              "counterSpecifiers": "[parameters('counterSpecifiers')]",
-                                              "name": "PerfCountersDataSource"
-                                            }
-                                          ]
+                                          "performanceCounters": "[if(empty(parameters('counterSpecifiers')), null(), createArray(createObject('streams', createArray('Microsoft-Perf'), 'samplingFrequencyInSeconds', parameters('samplingFrequencyInSeconds'), 'counterSpecifiers', parameters('counterSpecifiers'), 'name', 'PerfCountersDataSource')))]"
                                         },
                                         "dataFlows": [
                                           {
@@ -11725,7 +11707,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "3138148042977917120"
+                              "templateHash": "6371511682271245985"
                             }
                           },
                           "parameters": {
@@ -12851,7 +12833,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "15691414683408659274"
+                                      "templateHash": "12000306122152158092"
                                     }
                                   },
                                   "parameters": {
@@ -12912,16 +12894,7 @@
                                         },
                                         "dataSources": {
                                           "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
-                                          "performanceCounters": [
-                                            {
-                                              "streams": [
-                                                "Microsoft-Perf"
-                                              ],
-                                              "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
-                                              "counterSpecifiers": "[parameters('counterSpecifiers')]",
-                                              "name": "PerfCountersDataSource"
-                                            }
-                                          ]
+                                          "performanceCounters": "[if(empty(parameters('counterSpecifiers')), null(), createArray(createObject('streams', createArray('Microsoft-Perf'), 'samplingFrequencyInSeconds', parameters('samplingFrequencyInSeconds'), 'counterSpecifiers', parameters('counterSpecifiers'), 'name', 'PerfCountersDataSource')))]"
                                         },
                                         "dataFlows": [
                                           {
@@ -13132,7 +13105,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "16027899539375031464"
+                              "templateHash": "318672550837593457"
                             }
                           },
                           "parameters": {
@@ -14604,7 +14577,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "15691414683408659274"
+                                      "templateHash": "12000306122152158092"
                                     }
                                   },
                                   "parameters": {
@@ -14665,16 +14638,7 @@
                                         },
                                         "dataSources": {
                                           "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
-                                          "performanceCounters": [
-                                            {
-                                              "streams": [
-                                                "Microsoft-Perf"
-                                              ],
-                                              "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
-                                              "counterSpecifiers": "[parameters('counterSpecifiers')]",
-                                              "name": "PerfCountersDataSource"
-                                            }
-                                          ]
+                                          "performanceCounters": "[if(empty(parameters('counterSpecifiers')), null(), createArray(createObject('streams', createArray('Microsoft-Perf'), 'samplingFrequencyInSeconds', parameters('samplingFrequencyInSeconds'), 'counterSpecifiers', parameters('counterSpecifiers'), 'name', 'PerfCountersDataSource')))]"
                                         },
                                         "dataFlows": [
                                           {
@@ -14752,7 +14716,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "13931565531177821388"
+                              "templateHash": "17982522772440697679"
                             }
                           },
                           "parameters": {
@@ -14886,7 +14850,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.32.4.45862",
-                                      "templateHash": "15691414683408659274"
+                                      "templateHash": "12000306122152158092"
                                     }
                                   },
                                   "parameters": {
@@ -14947,16 +14911,7 @@
                                         },
                                         "dataSources": {
                                           "windowsEventLogs": "[if(empty(parameters('xPathQueries')), null(), createArray(createObject('streams', createArray('Microsoft-Event'), 'xPathQueries', parameters('xPathQueries'), 'name', 'EventLogsDataSource')))]",
-                                          "performanceCounters": [
-                                            {
-                                              "streams": [
-                                                "Microsoft-Perf"
-                                              ],
-                                              "samplingFrequencyInSeconds": "[parameters('samplingFrequencyInSeconds')]",
-                                              "counterSpecifiers": "[parameters('counterSpecifiers')]",
-                                              "name": "PerfCountersDataSource"
-                                            }
-                                          ]
+                                          "performanceCounters": "[if(empty(parameters('counterSpecifiers')), null(), createArray(createObject('streams', createArray('Microsoft-Perf'), 'samplingFrequencyInSeconds', parameters('samplingFrequencyInSeconds'), 'counterSpecifiers', parameters('counterSpecifiers'), 'name', 'PerfCountersDataSource')))]"
                                         },
                                         "dataFlows": [
                                           {

@@ -1,4 +1,6 @@
-# FastTrack for Azure - Monitoring Starter Packs (MonStar Packs)
+# Monitoring Starter Packs (MonStar Packs)
+
+# V3 (Preview)
 
 ## Objectives
 
@@ -12,6 +14,12 @@
 
 For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solution-anatomy.md)
 
+## What is new in V3 (Preview)
+
+- No dependency on policies
+- Flexible Discovery
+- Quicker deployment
+
 ## Pre-requisites and recommendations
 
 - Azure Subscription - an Azure subscription to deploy the components
@@ -21,7 +29,7 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 
 The Main solution can be deployed by clicking the link below.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2FV3%2Fsetup%2FCustomSetup%2Fsetup.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Frefs%2Fheads%2FV3-SubDep%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Frefs%2Fheads%2FV3-SubDep%2Fsetup%2FCustomSetup%2Fsetup.json)
 
 ## Initial Configuration
 
