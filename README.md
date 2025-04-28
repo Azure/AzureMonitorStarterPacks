@@ -2,6 +2,10 @@
 
 Monitoring Starter Packs (MonStar Packs)
 
+## Update!!!
+
+<span style="color: yellow">This version of the Monitoring packs is being deprecated soon. Please stay tuned during May 2025 for a new version.<span>
+
 ## Objectives
 
 - Minimize the initial ramp up required for customers, in multiple aspects of the Azure technologies to deploy basic monitoring.
@@ -24,8 +28,6 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 The Main solution can be deployed by clicking the link below to the respective cloud.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fsetup.json)
-
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fsetup.json)
 
 ## Monitoring Packs
 
