@@ -939,6 +939,7 @@ function Add-Tag {
             $tag.Add('instanceName', $instanceName)
         }
         if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
+            # If this is an IaaS Pack, I now need to first call the function to install the pack if not installed.
             if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                 Write-host "Addinng VM application for $TagValue."
                 if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
@@ -1255,7 +1256,6 @@ function get-AmbaCatalog {
 "@
     return $body
 }
-
 function new-pack {
     param (
         # Parameter help description
@@ -1277,10 +1277,14 @@ function new-pack {
         [string]$workspaceId,
         #agId
         [Parameter(Mandatory=$true, HelpMessage="Enter the name of the agId.")]
-        [string]$AGId = $env:AGId
+        [string]$AGId = $env:AGId,
+        #urlDeploymentSwitch
+        [Parameter(Mandatory=$false, HelpMessage="Enter the name of the urlDeploymentSwitch.")]
+        [switch]$urlDeployment
         
     )
     $modulesRoot = "./modules"
+    $modulesURLroot="https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/modules"
     $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
     $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
@@ -1312,7 +1316,7 @@ function new-pack {
                     # use bicep file to create the DCR. It will need to be available in the SA or repository
                     # Local test for now
                     $dcrname=$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
-                    $templateFile = "$modulesRoot/DCRs/$dcrname"
+                    
                     # test if DCR already exists
                     $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
                     if ($dcr) {
@@ -1323,16 +1327,32 @@ function new-pack {
                         # Create the DCR using the bicep template
                         Write-Host "Creating DCR $($ruleName)..."
                         $newPack=$true
-                        New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                    -TemplateFile $templateFile `
-                                                    -ResourceGroupName $resourceGroup `
-                                                    -Location $location `
-                                                    -rulename $ruleName `
-                                                    -workspaceId $WorkspaceId `
-                                                    -kind $rule.Kind `
-                                                    -xPathQueries $rule.XPathQueries `
-                                                    -Tags $TagsToUse `
-                                                    -dceId $dceId
+                        if ($urlDeployment) {
+                            $templateUri = "$modulesURLroot/DCRs/$dcrname"
+                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                                                        -TemplateUri $templateUri `
+                                                        -ResourceGroupName $resourceGroup `
+                                                        -Location $location `
+                                                        -rulename $ruleName `
+                                                        -workspaceId $WorkspaceId `
+                                                        -kind $rule.Kind `
+                                                        -xPathQueries $rule.XPathQueries `
+                                                        -Tags $TagsToUse `
+                                                        -dceId $dceId
+                        }
+                        else {
+                            $templateFile = "$modulesRoot/DCRs/$dcrname"
+                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                                                        -TemplateFile $templateFile `
+                                                        -ResourceGroupName $resourceGroup `
+                                                        -Location $location `
+                                                        -rulename $ruleName `
+                                                        -workspaceId $WorkspaceId `
+                                                        -kind $rule.Kind `
+                                                        -xPathQueries $rule.XPathQueries `
+                                                        -Tags $TagsToUse `
+                                                        -dceId $dceId
+                        }
                         Write-Host "DCR $($ruleName) created successfully."
                     }
                 }
@@ -1345,9 +1365,26 @@ function new-pack {
             $alertlistT = $pack.Alerts# | ConvertTo-Json -Depth 15 -Compress #| Out-String | ForEach-Object { $_ -replace '\"', '"' }
             # $alertlist = $alertlist.TrimStart('["').TrimEnd('"]')
             $alertlist=ConvertPSObjectToHashtable $alertlistT
-            $alertTemplateFile = "$modulesRoot/Alerts/alerts.bicep"
             $modulePrefix="AMP-$instanceName-$packtag"
-            New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
+            if ($urlDeployment) {
+                $templateUri = "$modulesURLroot/Alerts/alerts.bicep"
+                New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
+                -TemplateUri $templateUri `
+                -ResourceGroupName $resourceGroup `
+                -Location $location `
+                -TemplateParameterObject @{
+                    alertlist = $alertlist
+                    AGId = $AGId
+                    moduleprefix = $modulePrefix
+                    packtag = $packtag
+                    Tags = $TagsToUse # Add any tags you want to pass here
+                    workspaceId = $workspaceId
+                    location = $location
+                }
+            }
+            else {
+                $alertTemplateFile = "$modulesRoot/Alerts/alerts.bicep"    <# Action when all if and elseif conditions are false #>
+                New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
                 -TemplateFile $alertTemplateFile `
                 -ResourceGroupName $resourceGroup `
                 -Location $location `
@@ -1360,6 +1397,7 @@ function new-pack {
                     workspaceId = $workspaceId
                     location = $location
                 }
+            }
         }
         else {
             if ($newPack -eq $false) {
@@ -1406,4 +1444,15 @@ function ConvertPSObjectToHashtable
             $InputObject
         }
     }
+}
+function get-availableIaaSPacks {
+    param (
+        [Parameter(Mandatory = $false)]
+        [string]$packContentURL
+    )
+    # Get the available packs from the JSON file
+    $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
+    $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
+    #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
+    $packlist.Packs.Tag | convertto-json
 }

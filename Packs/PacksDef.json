@@ -9,6 +9,7 @@
                 {
                     "Rulename": "WSFC2016",
                     "RuleType": "EventPerformance",
+                    "RulePath": "dcr-basicWinVM.bicep",
                     "xPathQueries": [
                         "'System!*[System[Provider[@Name=\\'Microsoft-Windows-FailoverClustering\\'] and (EventID=1583)]]'"
                     ],
@@ -82,6 +83,163 @@
                     "windowSize": "PT15M",
                     "alertType": "rows",
                     "query": "Event | where  EventID in (1561) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                }
+            ]
+        },
+        {
+            "Name": "Azure Monitor VM Insights",
+            "Tag": "VMI",
+            "Description": "Azure Monitor VM Insights",
+            "OS": "All",
+            "Rules": [
+                {
+                    "Rulename": "VMI",
+                    "RuleType": "VMInsights",
+                    "RulePath": "/DefaultVMI-rule.bicep",
+                    "xPathQueries": [],
+                    "performanceCounters" :[]
+                }
+            ],
+            "Alerts": [
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data Disk Read Latency (ms)",
+                    "alertRuleDisplayName": "Data Disk Read Latency (ms)",
+                    "alertRuleName": "DataDiskReadLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 30,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"ReadLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| where Disk !in ('C:','/')\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data Disk Free Space Percentage",
+                    "alertRuleDisplayName": "Data Disk Free Space Percentage",
+                    "alertRuleName": "DataDiskFreeSpacePercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "LessThan",
+                    "threshold": 10,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"FreeSpacePercentage\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| where Disk !in ('C:','/')\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data Disk Write Latency (ms)",
+                    "alertRuleDisplayName": "Data Disk Write Latency (ms)",
+                    "alertRuleName": "DataDiskWriteLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 30,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"WriteLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| where Disk !in ('C:','/')\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Network Read (bytes-sec)",
+                    "alertRuleDisplayName": "Network Read (bytes-sec)",
+                    "alertRuleName": "NetworkRead(bytes-sec)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 10000000,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Network\" and Name == \"ReadBytesPerSecond\"\n| extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Network Write (bytes-sec)",
+                    "alertRuleDisplayName": "Network Write (bytes-sec)",
+                    "alertRuleName": "NetworkWrite(bytes-sec)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 10000000,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Network\" and Name == \"WriteBytesPerSecond\"\n| extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data OS Read Latency (ms)",
+                    "alertRuleDisplayName": "OS Disk Read Latency (ms)",
+                    "alertRuleName": "OSDiskReadLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 30,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"ReadLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine OS Disk Free Space Percentage",
+                    "alertRuleDisplayName": "OS Disk Free Space Percentage",
+                    "alertRuleName": "OSDiskFreeSpacePercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "LessThan",
+                    "threshold": 10,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"FreeSpacePercentage\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine OS Disk Write Latency (ms)",
+                    "alertRuleDisplayName": "OS Disk Write Latency (ms)",
+                    "alertRuleName": "OSDiskWriteLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 50,
+                    "query": "InsightsMetrics| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"WriteLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Processor Utilization Percentage",
+                    "alertRuleDisplayName": "Processor Utilization Percentage",
+                    "alertRuleName": "ProcessorUtilizationPercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 85,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Processor\" and Name == \"UtilizationPercentage\"\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Available Memory Percentage",
+                    "alertRuleDisplayName": "Available Memory Percentage",
+                    "alertRuleName": "AvailableMemoryPercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "LessThan",
+                    "threshold": 10,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Memory\" and Name == \"AvailableMB\"\n| extend TotalMemory = toreal(todynamic(Tags)[\"vm.azm.ms/memorySizeMB\"])\n| extend AvailableMemoryPercentage = (toreal(Val) / TotalMemory) * 100.0\n| summarize AggregatedValue = avg(AvailableMemoryPercentage) by bin(TimeGenerated, 15m), Computer, _ResourceId"
                 }
             ]
         }
