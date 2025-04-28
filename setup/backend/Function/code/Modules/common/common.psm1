@@ -1288,8 +1288,10 @@ function new-pack {
     $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
     $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
-    $packlist.Packs | Where-Object { $_.Tag -eq $packtag }
-    $packlist.Packs | Where-Object { $_.Tag -eq $packtag } | ForEach-Object {
+    Write-host "Found $($packlist.Packs.Count) packs in the file."
+    $packs=$packlist.Packs | Where-Object { $_.Tag -eq $packtag }
+    Write-host "Found $($packs.Count) packs for tag $($packtag)."
+    $packs | foreach {
         $pack = $_
         $packName = $pack.Name
         $packTag = $pack.Tag
@@ -1311,11 +1313,12 @@ function new-pack {
             Write-Host "Rule Name: $($ruleName)"
             Write-Host "Rule OS: $($ruleOS)"
             # based on the rule type, create the required DCRs
+            $dcrname=$pack.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
             switch ($rule.RuleType) {
-                'EventPerformance' {
+                default {
                     # use bicep file to create the DCR. It will need to be available in the SA or repository
                     # Local test for now
-                    $dcrname=$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
+                    $dcrname=$rule.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
                     
                     # test if DCR already exists
                     $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
@@ -1329,12 +1332,13 @@ function new-pack {
                         $newPack=$true
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
+                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "./$dcrname"
                             New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                        -TemplateUri $templateUri `
+                                                        -TemplateFile "./$dcrname" `
                                                         -ResourceGroupName $resourceGroup `
                                                         -Location $location `
                                                         -rulename $ruleName `
-                                                        -workspaceId $WorkspaceId `
+                                                        -workspaceResourceId $WorkspaceId `
                                                         -kind $rule.Kind `
                                                         -xPathQueries $rule.XPathQueries `
                                                         -Tags $TagsToUse `
@@ -1348,7 +1352,6 @@ function new-pack {
                                                         -Location $location `
                                                         -rulename $ruleName `
                                                         -workspaceId $WorkspaceId `
-                                                        -kind $rule.Kind `
                                                         -xPathQueries $rule.XPathQueries `
                                                         -Tags $TagsToUse `
                                                         -dceId $dceId
@@ -1356,6 +1359,7 @@ function new-pack {
                         Write-Host "DCR $($ruleName) created successfully."
                     }
                 }
+                
             }
         }
         # Now deploy alerts based on the pack configuration

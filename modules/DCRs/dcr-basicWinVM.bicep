@@ -1,13 +1,14 @@
 param location string
 param rulename string
-param workspaceId string
-param kind string = 'Windows'
+param workspaceResourceId  string
 param wsfriendlyname string = 'TBD'
 param xPathQueries array = []
 param counterSpecifiers array = []
 param samplingFrequencyInSeconds int = 300
 param Tags object
 param dceId string
+
+var kind = 'Windows'
 
 /*
               "System!*[System[(Level = 1 or Level = 2 or Level = 3)]]",
@@ -25,7 +26,7 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: workspaceId
+          workspaceResourceId: workspaceResourceId
           name: wsfriendlyname
         }
       ]

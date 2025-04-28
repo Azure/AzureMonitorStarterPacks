@@ -1,7 +1,7 @@
 param location string
 param rulename string
-param workspaceId string
-param kind string = 'Linux'
+param workspaceResourceId string
+
 param wsfriendlyname string = 'TBD'
 param packtag string
 param counterSpecifiers array = [
@@ -9,6 +9,8 @@ param counterSpecifiers array = [
 param samplingFrequencyInSeconds int = 300
 param solutionTag string
 param Tags object
+
+var kind  = 'Linux'
 
 resource dcr 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   location: location
@@ -20,7 +22,7 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: workspaceId
+          workspaceResourceId: workspaceResourceId
           name: wsfriendlyname
         }
       ]

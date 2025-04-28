@@ -125,9 +125,8 @@ module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
   params: {
     location: location
     rulename: rulename
-    workspaceId: workspaceId
+    workspaceResourceId: workspaceId
     wsfriendlyname: workspaceFriendlyName
-    kind: kind
     xPathQueries: xPathQueries
     counterSpecifiers: performanceCounters
     Tags: Tags

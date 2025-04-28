@@ -3,8 +3,6 @@ param workspaceResourceId string
 param Tags object
 param ruleName string
 param dceId string
-param xPathQueries array = []
-param counterSpecifiers array = []
 
 var wsfriendlyname=split(workspaceResourceId, '/')[8]
 // previously used this, but it's complicated when using VMInsights for Linux and Windows
@@ -53,3 +51,4 @@ resource VMIRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
   }
 }
 output VMIRuleId string = VMIRule.id
+
