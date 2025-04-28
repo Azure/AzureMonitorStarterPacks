@@ -140,7 +140,7 @@ function ConvertPSObjectToHashtable
         }
     }
 }
-new-pack -packtag "WSFC2016" `
+new-pack -packtag "VMI" `
     -location "canadacentral" `
     -instanceName "mcp2" `
     -resourceGroup "rg-monstarpacks2" `

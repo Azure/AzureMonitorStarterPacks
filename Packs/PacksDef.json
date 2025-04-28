@@ -9,7 +9,7 @@
                 {
                     "Rulename": "WSFC2016",
                     "RuleType": "EventPerformance",
-                    "RulePath": "dcr-basicWinVM.bicep",
+                    "RuleNamePath": "dcr-basicWinVM.bicep",
                     "xPathQueries": [
                         "'System!*[System[Provider[@Name=\\'Microsoft-Windows-FailoverClustering\\'] and (EventID=1583)]]'"
                     ],
@@ -95,7 +95,7 @@
                 {
                     "Rulename": "VMI",
                     "RuleType": "VMInsights",
-                    "RulePath": "/DefaultVMI-rule.bicep",
+                    "RuleNamePath": "DefaultVMI-rule.bicep",
                     "xPathQueries": [],
                     "performanceCounters" :[]
                 }
