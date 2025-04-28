@@ -41,25 +41,8 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
             name: 'EventLogsDataSource'
         }
       ]
-      performanceCounters: [
+      performanceCounters: empty(counterSpecifiers) ? null : [
         // DCRs don't seem to support more than 5 minutes for samplingFrequencyInSeconds
-        // {
-        //   streams: [
-        //       'Microsoft-Perf'
-        //   ]
-        //   samplingFrequencyInSeconds: 600
-        //   scheduledTransferPeriod: 'PT5M'
-        //   counterSpecifiers: [
-        //     '\\Network Adapter\\Current Bandwidth'
-        //     '\\LogicalDisk\\Free Megabytes'
-        //     '\\LogicalDisk\\% Free Space'
-        //     '\\Memory\\Available MBytes'
-        //     '\\Memory\\Pool Nonpaged Bytes'
-        //     '\\Memory\\Pool Paged Bytes'
-        //     '\\Memory\\Free System Page Table Entries'
-        //   ]
-        //   name: 'PerfCountersDataSource'
-        // }
         {
           streams: [
               'Microsoft-Perf'
