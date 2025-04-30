@@ -25,6 +25,9 @@ var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: rulename
+  dependsOn: [
+    featuresTable
+  ]
   location: Location
   tags: Tags
   kind: 'Linux'
@@ -109,6 +112,9 @@ resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if
 }
 resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = if (createTable) {
   name: tableName
+  dependsOn: [
+    law
+  ]
   parent: law
   properties: {
     totalRetentionInDays: retentionDays

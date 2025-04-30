@@ -1149,7 +1149,7 @@ function new-pack {
                                                         -kqlTransformation $rule.kqlTransformation `
                                                         -Tags $TagsToUse `
                                                         -tableName $rule.tableName `
-                                                        -filepatterns $rule.filepatterns
+                                                        -filepatterns $rule.filepatterns `
                                                         -dceId $dceId
                         }
                         else {
