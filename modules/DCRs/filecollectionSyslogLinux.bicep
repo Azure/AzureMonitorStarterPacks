@@ -20,10 +20,10 @@ param kqlTransformation string
 param retentionDays int = 31
 param createTable bool = true
 
-var streamName= 'Custom-${tableName}'
+
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
 var tableNameToUse = '${tableName}_CL'
-
+var streamName= 'Custom-${tableNameToUse}'
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: rulename
   dependsOn: [
