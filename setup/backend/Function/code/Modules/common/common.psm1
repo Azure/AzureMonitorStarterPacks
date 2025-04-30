@@ -1150,6 +1150,7 @@ function new-pack {
                                                         -Tags $TagsToUse `
                                                         -tableName $rule.tableName `
                                                         -filepatterns $rule.filepatterns `
+                                                        -createTable $true `
                                                         -dceId $dceId
                         }
                         else {

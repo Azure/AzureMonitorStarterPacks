@@ -22,6 +22,7 @@ param createTable bool = true
 
 var streamName= 'Custom-${tableName}'
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
+var tableNameToUse = '${tableName}_CL'
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: rulename
@@ -55,7 +56,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
                   recordStartTimestampFormat: 'ISO 8601'
               }
             }
-            name: tableName
+            name: tableNameToUse
         }
       ]
     }
@@ -110,11 +111,9 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (createTable) {
   name: lawFriendlyName
 }
-resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = if (createTable) {
-  name: tableName
-  dependsOn: [
-    law
-  ]
+
+resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2023-09-01' = if (createTable) {
+  name: tableNameToUse
   parent: law
   properties: {
     totalRetentionInDays: retentionDays
@@ -136,4 +135,4 @@ resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-
   }  
 }
 
-output ruleId string = fileCollectionRule.id
+//output ruleId string = fileCollectionRule.id
