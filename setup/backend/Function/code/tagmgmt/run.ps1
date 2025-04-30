@@ -43,7 +43,7 @@ if ($resources) {
             if ($PackType -eq 'Discovery') {
               $TagValue = $resource.Pack
               # Add Agent if not installed yet.
-              $InstallDependencyAgent = ($Taglist -contains 'InsightsDep') ? $true : $false
+              $InstallDependencyAgent = ($Taglist -contains 'SvcMap') ? $true : $false
               if ($InstallDependencyAgent) {
                 Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag list is $Taglist"
               }
