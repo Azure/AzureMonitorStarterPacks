@@ -119,7 +119,7 @@ resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2023-09-
     totalRetentionInDays: retentionDays
     plan: 'Analytics'
     schema: {
-        name: tableName
+        name: tableNameToUse
         columns: [
             {
                 name: 'TimeGenerated'
