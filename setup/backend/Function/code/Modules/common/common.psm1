@@ -1121,7 +1121,7 @@ function new-pack {
             Write-Host "Rule Name: $($ruleName)"
             Write-Host "Rule OS: $($ruleOS)"
             # based on the rule type, create the required DCRs
-            $dcrname=$pack.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
+            $dcrname=$rule.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
             $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
             if ($dcr) {
                 Write-Host "DCR $($ruleName) already exists. Skipping creation."
@@ -1136,6 +1136,7 @@ function new-pack {
                         Write-Host "Creating Syslog DCR $($ruleName)..."
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
+                            Write-host "Template URI: $templateUri"
                             (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
                             New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
                                                         -TemplateFile "$($env:temp)/$dcrname" `
@@ -1147,6 +1148,8 @@ function new-pack {
                                                         -logLevels $rule.logLevels `
                                                         -kqlTransformation $rule.kqlTransformation `
                                                         -Tags $TagsToUse `
+                                                        -tableName $rule.tableName `
+                                                        -filepatterns $rule.filepatterns
                                                         -dceId $dceId
                         }
                         else {

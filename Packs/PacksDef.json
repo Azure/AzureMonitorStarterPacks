@@ -1090,6 +1090,10 @@
                     "RuleType": "syslog",
                     "RuleNamePath": "filecollectionSyslogLinux.bicep",
                     "syslogDataSourceName": "sysLogsDataSource-1688419672",
+                    "filepatterns": [
+                        "/var/log/nginx/access.log",
+                        "/var/log/nginx/error.log"
+                    ],
                     "facilitynames": [
                         "daemon"
                     ],
