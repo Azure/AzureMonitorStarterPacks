@@ -1183,6 +1183,22 @@
                     }
                 ]
             ]
+        },
+        {
+            "Name": "SvcMap",
+            "Tag": "SvcMap",
+            "Description": "Service Map monitoring pack. DCR only",
+            "OS": "Windows",
+            "Rules": [
+                {
+                    "Rulename": "SvcMap",
+                    "RuleType": "ServiceMap",
+                    "RuleNamePath": "ServiceMap.bicep",
+                    "xPathQueries": [],
+                    "performanceCounters" :[]
+                }
+            ],
+            "Alerts": []
         }
     ]
 }
