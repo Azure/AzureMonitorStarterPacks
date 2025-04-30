@@ -1212,6 +1212,7 @@ function new-pack {
         }
         # Now deploy alerts based on the pack configuration
         if ($pack.Alerts.Count -ne 0 -and $newPack -eq $true) {
+            Write-host "Creating $($pack.Alerts.Count) alerts for pack $($packtag)..."
             # Convert to json and remove square brackets from the start and end of the string
             $alertlistT = $pack.Alerts# | ConvertTo-Json -Depth 15 -Compress #| Out-String | ForEach-Object { $_ -replace '\"', '"' }
             # $alertlist = $alertlist.TrimStart('["').TrimEnd('"]')
