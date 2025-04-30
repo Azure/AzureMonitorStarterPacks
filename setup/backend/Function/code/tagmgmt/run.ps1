@@ -20,6 +20,7 @@ $PackType = $Request.Body.PackType
 $LogAnalyticsWSAVD = $Request.Body.AVDLAW
 $ResourceType = $Request.Body.Type
 $defaultAG=$Request.Body.DefaultAG
+$workspaceResourceId=$Request.Body.WorkspaceId
 #$Request | convertto-json
 if ($resources) {
     #$TagName='MonitorStarterPacks'
@@ -73,7 +74,10 @@ if ($resources) {
                 -TagValue $TagValue `
                 -instanceName $instanceName `
                 -packType $PackType `
-                -resourceType 'Compute'
+                -resourceType 'Compute' `
+                -actionGroupId $defaultAG `
+                -workspaceResourceId $workspaceResourceId `
+                -location $resource.Location
               }
             }
           }

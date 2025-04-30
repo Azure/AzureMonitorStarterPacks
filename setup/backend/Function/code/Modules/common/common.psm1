@@ -917,11 +917,15 @@ function Add-Tag {
         [Parameter(Mandatory = $false)]
         [string]$actionGroupId,
         [Parameter(Mandatory = $false)]
+        [string]$workspaceResourceId,
+        [Parameter(Mandatory = $false)]
         [string]$location
     )
     $resourceName = $resourceId.split('/')[8]
     Write-Host "Resource: $resourceId"
     Write-Host "Running $action for $resourceName resource. TagValue: $TagValue"
+    # Action Group IP:
+    Write-host "Add-tag: Action Group ID: $actionGroupId"
     $resourceGroupName = $env:resourceGroup
     #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
     $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
@@ -941,13 +945,17 @@ function Add-Tag {
         if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
             # If this is an IaaS Pack, I now need to first call the function to install the pack if not installed.
             # Add pack if not installed. The funcion tests if DCR exists and if not creates it. Alerts are created only if the pack is not installed.
-            new-pack -location $location `
-            -instanceName $instanceName `
-            -resourceGroup $env:resourceGroup `
-            -workspaceId $env:workspaceId `
-            -packtag $TagValue `
-            -AGId $actionGroupId `
-            -urlDeployment
+            if ($packType -eq 'IaaS') {
+                #need to add check if creating the pack worked. If it didn't, don't do anything else.
+                Write-host "Installing pack for $TagValue, if not installed yet."
+                new-pack -location $location `
+                -instanceName $instanceName `
+                -resourceGroup $env:resourceGroup `
+                -workspaceId $workspaceResourceId `
+                -packtag $TagValue `
+                -AGId $actionGroupId `
+                -urlDeployment
+            }
             if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                 Write-host "Addinng VM application for $TagValue."
                 if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
@@ -986,6 +994,15 @@ function Add-Tag {
             $tag[$TagName] += ",$TagValue"
             #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
             if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
+                if ($packType -eq 'IaaS') {
+                    new-pack -location $location `
+                    -instanceName $instanceName `
+                    -resourceGroup $env:resourceGroup `
+                    -workspaceId $workspaceResourceId `
+                    -packtag $TagValue `
+                    -AGId $actionGroupId `
+                    -urlDeployment
+                }
                 if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                     Write-host "Addinng VM application for $TagValue."
                     if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
@@ -1296,6 +1313,20 @@ function new-pack {
     Write-host "Found $($packlist.Packs.Count) packs in the file."
     $packs=$packlist.Packs | Where-Object { $_.Tag -eq $packtag }
     Write-host "Found $($packs.Count) packs for tag $($packtag)."
+    if ($packs.Count -eq 0) {
+        Write-Host "No packs found for tag $($packtag)."
+        return $false
+    }
+    $installPath = "$env:USERPROFILE\.bicep"
+    $installDir = New-Item -ItemType Directory -Path $installPath -Force
+    $installDir.Attributes += 'Hidden'
+    # Fetch the latest Bicep CLI binary
+    (New-Object Net.WebClient).DownloadFile("https://github.com/Azure/bicep/releases/latest/download/bicep-win-x64.exe", "$installPath\bicep.exe")
+    # Add bicep to your PATH
+    $currentPath = (Get-Item -path "HKCU:\Environment" ).GetValue('Path', '', 'DoNotExpandEnvironmentNames')
+    if (-not $currentPath.Contains("%USERPROFILE%\.bicep")) { setx PATH ($currentPath + ";%USERPROFILE%\.bicep") }
+    if (-not $env:path.Contains($installPath)) { $env:path += ";$installPath" }
+    # Verify you can now access the 'bicep' command.
     $packs | foreach {
         $pack = $_
         $packName = $pack.Name
@@ -1303,7 +1334,7 @@ function new-pack {
         $packOS = $pack.OS
         $TagsToUse=@{ # MonitorStarterPacks and instanceName are mandatory tags
             MonitorStarterPacks = $packtag
-            InstanceName = $instanceName
+            instanceName = $instanceName
         }
         Write-Host "Creating pack for tag: $($packTag)"
         Write-Host "Pack Name: $($packName)"
@@ -1367,7 +1398,6 @@ function new-pack {
             }
         }
         # Now deploy alerts based on the pack configuration
-        
         if ($pack.Alerts.Count -ne 0 -and $newPack -eq $true) {
             # Convert to json and remove square brackets from the start and end of the string
             $alertlistT = $pack.Alerts# | ConvertTo-Json -Depth 15 -Compress #| Out-String | ForEach-Object { $_ -replace '\"', '"' }
@@ -1414,6 +1444,7 @@ function new-pack {
         else {
             if ($newPack -eq $false) {
                 Write-Host "Pack $($packtag). already installed. Skipping alert creation."
+                return $true
             }
             else {
                 Write-Host "No alerts found for pack $($packtag)."
