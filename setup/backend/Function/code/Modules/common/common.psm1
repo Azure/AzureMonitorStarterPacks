@@ -1128,13 +1128,12 @@ function new-pack {
                 $newPack = $false
             }
             else {
-                Write-Host "Creating DCR $($ruleName)..."
                 $newPack=$true
             }
             switch ($rule.RuleType) {
                 'syslog' {
                     if ($newPack) {
-                        Write-Host "Creating DCR $($ruleName)..."
+                        Write-Host "Creating Syslog DCR $($ruleName)..."
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
                             (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           

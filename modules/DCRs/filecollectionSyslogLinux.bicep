@@ -9,7 +9,7 @@ param dceId string
 param tableName string
 
 @description('Specifies the location in which to create the data collection rule.')
-param location string
+param Location string
 param filepatterns array
 param workspaceResourceId string
 param Tags object
@@ -25,7 +25,7 @@ var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: rulename
-  location: location
+  location: Location
   tags: Tags
   kind: 'Linux'
   properties: {
