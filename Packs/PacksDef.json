@@ -1089,10 +1089,23 @@
                     "Rulename": "nginx",
                     "RuleType": "syslog",
                     "RuleNamePath": "filecollectionSyslogLinux.bicep",
-                    "xPathQueries": [
+                    "syslogDataSourceName": "sysLogsDataSource-1688419672",
+                    "facilitynames": [
+                        "daemon"
                     ],
-                    "performanceCounters" :[
-                    ]
+                    "logLevels": [
+                        "Debug",
+                        "Info",
+                        "Notice",
+                        "Warning",
+                        "Error",
+                        "Critical",
+                        "Alert",
+                        "Emergency"
+                    ],
+                    "kqlTransformation": "source | where SyslogMessage == \"Stopped A high performance web server and a reverse proxy server.\" or SyslogMessage == \"Started A high performance web server and a reverse proxy server.\"",
+                    "createTable": true,
+                    "tableName": "NginxLogs"
                 }
             ],
             "Alerts": [

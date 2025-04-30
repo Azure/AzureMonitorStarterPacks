@@ -1,29 +1,30 @@
 
 @description('Specifies the name of the data collection rule to create.')
-param ruleName string
+param rulename string
 
 @description('Specifies the resource id of the data collection endpoint.')
-param endpointResourceId string
+param dceId string
 
 @description('Name of the table.')
 param tableName string
 
 @description('Specifies the location in which to create the data collection rule.')
 param location string
-
 param filepatterns array
-param lawResourceId string
-
+param workspaceResourceId string
 param Tags object
 param facilityNames array
 param logLevels array
 param syslogDataSourceName string = 'sysLogsDataSource-1688419672'
+param kqlTransformation string
+param retentionDays int = 31
+param createTable bool = true
 
 var streamName= 'Custom-${tableName}'
-var lawFriendlyName = split(lawResourceId,'/')[8]
+var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
-  name: ruleName
+  name: rulename
   location: location
   tags: Tags
   kind: 'Linux'
@@ -58,7 +59,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
     destinations:  {
       logAnalytics : [
           {
-              workspaceResourceId: lawResourceId
+              workspaceResourceId: workspaceResourceId
               name: lawFriendlyName
           }
       ]
@@ -71,7 +72,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
         destinations: [
             lawFriendlyName
         ]
-        transformKql: 'source | where SyslogMessage == "Stopped A high performance web server and a reverse proxy server." or SyslogMessage == "Started A high performance web server and a reverse proxy server."'
+        transformKql: kqlTransformation
         outputStream: 'Microsoft-Syslog'
       }
       {
@@ -85,7 +86,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
           outputStream: streamName
       }
     ]
-    dataCollectionEndpointId: endpointResourceId
+    dataCollectionEndpointId: dceId
     streamDeclarations: {
       '${streamName}': {
         columns: [
@@ -101,6 +102,32 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
       }
     }
   }
+}
+
+resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (createTable) {
+  name: lawFriendlyName
+}
+resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = if (createTable) {
+  name: tableName
+  parent: law
+  properties: {
+    totalRetentionInDays: retentionDays
+    plan: 'Analytics'
+    schema: {
+        name: tableName
+        columns: [
+            {
+                name: 'TimeGenerated'
+                type: 'datetime'
+            }
+            {
+                name: 'RawData'
+                type: 'string'
+            }
+        ]
+    }
+    retentionInDays: retentionDays
+  }  
 }
 
 output ruleId string = fileCollectionRule.id

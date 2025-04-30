@@ -1122,22 +1122,60 @@ function new-pack {
             Write-Host "Rule OS: $($ruleOS)"
             # based on the rule type, create the required DCRs
             $dcrname=$pack.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
+            $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
+            if ($dcr) {
+                Write-Host "DCR $($ruleName) already exists. Skipping creation."
+                $newPack = $false
+            }
+            else {
+                Write-Host "Creating DCR $($ruleName)..."
+                $newPack=$true
+            }
             switch ($rule.RuleType) {
+                'syslog' {
+                    if ($newPack) {
+                        Write-Host "Creating DCR $($ruleName)..."
+                        if ($urlDeployment) {
+                            $templateUri = "$modulesURLroot/DCRs/$dcrname"
+                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
+                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                                                        -TemplateFile "$($env:temp)/$dcrname" `
+                                                        -ResourceGroupName $resourceGroup `
+                                                        -Location $location `
+                                                        -rulename $ruleName `
+                                                        -workspaceResourceId $WorkspaceId `
+                                                        -facilityNames $rule.facilitynames `
+                                                        -logLevels $rule.logLevels `
+                                                        -kqlTransformation $rule.kqlTransformation `
+                                                        -Tags $TagsToUse `
+                                                        -dceId $dceId
+                        }
+                        else {
+                            $templateFile = "$modulesRoot/DCRs/$dcrname"
+                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                                                        -TemplateFile "$($env:temp)/$dcrname" `
+                                                        -ResourceGroupName $resourceGroup `
+                                                        -Location $location `
+                                                        -rulename $ruleName `
+                                                        -workspaceResourceId $WorkspaceId `
+                                                        -facilityNames $rule.facilitynames `
+                                                        -logLevels $rule.logLevels `
+                                                        -kqlTransformation $rule.kqlTransformation `
+                                                        -Tags $TagsToUse `
+                                                        -dceId $dceId
+                        }
+                        Write-Host "DCR $($ruleName) created successfully."
+                    }
+                }
                 default {
                     # use bicep file to create the DCR. It will need to be available in the SA or repository
                     # Local test for now
-                    $dcrname=$rule.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
-                    
+                                        
                     # test if DCR already exists
-                    $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
-                    if ($dcr) {
-                        Write-Host "DCR $($ruleName) already exists. Skipping creation."
-                        $newPack = $false
-                    }
-                    else {
-                        # Create the DCR using the bicep template
+                    
+                    if ($newPack) {
+                    # Create the DCR using the bicep template
                         Write-Host "Creating DCR $($ruleName)..."
-                        $newPack=$true
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
                             (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           

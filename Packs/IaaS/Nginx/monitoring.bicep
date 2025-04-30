@@ -8,7 +8,7 @@ param actionGroupResourceId string
 @description('location for the deployment.')
 param location string //= resourceGroup().location
 @description('Full resource ID of the log analytics workspace to be used for the deployment.')
-param workspaceId string
+param workspaceResourceId string
 param packtag string = 'Nginx'
 param solutionTag string
 param solutionVersion string
@@ -26,7 +26,7 @@ var tableName = 'NginxLogs'
 
 var tableNameToUse = '${tableName}_CL'
 
-var lawFriendlyName = split(workspaceId,'/')[8]
+var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 var rulename = 'AMP-${instanceName}-${packtag}'
 //var ruleshortname = 'AMP-${instanceName}-${packtag}'
@@ -44,7 +44,7 @@ var filePatterns = [
 // if the customer has provided tags, then use them, otherwise use the default tags
 var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
 var resourceGroupName = split(resourceGroupId, '/')[4]
-var lawResourceGroup = split(workspaceId, '/')[4]
+var lawResourceGroup = split(workspaceResourceId, '/')[4]
 
 var facilityNames = [
   'daemon'
@@ -84,7 +84,7 @@ module fileCollectionRule '../../../modules/DCRs/filecollectionSyslogLinux.bicep
     filepatterns: [
       fp
     ]
-    lawResourceId:workspaceId
+    lawResourceId:workspaceResourceId
     tableName: tableNameToUse
     facilityNames: facilityNames
     logLevels: logLevels
@@ -97,7 +97,7 @@ module Alerts './alerts.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
-    workspaceId: workspaceId
+    workspaceId: workspaceResourceId
     AGId: actionGroupResourceId
     packtag: packtag
     Tags: Tags
