@@ -87,34 +87,18 @@ var performanceCounters=[
   '\\DirectoryServices(NTDS)\\ATQ Threads Total'
 ]
 // DCR - the module below ingests the performance counters and the XPath queries and creates the DCR
-module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
-  name: 'dcrPerformance-${packtag}-${instanceName}-${location}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: location
-    rulename: rulename
-    workspaceResourceId: workspaceId
-    wsfriendlyname: workspaceFriendlyName
-    xPathQueries: xPathQueries
-    counterSpecifiers: performanceCounters
-    Tags: Tags
-    dceId: dceId
-  }
-}
-
-// module policysetupDCR '../../../modules/policies/mg/policies.bicep' = {
-//   name: 'policysetup-${packtag}'
+// module dcrbasicvmMonitoring '../../../modules/DCRs/dcr-basicWinVM.bicep' = {
+//   name: 'dcrPerformance-${packtag}-${instanceName}-${location}'
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
 //   params: {
-//     dcrId: dcrbasicvmMonitoring.outputs.dcrId
-//     packtag: packtag
-//     solutionTag: solutionTag
-//     rulename: rulename
 //     location: location
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     ruleshortname: '${ruleshortname}-1'
-//     assignmentLevel: assignmentLevel
-//     subscriptionId: subscriptionId
-//     instanceName: instanceName
+//     rulename: rulename
+//     workspaceResourceId: workspaceId
+//     wsfriendlyname: workspaceFriendlyName
+//     xPathQueries: xPathQueries
+//     counterSpecifiers: performanceCounters
+//     Tags: Tags
+//     dceId: dceId
 //   }
 // }
 

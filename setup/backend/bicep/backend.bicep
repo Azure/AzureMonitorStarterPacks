@@ -80,6 +80,7 @@ module backendFunction 'modules/function.bicep' = {
     packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
     solutionTag: solutionTag
     instanceName: instanceName
+    imageGalleryName: gallery.name
   }
 }
 

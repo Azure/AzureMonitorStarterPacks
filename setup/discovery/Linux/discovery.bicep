@@ -39,7 +39,7 @@ var sasConfig = {
   keyToSign: 'key2'
 }
 // VM Application to collect the data - this would be ideally an extension
-module linuxdiscoveryapp '../modules/aigapp.bicep' = {
+module linuxdiscoveryapp '../../../modules/discovery/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   name: 'amp-${instanceName}-Discovery-${OS}-${location}'
   params: {
@@ -67,7 +67,7 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   name: storageAccountname
 }
-module linuxDiscovery '../modules/aigappversion.bicep' = {
+module linuxDiscovery '../../../modules/discovery/aigappversion.bicep' = {
   name: 'amp-${instanceName}-Discovery-${OS}-App-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
@@ -86,53 +86,8 @@ module linuxDiscovery '../modules/aigappversion.bicep' = {
     packageFileName: filename
   }
 }
-// module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
-//   name: 'applicationPolicy-${appName}'
-//   params: {
-//     packtag: 'LxDisc'
-//     policyDescription: 'Install ${appName} to ${OS} VMs'
-//     policyName: 'Install ${appName}'
-//     policyDisplayName: 'Install ${appName} to ${OS} VMs'
-//     solutionTag: solutionTag
-//     vmapplicationResourceId: linuxDiscovery.outputs.appVersionId
-//     roledefinitionIds: [
-//       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-//     ]
-//     packtype: 'Discovery'
-//   }
-// }
-// module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
-//   dependsOn: [
-//     applicationPolicy
-//   ]
-//   name: 'Assignment-${ruleshortname}'
-//   scope: managementGroup(mgname)
-//   params: {
-//     policyDefinitionId: applicationPolicy.outputs.policyId
-//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
-//     location: location
-//     //roledefinitionIds: roledefinitionIds
-//     solutionTag: solutionTag
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
-// module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
-//   dependsOn: [
-//     applicationPolicy
-//   ]
-//   name: 'AssignSub-${ruleshortname}'
-//   scope: subscription(subscriptionId)
-//   params: {
-//     policyDefinitionId: applicationPolicy.outputs.policyId
-//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
-//     location: location
-//     //roledefinitionIds: roledefinitionIds
-//     solutionTag: solutionTag
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
 // DCR to collect the data
-module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
+module LinuxDiscoveryDCR '../../../modules/discovery/discoveryrule.bicep' = {
   name: 'LinuxDiscoveryDCR'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -152,21 +107,3 @@ module LinuxDiscoveryDCR '../modules/discoveryrule.bicep' = {
   }
 }
 
-// Policy to assign DCR to all Linux VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
-// module policysetup '../modules/policies.bicep' = {
-//   name: 'policysetup-linuxdiscovery'
-//   params: {
-//     dcrId: LinuxDiscoveryDCR.outputs.ruleId
-//     packtag: 'LxDisc'
-//     solutionTag: solutionTag
-//     rulename: LinuxDiscoveryDCR.outputs.ruleName
-//     location: location
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     mgname: mgname
-//     ruleshortname: ruleshortname
-//     assignmentLevel: assignmentLevel
-//     subscriptionId: subscriptionId
-//     packtype: 'Discovery'
-//     instanceName: instanceName
-//   }
-// }

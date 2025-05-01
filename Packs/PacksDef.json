@@ -1138,7 +1138,6 @@
                     "Rulename": "ADDS1",
                     "RuleType": "EventPerformance",
                     "RuleNamePath": "dcr-basicWinVM.bicep",
-                    "clientPackage": "adds.zip",
                     "xPathQueries": [
                         "Directory Service!*[System[(Eventlevel=1)]]",
                         "DNS Server!*[System[(Eventlevel=1)]]",
@@ -1183,6 +1182,20 @@
                         "\\DirectoryServices(NTDS)\\ATQ Threads LDAP",
                         "\\DirectoryServices(NTDS)\\ATQ Threads Total"
                     ]
+                },
+                {
+                    "Rulename": "ADDS2",
+                    "RuleType": "CustomData",
+                    "RuleNamePath": "customDataDCR.bicep",
+                    "filepatterns": [
+                        "C:\\WindowsAzure\\ADDS\\*.csv"
+                    ],
+                    "clientAppName" : "ADDSCollection",
+                    "clientAppDescription": "Custom VM application to collect AD DS related data.",
+                    "clientAppVersion": "1.0.0",
+                    "clientAppInstallCommand" : "powershell -command \"ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1\"",
+                    "clientAppUninstallCommand" : "powershell -command \"Unregister-ScheduledTask -TaskName 'AD DS Collection Task'\"",
+                    "clientAppZIPURL" : "https://github.com/FehseCorp/AzureMonitorStarterPacks/raw/refs/heads/V3-SubDep/Packs/IaaS/ADDS/addscollection.zip"
                 }
             ],
             "Alerts": [

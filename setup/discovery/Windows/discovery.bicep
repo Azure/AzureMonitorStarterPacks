@@ -9,7 +9,6 @@ var sasConfig = {
   signedProtocol: 'https'
   keyToSign: 'key2'
 }
-
 param location string 
 param solutionTag string
 param subscriptionId string
@@ -39,7 +38,7 @@ var OS = 'Windows'
 var appVersionName = '1.0.0'
 
 // VM Application to collect the data - this would be ideally an extension
-module windowsDiscoveryApp '../modules/aigapp.bicep' = {
+module windowsDiscoveryApp '../../../modules/discovery/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   name: 'amp-${instanceName}-Discovery-${OS}'
   params: {
@@ -66,7 +65,7 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   name: storageAccountname
 }
-module windiscovery '../modules/aigappversion.bicep' = {
+module windiscovery '../../../modules/discovery/aigappversion.bicep' = {
   name: 'amp-${instanceName}-Discovery-${OS}-App'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
@@ -85,53 +84,8 @@ module windiscovery '../modules/aigappversion.bicep' = {
     packageFileName: 'discover.zip'
   }
 }
-// module applicationPolicy '../modules/vmapplicationpolicy.bicep' = {
-//   name: 'applicationPolicy-${appName}'
-//   params: {
-//     packtag: 'WinDisc'
-//     policyDescription: 'Install ${appName} to ${OS} VMs'
-//     policyName: 'Install ${appName}'
-//     policyDisplayName: 'Install ${appName} to ${OS} VMs'
-//     solutionTag: solutionTag
-//     vmapplicationResourceId: windiscovery.outputs.appVersionId
-//     roledefinitionIds: [
-//       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-//     ]
-//     packtype: 'Discovery'
-//   }
-// }
-// module vmapplicationAssignment '../modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
-//   dependsOn: [
-//     applicationPolicy
-//   ]
-//   name: 'Assignment-${ruleshortname}'
-//   scope: managementGroup(mgname)
-//   params: {
-//     policyDefinitionId: applicationPolicy.outputs.policyId
-//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
-//     location: location
-//     //roledefinitionIds: roledefinitionIds
-//     solutionTag: solutionTag
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
-// module vmassignmentsub '../modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
-//   dependsOn: [
-//     applicationPolicy
-//   ]
-//   name: 'AssignSub-${ruleshortname}'
-//   scope: subscription(subscriptionId)
-//   params: {
-//     policyDefinitionId: applicationPolicy.outputs.policyId
-//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
-//     location: location
-//     //roledefinitionIds: roledefinitionIds
-//     solutionTag: solutionTag
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
 // DCR to collect the data
-module windiscoveryDCR '../modules/discoveryrule.bicep' = {
+module windiscoveryDCR '../../../modules/discovery/discoveryrule.bicep' = {
   name: 'amp-${instanceName}-DCR-${OS}Discovery'
 
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -151,22 +105,3 @@ module windiscoveryDCR '../modules/discoveryrule.bicep' = {
     instanceName: instanceName
   }
 }
-
-// Policy to assign DCR to all Windows VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
-// module policysetup '../modules/policies.bicep' = {
-//   name: 'policysetup-windoscovery'
-//   params: {
-//     dcrId: windiscoveryDCR.outputs.ruleId
-//     packtag: 'WinDisc'
-//     solutionTag: solutionTag
-//     rulename: windiscoveryDCR.outputs.ruleName
-//     location: location
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     mgname: mgname
-//     ruleshortname: ruleshortname
-//     assignmentLevel: assignmentLevel
-//     subscriptionId: subscriptionId
-//     packtype: 'Discovery'
-//     instanceName: instanceName
-//   }
-// }

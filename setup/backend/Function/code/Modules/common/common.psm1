@@ -1073,7 +1073,10 @@ function new-pack {
         [string]$AGId = $env:AGId,
         #urlDeploymentSwitch
         [Parameter(Mandatory=$false, HelpMessage="Enter the name of the urlDeploymentSwitch.")]
-        [switch]$urlDeployment
+        [switch]$urlDeployment,
+        #installBicepSwitch
+        [Parameter(Mandatory=$false, HelpMessage="Enter the name of the installBicepSwitch.")]
+        [switch]$installBicep
     )
     $modulesRoot = "./modules"
     $modulesURLroot="https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/modules"
@@ -1089,15 +1092,18 @@ function new-pack {
         Write-Host "No packs found for tag $($packtag)."
         return $false
     }
-    $installPath = "$env:USERPROFILE\.bicep"
-    $installDir = New-Item -ItemType Directory -Path $installPath -Force
-    $installDir.Attributes += 'Hidden'
-    # Fetch the latest Bicep CLI binary
-    (New-Object Net.WebClient).DownloadFile("https://github.com/Azure/bicep/releases/latest/download/bicep-win-x64.exe", "$installPath\bicep.exe")
-    # Add bicep to your PATH
-    $currentPath = (Get-Item -path "HKCU:\Environment" ).GetValue('Path', '', 'DoNotExpandEnvironmentNames') | Out-Null
-    if (-not $currentPath.Contains("%USERPROFILE%\.bicep")) { setx PATH ($currentPath + ";%USERPROFILE%\.bicep") }
-    if (-not $env:path.Contains($installPath)) { $env:path += ";$installPath" }
+    # install bicep
+    if ($installBicep) {
+        $installPath = "$env:USERPROFILE\.bicep"
+        $installDir = New-Item -ItemType Directory -Path $installPath -Force
+        $installDir.Attributes += 'Hidden'
+        # Fetch the latest Bicep CLI binary
+        (New-Object Net.WebClient).DownloadFile("https://github.com/Azure/bicep/releases/latest/download/bicep-win-x64.exe", "$installPath\bicep.exe")
+        # Add bicep to your PATH
+        $currentPath = (Get-Item -path "HKCU:\Environment" ).GetValue('Path', '', 'DoNotExpandEnvironmentNames') | Out-Null
+        if (-not $currentPath.Contains("%USERPROFILE%\.bicep")) { setx PATH ($currentPath + ";%USERPROFILE%\.bicep") }
+        if (-not $env:path.Contains($installPath)) { $env:path += ";$installPath" }
+    }
     # Verify you can now access the 'bicep' command.
     $packs | foreach {
         $pack = $_
@@ -1170,12 +1176,85 @@ function new-pack {
                         Write-Host "DCR $($ruleName) created successfully."
                     }
                 }
+                'CustomData' { # this will be a tough one. 
+                    # Create the Data collection DCR for the custom data
+                    # Create Application in the gallery and app version
+                    # assign the application to the VM in the end but that is already there, hopefully works timely and find the app version. 
+                    # May need to some wait.
+                    # Since we have Powershell, this will likely be easier if we use it to create the VM application instead of bicep. No need to updload and do all that. It will be quicker...hopefully.
+                    # Create the DCR using the bicep template
+                    if ($newPack) {
+                        Write-Host "Creating Custom DCR $($ruleName)..."
+                        if ($urlDeployment) {
+                            $templateUri = "$modulesURLroot/DCRs/$dcrname"
+                            Write-host "Template URI: $templateUri"
+                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
+                        }
+                        else {
+                            $templateFile = "$modulesRoot/DCRs/$dcrname"
+                        }
+                        New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                                                    -TemplateFile "$($env:temp)/$dcrname" `
+                                                    -ResourceGroupName $resourceGroup `
+                                                    -Location $location `
+                                                    -rulename $ruleName `
+                                                    -workspaceResourceId $WorkspaceId `
+                                                    #-kqlTransformation $rule.kqlTransformation `
+                                                    -Tags $TagsToUse `
+                                                    -tableName $rule.tableName `
+                                                    -filepatterns $rule.filepatterns `
+                                                    -createTable $true `
+                                                    -dceId $dceId
+                        Write-Host "DCR $($ruleName) created successfully."                                                    
+                        # Create the VM Application using Powershell instead of bicep.
+                        $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
+                            -GalleryName $env:galleryName `
+                            -Name $rule.clientAppName `
+                            -Location $location `
+                            -Description $rule.description `
+                            -SupportedOSType $pack.OS `
+                            -Tag $TagsToUse
+
+                        # Upload the application package to the storage account first
+                        $storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroup -Name $env:storageAccountName   
+                        $context = $storageAccount.Context
+                        $container = Get-AzStorageContainer -Name "applications" -Context $context
+                        # read the content from the repository from the URL and save it to a file in the temp folder
+                        (Invoke-WebRequest -Uri $rule.clientAppZIPURL -UseBasicParsing).Content | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
+                        # Upload the application package to the storage account
+                        $blob = Set-AzStorageBlobContent -File "$($env:temp)/$($rule.clientAppName.tolower()).zip" `
+                                                        -Container $container.Name `
+                                                        -Blob "$($rule.clientAppName.tolower()).zip" `
+                                                        -Context $context `
+                                                        -Force
+                        $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+                            -GalleryName $env:galleryName `
+                            -GalleryApplicationName $application.Name `
+                            -Name $rule.clientAppVersion `
+                            -Location $location `
+                            -Install $rule.clientAppInstallCommand `
+                            -Uninstall $rule.clientAppUninstallCommand `
+                            -PackageFileLink $blob.ICloudBlob.Uri.AbsoluteUri `
+                            -Tag $TagsToUse
+                            # -Debug
+                        # }
+                        
+                        #     New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                        #                                 -TemplateFile "$($env:temp)/$dcrname" `
+                        #                                 -ResourceGroupName $resourceGroup `
+                        #                                 -Location $location `
+                        #                                 -rulename $ruleName `
+                        #                                 -workspaceResourceId $WorkspaceId `
+                        #                                 -facilityNames $rule.facilitynames `
+                        #                                 -logLevels $rule.logLevels `
+                        #                                 -kqlTransformation $rule.kqlTransformation `
+                        #                                 -Tags $TagsToUse `
+                        #                                 -dceId $dceId
+                    }
+                }
                 default {
                     # use bicep file to create the DCR. It will need to be available in the SA or repository
-                    # Local test for now
-                                        
                     # test if DCR already exists
-                    
                     if ($newPack) {
                     # Create the DCR using the bicep template
                         Write-Host "Creating DCR $($ruleName)..."

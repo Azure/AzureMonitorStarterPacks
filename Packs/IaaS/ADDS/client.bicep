@@ -26,6 +26,9 @@ param instanceName string
 param appName string
 param appDescription string
 param OS string
+param filepatterns array = [
+  'C:\\WindowsAzure\\ADDS\\*.csv'
+]
 var resourceGroupName = split(resourceGroupId, '/')[4]
 
 var tableNameToUse = '${tableName}_CL'
@@ -41,7 +44,7 @@ var sasConfig = {
 }
 
 // VM Application to collect the data - this would be ideally an extension
-module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
+module addscollectionapp '../../../modules/discovery/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   name: 'addscollectionapp-${instanceName}'
   params: {
@@ -53,6 +56,7 @@ module addscollectionapp '../../../setup/discovery/modules/aigapp.bicep' = {
     tags: tags
   }
 }
+
 module upload 'uploadDSADDS.bicep' = {
   name: 'upload-addscollectionapp-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -69,7 +73,7 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   name: storageAccountname
 }
-module addscollectionappversion '../../../setup/discovery/modules/aigappversion.bicep' = {
+module addscollectionappversion '../../../modules/discovery/aigappversion.bicep' = {
   name: 'addscollectionappversion-${instanceName}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   dependsOn: [
@@ -88,51 +92,6 @@ module addscollectionappversion '../../../setup/discovery/modules/aigappversion.
     packageFileName: 'addscollection.zip'
   }
 }
-// module applicationPolicy '../../../setup/discovery/modules/vmapplicationpolicy.bicep' = {
-//   name: 'applicationPolicy-${appName}'
-//   params: {
-//     packtag: 'ADDS'
-//     policyDescription: 'Install ${appName} to ${OS} VMs'
-//     policyName: 'Install ${appName}'
-//     policyDisplayName: 'Install ${appName} to ${OS} VMs'
-//     solutionTag: solutionTag
-//     vmapplicationResourceId: addscollectionappversion.outputs.appVersionId
-//     roledefinitionIds: [
-//       '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-//     ]
-//     packtype: 'IaaS'
-//   }
-// }
-// module vmapplicationAssignment '../../../setup/discovery/modules/assignment.bicep' = if(assignmentLevel == 'managementGroup') {
-//   dependsOn: [
-//     applicationPolicy
-//   ]
-//   name: 'Assignment-${ruleshortname}'
-//   scope: managementGroup(mgname)
-//   params: {
-//     policyDefinitionId: applicationPolicy.outputs.policyId
-//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
-//     location: location
-//     //roledefinitionIds: roledefinitionIds
-//     solutionTag: solutionTag
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
-// module vmassignmentsub '../../../setup/discovery/modules/sub/assignment.bicep' = if(assignmentLevel != 'managementGroup') {
-//   dependsOn: [
-//     applicationPolicy
-//   ]
-//   name: 'AssignSub-${ruleshortname}'
-//   scope: subscription(subscriptionId)
-//   params: {
-//     policyDefinitionId: applicationPolicy.outputs.policyId
-//     assignmentName: 'AMP-Assign-${ruleshortname}-application'
-//     location: location
-//     //roledefinitionIds: roledefinitionIds
-//     solutionTag: solutionTag
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//   }
-// }
 // Table to receive the data
 module table '../../../modules/LAW/table.bicep' = {
   name: tableNameToUse
@@ -144,18 +103,15 @@ module table '../../../modules/LAW/table.bicep' = {
   }
 }
 // DCR to collect the data
-module addscollectionDCR '../../../setup/discovery/modules/discoveryrule.bicep' = {
+module addscollectionDCR '../../../modules/discovery/discoveryrule.bicep' = {
   dependsOn: [
     table
   ]
   name: 'addscollectionDCR'
-
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     endpointResourceId: dceId
-    filepatterns: [
-      'C:\\WindowsAzure\\ADDS\\*.csv'
-    ]
+    filepatterns: filepatterns
     kind: 'Windows'
     location: location
     lawResourceId: workspaceId
@@ -167,22 +123,3 @@ module addscollectionDCR '../../../setup/discovery/modules/discoveryrule.bicep' 
     instanceName: instanceName
   }
 }
-
-// Policy to assign DCR to all Windows VMs (in which context? MG if we want to use the same DCR for all subscriptions?)
-// module policysetup '../../../setup/discovery/modules/policies.bicep' = {
-//   name: 'policysetup-application-${packtag}'
-//   params: {
-//     dcrId: addscollectionDCR.outputs.ruleId
-//     packtag: 'ADDS'
-//     solutionTag: solutionTag
-//     rulename: addscollectionDCR.outputs.ruleName
-//     location: location
-//     userManagedIdentityResourceId: userManagedIdentityResourceId
-//     mgname: mgname
-//     ruleshortname: ruleshortname
-//     assignmentLevel: assignmentLevel
-//     subscriptionId: subscriptionId
-//     packtype: 'IaaS'
-//     instanceName: instanceName
-//   }
-// }

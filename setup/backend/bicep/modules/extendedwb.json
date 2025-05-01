@@ -545,7 +545,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "mcp1"
+                          "mcp2"
                         ]
                       }
                     ],
@@ -1183,6 +1183,14 @@
                           "formatter": 5
                         },
                         {
+                          "columnMatch": "subscriptionId",
+                          "formatter": 15,
+                          "formatOptions": {
+                            "linkTarget": null,
+                            "showIcon": true
+                          }
+                        },
+                        {
                           "columnMatch": "Associated Packs",
                           "formatter": 18,
                           "formatOptions": {
@@ -1216,12 +1224,9 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
-                    "crossComponentResources": [
-                      "{Workspace}"
-                    ],
                     "parameters": [
                       {
-                        "id": "54f2c7fb-7251-43b6-aa4d-fd94647cac4a",
+                        "id": "2415a274-9657-4eb6-9179-92c0cdb31728",
                         "version": "KqlParameterItem/1.0",
                         "name": "PackTagsLeft",
                         "label": "Add/Remove",
@@ -1230,24 +1235,19 @@
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=='IaaS'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
-                        "crossComponentResources": [
-                          "{Workspace}"
-                        ],
+                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
                         },
-                        "timeContext": {
-                          "durationMs": 86400000
-                        },
-                        "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"
+                        "queryType": 10,
+                        "value": [
+                          "nginx"
+                        ]
                       }
                     ],
                     "style": "pills",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources"
+                    "queryType": 10
                   },
                   "customWidth": "25",
                   "conditionalVisibility": {
@@ -1279,7 +1279,7 @@
                               "value": "removeTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
                           "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack(s) \n\nServers:\n\n{taggedVMs}",
@@ -1296,7 +1296,7 @@
                           "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                           "headers": [],
                           "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Add Monitoring",
                           "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeft} Pack(s)",
@@ -1356,6 +1356,7 @@
                     "size": 0,
                     "title": "Non-monitored Machines",
                     "noDataMessage": "No unmonitored servers. Good job!",
+                    "showRefreshButton": true,
                     "exportMultipleValues": true,
                     "exportedParameters": [
                       {
@@ -1405,24 +1406,18 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
-                    "crossComponentResources": [
-                      "value::tenant"
-                    ],
                     "parameters": [
                       {
                         "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
                         "version": "KqlParameterItem/1.0",
                         "name": "PackTags",
-                        "label": "Select Pack to Enable",
+                        "label": "Add Pack(s)",
                         "type": 2,
                         "isGlobal": true,
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.MonitoringPackType=='IaaS'\n| project MPs=tostring(tags.MonitorStarterPacks)\n| summarize by MPs",
-                        "crossComponentResources": [
-                          "value::tenant"
-                        ],
+                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
@@ -1430,16 +1425,11 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "Nginx"
-                        ]
+                        "queryType": 10
                       }
                     ],
                     "style": "pills",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resources/tenants"
+                    "queryType": 10
                   },
                   "customWidth": "50",
                   "conditionalVisibility": {
@@ -1470,10 +1460,10 @@
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\",\n    \"PackType\": \"IaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\" : \"{Workspace}\",\n    \"DefaultAG\" : \"{DefaultAG}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
-                          "description": "# This will enable the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} Pack(s) to the resource(s).",
+                          "description": "# This will enable the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} Pack(s) to the resource(s).\n\nWorkspace: {Workspace}\n\nAction Group: {DefaultAG}",
                           "actionName": "EnableMonitoring",
                           "runLabel": "Confirm"
                         }
