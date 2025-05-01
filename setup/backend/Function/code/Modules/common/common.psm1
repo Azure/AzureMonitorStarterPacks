@@ -1185,16 +1185,19 @@ function new-pack {
                             $templateFile = "$modulesRoot/DCRs/$dcrname"
                         }
                         New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                    -TemplateFile "$($env:temp)/$dcrname" `
-                                                    -ResourceGroupName $resourceGroup `
-                                                    -Location $location `
-                                                    -rulename $ruleName `
-                                                    -workspaceResourceId $WorkspaceId `
-                                                    -Tags $TagsToUse `
-                                                    -tableName $rule.tableName `
-                                                    -filepatterns $rule.filepatterns `
-                                                    -dceId $dceId `
-                                                    -solutionTag "MonitorStarterPacks"                                                   -
+                        -TemplateFile "$($env:temp)/$dcrname" `
+                        -ResourceGroupName $resourceGroup `
+                        -location $location `
+                        -solutionTag "MonitorStarterPacks" `
+                        -workspaceResourceId $WorkspaceId `
+                        -tableName $rule.tableName `
+                        -packtag $packtag `
+                        -filepatterns $rule.filepatterns `
+                        -dceId $dceId `
+                        -instanceName $instanceName `
+                        -rulename $ruleName `
+                        -tags $TagsToUse
+                                                    
                         Write-Host "DCR $($ruleName) created successfully."                                                    
                         # Create the VM Application using Powershell instead of bicep.
                         $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
