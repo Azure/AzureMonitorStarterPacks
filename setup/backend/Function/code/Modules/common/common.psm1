@@ -1220,6 +1220,13 @@ function new-pack {
                                                         -Blob "$($rule.clientAppName.tolower()).zip" `
                                                         -Context $context `
                                                         -Force
+# get a SAS token for an hour for the bob
+                        $sasToken = New-AzStorageBlobSASToken -Blob $blob.Name `
+                                                            -Container $container.Name `
+                                                            -Context $context `
+                                                            -Permission r `
+                                                            -ExpiryTime (Get-Date).AddHours(1) `
+                                                            -FullUri
                         $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
                             -GalleryName $env:galleryName `
                             -GalleryApplicationName $application.Name `
@@ -1227,8 +1234,8 @@ function new-pack {
                             -Location $location `
                             -Install $rule.clientAppInstallCommand `
                             -Remove $rule.clientAppUninstallCommand `
-                            -PackageFileLink $blob.ICloudBlob.Uri.AbsoluteUri `
-                            -Tag $TagsToUse
+                            -PackageFileLink "$sasToken" `
+                            -Tag $TagsToUse 
                             # -Debug
                         # }
                         

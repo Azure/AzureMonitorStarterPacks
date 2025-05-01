@@ -1200,19 +1200,17 @@
                 }
             ],
             "Alerts": [
-                [
-                    {
-                        "alertRuleDescription": "WAS detected invalid configuration data.",
-                        "alertRuleDisplayName": "WAS detected invalid configuration data.",
-                        "alertRuleName": "AlertRule-IIS-2012-27",
-                        "alertRuleSeverity": 1,
-                        "autoMitigate": true,
-                        "evaluationFrequency": "PT15M",
-                        "windowSize": "PT15M",
-                        "alertType": "rows",
-                        "query": "Event | where  EventID in (5174,5179,5180) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
-                    }
-                ]
+                {
+                    "alertRuleDescription": "WAS detected invalid configuration data.",
+                    "alertRuleDisplayName": "WAS detected invalid configuration data.",
+                    "alertRuleName": "AlertRule-IIS-2012-27",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5174,5179,5180) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                }
             ]
         },
         {
