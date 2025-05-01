@@ -10,6 +10,7 @@ param packtype string
 @description('Specifies the resource id of the data collection endpoint.')
 param dceId string
 param instanceName string
+param retentionDays int = 31
 // param storageAccountname string
 // param tags object
 // param imageGalleryName string
@@ -136,14 +137,33 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
 //     packageFileName: 'addscollection.zip'
 //   }
 // }
-// Table to receive the data
-module table '../LAW/table.bicep' = {
-  name: tableNameToUse
-  params: {
-    parentname: lawFriendlyName
-    tableName: tableNameToUse
-    retentionDays: 31
-  }
+
+resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing =  {
+  name: lawFriendlyName
 }
+
+resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = {
+  name: tableNameToUse
+  parent: law
+  properties: {
+    totalRetentionInDays: retentionDays
+    plan: 'Analytics'
+    schema: {
+        name: tableNameToUse
+        columns: [
+            {
+                name: 'TimeGenerated'
+                type: 'datetime'
+            }
+            {
+                name: 'RawData'
+                type: 'string'
+            }
+        ]
+    }
+    retentionInDays: retentionDays
+  }  
+}
+
 output ruleId string = fileCollectionRule.id
 output ruleName string = fileCollectionRule.name

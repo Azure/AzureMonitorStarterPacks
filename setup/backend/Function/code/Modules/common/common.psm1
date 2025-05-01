@@ -1119,8 +1119,10 @@ function new-pack {
         Write-Host "Pack OS: $($packOS)"
         Write-Host "Pack Location: $($location)"
         # Create the required DCRs based on configuration
+        Write-host "Pack $($packName) has $($pack.Rules.Count) rules."
+        $newPack = $false
         foreach ($rule in $pack.Rules) {
-            $ruleName = "AMP-$instanceName-$packtag"
+            $ruleName = "AMP-$instanceName-$packtag-$($rule.RuleName)"
             $ruleTag = $packTag
             $ruleOS = $pack.OS
             Write-Host "Creating rule for tag: $($ruleTag)"
@@ -1131,14 +1133,13 @@ function new-pack {
             $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
             if ($dcr) {
                 Write-Host "DCR $($ruleName) already exists. Skipping creation."
-                $newPack = $false
             }
             else {
                 $newPack=$true
             }
-            switch ($rule.RuleType) {
-                'syslog' {
-                    if ($newPack) {
+            if ($newPack) {
+                switch ($rule.RuleType) {
+                    'syslog' {
                         Write-Host "Creating Syslog DCR $($ruleName)..."
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
@@ -1175,15 +1176,13 @@ function new-pack {
                         }
                         Write-Host "DCR $($ruleName) created successfully."
                     }
-                }
-                'CustomData' { # this will be a tough one. 
-                    # Create the Data collection DCR for the custom data
-                    # Create Application in the gallery and app version
-                    # assign the application to the VM in the end but that is already there, hopefully works timely and find the app version. 
-                    # May need to some wait.
-                    # Since we have Powershell, this will likely be easier if we use it to create the VM application instead of bicep. No need to updload and do all that. It will be quicker...hopefully.
-                    # Create the DCR using the bicep template
-                    if ($newPack) {
+                    'CustomData' { # this will be a tough one. 
+                        # Create the Data collection DCR for the custom data
+                        # Create Application in the gallery and app version
+                        # assign the application to the VM in the end but that is already there, hopefully works timely and find the app version. 
+                        # May need to some wait.
+                        # Since we have Powershell, this will likely be easier if we use it to create the VM application instead of bicep. No need to updload and do all that. It will be quicker...hopefully.
+                        # Create the DCR using the bicep template
                         Write-Host "Creating Custom DCR $($ruleName)..."
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
@@ -1250,13 +1249,12 @@ function new-pack {
                         #                                 -kqlTransformation $rule.kqlTransformation `
                         #                                 -Tags $TagsToUse `
                         #                                 -dceId $dceId
+                        
                     }
-                }
-                default {
-                    # use bicep file to create the DCR. It will need to be available in the SA or repository
-                    # test if DCR already exists
-                    if ($newPack) {
-                    # Create the DCR using the bicep template
+                    default {
+                        # use bicep file to create the DCR. It will need to be available in the SA or repository
+                        # test if DCR already exists
+                        # Create the DCR using the bicep template
                         Write-Host "Creating DCR $($ruleName)..."
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
@@ -1284,10 +1282,9 @@ function new-pack {
                                                         -dceId $dceId
                         }
                         Write-Host "DCR $($ruleName) created successfully."
-                    }
+                    }                   
                 }
-                
-            }
+            }   
         }
         # Now deploy alerts based on the pack configuration
         if ($pack.Alerts.Count -ne 0 -and $newPack -eq $true) {
