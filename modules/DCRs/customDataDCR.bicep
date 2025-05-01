@@ -1,6 +1,6 @@
 param location string 
 param solutionTag string
-param lawResourceId string
+param workspaceResourceId string
 param tableName string
 param packtag string
 param kind string
@@ -28,7 +28,7 @@ param rulename string
 // }
 var tableNameToUse  = '${tableName}_CL'
 var streamName= 'Custom-${tableName}_CL'
-var lawFriendlyName = split(lawResourceId,'/')[8]
+var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'AMP-${instanceName}-FileColl-${packtag}-${OS}'
@@ -60,7 +60,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
     destinations:  {
       logAnalytics : [
           {
-              workspaceResourceId: lawResourceId
+              workspaceResourceId: workspaceResourceId
               name: lawFriendlyName
           }
       ]

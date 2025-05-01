@@ -1083,6 +1083,9 @@ function new-pack {
     $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
     $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
     $DceId=(Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}).Id
+    if (!$DceId) {
+        Write-Error "No DCE Id found!"
+    }
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     Write-host "Found $($packlist.Packs.Count) packs in the file. "
     Write-host "Available Tags: $($packlist.Packs | Select-Object -ExpandProperty Tag | Sort-Object -Unique)"
@@ -1144,8 +1147,12 @@ function new-pack {
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
                             Write-host "Template URI: $templateUri"
-                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
-                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
+                        }
+                        else {
+                            $templateFile = "$modulesRoot/DCRs/$dcrname"
+                        }
+                        New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
                                                         -TemplateFile "$($env:temp)/$dcrname" `
                                                         -ResourceGroupName $resourceGroup `
                                                         -Location $location `
@@ -1159,21 +1166,6 @@ function new-pack {
                                                         -filepatterns $rule.filepatterns `
                                                         -createTable $true `
                                                         -dceId $dceId
-                        }
-                        else {
-                            $templateFile = "$modulesRoot/DCRs/$dcrname"
-                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                        -TemplateFile "$($env:temp)/$dcrname" `
-                                                        -ResourceGroupName $resourceGroup `
-                                                        -Location $location `
-                                                        -rulename $ruleName `
-                                                        -workspaceResourceId $WorkspaceId `
-                                                        -facilityNames $rule.facilitynames `
-                                                        -logLevels $rule.logLevels `
-                                                        -kqlTransformation $rule.kqlTransformation `
-                                                        -Tags $TagsToUse `
-                                                        -dceId $dceId
-                        }
                         Write-Host "DCR $($ruleName) created successfully."
                     }
                     'CustomData' { # this will be a tough one. 
