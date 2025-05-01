@@ -32,7 +32,7 @@ var streamName= 'Custom-${tableName}_CL'
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
-  name: 'AMP-${instanceName}-FileColl-${packtag}-${OS}'
+  name: rulename
   location: location
   tags: {
     '${solutionTag}': packtag
