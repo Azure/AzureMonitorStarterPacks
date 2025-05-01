@@ -1258,31 +1258,22 @@ function new-pack {
                         Write-Host "Creating DCR $($ruleName)..."
                         if ($urlDeployment) {
                             $templateUri = "$modulesURLroot/DCRs/$dcrname"
-                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
-                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                        -TemplateFile "$($env:temp)/$dcrname" `
-                                                        -ResourceGroupName $resourceGroup `
-                                                        -Location $location `
-                                                        -rulename $ruleName `
-                                                        -workspaceResourceId $WorkspaceId `
-                                                        -xPathQueries $rule.XPathQueries `
-                                                        -Tags $TagsToUse `
-                                                        -dceId $dceId
-                        }
+                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
+                        }                        
                         else {
                             $templateFile = "$modulesRoot/DCRs/$dcrname"
-                            New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                        -TemplateFile $templateFile `
-                                                        -ResourceGroupName $resourceGroup `
-                                                        -Location $location `
-                                                        -rulename $ruleName `
-                                                        -workspaceId $WorkspaceId `
-                                                        -xPathQueries $rule.XPathQueries `
-                                                        -Tags $TagsToUse `
-                                                        -dceId $dceId
                         }
+                        New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
+                                                    -TemplateFile "$($env:temp)/$dcrname" `
+                                                    -ResourceGroupName $resourceGroup `
+                                                    -Location $location `
+                                                    -rulename $ruleName `
+                                                    -workspaceResourceId $WorkspaceId `
+                                                    -xPathQueries $rule.XPathQueries `
+                                                    -Tags $TagsToUse `
+                                                    -dceId $dceId
                         Write-Host "DCR $($ruleName) created successfully."
-                    }                   
+                    }                                     
                 }
             }   
         }

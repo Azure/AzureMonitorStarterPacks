@@ -11,6 +11,7 @@ param packtype string
 param dceId string
 param instanceName string
 param retentionDays int = 31
+param rulename string
 // param storageAccountname string
 // param tags object
 // param imageGalleryName string
