@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4616495348461819527"
+      "templateHash": "4318258918992774867"
     }
   },
   "parameters": {
@@ -57,42 +57,8 @@
     "deployGrafana": {
       "type": "bool"
     },
-    "actionGroupName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the Action Group to be used or created."
-      }
-    },
-    "emailreceiver": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Email receiver names to be used for the Action Group if being created."
-      }
-    },
-    "emailreiceversemail": {
-      "type": "string",
-      "metadata": {
-        "description": "Email addresses to be used for the Action Group if being created."
-      }
-    },
-    "useExistingAG": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "If set to true, a new Action group will be created"
-      }
-    },
     "customerTags": {
       "type": "object"
-    },
-    "deployAllPacks": {
-      "type": "bool"
-    },
-    "deployIaaSPacks": {
-      "type": "bool",
-      "defaultValue": false
     },
     "deployDiscovery": {
       "type": "bool",
@@ -107,7 +73,6 @@
     }
   },
   "variables": {
-    "deployPacks": "[or(parameters('deployAllPacks'), parameters('deployIaaSPacks'))]",
     "solutionTag": "MonitorStarterPacks",
     "solutionTagComponents": "MonitorStarterPacksComponents",
     "solutionVersion": "0.1",

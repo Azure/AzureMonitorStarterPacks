@@ -12,7 +12,6 @@ param existingLogAnalyticsWSId string = ''
 param grafanaLocation string = ''
 param grafanaName string = ''
 param newGrafana bool
-//param existingGrafanaResourceId string = ''
 param storageAccountName string
 param createNewStorageAccount bool = false
 param instanceName string
@@ -22,7 +21,6 @@ param customerTags object
 // param deployAllPacks bool
 // param deployIaaSPacks bool = false
 param deployDiscovery bool = false
-
 param collectTelemetry bool = true
 param appInsightsLocation string
 

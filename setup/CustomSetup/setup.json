@@ -375,7 +375,6 @@
                 "grafanaLocation": "[steps('Configuration').grafanaLocation]",
                 "grafanaName": "[steps('Configuration').NewGrafanaName]",
                 "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",                
-                "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
                 "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
 				"instanceName":  "[steps('Configuration').instanceName]",
