@@ -146,7 +146,7 @@ switch ($Action) {
     }
   }
   "getavailableIaaSPacks" {
-    $body=get-availableIaaSPacks
+    $body=get-availableIaaSPacks -packContentURL "$($env:PacksModulesRootURL)/Packs/PacksDef.json"
   }
   default { $body = '{"No matching action."}' }
 }

@@ -199,7 +199,7 @@ module Nginx './Nginx/monitoring.bicep' = {
     solutionVersion: solutionVersion
     subscriptionId: subscriptionId
     //userManagedIdentityResourceId: userManagedIdentityResourceId
-    workspaceId: workspaceId
+    workspaceResourceId: workspaceId
     customerTags: customerTags
     actionGroupResourceId: actionGroupResourceId
     instanceName: instanceName

@@ -1079,8 +1079,8 @@ function new-pack {
         [switch]$installBicep
     )
     $modulesRoot = "./modules"
-    $modulesURLroot="https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/modules"
-    $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
+    $modulesURLroot="$($env:PacksModulesRootURL)/modules"
+    $packContentURL="$($env:PacksModulesRootURL)/Packs/PacksDef.json"
     $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
     $DceId=(Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}).Id
     if (!$DceId) {
@@ -1372,11 +1372,10 @@ function ConvertPSObjectToHashtable
 }
 function get-availableIaaSPacks {
     param (
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [string]$packContentURL
     )
     # Get the available packs from the JSON file
-    $packContentURL= "https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep/Packs/PacksDef.json"
     $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     $packlist.Packs.Tag | convertto-json

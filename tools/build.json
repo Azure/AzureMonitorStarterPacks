@@ -2,9 +2,5 @@
     {
         "Folder":"./setup/CustomSetup",
         "File":"monstar.bicep"
-    },
-    {
-        "Folder":"./Packs",
-        "File":"AllPacks.bicep"
     }
 ]

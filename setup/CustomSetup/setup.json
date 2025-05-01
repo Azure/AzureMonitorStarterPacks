@@ -349,121 +349,6 @@
                     ]
                 },
                 {
-                    "name": "Packs",
-                    "label": "Packs",
-                    "elements": [
-                        {
-                            "name": "deployPacks",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All Packs",
-                            "toolTip": "Select to deploy all packs.",
-                            "defaultValue": true,
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the available packs to the selected environment."
-                            }
-                        },
-                        {
-                            "name": "deployIaaSPacks",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy All IaaS Packs",
-                            "toolTip": "Select to deploy all IaaS packs.",
-                            "defaultValue": false,
-                            "visible": "[equals(steps('Packs').deployPacks, false)]",
-                            "constraints": {
-                                "required": false,
-                                "validationMessage": "Select to deploy the available IaaS packs to the selected environment."
-                            }
-                        },
-                        {
-                            "name": "packsText",
-                            "type": "Microsoft.Common.TextBlock",
-                            "options": {
-                                "text": "When selected, all packs or all packs of a specific type  will be deployed.",
-                                "link": {
-                                    "label": "Learn more",
-                                    "uri": "https://github.com/Azure/AzureMonitorStarterPacks/tree/main/Packs#readme"
-                                }
-                            },
-                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true))]"
-                        },
-                        {
-                            "name": "ActionGroupStatus",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "label": "Use New or Existing Action Group",
-                            "toolTip": "This will be the Action Group to receive alert emails.",
-                            "constraints": {
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": "New"
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": "Existing"
-                                    }
-                                ],
-                                "required": true
-                            },
-                            "visible": "[or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true))]"
-                        },
-                        {
-                            "name": "existingAG",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Existing Action Group",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Action Group to receive alerts.",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Resource Groups...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[map(steps('Configuration').ActionGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
-                            },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'Existing'))]"
-                        },
-                        {
-                            "name": "NewActionGroupName",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "New Action Group Name",
-                            "subLabel": "",
-                            "defaultValue": "",
-                            "toolTip": "",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z]{1,12}$",
-                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-12 characters long."
-                            },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
-                        },
-                        {
-                            "name": "emailreceiver",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver",
-                            "subLabel": "",
-                            "defaultValue": "",
-                            "toolTip": "",
-                            "constraints": {
-                                "required": true
-                            },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
-                        },
-                        {
-                            "name": "emailreceiveremail",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Email Receiver email",
-                            "subLabel": "",
-                            "defaultValue": "",
-                            "toolTip": "",
-                            "constraints": {
-                                "required": true
-                            },
-                            "visible": "[and(or(equals(steps('Packs').deployPacks, true),equals(steps('Packs').deployIaaSPacks, true)),equals(steps('Packs').ActionGroupStatus, 'New'))]"
-                        }
-                    ]
-                },
-                {
                     "name": "tags",
                     "label": "Tags",
                     "elements": [
@@ -493,21 +378,12 @@
                 "existingGrafanaResourceId": "[if(equals(steps('Configuration').GrafanaStatus,'Existing'), steps('Configuration').ExistingGrafanaInstance.id, '')]",
                 "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
                 "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
-                "resourceGroupId":"[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), '', steps('Configuration').resourceGroupNameExisting)]",
 				"instanceName":  "[steps('Configuration').instanceName]",
                 "deployGrafana": "[steps('Configuration').deployGrafana]",
-                "actionGroupName":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').NewActionGroupName, last(split(steps('Packs').existingAG,'/')))]",
-                "existingActionGroupId":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), '', steps('Packs').existingAG)]",
-                "emailreceiver":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiver,'')]",
-                "emailreiceversemail":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), steps('Packs').emailreceiveremail,'')]",
-                "useExistingAG":"[if(equals(steps('Packs').ActionGroupStatus, 'New'), 'false', 'true')]",
                 "customerTags": "[steps('tags').tagsByResource]",
-                "deployAllPacks": "[steps('Packs').deployPacks]",
-                "deployIaaSPacks": "[steps('Packs').deployIaaSPacks]",
                 "deployDiscovery": "[steps('Configuration').deployDiscovery]",
 		        "collectTelemetry": "[steps('Configuration').collectTelemetry]",
                 "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]"
-
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
