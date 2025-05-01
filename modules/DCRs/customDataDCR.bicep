@@ -4,7 +4,6 @@ param workspaceResourceId string
 param tableName string
 param packtag string
 param filepatterns array
-param OS string
 @description('Specifies the resource id of the data collection endpoint.')
 param dceId string
 param instanceName string
