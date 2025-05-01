@@ -6,7 +6,6 @@ param packtag string
 param kind string
 param filepatterns array
 param OS string
-param packtype string
 @description('Specifies the resource id of the data collection endpoint.')
 param dceId string
 param instanceName string
@@ -37,7 +36,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
   tags: {
     '${solutionTag}': packtag
       instanceName: instanceName
-    MonitoringPackType: packtype
+    MonitoringPackType: 'IaaS'
   }
   kind: kind
   properties: {

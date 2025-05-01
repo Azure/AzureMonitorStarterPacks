@@ -1193,8 +1193,8 @@ function new-pack {
                                                     -Tags $TagsToUse `
                                                     -tableName $rule.tableName `
                                                     -filepatterns $rule.filepatterns `
-                                                    -createTable $true `
-                                                    -dceId $dceId
+                                                    -dceId $dceId `
+                                                    -solutionTag "MonitorStarterPacks"                                                   -
                         Write-Host "DCR $($ruleName) created successfully."                                                    
                         # Create the VM Application using Powershell instead of bicep.
                         $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
@@ -1223,7 +1223,7 @@ function new-pack {
                             -Name $rule.clientAppVersion `
                             -Location $location `
                             -Install $rule.clientAppInstallCommand `
-                            -Uninstall $rule.clientAppUninstallCommand `
+                            -Remove $rule.clientAppUninstallCommand `
                             -PackageFileLink $blob.ICloudBlob.Uri.AbsoluteUri `
                             -Tag $TagsToUse
                             # -Debug
