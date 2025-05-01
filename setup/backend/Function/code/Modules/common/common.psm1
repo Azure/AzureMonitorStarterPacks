@@ -1190,7 +1190,6 @@ function new-pack {
                                                     -Location $location `
                                                     -rulename $ruleName `
                                                     -workspaceResourceId $WorkspaceId `
-                                                    #-kqlTransformation $rule.kqlTransformation `
                                                     -Tags $TagsToUse `
                                                     -tableName $rule.tableName `
                                                     -filepatterns $rule.filepatterns `

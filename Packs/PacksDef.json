@@ -1190,6 +1190,7 @@
                     "filepatterns": [
                         "C:\\WindowsAzure\\ADDS\\*.csv"
                     ],
+                    "tableName": "addsmonitoring",
                     "clientAppName" : "ADDSCollection",
                     "clientAppDescription": "Custom VM application to collect AD DS related data.",
                     "clientAppVersion": "1.0.0",
