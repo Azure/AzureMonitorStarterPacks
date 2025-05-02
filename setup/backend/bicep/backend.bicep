@@ -69,6 +69,7 @@ module backendFunction './modules/function.bicep' = {
   //   functionUserManagedIdentity
   // ]
   params: {
+    packsURL: packsDefStorage.outputs.fileURL
     appInsightsLocation: appInsightsLocation
     functionname: functionname
     lawresourceid: lawresourceid
@@ -83,7 +84,6 @@ module backendFunction './modules/function.bicep' = {
     imageGalleryName: gallery.name
   }
 }
-
 module logicapp './modules/logicapp.bicep' = {
   name: logicappname
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -99,7 +99,6 @@ module logicapp './modules/logicapp.bicep' = {
     subscriptionId: subscriptionId
   }
 }
-
 module extendedWorkbook './modules/extendedworkbook.bicep' = {
   name: 'workbook2deployment'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -109,7 +108,6 @@ module extendedWorkbook './modules/extendedworkbook.bicep' = {
     Tags: Tags
   }
 }
-
 // A DCE in the main region to be used by all rules.
 module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
   name: 'AMP-${instanceName}-DCE-${location}'
@@ -136,8 +134,6 @@ module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     instanceName: instanceName
   }
 }
-
-
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'AMP-${instanceName}-UMI-AzFun-${location}'
   params: {
@@ -151,7 +147,6 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     instanceName: instanceName
   }
 }
-
 //Add keyvault
 module keyvault 'modules/keyvault.bicep' = {
   name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
@@ -166,7 +161,6 @@ module keyvault 'modules/keyvault.bicep' = {
     functionName: functionname
   }
 }
-
 //Add permissions for loginapp as a user to keyvault
 module userIdentityRoleAssignments '../../../modules/rbac/subscription/roleassignment.bicep' =  [for (roledefinitionId, i) in logicappRequiredRoleassignments:  {
   name: 'logiapprbac-${i}'
@@ -180,7 +174,20 @@ module userIdentityRoleAssignments '../../../modules/rbac/subscription/roleassig
     instanceName: instanceName
   }
 }]
-
+// Module to upload the packsdef.json to the storage account.
+module packsDefStorage './modules/uploadPackDef.bicep' = {
+  name: 'PacksDefStorage'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'amba'
+    filename: 'PacksDef.json'
+    tags: Tags
+    sasExpiry: 'PT1H'
+  }
+}
+output packsDefStorageURL string = packsDefStorage.outputs.fileURL
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
 output dceId string = dataCollectionEndpoint.outputs.dceId

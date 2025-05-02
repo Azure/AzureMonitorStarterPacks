@@ -670,7 +670,6 @@ function Remove-Agent {
         }
     }
 }
-
 function Add-Tag {
     param (
         [Parameter(Mandatory = $true)]
@@ -725,7 +724,7 @@ function Add-Tag {
                 -workspaceId $workspaceResourceId `
                 -packtag $TagValue `
                 -AGId $actionGroupId `
-                -urlDeployment
+                -urlDeployment -installBicep
             }
             if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                 Write-host "Addinng VM application for $TagValue."
@@ -772,7 +771,7 @@ function Add-Tag {
                     -workspaceId $workspaceResourceId `
                     -packtag $TagValue `
                     -AGId $actionGroupId `
-                    -urlDeployment
+                    -urlDeployment -installBicep
                 }
                 if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
                     Write-host "Addinng VM application for $TagValue."
@@ -1080,8 +1079,14 @@ function new-pack {
     )
     $modulesRoot = "./modules"
     $modulesURLroot="$($env:PacksModulesRootURL)/modules"
-    $packContentURL="$($env:PacksModulesRootURL)/Packs/PacksDef.json"
-    $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
+    try {
+        "Collecting pack content from URL: $packContentURL"
+        $packlist = get-blobcontentfromurl -url $env:PacksURL | ConvertFrom-Json -Depth 15
+    }
+    catch {
+        Write-Error "Failed to fetch pack content from URL: $packContentURL. $_"
+        return $false
+    }
     $DceId=(Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}).Id
     if (!$DceId) {
         Write-Error "No DCE Id found!"
@@ -1370,244 +1375,34 @@ function ConvertPSObjectToHashtable
         }
     }
 }
+function get-blobContentFromUrl {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$url
+    )
+    
+#having the URL need to infer container and blob name
+    $uri = [System.Uri]$url
+    $containerName = $uri.Segments[1].Trim('/')
+    $blobName = $uri.Segments[2..($uri.Segments.Count - 1)] -join '/'
+    #get the storage account name from the URL
+    $storageAccountName = $uri.Host.Split('.')[0]
+    # I am authorized already to access storage
+    $context = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
+    #get the blob content
+    Get-AzStorageBlobContent -Container $containerName -Blob $blobName -Destination "$($env:temp)/$blobName" -Context $context -Force | Out-Null
+    return Get-Content "$($env:temp)/$blobName"
+}
+
 function get-availableIaaSPacks {
     param (
         [Parameter(Mandatory = $true)]
         [string]$packContentURL
     )
     # Get the available packs from the JSON file
-    $packlist = (Invoke-WebRequest -Uri $packContentURL -UseBasicParsing).content | ConvertFrom-Json -Depth 15
+    $packlist = get-blobContentFromUrl -Url $packContentURL | ConvertFrom-Json -Depth 15
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     $packlist.Packs.Tag | convertto-json
 }
 
-# function Add-Agent {
-#     param (
-#         [Parameter(Mandatory = $true)]
-#         [string]$resourceId,
-#         [Parameter(Mandatory = $true)]
-#         [string]$ResourceOS,
-#         [Parameter(Mandatory = $true)]
-#         [string]$location,
-#         [boolean]$InstallDependencyAgent=$false
-#     )
-#     $resourceName = $resourceId.split('/')[8]
-#     $resourceGroupName = $resourceId.Split('/')[4]
-#     # VM Extension setup
-#     $resourceSubcriptionId = $resourceId.split('/')[2]
-
-#     "Adding agent to $resourceName in $resourceGroupName RG in $resourceSubcriptionId sub. Checking if it's already installed..."
-#     if ($ResourceOS -eq 'Linux') {
-#         if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#             $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
-#         }
-#         else {
-#             $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue 
-#         }
-#     }
-#     else {
-#         if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#             $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
-#         }
-#         else {
-#             $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
-#         }
-#     }
-#     if ($agentstatus) {
-#         "Azure Monitor Agent already installed."
-#         if ($InstallDependencyAgent) {
-#             "Checking Dependency agent."
-#             # Check for Linux
-#             if ($ResourceOS -eq 'Linux') {
-#                 if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#                     $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "DependencyAgentLinux" -ErrorAction SilentlyContinue
-#                     if ($agentstatus) {
-#                         "Dependency Agent already installed."
-#                     }
-#                     else {
-#                         "Dependency Agent not installed. Installing..."
-#                         install-extension -subscriptionId $resourceSubcriptionId `
-#                                           -resourceGroupName $resourceGroupName `
-#                                           -vmName $resourceName `
-#                                           -location $location `
-#                                           -ExtensionName "DependencyAgentLinux" `
-#                                           -ExtensionTypeHandlerVersion "9.0" `
-#                                           -InstallDependencyAgent $InstallDependencyAgent
-#                     }
-#                 }
-#                 else {
-#                     $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "DependencyAgentLinux" -ErrorAction SilentlyContinue
-#                 }
-#             }
-#             else {
-#                 if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#                     $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "DependencyAgentWindows" -ErrorAction SilentlyContinue
-#                     if ($agentstatus) {
-#                         "Dependency Agent already installed."
-#                     }
-#                     else {
-#                         "Dependency Agent not installed. Installing..."
-#                         install-extension -subscriptionId $resourceSubcriptionId `
-#                                           -resourceGroupName $resourceGroupName `
-#                                           -vmName $resourceName `
-#                                           -location $location `
-#                                           -ExtensionName "DependencyAgentWindows" `
-#                                           -ExtensionTypeHandlerVersion "9.0" `
-#                                           -InstallDependencyAgent $InstallDependencyAgent `
-#                                           -publisher "Microsoft.Azure.Monitoring.DependencyAgent"
-#                     }
-#                 }
-#                 else {
-#                     # ARC
-#                     $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "DependencyAgentWindows" -ErrorAction SilentlyContinue
-#                     if ($agentstatus) {
-#                         "Dependency Agent already installed."
-#                     }
-#                     else {
-#                         "Dependency Agent not installed. Installing..."
-#                         $agent=New-AzConnectedMachineExtension -Name DependencyAgentWindows `
-#                             -ExtensionType DependencyAgentWindows `
-#                             -Publisher Microsoft.Azure.Monitoring.DependencyAgent `
-#                             -ResourceGroupName $resourceGroupName `
-#                             -MachineName $resourceName `
-#                             -Location $location `
-#                             -EnableAutomaticUpgrade -Tag $tags
-#                     }
-#                 }
-#             }
-#         }
-#     }
-#     else {
-#         "Agent not installed. Installing..."
-#         if ($ResourceOS -eq 'Linux') {
-#             # 
-#             if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#                 # Virtual machine - add extension
-#                 install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $location `
-#                     -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27" -InstallDependencyAgent $InstallDependencyAgent
-#                 #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -EnableAutomaticUpgrade $true
-#             }
-#             else {
-#                 # Arc machine -add extension
-#                 Set-AzContext -SubscriptionId $resourceSubcriptionId
-#                 $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-#                 $agent = New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
-#                 if ($InstallDependencyAgent) {
-#                     $agent = New-AzConnectedMachineExtension -Name DependencyAgentLinux -ExtensionType DependencyAgentLinux -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
-#                 }
-#             }
-#         }
-#         else {
-#             # Windows
-#             if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#                 # Virtual machine - add extension
-#                 install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName `
-#                                         -vmName $resourceName -location $location `
-#                                         -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2" `
-#                                         -InstallDependencyAgent $installDependencyAgent
-#                 #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
-#             }
-#             else {
-#                 # Arc machine -add extension
-#                 Set-AzContext -SubscriptionId $resourceSubcriptionId
-#                 $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-#                 $agent = New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent `
-#                                     -Publisher Microsoft.Azure.Monitor `
-#                                     -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
-#                 if ($InstallDependencyAgent) {
-#                     $agent=New-AzConnectedMachineExtension -Name DependencyAgentWindows `
-#                                                            -ExtensionType DependencyAgentWindows `
-#                                                            -Publisher Microsoft.Azure.Monitoring.DependencyAgent `
-#                                                            -ResourceGroupName $resourceGroupName `
-#                                                            -MachineName $resourceName `
-#                                                            -Location $location `
-#                                                            -EnableAutomaticUpgrade -Tag $tags
-#                 }
-#             }
-#         }
-#         if ($agent) {
-#             "Agent installed."
-#         }
-#         else {
-#             "Agent not installed."
-#         }
-#     }
-#     #End of agent installation
-# }
-# Depends on Function Install-azMonitorAgent
-# function Add-Agent {
-#     param (
-#         [Parameter(Mandatory = $true)]
-#         [string]$resourceId,
-#         [Parameter(Mandatory = $true)]
-#         [string]$ResourceOS,
-#         [Parameter(Mandatory = $true)]
-#         [string]$location
-#     )
-#     $resourceName = $resourceId.split('/')[8]
-#     $resourceGroupName = $resourceId.Split('/')[4]
-#     # VM Extension setup
-#     $resourceSubcriptionId = $resourceId.split('/')[2]
-
-#     "Adding agent to $resourceName in $resourceGroupName RG in $resourceSubcriptionId sub. Checking if it's already installed..."
-#     if ($ResourceOS -eq 'Linux') {
-#         if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#             $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue
-#         }
-#         else {
-#             $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "AzureMonitorLinuxAgent" -ErrorAction SilentlyContinue 
-#         }
-#     }
-#     else {
-#         if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#             $agentstatus = Get-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
-#         }
-#         else {
-#             $agentstatus = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $resourceName -Name "AzureMonitorWindowsAgent" -ErrorAction SilentlyContinue
-#         }
-#     }
-#     if ($agentstatus) {
-#         "Agent already installed."
-#     }
-#     else {
-#         "Agent not installed. Installing..."
-#         if ($ResourceOS -eq 'Linux') {
-#             # 
-#             if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#                 # Virtual machine - add extension
-                
-#                 install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $location `
-#                     -ExtensionName "AzureMonitorLinuxAgent" -ExtensionTypeHandlerVersion "1.27" 
-#                 #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorLinuxAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorLinuxAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -EnableAutomaticUpgrade $true
-#             }
-#             else {
-#                 # Arc machine -add extension
-#                 Set-AzContext -SubscriptionId $resourceSubcriptionId
-#                 $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-#                 $agent = New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
-#             }
-#         }
-#         else {
-#             # Windows
-#             if ($resourceId.split('/')[7] -eq 'virtualMachines') {
-#                 # Virtual machine - add extension
-#                 install-azmonitorAgent -subscriptionId $resourceSubcriptionId -resourceGroupName $resourceGroupName -vmName $resourceName -location $location `
-#                     -ExtensionName "AzureMonitorWindowsAgent" -ExtensionTypeHandlerVersion "1.2"
-#                 #$agent=Set-AzVMExtension -ResourceGroupName $resourceGroupName -vmName $resourceName -Name "AzureMonitorWindowsAgent" -Publisher "Microsoft.Azure.Monitor" -ExtensionType "AzureMonitorWindowsAgent" -TypeHandlerVersion "1.0" -Location $resource.Location -ForceRerun -ForceUpdateTag -EnableAutomaticUpgrade $true
-#             }
-#             else {
-#                 # Arc machine -add extension
-#                 Set-AzContext -SubscriptionId $resourceSubcriptionId
-#                 $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-#                 $agent = New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
-#             }
-#         }
-#         if ($agent) {
-#             "Agent installed."
-#         }
-#         else {
-#             "Agent not installed."
-#         }
-#     }
-#     #End of agent installation
-# }

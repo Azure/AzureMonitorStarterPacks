@@ -545,7 +545,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "mcp2"
+                          "mcp3"
                         ]
                       }
                     ],
@@ -1240,10 +1240,7 @@
                           "additionalResourceOptions": [],
                           "showDefault": false
                         },
-                        "queryType": 10,
-                        "value": [
-                          "nginx"
-                        ]
+                        "queryType": 10
                       }
                     ],
                     "style": "pills",
@@ -1425,7 +1422,10 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10
+                        "queryType": 10,
+                        "value": [
+                          "VMI"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1686,7 +1686,7 @@
                         "id": "f6a88467-77d9-4e0e-912a-3d7b94aab938",
                         "version": "KqlParameterItem/1.0",
                         "name": "SelectPaaStypeToTag",
-                        "label": "Select Service Type",
+                        "label": "Select Service Type(s)",
                         "type": 7,
                         "multiSelect": true,
                         "quote": "'",

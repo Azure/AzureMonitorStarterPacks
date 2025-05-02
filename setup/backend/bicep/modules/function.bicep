@@ -10,6 +10,7 @@ param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param lawresourceid string
 param appInsightsLocation string
 param imageGalleryName string
+param packsURL string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
@@ -172,6 +173,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     PacksUserManagedId: packsUserManagedId
     InstanceName: instanceName
     AMBAJsonURL: ambaJsonURL
+    PacksURL: packsURL
     PacksModulesRootURL: packsModulesRootURL
     storageAccountName: discoveryStorage.name
     ResourceGroup: resourceGroup().name
