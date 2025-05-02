@@ -5,23 +5,23 @@ param filename string
 param containerName string
 //param resourceName string
 param tags object
-var discoveryContainerName = 'discovery'
+
 
 var tempfilename = 'download.tmp'
-var sasConfig = {
-  signedResourceTypes: 'sco'
-  signedPermission: 'r'
-  signedServices: 'b'
-  signedExpiry: sasExpiry
-  signedProtocol: 'https'
-  keyToSign: 'key2'
-}
+// var sasConfig = {
+//   signedResourceTypes: 'sco'
+//   signedPermission: 'r'
+//   signedServices: 'b'
+//   signedExpiry: sasExpiry
+//   signedProtocol: 'https'
+//   keyToSign: 'key2'
+// }
 resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
 }
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-LinuxDiscovery'
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'deployscript-PacksDef-${filename}'
   tags: tags
   location: location
   kind: 'AzureCLI'
@@ -43,7 +43,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: loadFileAsBase64('../../../../Packs/PacksDef.json')
       }
     ]
-    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename} --overwrite true'
+    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${containerName} -n ${filename} --overwrite true'
   }
 }
 

@@ -32,7 +32,7 @@ if ($resources) {
     # Add the option for multiple tags, comma separated
     "Working on $($resources.count) resource(s). Action: $action. Altering $TagName in the resource."
     switch ($action) {
-      'AddTag' {
+      'AddPack' {
         foreach ($resource in $resources) {
           Write-host "Resource: $resource"
           Write-host "ResourceId: $($resource.Resource)"
@@ -95,7 +95,7 @@ if ($resources) {
           }
           # Add Tag Based condition.
         }  # End of resource loop
-      }  # End of AddTag
+      }  # End of AddPack
       'RemoveTag' {
         foreach ($resource in $resources) {
           # Tagging

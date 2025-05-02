@@ -83,9 +83,9 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
             }
             cases: {
               Case: {
-                case: 'tagmgmt'
+                case: 'packmgmt'
                 actions: {
-                  tagmgmt: {
+                  packmgmt: {
                     runAfter: {}
                     type: 'Function'
                     inputs: {
@@ -95,7 +95,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                             'x-functions-key': listKeys(resourceId('Microsoft.Web/sites/host', azfunctionsite.name, 'default'), azfunctionsite.apiVersion).functionKeys.monitoringKey
                         }
                         function: {
-                            id: '${azfunctionsite.id}/functions/tagmgmt'
+                            id: '${azfunctionsite.id}/functions/packmgmt'
                         }
                         headers: {
                           'x-functions-key': '@body(\'Get_secret\')?[\'value\']'

@@ -181,6 +181,9 @@
                   "isRequired": true,
                   "isGlobal": true,
                   "query": "resources\r\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\r\n| where isnotempty(tags.MonitorStarterPacksComponents)\r\n| project instanceNames=tags.instanceName",
+                  "crossComponentResources": [
+                    "value::tenant"
+                  ],
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
@@ -189,8 +192,8 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "mcp3"
+                  "resourceType": "microsoft.resources/tenants",
+                  "value": null
                 },
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -213,7 +216,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8"
+                    ""
                   ]
                 },
                 {
@@ -232,7 +235,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Web/sites/AMP-mcp3-e315fe54-Function"
+                  "value": ""
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -266,7 +269,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW3"
+                  "value": ""
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -291,7 +294,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Logic/workflows/AMP-mcp3-LogicApp"
+                  "value": ""
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -311,7 +314,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Dashboard/grafana/AMSPe315fe543"
+                  "value": ""
                 },
                 {
                   "id": "7961f447-f72b-401d-a26b-283a44e45b2e",
@@ -332,7 +335,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-Hub/providers/microsoft.insights/actiongroups/Jose"
+                  "value": ""
                 }
               ],
               "style": "above",
@@ -544,9 +547,7 @@
                         },
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
-                        "value": [
-                          "mcp3"
-                        ]
+                        "value": null
                       }
                     ],
                     "style": "above",
@@ -1276,7 +1277,7 @@
                               "value": "removeTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
                           "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack(s) \n\nServers:\n\n{taggedVMs}",
@@ -1293,7 +1294,7 @@
                           "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                           "headers": [],
                           "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Add Monitoring",
                           "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeft} Pack(s)",
@@ -1311,7 +1312,7 @@
                           "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                           "headers": [],
                           "params": [],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"All\",\n    \"PackType\": \"IaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"All\",\n    \"PackType\": \"IaaS\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove All Monitoring",
                           "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeft} Pack(s)",
@@ -1460,7 +1461,7 @@
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\" : \"{Workspace}\",\n    \"DefaultAG\" : \"{DefaultAG}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmstotag}],\n    \"Pack\": \"{PackTags}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\" : \"{Workspace}\",\n    \"DefaultAG\" : \"{DefaultAG}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
                           "description": "# This will enable the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} Pack(s) to the resource(s).\n\nWorkspace: {Workspace}\n\nAction Group: {DefaultAG}",
@@ -1649,7 +1650,7 @@
                               "value": "removeTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PaaSLeftTagsOnly}\",\n    \"PackType\": \"PaaS\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedPaaS}],\n    \"Pack\": \"{PaaSLeftTagsOnly}\",\n    \"PackType\": \"PaaS\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
                           "description": "# Please confirm the change.\n\nRemove Monitoring for Pack(s).\n\nResources:\n\n{taggedPaaS:$.Resource}\n\nTags:\n\n{taggedPaaS:$.tag}",
@@ -1811,7 +1812,7 @@
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\",\n    \"Type\": \"{passtotagtype}\",\n    \"DefaultAG\": \"{DefaultAG}\",\n    \"AVDLAW\" : \"{AvdLAWPaaS}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\",\n    \"Type\": \"{passtotagtype}\",\n    \"DefaultAG\": \"{DefaultAG}\",\n    \"AVDLAW\" : \"{AvdLAWPaaS}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
                           "description": "# This will enable the pack for the following services:\n***{paastotag:$.Resource}***\n\nby adding the specific Pack(s) to the resource(s).\n\n_AVD Alternate Log Analytics Workspace (if any):_\n\n{AvdLAWPaaS:name}\n",
@@ -3977,7 +3978,7 @@
                                     "value": "removeTag"
                                   }
                                 ],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"PackType\":\"Discovery\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMsDiscovery}],\n    \"PackType\":\"Discovery\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Remove Monitoring",
                                 "description": "# Please confirm the change.\n\nRemove Monitoring for Discovery Pack(s) \n\nServers:\n\n{taggedVMsDiscovery}",
@@ -4084,7 +4085,7 @@
                                     "value": "addTag"
                                   }
                                 ],
-                                "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"PackType\": \"Discovery\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"PackType\": \"Discovery\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Enable Monitoring Packs",
                                 "description": "# This will enable the pack for the following servers:\n{vmstotagDiscovery}\n\nby adding the Pack(s) to the resource(s).\n",
@@ -4385,11 +4386,11 @@
                     "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
-                    "body": "{ \r\n  \"function\": \"tagmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddTag\",\r\n    \"Resources\": [{vmsDiscoveryTag}],\r\n    \"PackType\": \"IaaS\"\r\n  }\r\n}",
+                    "body": "{ \r\n  \"function\": \"packmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddPack\",\r\n    \"Resources\": [{vmsDiscoveryTag}],\r\n    \"PackType\": \"IaaS\"\r\n  }\r\n}",
                     "httpMethod": "POST",
                     "title": "Enable Monitoring",
                     "description": "# Enable monitoring\n\nResources:\n\n{vmsDiscoveryTag}",
-                    "actionName": "AddTag",
+                    "actionName": "AddPack",
                     "runLabel": "Enable"
                   }
                 }
@@ -4611,7 +4612,7 @@
                   "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                   "headers": [],
                   "params": [],
-                  "body": "{ \n  \"function\": \"tagmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddTag\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                  "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
                   "httpMethod": "POST",
                   "title": "Enable Monitoring",
                   "description": "# Adding Tag(s) To VMs\n\n\"Resources\": {vmsDiscoveryTag:$.Computer}\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
@@ -4631,7 +4632,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks3/providers/microsoft.operationalinsights/workspaces/monster-law3"
+    ""
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
