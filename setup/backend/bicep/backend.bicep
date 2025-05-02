@@ -62,7 +62,7 @@ module gallery './modules/aig.bicep' ={
 }
 
 // Module below implements function, storage account, and app insights
-module backendFunction 'modules/function.bicep' = {
+module backendFunction './modules/function.bicep' = {
   name: functionname
   scope: resourceGroup(subscriptionId, resourceGroupName)
   // dependsOn: [

@@ -1,6 +1,6 @@
 [
     {
-        "Folder":"./setup/CustomSetup",
+        "Folder":"./setup",
         "File":"monstar.bicep"
     }
 ]

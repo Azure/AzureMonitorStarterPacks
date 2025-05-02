@@ -22,12 +22,6 @@ $grafanaFiles = Get-ChildItem -Path './' -Recurse -Include 'grafana*.json'
 foreach ($file in $grafanaFiles) {
     Compress-Archive -Path $file.FullName -DestinationPath $DestinationPath -Update
 }
-# Compress-Archive -Path './WinOS/Azure Monitor Start Pack - Windows Operating System-1692086853589.json' -DestinationPath $DestinationPath -Update
-# Compress-Archive -Path './LxOS/Azure Monitor Start Pack _ Linux Operating System-1692092035812.json' -DestinationPath $DestinationPath -Update
-# Compress-Archive -Path './IIS2016/Azure Monitor Starter Pack _ IIS-1692341727216.json' -DestinationPath $DestinationPath -Update
-# Compress-Archive -Path './IIS/Azure Monitor Starter Pack _ IIS-1692341727216.json' -DestinationPath $DestinationPath -Update
-# Compress-Archive -Path './DNS2016/Azure Monitor Starter Pack _ DNS2016.json' -DestinationPath $DestinationPath -Update
-# Compress-Archive -Path './Nginx/Azure Monitor Starter Pack _ NGINX-1692341707202.json' -DestinationPath $DestinationPath -Update
 # Function App code.
 Set-Location $currentFolder
 Set-Location 'setup/backend/Function/code'
@@ -40,9 +34,22 @@ Set-Location ./setup/discovery/Linux/client
 tar -cvf ../discover.tar *
 Set-Location ../../Windows/client
 Compress-Archive -Path ./* -DestinationPath ../discover.zip -Update
-# ADDS Code
+# Cliente applications for existing packs
+# 
 Set-Location $currentFolder
-Set-Location ./Packs/IaaS/ADDS/client
-Compress-Archive -Path ./* -DestinationPath ../addscollection.zip -Update
+# Fetch all folders in ./Packs
+$folders = Get-ChildItem -Path './Packs' -Directory
+# Loop through each folder and check for a 'client' subfolder
+foreach ($folder in $folders) {
+    $clientFolder = Join-Path -Path $folder.FullName -ChildPath 'client'
+    if (Test-Path -Path $clientFolder) {
+        Set-Location -Path $clientFolder
+        $DestinationPath = "../../applications/$($folder.Name).zip"
+        Remove-Item $DestinationPath -ErrorAction SilentlyContinue
+        Compress-Archive -Path ./* -DestinationPath $DestinationPath -Update
+    }
+}
+# Set-Location ./Packs/ADDS/client
+# Compress-Archive -Path ./* -DestinationPath ../../applications/addscollection.zip -Update
 Set-Location $currentFolder
 
