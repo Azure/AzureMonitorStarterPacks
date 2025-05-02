@@ -1,11 +1,11 @@
 targetScope = 'subscription'
 
-param subscriptionId string
-param resourceGroupName string
-param createNewResourceGroup bool = false
-param location string
-param newLogAnalyticsWSName string = ''
-param createNewLogAnalyticsWS bool
+param subscriptionId string //1
+param resourceGroupName string //2
+param createNewResourceGroup bool = false //3
+param location string //4
+param newLogAnalyticsWSName string = '' //5
+param createNewLogAnalyticsWS bool //6
 param existingLogAnalyticsWSId string = ''
 //param currentUserIdObject string // This is to automatically assign permissions to Grafana.
 //param functionName string
@@ -28,6 +28,7 @@ param appInsightsLocation string
 var solutionTag='MonitorStarterPacks'
 var solutionTagComponents='MonitorStarterPacksComponents'
 var solutionVersion='0.1'
+
 var tempTags={'${solutionTagComponents}': 'BackendComponent'
 solutionVersion: solutionVersion
 instanceName: instanceName}

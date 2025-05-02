@@ -17,6 +17,13 @@ param instanceName string
 param solutionVersion string
 param functionName string
 
+var solutionTagComponents='MonitorStarterPacksComponents'
+
+var tempTags={'${solutionTagComponents}': 'BackendComponent'
+solutionVersion: solutionVersion
+instanceName: instanceName}
+var Tags = (customerTags=={}) ? tempTags : union(tempTags,customerTags.All)
+
 // Table to receive the data
 var tableNameToUse = '${tableName}_CL'
 var resultstableNameToUse = '${resultstableName}_CL'
@@ -51,7 +58,7 @@ module discoveryDCR '../../modules/DCRs/discoveryDCR.bicep' = {
   params: {
     location: location
     workspaceResourceId: lawResourceId
-    Tags: customerTags
+    Tags: Tags
     ruleName: 'discoveryResults-${lawFriendlyName}'
     dceId: dceId
     tableName: resultstableNameToUse

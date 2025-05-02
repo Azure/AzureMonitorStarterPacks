@@ -91,6 +91,7 @@ switch ($Action) {
 "@        
     }
     $ambaURL=$env:AMBAJsonURL
+    $instanceName=$env:InstanceName
     "Fetching AMBA Catalog from $ambaURL"
     if ($ambaURL -eq $null) {
     Write-host "Error fetching AMBA URL, stopping function"
@@ -107,7 +108,7 @@ switch ($Action) {
         $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
         # use a kql azure resource graph query to find all the namespaces with alerts
         $PassQuery=@"
-        resources | where isnotempty(tags.MonitorStarterPacks)
+        resources | where isnotempty(tags.MonitorStarterPacks) and tags.MonitorStarterPacks =~ '$instanceName'
         | where type in~ ($nameSpacesWithAlerts)
         | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
         | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']

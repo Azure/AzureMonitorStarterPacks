@@ -190,7 +190,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "mcp2"
+                  "value": "mcp3"
                 },
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -232,7 +232,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Web/sites/AMP-mcp3-e315fe54-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -266,7 +266,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW3"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -291,7 +291,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-mcp2-LogicApp"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Logic/workflows/AMP-mcp3-LogicApp"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -311,7 +311,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": null
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Dashboard/grafana/AMSPe315fe543"
                 },
                 {
                   "id": "7961f447-f72b-401d-a26b-283a44e45b2e",
@@ -1918,7 +1918,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "DNS2016"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -2598,7 +2598,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n) on rulename\n| project-away rulename1,resourceId\n| summarize Associated=count() by Pack, rulename\n| order by Pack asc",
+                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) and ['tags'].instanceName =~ '{instanceName}'//or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n) on rulename\n| project-away rulename1,resourceId\n| summarize Associated=count() by Pack, rulename\n| order by Pack asc",
                     "size": 0,
                     "title": "Select Pack to see associated Machines",
                     "exportFieldName": "rulename",
@@ -2669,7 +2669,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks)\n| extend ds=properties.dataSources\n| project id,Type=kind, location,syslog=ds.syslog[0].streams[0], windowsEventLogs=ds.windowsEventLogs[0].streams[0], logsettings=ds.logFiles[0].name,iislogs=ds.iisLogs[0].name,performanceCounters=ds.performanceCounters[0].streams[0],\ndataCollectionEndpointId=properties.dataCollectionEndpointId,transformKql=properties.dataFlows[0].transformKql,workspaceResourceId=properties.destinations.logAnalytics[0].workspaceResourceId,State=properties.provisioningState\n",
+              "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\n| extend ds=properties.dataSources\n| project id,Type=kind, location,syslog=ds.syslog[0].streams[0], windowsEventLogs=ds.windowsEventLogs[0].streams[0], logsettings=ds.logFiles[0].name,iislogs=ds.iisLogs[0].name,performanceCounters=ds.performanceCounters[0].streams[0],\ndataCollectionEndpointId=properties.dataCollectionEndpointId,transformKql=properties.dataFlows[0].transformKql,workspaceResourceId=properties.destinations.logAnalytics[0].workspaceResourceId,State=properties.provisioningState\n",
               "size": 0,
               "title": "List of Currently Configured Data Collection Rules",
               "showRefreshButton": true,
@@ -3196,7 +3196,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('DependencyAgentWindows','DependencyAgentLinux')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        DepAgent = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('DependencyAgentWindows','DependencyAgentLinux')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        DepAgent = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ['Dependency Agent']=iff(isempty(DepAgent),'N/A',DepAgent),ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), ['AMA State']=State, ['AMA Upg']=UpgradeEnabled,['Subscription']=subscriptionId,['Resource Group']=resourceGroup, location\n| extend Install=iff(ExtensionName=='N/A','Install',iff(['AMA State']<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (['AMA State'] == 'succeeded'),'Uninstall',iff(['AMA State'] <> 'succeeded','Warning',''))\n",
+              "query": "Resources\n| where type == 'microsoft.compute/virtualmachines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.storageProfile.osDisk.osType),\n    Instance=tostring(tags.instanceName)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('DependencyAgentWindows','DependencyAgentLinux')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        DepAgent = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines' and tolower(tags.Vendor) != 'databricks'\n| extend\n    JoinID = toupper(id),\n    OSType = tostring(properties.osType),\n    Instance=tostring(tags.instanceName)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('DependencyAgentWindows','DependencyAgentLinux')\n    | extend\n        State= tolower(properties.provisioningState),\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        DepAgent = name,\n        UpgradeEnabled =  tostring(properties.enableAutomaticUpgrade)\n) on $left.JoinID == $right.VMId)\n| summarize by id, OSType, ['Dependency Agent']=iff(isempty(DepAgent),'N/A',DepAgent),ExtensionName=iff(isempty(ExtensionName),'N/A',ExtensionName), ['AMA State']=State, ['AMA Upg']=UpgradeEnabled,['Subscription']=subscriptionId,['Resource Group']=resourceGroup, location, Instance\n| extend Install=iff(ExtensionName=='N/A','Install',iff(['AMA State']<> 'succeeded','Unhealthy','')), Uninstall=iff((ExtensionName<>'N/A') and (['AMA State'] == 'succeeded'),'Uninstall',iff(['AMA State'] <> 'succeeded','Warning',''))\n",
               "size": 0,
               "title": "Agent Install Status",
               "exportMultipleValues": true,
@@ -3241,15 +3241,16 @@
                           "representation": "success",
                           "text": "",
                           "tooltipFormat": {
-                            "tooltip": "Installed"
+                            "tooltip": "Windows"
                           }
                         },
                         {
+                          "operator": "==",
                           "thresholdValue": "DependencyAgentLinux",
                           "representation": "success",
                           "text": "",
                           "tooltipFormat": {
-                            "tooltip": "Installed"
+                            "tooltip": "Linux"
                           }
                         },
                         {
@@ -3259,6 +3260,9 @@
                           "text": "{0}{1}"
                         }
                       ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "{0}{1}"
                     }
                   },
                   {
@@ -4627,7 +4631,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
+    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks3/providers/microsoft.operationalinsights/workspaces/monster-law3"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
