@@ -3,6 +3,8 @@
 #######################################################################
 # Function to add AMA to a VM or arc machine
 # The tags added to the extension are copied from the resource.
+
+# this will be eventually used to update the local catalog from the repo.
 function get-AMBAJsonFromRepo {
     param (
         [string]$AMBAJsonURL = "https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
@@ -11,53 +13,58 @@ function get-AMBAJsonFromRepo {
     return $AMBAJson
 }
 function get-AMBAJsonContent {
-    $StorageAccountName=$env:StorageAccountName
-    $ResourceGroupName=$env:ResourceGroup
-    Write-host "Storage Account: $StorageAccountName"
-    Write-host "RG: $ResourceGroupName"
-    $StorageAccount=Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName
-    $sacontext=New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
-    $ContainerName = "amba"
-    $BlobName = "amba-alerts.json"
-    $Destination = "$($env:TEMP)\$BlobName"
-    $Blob2HT = @{
-        Container        = $ContainerName
-        Blob             = $BlobName
-        Context          = $sacontext
-    }
-    # Check if the blob exists and is not older than 30 days
-    Write-host "Checking if blob exists and is not older than 30 days..."
-    $currentblob = Get-AzStorageBlob @Blob2HT #-ErrorAction SilentlyContinue
-    if ($null -ne $currentblob -and $currentblob.LastModified -gt (Get-Date).AddDays(-30)) {
-        Write-host "Blob found. Downloading to $Destination."
-        $BlobContent = Get-AzStorageBlobContent @Blob2HT -Force -Context $sacontext -Destination $Destination
-        # check if the file exists and was downloaded correctly
-        if (Test-Path $Destination) {
-            Write-host "Blob content downloaded successfully to $Destination file."
-            $AMBAJson = get-content $Destination
-        } else {
-            Write-host "Blob content not downloaded. Please check the blob name and container name."
-        }
-    } 
-    else {
-        Write-Host "Blob not found. Please check the blob name and container name."
-        # $AMBAJsonURL="https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
-        # Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content 
-        get-AMBAJsonFromRepo | Out-File -FilePath "amba-alerts.json" -Encoding utf8
-        # Write json contetnt to a blog in the storage account under the amba container using managed identity
-        $Blob1HT = @{
-            File             = "amba-alerts.json"
-            Container        = $ContainerName
-            Blob             = $BlobName
-            Context          = $sacontext
-            StandardBlobTier = 'Hot'
-        }
-        Set-AzStorageBlobContent @Blob1HT
-        $AMBAJson = get-content $BlobName
-    }
-    #$AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
-    return $AMBAJson
+    $ambaJsonURL=$env:AMBAJsonURL
+    get-blobContentFromUrl -url $ambaJsonURL 
 }
+
+# function get-AMBAJsonContent2 {
+#     $StorageAccountName=$env:StorageAccountName
+#     $ResourceGroupName=$env:ResourceGroup
+#     Write-host "Storage Account: $StorageAccountName"
+#     Write-host "RG: $ResourceGroupName"
+#     $StorageAccount=Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName
+#     $sacontext=New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
+#     $ContainerName = "amba"
+#     $BlobName = "amba-alerts.json"
+#     $Destination = "$($env:TEMP)\$BlobName"
+#     $Blob2HT = @{
+#         Container        = $ContainerName
+#         Blob             = $BlobName
+#         Context          = $sacontext
+#     }
+#     # Check if the blob exists and is not older than 30 days
+#     Write-host "Checking if blob exists and is not older than 30 days..."
+#     $currentblob = Get-AzStorageBlob @Blob2HT #-ErrorAction SilentlyContinue
+#     if ($null -ne $currentblob -and $currentblob.LastModified -gt (Get-Date).AddDays(-30)) {
+#         Write-host "Blob found. Downloading to $Destination."
+#         $BlobContent = Get-AzStorageBlobContent @Blob2HT -Force -Context $sacontext -Destination $Destination
+#         # check if the file exists and was downloaded correctly
+#         if (Test-Path $Destination) {
+#             Write-host "Blob content downloaded successfully to $Destination file."
+#             $AMBAJson = get-content $Destination
+#         } else {
+#             Write-host "Blob content not downloaded. Please check the blob name and container name."
+#         }
+#     } 
+#     else {
+#         Write-Host "Blob not found. Please check the blob name and container name."
+#         # $AMBAJsonURL="https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
+#         # Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content 
+#         get-AMBAJsonFromRepo | Out-File -FilePath "amba-alerts.json" -Encoding utf8
+#         # Write json contetnt to a blog in the storage account under the amba container using managed identity
+#         $Blob1HT = @{
+#             File             = "amba-alerts.json"
+#             Container        = $ContainerName
+#             Blob             = $BlobName
+#             Context          = $sacontext
+#             StandardBlobTier = 'Hot'
+#         }
+#         Set-AzStorageBlobContent @Blob1HT
+#         $AMBAJson = get-content $BlobName
+#     }
+#     #$AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
+#     return $AMBAJson
+# }
 function set-systemAssignedIdentity {
     param (
         [Parameter(Mandatory = $true)]
@@ -988,7 +995,7 @@ function new-PaaSAlert {
     }
 }
 function get-AmbaCatalog {
-    Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from URL."
+    Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from storage account."
     $ambaJSONContent=get-AMBAJsonContent #-ambaJsonURL $ambaJsonURL
     $aaa=$ambaJSONContent | convertfrom-json -Depth 10
     $Categories=$aaa.psobject.properties.Name
@@ -1394,7 +1401,33 @@ function get-blobContentFromUrl {
     Get-AzStorageBlobContent -Container $containerName -Blob $blobName -Destination "$($env:temp)/$blobName" -Context $context -Force | Out-Null
     return Get-Content "$($env:temp)/$blobName"
 }
-
+function update-blobcontentinURL {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$url,
+        [Parameter(Mandatory = $true)]
+        [string]$content
+    )
+    #having the URL need to infer container and blob name
+    $uri = [System.Uri]$url
+    $containerName = $uri.Segments[1].Trim('/')
+    $blobName = $uri.Segments[2..($uri.Segments.Count - 1)] -join '/'
+    #get the storage account name from the URL
+    $storageAccountName = $uri.Host.Split('.')[0]
+    # I am authorized already to access storage
+    Write-host "Storage Account Name: $storageAccountName"
+    $context = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
+    if ($context -eq $null) {
+        Write-host "Context is null. Exiting."
+        return $false
+    }
+    #write the content to the file in the temp folder
+    $content | Out-File "$($env:temp)/$blobName" -Force
+    #get the blob content
+    Write-host "Updating blob content in $url. Container: $containerName, Blob: $blobName"
+    Set-AzStorageBlobContent -Container $containerName -Blob $blobName -Context $context -File "$($env:temp)/$blobName" -Force 
+}
 function get-availableIaaSPacks {
     param (
         [Parameter(Mandatory = $true)]
@@ -1405,4 +1438,21 @@ function get-availableIaaSPacks {
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     $packlist.Packs.Tag | convertto-json
 }
+function get-packsdefinition {
+# read the json from PacksURL and returns it
+    $packsURL=$env:PacksURL
+    $packslist=get-blobContentFromUrl -url $packsURL 
+    return $packslist
+}
+
+function update-packsdefinition {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$packNewDefinition
+    )
+    # write new json to the file in the storage account
+    $packsURL=$env:PacksURL
+    update-blobcontentinURL -url $packsURL -content $packNewDefinition
+}
+
 

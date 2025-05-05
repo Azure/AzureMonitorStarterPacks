@@ -70,6 +70,7 @@ module backendFunction './modules/function.bicep' = {
   // ]
   params: {
     packsURL: packsDefStorage.outputs.fileURL
+    ambaJsonURL: ambaStorage.outputs.fileURL
     appInsightsLocation: appInsightsLocation
     functionname: functionname
     lawresourceid: lawresourceid
@@ -176,7 +177,7 @@ module userIdentityRoleAssignments '../../../modules/rbac/subscription/roleassig
 }]
 // Module to upload the packsdef.json to the storage account.
 module packsDefStorage './modules/uploadPackDef.bicep' = {
-  name: 'PacksDefStorage'
+  name: 'PacksDefStorage-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     storageAccountName: storageAccountName
@@ -184,10 +185,23 @@ module packsDefStorage './modules/uploadPackDef.bicep' = {
     containerName: 'amba'
     filename: 'PacksDef.json'
     tags: Tags
-    sasExpiry: 'PT1H'
+    //sasExpiry: 'PT1H'
+  }
+}
+module ambaStorage './modules/uploadAmbaAlerts.bicep' = {
+  name: 'ambaAlertsUpload-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'amba'
+    filename: 'amba-alerts.json'
+    tags: Tags
+    //sasExpiry: 'PT1H'
   }
 }
 output packsDefStorageURL string = packsDefStorage.outputs.fileURL
+output ambaStorageURL string = ambaStorage.outputs.fileURL
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
 output dceId string = dataCollectionEndpoint.outputs.dceId

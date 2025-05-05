@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Azure Monitor Starter Packs - Extended Admin Centre - V3.0 (Beta)\n\n\n"
+        "json": "# Azure Monitor Starter Packs - Extended Admin Centre - V3.0 (Preview)\n\n\n"
       },
       "customWidth": "50",
       "name": "textTitle"
@@ -193,7 +193,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": null
+                  "value": "mcp2"
                 },
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -216,7 +216,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    ""
+                    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8"
                   ]
                 },
                 {
@@ -235,7 +235,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": ""
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
                 },
                 {
                   "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
@@ -269,7 +269,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": ""
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -294,7 +294,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": ""
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-mcp2-LogicApp"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -314,7 +314,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": ""
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Dashboard/grafana/AMSPe315fe542"
                 },
                 {
                   "id": "7961f447-f72b-401d-a26b-283a44e45b2e",
@@ -335,7 +335,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": ""
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-Hub/providers/microsoft.insights/actiongroups/Jose"
                 }
               ],
               "style": "above",
@@ -384,6 +384,22 @@
               "version": "LinkItem/1.0",
               "style": "tabs",
               "links": [
+                {
+                  "id": "25ceea14-e7c7-43e2-aae9-798cfde1aa4e",
+                  "cellValue": "configTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "IaaS Packs Details",
+                  "subTarget": "IaaSPacksDetails",
+                  "style": "link"
+                },
+                {
+                  "id": "2c842b37-f490-4b77-8b37-f4afe87f8608",
+                  "cellValue": "configTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Services Packs Details",
+                  "subTarget": "servicesPacksDetails",
+                  "style": "link"
+                },
                 {
                   "id": "f5b4b4b6-c5d7-4941-b807-8a61df48a0f4",
                   "cellValue": "configTab",
@@ -1424,9 +1440,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 10,
-                        "value": [
-                          "VMI"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -2368,6 +2382,14 @@
                   "linkLabel": "VMInsights Status",
                   "subTarget": "vmistatus",
                   "style": "link"
+                },
+                {
+                  "id": "ec137a21-cd22-46df-b002-a68a964465e4",
+                  "cellValue": "packsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Import IaaS Packs",
+                  "subTarget": "importPack",
+                  "style": "link"
                 }
               ]
             },
@@ -3141,6 +3163,90 @@
             "styleSettings": {
               "showBorder": true
             }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Add New Pack",
+              "items": [
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "492e3bc2-3037-44fb-9129-4fc8aed5ec93",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "newPack",
+                        "label": "New Pack Definition",
+                        "type": 1,
+                        "description": "create a new pack",
+                        "typeSettings": {
+                          "multiLineText": true,
+                          "editorLanguage": "text",
+                          "multiLineHeight": 20
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "parameters - 0"
+                },
+                {
+                  "type": 11,
+                  "content": {
+                    "version": "LinkItem/1.0",
+                    "style": "list",
+                    "links": [
+                      {
+                        "id": "84da816b-84fa-494e-a51b-9a4cd221c7dd",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Import Pack Definition",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [
+                            {
+                              "key": "",
+                              "value": ""
+                            }
+                          ],
+                          "body": "{ \r\n  \"function\": \"packmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"importPack\",\r\n    \"PackDef\": {newPack}\r\n  }\r\n}\r\n\r\n",
+                          "httpMethod": "POST",
+                          "title": "Import New Pack",
+                          "description": "# Importing new Pack definition\n\n{newPack}",
+                          "actionName": "importPack",
+                          "runLabel": "Import"
+                        }
+                      }
+                    ]
+                  },
+                  "name": "links - 1"
+                }
+              ]
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "tabSelection",
+                "comparison": "isEqualTo",
+                "value": "rulemanagement"
+              },
+              {
+                "parameterName": "packsTab",
+                "comparison": "isEqualTo",
+                "value": "importPack"
+              }
+            ],
+            "name": "packAuthoringGroup"
           }
         ]
       },
@@ -4632,7 +4738,7 @@
     }
   ],
   "fallbackResourceIds": [
-    ""
+    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

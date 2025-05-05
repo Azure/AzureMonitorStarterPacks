@@ -13,12 +13,13 @@ $ctx= New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccou
 
 # Get a reference to the table
 $table = (Get-AzStorageTable -Name $tableName -Context $ctx).CloudTable
-
-
-$catalog=get-ambacatalog  -ambaJsonURL 'https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json' | convertfrom-json
+$catalog=get-ambacatalog | convertfrom-json
 $supportedNamespaces = $catalog.categories.namespace #| where {$_ -eq 'microsoft.desktopvirtualization/hostpools'}
-$fc=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json # gets the whole catalog with all metrics
-$resourcesWithAlerts=@()
+#old way to get the catalog
+#$fc=Invoke-WebRequest -uri $ambaJsonURL | convertfrom-json # gets the whole catalog with all metrics
+$fc=get-AMBAJsonContent | convertfrom-json
+# Get the cata
+#$resourcesWithAlerts=@()
 foreach ($ns in $supportedNamespaces) {
     Write-host "Looking for objects in namespace $ns" -ForegroundColor Yellow
     # get all azure resources using resource graph that are in the catalog by using the categories.namespace output

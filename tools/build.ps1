@@ -6,7 +6,19 @@
             "File":""
         }
 #>
+# before building the bicep files, we need to zip the json files in the ./Packs folder
 $currentFolder= Get-Location
+Set-Location "./Packs"
+# get all files in the current directory only
+$packsFiles = Get-ChildItem -Path './' -Name '*.json'
+foreach ($file in $packsFiles) {
+    #compress each file individually into a zip file
+    $DestinationPath = $file.Replace('.json', '.zip')
+    Compress-Archive -Path $file -DestinationPath $DestinationPath -Update
+}
+Set-Location $currentFolder
+break
+
 $mainMonstarPacksFiles = Get-Content -Path './tools/build.json' | ConvertFrom-Json
 
 foreach ($file in $mainMonstarPacksFiles) {

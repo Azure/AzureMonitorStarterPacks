@@ -149,7 +149,13 @@ switch ($Action) {
   "getavailableIaaSPacks" {
     $body=get-availableIaaSPacks -packContentURL $env:PacksURL
   }
-  default { $body = '{"No matching action."}' }
+  "getPacksDefinition"  {
+    $body = get-PacksDefinition
+  }
+
+  default { 
+    $body = '{"No matching action."}' 
+  }
 }
 # # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{

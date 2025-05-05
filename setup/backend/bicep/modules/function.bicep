@@ -11,10 +11,11 @@ param lawresourceid string
 param appInsightsLocation string
 param imageGalleryName string
 param packsURL string
+param ambaJsonURL string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
-var ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
+//var ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
 var packsModulesRootURL='https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep'
 
 param apiManagementKey string= base64(newGuid())
