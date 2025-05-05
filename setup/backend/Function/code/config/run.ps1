@@ -94,41 +94,45 @@ switch ($Action) {
     $instanceName=$env:InstanceName
     "Fetching AMBA Catalog from $ambaURL"
     if ($ambaURL -eq $null) {
-    Write-host "Error fetching AMBA URL, stopping function"
-    $body = "Error fetching AMBA URL, stopping function"
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-        StatusCode = [HttpStatusCode]::BadRequest
-        Body       = $body
-        })
+      Write-host "Error fetching AMBA URL, stopping function"
+      $body = "Error fetching AMBA URL, stopping function"
+      Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+          StatusCode = [HttpStatusCode]::BadRequest
+          Body       = $body
+          })
     }
-    $ambaCatalog=get-AmbaCatalog -ambaJsonURL $ambaURL | ConvertFrom-Json -Depth 10
+    $ambaCatalog=get-AmbaCatalog | ConvertFrom-Json -Depth 10
     if ($ambaCatalog) {
-        $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
-        #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
-        $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
-        # use a kql azure resource graph query to find all the namespaces with alerts
-        $PassQuery=@"
-        resources | where isnotempty(tags.MonitorStarterPacks) and tags.MonitorStarterPacks =~ '$instanceName'
-        | where type in~ ($nameSpacesWithAlerts)
-        | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
-        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-        | join (resources
-            | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-            | where isnotempty(tags.MonitorStarterPacks)
-            | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
-        $resourceFilter
-        | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind
-        
+      Write-host "Found $($ambaCatalog.categories.count) categories in AMBA catalog."
+      $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | ? {$_ -ne 'N/A'}
+      Write-host "Found $(($nameSpacesWithAlerts).count) namespaces with alerts."
+      #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+      $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
+      # use a kql azure resource graph query to find all the namespaces with alerts
+      $PaaSQuery=@"
+resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
+| where type in~ ($nameSpacesWithAlerts)
+| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+| join (resources
+    | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+    | where isnotempty(tags.MonitorStarterPacks)
+    | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
+$resourceFilter
+| summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind  
 "@
-    "PaasQuery"
-        $PaaSQuery
-            $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
-            if ($resourcesThatHavealertsAvailable.Count -gt 0) {
-                $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
-            }
-            else {$body = '{}'}
+      Write-host "PaasQuery to be used: $PaaSQuery"
+      $resourcesThatHavealertsAvailable= (Search-AzGraph $PaaSQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+      if ($resourcesThatHavealertsAvailable.Count -gt 0) {
+          $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+      }
+      else {
+        Write-host :"Found no resources..."
+        $body = '{}'
+      }
     }
     else {
+        Write-host "Error fetching catalog, stopping function."
         $body = "{}"
     }
   }

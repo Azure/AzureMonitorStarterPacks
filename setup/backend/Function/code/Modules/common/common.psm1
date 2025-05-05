@@ -513,7 +513,7 @@ function Remove-Tag {
                         "Removing vm application(s) if any for $tagvalue tag and instance name $instanceName, if any."
                         remove-vmapp -ResourceId $resourceId -packtag $tagvalue -instanceName $instanceName
                     }
-                    elseif ($TagName -ne 'Avd') {
+                    else {
                         "Paas Pack. No need to remove association."
                         "Will look for diagnostic settings to remove with specific name. Won't remove if that is not found since it could be for something else."
                         try {
@@ -529,8 +529,22 @@ function Remove-Tag {
                         else {
                             "No diagnostic setting found."
                         }
-                        Write-Host "Debug(Remove-Tag): removing alert rule for $resourceId"
-                        Remove-PaaSAlertRules -resourceId $resourceId
+                        # Need to remove alert rules for the specific resource.
+                        # Find the alert rules for the resource using the resourceId and graph query.
+                        Write-host "Debug(Remove-Tag): removing alert rules for $resourceId"
+                        $graphQuery = @"
+                        resources
+    | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+    | where isnotempty(tags.MonitorStarterPacks)
+    | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+    | where Resource =~ '$resourceId'
+"@
+                        $alertRules = Search-AzGraph -Query $graphQuery -UseTenantScope
+                        Write-host "Found $($alertRules.count) alert rule(s) for $resourceId."
+                        foreach ($alertRule in $alertRules) {
+                            Write-host "Found alert rule $($alertRule.Name) for $resourceId. Removing..."
+                            Remove-AzResource -ResourceId $alertRule.id -Force -ErrorAction SilentlyContinue
+                        }
                     }
                 }
                 #Update-AzTag -ResourceId $resource.Resource -Tag $tag

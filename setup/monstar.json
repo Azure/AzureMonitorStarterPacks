@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "520960460194645582"
+      "templateHash": "1202560005495245394"
     }
   },
   "parameters": {
@@ -1363,7 +1363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11111441124087630727"
+              "templateHash": "4263962518742307552"
             }
           },
           "parameters": {
@@ -2182,7 +2182,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7825246190928499342"
+                      "templateHash": "2281231185439678467"
                     }
                   },
                   "parameters": {
@@ -3602,7 +3602,9 @@
                                               "durationMs": 86400000
                                             },
                                             "queryType": 10,
-                                            "value": []
+                                            "value": [
+                                              "VMI"
+                                            ]
                                           }
                                         ],
                                         "style": "pills",
@@ -3745,6 +3747,7 @@
                                         "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.AlertRules\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                                         "size": 0,
                                         "title": "Monitored Services",
+                                        "showRefreshButton": true,
                                         "exportMultipleValues": true,
                                         "exportedParameters": [
                                           {
