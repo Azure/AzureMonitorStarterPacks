@@ -54,7 +54,7 @@ else {
     $TagList = $Request.Body.Pack.split(',')
   }
   $PackType = $Request.Body.PackType
-  $LogAnalyticsWSAVD = $Request.Body.AVDLAW
+  #$LogAnalyticsWSAVD = $Request.Body.AVDLAW
   $ResourceType = $Request.Body.Type
   $defaultAG=$Request.Body.DefaultAG
   $workspaceResourceId=$Request.Body.WorkspaceId
@@ -67,7 +67,8 @@ else {
           "Missing TagName. Please set the TagName environment variable. Setting to Default"
       }
       # Add the option for multiple tags, comma separated
-      "Working on $($resources.count) resource(s). Action: $action. Altering $TagName in the resource."
+      Write-host "Working on $($resources.count) resource(s). Action: $action. Altering $TagName in the resource."
+      Write-host "Resources: $($resources | convertto-json -Depth 10)"
       switch ($action) {
         'AddPack' {
           foreach ($resource in $resources) {
@@ -87,11 +88,11 @@ else {
                 Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
                 Add-Tag -resourceId $resource.Resource `
-                -TagName $TagName `
-                -TagValue $TagValue `
-                -instanceName $instanceName `
-                -packType $PackType `
-                -resourceType 'Compute'
+                  -TagName $TagName `
+                  -TagValue $TagValue `
+                  -instanceName $instanceName `
+                  -packType $PackType `
+                  -resourceType 'Compute'
               }
               else {
                 # Add Agent if not installed yet.
@@ -107,19 +108,20 @@ else {
                 foreach ($TagValue in $TagList) {
                   Write-host "TAGMGMT: adding $TagValue tag to $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
                   Add-Tag -resourceId $resource.Resource `
-                  -TagName $TagName `
-                  -TagValue $TagValue `
-                  -instanceName $instanceName `
-                  -packType $PackType `
-                  -resourceType 'Compute' `
-                  -actionGroupId $defaultAG `
-                  -workspaceResourceId $workspaceResourceId `
-                  -location $resource.Location
+                    -TagName $TagName `
+                    -TagValue $TagValue `
+                    -instanceName $instanceName `
+                    -packType $PackType `
+                    -resourceType 'Compute' `
+                    -actionGroupId $defaultAG `
+                    -workspaceResourceId $workspaceResourceId `
+                    -location $resource.Location
                 }
               }
             }
             else { #Paas or Platform
               "PackType: $PackType"
+              $ResourceType = $Request.Body.type
               "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
               Add-Tag -resourceId $resource.Resource `
               -TagName $TagName `
