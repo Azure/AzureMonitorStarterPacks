@@ -1,4 +1,4 @@
-# Creating Custom Monitoring Packs
+# Creating Custom Monitoring Packs (IaaS)
 
 To create your own monitoring packs, you need to define them within the [`PacksDef.json`](c:\git\AzureMonitorStarterPacks\Packs\PacksDef.json) file. This file contains a root object with a single key, `Packs`, which holds an array of objects. Each object in this array represents a single monitoring pack definition.
 

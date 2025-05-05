@@ -73,7 +73,8 @@ In order for the current user to have access to the Grafana environment, the use
 ## Removing the solution
 
 The solution can be removed by simply removing the components in the resource group. However, it is recommended to remove the monitoring in the solution to remove tags and VM applications from the resources (if any).
-ployed by the solution
+
+Removing the components won't remove VM applications, tags and extentions from VMs and Arc Servers. It is recommended to disable the monitoring on the interface if a complete remove is desired.
 
 Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
 

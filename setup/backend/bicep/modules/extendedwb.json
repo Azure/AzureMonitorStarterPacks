@@ -536,47 +536,10 @@
                   "name": "text - Summary - Active Alerts"
                 },
                 {
-                  "type": 9,
-                  "content": {
-                    "version": "KqlParameterItem/1.0",
-                    "crossComponentResources": [
-                      "value::tenant"
-                    ],
-                    "parameters": [
-                      {
-                        "id": "6fa5185a-2f1d-4fbd-8ce7-9050d66312a6",
-                        "version": "KqlParameterItem/1.0",
-                        "name": "alertsInstance",
-                        "label": "Instance",
-                        "type": 2,
-                        "isRequired": true,
-                        "multiSelect": true,
-                        "quote": "'",
-                        "delimiter": ",",
-                        "query": "resources\r\n| where type =~ 'microsoft.web/sites' and ['kind'] =~ 'functionapp'\r\n| where isnotempty(tags.MonitorStarterPacksComponents)\r\n| project instanceNames=tags.instanceName",
-                        "crossComponentResources": [
-                          "value::tenant"
-                        ],
-                        "typeSettings": {
-                          "additionalResourceOptions": [],
-                          "showDefault": false
-                        },
-                        "queryType": 1,
-                        "resourceType": "microsoft.resources/tenants",
-                        "value": null
-                      }
-                    ],
-                    "style": "above",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resources/tenants"
-                  },
-                  "name": "parameters - 6"
-                },
-                {
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status,severity=properties.context.context.severity\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName in ({alertsInstance})\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| project id, ['Alert Name']=name,['Details']=['Alert Id'], Status=status, Resource=resourceId, Sev=severity\n| where Status=='Activated'\n",
+                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status,severity=properties.context.context.severity\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| project id, ['Alert Name']=name,['Details']=['Alert Id'], Status=status, Resource=resourceId, Sev=severity\n| where Status=='Activated'\n",
                     "size": 0,
                     "title": "Active Alerts",
                     "exportedParameters": [
@@ -753,7 +716,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| extend MonitorStatus=iff(isnotempty(tostring(tags.MonitorStarterPacks)),'Monitored','Not Monitored')\n| summarize count() by MonitorStatus",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| extend MonitorStatus=iff(isnotempty(tostring(tags.MonitorStarterPacks)),'Monitored','Not Monitored')\n| where tags.instanceName =~ '{instanceName}'\n| summarize count() by MonitorStatus",
                     "size": 1,
                     "title": "Monitoring Status (Tags)",
                     "queryType": 1,
@@ -785,7 +748,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "Resources\n| where type == 'microsoft.compute/virtualmachines'\n| extend\n    JoinID = toupper(id)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines'\n| extend\n    JoinID = toupper(id)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId)\n| summarize count() by AgentInstalled=iff(isempty(ExtensionName),\"No\",\"Yes\")",
+                    "query": "Resources\n| where type == 'microsoft.compute/virtualmachines'\n| where tags.instanceName =~ '{instanceName}'\n| extend\n    JoinID = toupper(id)\n| join kind=leftouter(\n    Resources\n    | where ( type == 'microsoft.compute/virtualmachines/extensions') and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId\n| union (Resources\n| where type == 'microsoft.hybridcompute/machines'\n| where tags.instanceName =~ '{instanceName}'\n| extend\n    JoinID = toupper(id)\n| join kind=leftouter(\n    Resources\n    | where type == 'microsoft.hybridcompute/machines/extensions' and name in ('AzureMonitorLinuxAgent', 'AzureMonitorWindowsAgent')\n    | extend\n        VMId = toupper(substring(id, 0, indexof(id, '/extensions'))),\n        ExtensionName = name\n) on $left.JoinID == $right.VMId)\n| summarize count() by AgentInstalled=iff(isempty(ExtensionName),\"No\",\"Yes\")",
                     "size": 1,
                     "title": "Agent Install Status",
                     "queryType": 1,
@@ -819,7 +782,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
+                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
                     "size": 1,
                     "title": "Servers/Pack (Association)",
                     "queryType": 1,
@@ -873,7 +836,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Tagged=count() by Pack\n| sort by Pack asc\n\n\n",
+                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Tagged=count() by Pack\n| sort by Pack asc\n\n\n",
                     "size": 1,
                     "title": "Tagged Resources per Tag",
                     "queryType": 1,
@@ -914,7 +877,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
+                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
                     "size": 1,
                     "title": "Associated Servers per Pack",
                     "queryType": 1,
@@ -1008,7 +971,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where tolower(type) in (\"microsoft.insights/metricalerts\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project nameSpace=tolower(strcat(tostring(split(properties.scopes[0],\"/\")[-3]),\"/\",tostring(split(properties.scopes[0],\"/\")[-2]))),Target=split(properties.scopes[0],\"/\")[-1]\n| union (resources\n| where tolower(type) in (\"microsoft.insights/activitylogalerts\")\n| where isnotempty(tags.MonitorStarterPacks)\n| project nameSpace=tolower(strcat(tostring(split(properties.scopes[0],\"/\")[-3]),\"/\",tostring(split(properties.scopes[0],\"/\")[-2]))),Target=split(properties.scopes[0],\"/\")[-1])\n| distinct tostring(Target),nameSpace\n| summarize Total=count() by nameSpace",
+              "query": "resources\n| where tolower(type) in (\"microsoft.insights/metricalerts\")\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\n| project nameSpace=tolower(strcat(tostring(split(properties.scopes[0],\"/\")[-3]),\"/\",tostring(split(properties.scopes[0],\"/\")[-2]))),Target=split(properties.scopes[0],\"/\")[-1]\n| union (resources\n| where tolower(type) in (\"microsoft.insights/activitylogalerts\")\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\n| project nameSpace=tolower(strcat(tostring(split(properties.scopes[0],\"/\")[-3]),\"/\",tostring(split(properties.scopes[0],\"/\")[-2]))),Target=split(properties.scopes[0],\"/\")[-1])\n| distinct tostring(Target),nameSpace\n| summarize Total=count() by nameSpace",
               "size": 0,
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
