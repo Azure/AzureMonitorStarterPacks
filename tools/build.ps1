@@ -17,7 +17,6 @@ foreach ($file in $packsFiles) {
     Compress-Archive -Path $file -DestinationPath $DestinationPath -Update
 }
 Set-Location $currentFolder
-break
 
 $mainMonstarPacksFiles = Get-Content -Path './tools/build.json' | ConvertFrom-Json
 
