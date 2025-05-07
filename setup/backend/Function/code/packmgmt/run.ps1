@@ -37,7 +37,6 @@ if ($action -eq 'importPack') {
   $finalPackslist=$currentPacks + $newPacksList
   Write-host "New Packs list count: $($finalPackslist.count)"
   $NewPacksDef=@{Packs=$finalPackslist} 
-  
   try {
     Write-host "Updating blob content in $packsUrl"
     update-blobcontentinURL -url $packsUrl -content $($NewPacksDef | ConvertTo-Json -Depth 20)
@@ -77,32 +76,17 @@ else {
             Write-host "Resource Pack: $($resource.Pack)"
             Write-host "Resource OS: $($resource.OS)"
             # Tagging
-            if ($PackType -ne 'Paas') {
-              if ($PackType -eq 'Discovery') {
-                $TagValue = $resource.Pack
+            switch ($PackType) {
+              'Iaas' {
                 # Add Agent if not installed yet.
-                $InstallDependencyAgent = ($Taglist -contains 'SvcMap') ? $true : $false
-                if ($InstallDependencyAgent) {
-                  Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag list is $Taglist"
-                }
-                Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
-                Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
-                Add-Tag -resourceId $resource.Resource `
-                  -TagName $TagName `
-                  -TagValue $TagValue `
-                  -instanceName $instanceName `
-                  -packType $PackType `
-                  -resourceType 'Compute'
-              }
-              else {
-                # Add Agent if not installed yet.
-                $InstallDependencyAgent = ($Taglist -contains 'InsightsDep') ? $true : $false
                 if ($TagList.Count -eq 0) {
                   Write-host "Taglist is null. Setting to $($resource.Pack)"
                   $TagList = @($resource.Pack)
                 }
+                $InstallDependencyAgent = ($Taglist -contains 'SvcMap') ? $true : $false
+
                 if ($InstallDependencyAgent) {
-                  Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Taglist is $TagList"
+                  Write-Host "Will try to install dependency agent? $InstallDependencyAgent. Taglist is $TagList"
                 }
                 Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 foreach ($TagValue in $TagList) {
@@ -118,28 +102,54 @@ else {
                     -location $resource.Location
                 }
               }
+              'Discovery' {
+                $TagValue = $resource.Pack
+                # Add Agent if not installed yet.
+                $InstallDependencyAgent = ($Taglist -contains 'SvcMap') ? $true : $false
+                if ($InstallDependencyAgent) {
+                  Write-Host "Will try to install dependency agent: $InstallDependencyAgent. Tag list is $Taglist"
+                }
+                Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
+                Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
+                Add-Tag -resourceId $resource.Resource `
+                  -TagName $TagName `
+                  -TagValue $TagValue `
+                  -instanceName $instanceName `
+                  -packType $PackType `
+                  -resourceType 'Compute'
+              }
+              'PaaS'  {
+                "PackType: $PackType"
+                $ResourceType = $resource.type
+                "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
+                Add-Tag -resourceId $resource.Resource `
+                        -TagName $TagName `
+                        -TagValue $ResourceType `
+                        -resourceType $ResourceType `
+                        -actionGroupId $defaultAG `
+                        -packtype $packType `
+                        -instanceName $instanceName `
+                        -location $resource.location
+              }
+              default {
+                Write-host "Invalid PackType: $PackType"
+              }
             }
-            else { #Paas or Platform
-              "PackType: $PackType"
-              $ResourceType = $Request.Body.type
-              "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
-              Add-Tag -resourceId $resource.Resource `
-              -TagName $TagName `
-              -TagValue $ResourceType `
-              -resourceType $ResourceType `
-              -actionGroupId $defaultAG `
-              -packtype $packType `
-              -instanceName $instanceName `
-              -location $resource.location
-            }
-            # Add Tag Based condition.
           }  # End of resource loop
         }  # End of AddPack
         'RemoveTag' {
           foreach ($resource in $resources) {
             # Tagging
-            if ($PackType -ne 'Paas') {
-              if ($PackType -eq 'Discovery') {
+            switch ($PackType) {
+              'Iaas' {
+                foreach ($TagValue in $TagList) {
+                  Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
+                  Remove-Tag  -resourceId $resource.Resource `
+                              -TagName $TagName -TagValue $TagValue `
+                              -PackType $PackType -instanceName $instanceName
+                }
+              }
+              'Discovery' {
                 $TagValue = $resource.Packs
                 # Add Agent if not installed yet.
                 Write-Host "PackType: $PackType. Removing tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
@@ -154,30 +164,16 @@ else {
                   Write-host " Error: No tag value found for $($resource.Resource)"
                 }
               }
-              else {
-                foreach ($TagValue in $TagList) {
-                  Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-                  Remove-Tag -resourceId $resource.Resource `
-                              -TagName $TagName -TagValue $TagValue `
-                              -PackType $PackType -instanceName $instanceName
-                }
+              'Paas' {
+                Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
+                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
+              }
+              default {
+                Write-host "Invalid PackType: $PackType"
               }
             }
-            else { #Services
-              Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-              Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
-              # if ($TagValue -eq 'Avd') {
-              #   # Create AVD alerts function.
-              #   $hostPoolName = ($resource.Resource -split '/')[8]
-              #   $resourceGroupName = ($env:PacksUserManagedId -split '/')[4]
-              #   Config-AVD -hostpoolName $hostPoolName -resourceGroupName $resourceGroupName -location $resource.Location -TagName $TagName `
-              #   -TagValue $TagValue -action $action -LogAnalyticsWSAVD $LogAnalyticsWSAVD
-              # }
-            }
-            # Add Tag Based condition.
-          }  # End of resource loop
+          }  # End of resource loop           
         }  # End of Remove Tag
-        
         default {
             Write-Host "Invalid Action"
         }

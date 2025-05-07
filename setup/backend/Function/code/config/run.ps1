@@ -109,17 +109,29 @@ switch ($Action) {
       #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
       $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
       # use a kql azure resource graph query to find all the namespaces with alerts
-      $PaaSQuery=@"
+#       $PaaSQuery=@"
+# resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
+# | where type in~ ($nameSpacesWithAlerts)
+# | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+# | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+# | join (resources
+#     | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+#     | where isnotempty(tags.MonitorStarterPacks)
+#     | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
+# $resourceFilter
+# | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind  
+# "@
+$PaaSQuery=@"
 resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
-| where type in~ ($nameSpacesWithAlerts)
-| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+| where type in~ ($nameSpacesWithAlerts) 
+| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',"microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts",'microsoft.insights/datacollectionrules'))
 | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-| join (resources
-    | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-    | where isnotempty(tags.MonitorStarterPacks)
-    | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
+| join kind=fullouter    (resources
+    | where tolower(type) in ("microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
+    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks), Enabled=tostring(properties.enabled)) on Resource
 $resourceFilter
-| summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind  
+| summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind 
 "@
       Write-host "PaasQuery to be used: $PaaSQuery"
       $resourcesThatHavealertsAvailable= (Search-AzGraph $PaaSQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}

@@ -1,24 +1,31 @@
 function get-discoveryData {
-    $discoveryData=@"
-{
-    "Packs": [
-        {
-            "Name": "nginx",
-            "Tag": "nginx",
-            "Description": "Nginx is a high-performance HTTP server and reverse proxy.",
-            "OS": "Linux",
-            "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'linux'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
-        },
-        {
-            "Name": "ADDS",
-            "Tag": "ADDS",
-            "Description": "Active Directory Domain Services",
-            "OS": "Windows",
-            "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'AD-Domain-Services'"
-        }
-    ]
-}
-"@ | ConvertFrom-Json -Depth 10
+# get packs from the blob storage
+    $packsUrl=$env:PacksUrl
+    Write-host "Reading current packs from $packsUrl"
+    $PacksDef=get-blobcontentfromurl -url $packsUrl | convertfrom-json -Depth 20
+    $currentPacks=$PacksDef.Packs | ?{ $_.Discovery -ne $null }
+    # Create a json output with Name, Tag, Description, OS and Query
+    $discoveryData=@{Packs=$currentPacks}
+#     $discoveryData=@"
+# {
+#     "Packs": [
+#         {
+#             "Name": "nginx",
+#             "Tag": "nginx",
+#             "Description": "Nginx is a high-performance HTTP server and reverse proxy.",
+#             "OS": "Linux",
+#             "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'linux'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
+#         },
+#         {
+#             "Name": "ADDS",
+#             "Tag": "ADDS",
+#             "Description": "Active Directory Domain Services",
+#             "OS": "Windows",
+#             "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'AD-Domain-Services'"
+#         }
+#     ]
+# }
+# "@ | ConvertFrom-Json -Depth 10
     return $discoveryData
 }
 
@@ -37,7 +44,7 @@ function get-discoveryresults {
         [string]$instanceName
     )
     # Get the right log analytics workspace
-    $discoveryData=get-discoveryData
+    $discoveryData=get-discoveryData #only packs with discovery data are returned.
     # use resource graph to get the workspace id with the instance name as the tag
     $wsquery = @"
 Resources
@@ -69,9 +76,11 @@ Resources
         Write-host "Found workspace $($workspace.Name) in resource group $($workspace.ResourceGroupName) with id $($workspace.ResourceId)"
         foreach ($pack in $discoveryData.Packs) {
             Write-host "Running discovery for $($pack.Name)"
-            $DiscoveryQuery = $pack.Query
+            $DiscoveryQuery = $pack.Discovery.Query
             # replace the workspace id in the query with the workspace id from the resource graph query
-            $queryResults=Invoke-AzOperationalInsightsQuery -WorkspaceId $workspace.CustomerId.Guid -Query $DiscoveryQuery | Select-Object -ExpandProperty Results
+            $queryResults=Invoke-AzOperationalInsightsQuery -WorkspaceId $workspace.CustomerId.Guid `
+                                                            -Query $DiscoveryQuery `
+                                                            -Timespan (New-TimeSpan -Hours 24) | Select-Object -ExpandProperty Results
             if ($queryResults.Count -eq 0) {
                 Write-host "No discovery data found for $($pack.Name)"
             }
