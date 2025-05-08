@@ -5,15 +5,20 @@
 # The tags added to the extension are copied from the resource.
 
 # this will be eventually used to update the local catalog from the repo.
-function get-AMBAJsonFromRepo {
-    param (
-        [string]$AMBAJsonURL = "https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
-    )
-    $AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
-    return $AMBAJson
-}
+# function get-AMBAJsonFromRepo {
+#     param (
+#         [string]$AMBAJsonURL = "https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json"
+#     )
+#     $AMBAJson = Invoke-WebRequest -Uri $AMBAJsonURL -UseBasicParsing | Select-Object -ExpandProperty Content # | ConvertFrom-Json
+#     return $AMBAJson
+# }
 function get-AMBAJsonContent {
     $ambaJsonURL=$env:AMBAJsonURL
+    if ($ambaJsonURL -eq $null) {
+        Write-Host "Error fetching AMBA URL, stopping function"
+        return $null
+    }
+    Write-Host "Fetching AMBA Catalog from $ambaJsonURL"
     get-blobContentFromUrl -url $ambaJsonURL 
 }
 
@@ -915,8 +920,10 @@ function new-staticCriterionAlert {
                                         -Verbose                                           
     $tag = @{
         $tagName=$packtag
+        "instanceName"=$instanceName
     }
     if ($newRule) {
+        Write-host "Setting Tag in alert rule $($newRule.Id) with tag $($tagName) and value $($packtag) and adding Instance Name $instanceName."
         Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
     }
     else {
@@ -946,6 +953,13 @@ function new-PaaSAlert {
 )
     $category=$resourceType.Split('/')[0].split(".")[1]
     $subCategory=$resourceType.Split('/')[1]
+    $subscriptionId=$resourceId.Split('/')[2]
+    $resourceName=$resourceId.Split('/')[8]
+    # get current context and set the subscription to the one where the resource is located, if needed.
+    $currentSub=(Get-AzContext).Subscription.Id
+    if ($subscriptionId -ne $currentSub) {
+        Set-AzContext -SubscriptionId $subscriptionId
+    }
     $resourceType="{0}/{1}" -f $resourceId.Split('/')[6],$resourceId.Split('/')[7]
     "Creating New PaaS alert for $resourceId of type $resourceType."
     $ambaAlerts=(get-AMBAJsonContent | convertfrom-json).$category.$subCategory # | where {$_.properties.metricNamespace -eq $resourceType -and $_.properties.metricName -ne $null}
@@ -973,7 +987,8 @@ function new-PaaSAlert {
                                                 -resourceId $resourceId `
                                                 -actionGroupId $actionGroupId `
                                                 -instanceName $instanceName `
-                                                -resourceType $resourceType
+                                                -resourceType $resourceType `
+                                                -resourceGroupName $resourceGroupName
                     }
                     'DynamicThresholdCriterion' {
                         "Creating DynamicThresholdCriterion alert."
@@ -985,6 +1000,7 @@ function new-PaaSAlert {
                                                                     -ViolationCount $alert.properties.failingPeriods.numberOfEvaluationPeriods `
                                                                     -ThresholdSensitivity $alert.Properties.alertSensitivity 
                         $rulename="AMP-$instanceName-$resourceName-$($alert.Properties.metricName )-$($alert.Properties.metricNameSpace)".Replace("%","Pct").Replace("/","-")
+                        $automaticMitigation=$null -eq $alert.Properties.autoMitigate ? $false : $alert.Properties.autoMitigate 
                         $newRule=Add-AzMetricAlertRuleV2 -Name $rulename `
                                                         -ResourceGroupName $resourceGroupName `
                                                         -TargetResourceId $resourceId `
@@ -998,9 +1014,10 @@ function new-PaaSAlert {
                         #update rule with new tags
                         $tag = @{
                             $tagName=$packTag
+                            "instanceName"=$instanceName
                         }
-                        "Adding tag $($tagName) with value $($packTag) to rule $($newRule.Id)."
-                        Update-AzTag -ResourceId $newRule.Id -Tag $tag  -Operation Replace
+                        Write-host "Setting Tag in alert rule $($newRule.Id) with tag $($tagName) and value $($packtag) and adding Instance Name $instanceName."
+                        Update-AzTag -ResourceId $newRule.Id -Tag $tag -Operation Replace
                     }
                     default {
                         Write-Host "Unknown criterion type"
@@ -1022,14 +1039,18 @@ function new-PaaSAlert {
                                 -Scope $resourceId `
                                 -Action $actiongroup `
                                 -Condition @($condition1,$condition2) `
-                                -Tag @{$tagName=$packTag} `
-                                -Location $location                              
+                                -Tag @{$tagName=$packTag; "instanceName"=$instanceName} `
+                                -Location "global"                         
         }
     }
 }
 function get-AmbaCatalog {
     Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from storage account."
     $ambaJSONContent=get-AMBAJsonContent #-ambaJsonURL $ambaJsonURL
+    if ($null -eq $ambaJSONContent) {
+        Write-Host "Error fetching AMBA JSON content."
+        return $false
+    }
     $aaa=$ambaJSONContent | convertfrom-json -Depth 10
     $Categories=$aaa.psobject.properties.Name
     #$Categories
@@ -1044,32 +1065,27 @@ function get-AmbaCatalog {
             $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
             if ($null -ne $aaa.$category.$svc.name) {                  
                 if ($null -ne $aaa.$category.$svc[0].properties.metricNamespace) {
-                $metricnamespace=$aaa.$category.$svc[0].properties.metricNamespace.tolower()
-                # $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')#                        "$namespace $ambafolder"
-                    $bodyt=@"
+                    $metricnamespace=$aaa.$category.$svc[0].properties.metricNamespace.tolower()
+                }
+                else {
+                    $metricnamespace="microsoft.$($category.tolower())/$($svc.tolower())"
+                }
+                $metricDetails=@(
+                    foreach ($metric in $aaa.$category.$svc.properties.metricName) {
+                        $metric
+                    }
+                ) -join "`n"
+                $bodyt=@"
           {
             "category" : "$category",
             "service" : "$svc",
             "namespace": "$namespace",
             "metricnamespace": "$metricnamespace",
-            "tag": "$namespace"
+            "tag": "$namespace",
+            "NumberOfMetrics": $($aaa.$category.$svc.Count),
+            "Details": "$metricDetails",
           }
-"@
-                }
-                else {
-                    $namespace="microsoft.$($category.tolower())/$($svc.tolower())"
-                    # $ambaFolder=$namespace.Replace('microsoft.','').Replace('/','.')
-                    # #"$namespace $ambafolder"
-                    $bodyt=@"
-            {
-                "category" : "$category",
-              "service" : "$svc",
-              "namespace": "$namespace",
-              "metricnamespace": "N/A",
-              "tag" : "$namespace"
-            }
-"@  
-                }
+"@          
                 if ($i -eq 0) {
                     $body+=@"
                     $bodyt
@@ -1081,10 +1097,10 @@ function get-AmbaCatalog {
             ,
                  $bodyt
 "@
-                          }
-                      }
-                  }
-              }
+                } #
+            } # if the name is not null
+        } #foreach svc
+    } #category foreach
             $body+=@"
             ]
             }
@@ -1181,6 +1197,12 @@ function new-pack {
             $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
             if ($dcr) {
                 Write-Host "DCR $($ruleName) already exists. Skipping creation."
+                #check if any alerts exist for this DCR. If yes, then pack is really already installed.
+                $alerts = Search-AzGraph -Query "resources | where type =~ 'microsoft.insights/scheduledqueryrules' | where tags.instanceName =~ '$($instanceName)' and tags.MonitorStarterPacks =~ '$($packtag)'" -UseTenantScope
+                if ($alerts.count -eq 0) {
+                    Write-Host "Alerts already exist for DCR $($ruleName). Pack is already installed."
+                    $newPack=$false
+                }
             }
             else {
                 $newPack=$true
@@ -1477,7 +1499,15 @@ function get-packsdefinition {
     $packslist=get-blobContentFromUrl -url $packsURL 
     return $packslist
 }
-
+function get-IaaSPacksContent {
+    $fullpacks = get-packsdefinition | ConvertFrom-Json -Depth 15
+    # return a json with packs, including Name, Tag, Number of rules, number of alerts, and the names of the alerts
+    $packs = $fullpacks.Packs | Select-Object Name, Tag, 
+        @{Name="NumberOfRules";Expression={$_.Rules.Count}}, 
+        @{Name="NumberOfAlerts";Expression={$_.Alerts.Count}}, 
+        @{Name="AlertNames";Expression={($_.Alerts | Select-Object -ExpandProperty alertRuleDisplayName) -join "`n"}} | ConvertTo-Json -Depth 15
+    return $packs
+}
 function update-packsdefinition {
     param (
         [Parameter(Mandatory = $true)]
@@ -1489,3 +1519,7 @@ function update-packsdefinition {
 }
 
 
+function get-AmbaAlertsInfo {
+    $ambaalerts=get-AMBAJsonContent | ConvertFrom-Json -Depth 10
+
+}

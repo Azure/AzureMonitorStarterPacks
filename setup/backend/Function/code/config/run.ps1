@@ -129,7 +129,7 @@ resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ 
 | join kind=fullouter    (resources
     | where tolower(type) in ("microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
     | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
-    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks), Enabled=tostring(properties.enabled)) on Resource
+    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource
 $resourceFilter
 | summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind 
 "@
@@ -167,6 +167,18 @@ $resourceFilter
   }
   "getPacksDefinition"  {
     $body = get-PacksDefinition
+  }
+  'getIaaSPacksDetails' {
+    $body=get-IaaSPacksContent
+    if ($body -eq $null) {
+      $body = '{}'
+    }
+  }
+  'getServicesPacksDetails' {
+    $body=get-AmbaCatalog
+    if ($body -eq $null) {
+      $body = '{}'
+    }
   }
 
   default { 
