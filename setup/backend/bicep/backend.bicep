@@ -83,6 +83,8 @@ module backendFunction './modules/function.bicep' = {
     solutionTag: solutionTag
     instanceName: instanceName
     imageGalleryName: gallery.name
+    packsModulesRootURL: modulesupload.outputs.modulesURL
+    applicationsURL: applicationsupload.outputs.applicationsURL
   }
 }
 module logicapp './modules/logicapp.bicep' = {
@@ -196,6 +198,28 @@ module ambaStorage './modules/uploadAmbaAlerts.bicep' = {
     location: location
     containerName: 'amba'
     filename: 'amba-alerts.json'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+module modulesupload './modules/uploadmodules.bicep' = {
+  name: 'modulesstorage-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'modules'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+module applicationsupload './modules/uploadapplications.bicep' = {
+  name: 'applicationstostorage-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'applications'
     tags: Tags
     //sasExpiry: 'PT1H'
   }

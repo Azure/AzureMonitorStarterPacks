@@ -8,7 +8,7 @@
 #>
 # before building the bicep files, we need to zip the json files in the ./Packs folder
 $currentFolder= Get-Location
-Set-Location "./Packs"
+Set-Location ".\Packs"
 # get all files in the current directory only
 $packsFiles = Get-ChildItem -Path './' -Name '*.json'
 foreach ($file in $packsFiles) {
@@ -18,13 +18,6 @@ foreach ($file in $packsFiles) {
 }
 Set-Location $currentFolder
 
-$mainMonstarPacksFiles = Get-Content -Path './tools/build.json' | ConvertFrom-Json
-
-foreach ($file in $mainMonstarPacksFiles) {
-    Set-Location -Path $file.Folder
-    bicep build $file.File
-    Set-Location $currentFolder  
-}
 # Grafana Dashaboards
 Set-Location "./Packs"
 $DestinationPath='./Grafana.zip'
@@ -60,7 +53,27 @@ foreach ($folder in $folders) {
         Compress-Archive -Path ./* -DestinationPath $DestinationPath -Update
     }
 }
-# Set-Location ./Packs/ADDS/client
+# Create a modules zip to be uploaded. For now, only alerts and DCRs are included.
+Set-Location $currentFolder
+Set-Location ./modules
+$DestinationPath = './modules.zip'
+Remove-Item $DestinationPath -ErrorAction SilentlyContinue
+Compress-Archive -Path ./alerts/*.bicep -DestinationPath $DestinationPath -Update
+Compress-Archive -Path ./DCRs/*.bicep -DestinationPath $DestinationPath -Update
+Set-Location $currentFolder
+#All pack applications are zipped and ready to be uploaded to the storage account.
+Set-Location ./Packs/applications
+# get all zip files and zip into a single applications.zip file
+$DestinationPath = './applications.zip'
+Remove-Item $DestinationPath -ErrorAction SilentlyContinue
+Compress-Archive -Path ./*.zip -DestinationPath $DestinationPath -Update
 # Compress-Archive -Path ./* -DestinationPath ../../applications/addscollection.zip -Update
 Set-Location $currentFolder
 
+$mainMonstarPacksFiles = Get-Content -Path './tools/build.json' | ConvertFrom-Json
+
+foreach ($file in $mainMonstarPacksFiles) {
+    Set-Location -Path $file.Folder
+    bicep build $file.File
+    Set-Location $currentFolder  
+}

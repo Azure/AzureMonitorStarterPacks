@@ -3,15 +3,18 @@
 param ruleName string
 
 @description('Specifies the resource id of the data collection endpoint.')
-param endpointResourceId string
+param dceId string
 
 @description('Specifies the location in which to create the data collection rule.')
 param location string
 
-param lawResourceId string
+param workspaceResourceId string
 param Tags object
+//Not used in this module, but required for the DCR resource
+param xPathQueries array = []
+param counterSpecifiers array = []
 
-var lawFriendlyName = split(lawResourceId,'/')[8]
+var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: ruleName
@@ -19,7 +22,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
   tags: Tags
   kind: 'Windows'
   properties: {
-    dataCollectionEndpointId: endpointResourceId
+    dataCollectionEndpointId: dceId
     dataSources: {
       iisLogs: [
         {
@@ -33,7 +36,7 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' 
     destinations:  {
       logAnalytics : [
           {
-              workspaceResourceId: lawResourceId
+              workspaceResourceId: workspaceResourceId
               name: lawFriendlyName
           }
       ]

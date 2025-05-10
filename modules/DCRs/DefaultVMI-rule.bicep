@@ -3,6 +3,7 @@ param workspaceResourceId string
 param Tags object
 param ruleName string
 param dceId string
+// Not used in this module, but required for the DCR resource
 param xPathQueries array = []
 param counterSpecifiers array = []
 

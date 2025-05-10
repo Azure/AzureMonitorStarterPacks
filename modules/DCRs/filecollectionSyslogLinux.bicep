@@ -19,7 +19,9 @@ param syslogDataSourceName string = 'sysLogsDataSource-1688419672'
 param kqlTransformation string
 param retentionDays int = 31
 param createTable bool = true
-
+//Not used in this module, but required for the DCR resource
+param xPathQueries array = []
+param counterSpecifiers array = []
 
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
 var tableNameToUse = '${tableName}_CL'

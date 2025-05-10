@@ -71,27 +71,26 @@ else {
       switch ($action) {
         'AddPack' {
           foreach ($resource in $resources) {
-            Write-host "Resource: $resource"
-            Write-host "ResourceId: $($resource.Resource)"
-            Write-host "Resource Pack: $($resource.Pack)"
-            Write-host "Resource OS: $($resource.OS)"
+            # Write-host "Resource: $resource"
+            # Write-host "ResourceId: $($resource.Resource)"
+            # Write-host "Resource Pack: $($resource.Pack)"
+            # Write-host "Resource OS: $($resource.OS)"
             # Tagging
             switch ($PackType) {
               'Iaas' {
-                # Add Agent if not installed yet.
+                # check if adding multiple packs or a single pack.
                 if ($TagList.Count -eq 0) {
                   Write-host "Taglist is null. Setting to $($resource.Pack)"
                   $TagList = @($resource.Pack)
                 }
                 $InstallDependencyAgent = ($Taglist -contains 'SvcMap') ? $true : $false
-
                 if ($InstallDependencyAgent) {
                   Write-Host "Will try to install dependency agent? $InstallDependencyAgent. Taglist is $TagList"
                 }
                 Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 foreach ($TagValue in $TagList) {
                   Write-host "TAGMGMT: adding $TagValue tag to $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-                  Add-Tag -resourceId $resource.Resource `
+                  Add-Monitoring -resourceId $resource.Resource `
                     -TagName $TagName `
                     -TagValue $TagValue `
                     -instanceName $instanceName `
@@ -111,7 +110,7 @@ else {
                 }
                 Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
-                Add-Tag -resourceId $resource.Resource `
+                Add-Monitoring-resourceId $resource.Resource `
                   -TagName $TagName `
                   -TagValue $TagValue `
                   -instanceName $instanceName `
@@ -122,7 +121,7 @@ else {
                 "PackType: $PackType"
                 $ResourceType = $resource.type
                 "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
-                Add-Tag -resourceId $resource.Resource `
+                Add-Monitoring-resourceId $resource.Resource `
                         -TagName $TagName `
                         -TagValue $ResourceType `
                         -resourceType $ResourceType `
@@ -144,7 +143,7 @@ else {
               'Iaas' {
                 foreach ($TagValue in $TagList) {
                   Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-                  Remove-Tag  -resourceId $resource.Resource `
+                  Remove-Monitoring  -resourceId $resource.Resource `
                               -TagName $TagName -TagValue $TagValue `
                               -PackType $PackType -instanceName $instanceName
                 }
@@ -154,7 +153,7 @@ else {
                 # Add Agent if not installed yet.
                 Write-Host "PackType: $PackType. Removing tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
                 if ($TagValue -ne '') {
-                  Remove-Tag -resourceId $resource.Resource `
+                  Remove-Monitoring -resourceId $resource.Resource `
                     -TagName $TagName `
                     -TagValue $TagValue `
                     -instanceName $instanceName `
@@ -166,7 +165,7 @@ else {
               }
               'Paas' {
                 Write-host "TAGMGMT: removing $TagValue tag from $($resource.Resource). PackType: $PackType. Instance Name: $instanceName"
-                Remove-Tag -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
+                Remove-Monitoring -resourceId $resource.Resource -TagName $TagName -TagValue $resource.tag -PackType $PackType -instanceName $instanceName
               }
               default {
                 Write-host "Invalid PackType: $PackType"

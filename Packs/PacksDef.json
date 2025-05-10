@@ -253,14 +253,7 @@
                     "Rulename": "IIS",
                     "RuleType": "EventPerformance",
                     "RuleNamePath": "dcr-basicWinVM.bicep",
-                    "xPathQueries": [],
-                    "performanceCounters" :[]
-                },
-                {
-                    "Rulename": "IISLogs",
-                    "RuleType": "IISLogs",
-                    "RuleNamePath": "filecollectionWinIIS.bicep",
-                    "xPathQueries": [                        
+                    "xPathQueries": [
                         "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1071 or EventID=1073)]]",
                         "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1135 or EventID=1134)]]",
                         "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2226 or EventID=2230 or EventID=2231 or EventID=2232)]]",
@@ -314,6 +307,44 @@
                         "System!*[System[Provider[@Name=\\'Service Control Manager\\'] and (EventID=7034)]]",
                         "System!*[System[Provider[@Name=\\'Service Control Manager\\'] and (EventID=7043)]]"
                     ],
+                    "performanceCounters" :[
+                        "\\Web Service(_Total)\\Bytes Received/sec",
+                        "\\Web Service(_Total)\\Bytes Sent/sec",
+                        "\\Web Service(_Total)\\Bytes Total/sec",
+                        "\\Web Service(_Total)\\Connection Attempts/sec",
+                        "\\Web Service(_Total)\\Current Connections",
+                        "\\Web Service(_Total)\\Total Method Requests/sec",
+                        "\\Microsoft FTP Service(_Total)\\Bytes Total/sec",
+                        "\\Microsoft FTP Service(_Total)\\Current Connections",
+                        "\\SMTP Server(_Total)\\Bytes Received/sec",
+                        "\\SMTP Server(_Total)\\Bytes Sent/sec",
+                        "\\SMTP Server(_Total)\\Bytes Total/sec",
+                        "\\SMTP Server(_Total)\\Inbound Connections Current",
+                        "\\SMTP Server(_Total)\\Message Bytes Received/sec",
+                        "\\SMTP Server(_Total)\\Message Bytes Sent/sec",
+                        "\\SMTP Server(_Total)\\Messages Delivered/sec",
+                        "\\SMTP Server(_Total)\\Messages Received/sec",
+                        "\\SMTP Server(_Total)\\Messages Sent/sec",
+                        "\\SMTP Server(_Total)\\Outbound Connections Current",
+                        "\\SMTP Server(_Total)\\Total Messages Submitted",
+                        "\\SMTP Server(SMTP 1)\\Bytes Received/sec",
+                        "\\SMTP Server(SMTP 1)\\Bytes Sent/sec",
+                        "\\SMTP Server(SMTP 1)\\Bytes Total/sec",
+                        "\\SMTP Server(SMTP 1)\\Inbound Connections Current",
+                        "\\SMTP Server(SMTP 1)\\Message Bytes Received/sec",
+                        "\\SMTP Server(SMTP 1)\\Message Bytes Sent/sec",
+                        "\\SMTP Server(SMTP 1)\\Messages Delivered/sec",
+                        "\\SMTP Server(SMTP 1)\\Messages Received/sec",
+                        "\\SMTP Server(SMTP 1)\\Messages Sent/sec",
+                        "\\SMTP Server(SMTP 1)\\Outbound Connections Current",
+                        "\\SMTP Server(SMTP 1)\\Total Messages Submitted"
+                    ]
+                },
+                {
+                    "Rulename": "IISLogs",
+                    "RuleType": "IISLogs",
+                    "RuleNamePath": "filecollectionWinIIS.bicep",
+                    "xPathQueries": [],
                     "performanceCounters" :[
                         "\\Web Service(_Total)\\Bytes Received/sec",
                         "\\Web Service(_Total)\\Bytes Sent/sec",
@@ -1193,7 +1224,7 @@
                     "clientAppVersion": "1.0.0",
                     "clientAppInstallCommand" : "powershell -command \"ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1\"",
                     "clientAppUninstallCommand" : "powershell -command \"Unregister-ScheduledTask -TaskName 'AD DS Collection Task'\"",
-                    "clientAppZIPURL" : "https://github.com/FehseCorp/AzureMonitorStarterPacks/raw/refs/heads/V3-SubDep/Packs/IaaS/ADDS/addscollection.zip"
+                    "clientAppZIPFile" : "ADDS.zip"
                 }
             ],
             "Discovery":{
@@ -1218,6 +1249,11 @@
             "Tag": "SvcMap",
             "Description": "Service Map monitoring pack. DCR only",
             "OS": "Windows",
+            "Agents": [
+                {
+                    "AgentName": "SvcMap"
+                }
+            ],
             "Rules": [
                 {
                     "Rulename": "SvcMap",

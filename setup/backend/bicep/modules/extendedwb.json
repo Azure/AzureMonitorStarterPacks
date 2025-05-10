@@ -1063,7 +1063,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' \n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| extend overrides=tags.CustomThresholds\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location, overrides\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| extend overrides=tags.CustomThresholds\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location, overrides)\n",
               "size": 0,
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
@@ -1109,7 +1109,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].instanceName\",\"mergedName\":\"instanceName\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].MP\",\"mergedName\":\"MP\",\"fromId\":\"unknown\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].instanceName\",\"mergedName\":\"instanceName\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].MP\",\"mergedName\":\"MP\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].overrides\",\"mergedName\":\"overrides\",\"fromId\":\"unknown\"}]}",
                     "size": 0,
                     "title": "Monitored Machines",
                     "showRefreshButton": true,
@@ -1169,6 +1169,33 @@
                           "formatOptions": {
                             "linkTarget": null,
                             "showIcon": true
+                          }
+                        },
+                        {
+                          "columnMatch": "overrides",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "linkTarget": "CellDetails",
+                            "linkIsContextBlade": true,
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "==",
+                                "representation": "cancelled",
+                                "text": ""
+                              },
+                              {
+                                "operator": "!=",
+                                "representation": "2",
+                                "text": ""
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              }
+                            ]
                           }
                         },
                         {
@@ -1511,6 +1538,9 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "value::tenant"
+                    ],
                     "parameters": [
                       {
                         "id": "69e06557-55cc-490c-86d2-892d7817b729",
@@ -1521,7 +1551,10 @@
                         "multiSelect": true,
                         "quote": "'",
                         "delimiter": ",",
-                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
+                        "query": "resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',\"microsoft.insights/scheduledqueryrules\",\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\",'microsoft.insights/datacollectionrules'))\r\n| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']\r\n| join kind=fullouter    (resources\r\n    | where tolower(type) in (\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\")\r\n    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource\r\n| summarize by Type=['type']",
+                        "crossComponentResources": [
+                          "value::tenant"
+                        ],
                         "typeSettings": {
                           "additionalResourceOptions": [
                             "value::all"
@@ -1531,14 +1564,16 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10,
+                        "queryType": 1,
+                        "resourceType": "microsoft.resources/tenants",
                         "value": [
                           "value::all"
                         ]
                       }
                     ],
                     "style": "above",
-                    "queryType": 10
+                    "queryType": 1,
+                    "resourceType": "microsoft.resources/tenants"
                   },
                   "name": "parameters - service type tagged"
                 },
@@ -1546,7 +1581,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaasType}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.AlertRules\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
+                    "query": "resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',\"microsoft.insights/scheduledqueryrules\",\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\",'microsoft.insights/datacollectionrules'))\r\n| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']\r\n| join kind=fullouter    (resources\r\n    | where tolower(type) in (\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\")\r\n    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource\r\n| where tolower(type) in ({SelectPaasType})\r\n| summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind ",
                     "size": 0,
                     "title": "Monitored Services",
                     "showRefreshButton": true,
@@ -1566,9 +1601,37 @@
                     ],
                     "showExportToExcel": true,
                     "exportToExcelOptions": "all",
-                    "queryType": 10,
+                    "queryType": 1,
+                    "resourceType": "microsoft.resourcegraph/resources",
                     "gridSettings": {
                       "formatters": [
+                        {
+                          "columnMatch": "AlertCount",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": ">",
+                                "thresholdValue": "0",
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "0",
+                                "representation": "2",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          }
+                        },
                         {
                           "columnMatch": "AlertRules",
                           "formatter": 18,
@@ -1582,14 +1645,15 @@
                                 "text": "{0}{1}"
                               },
                               {
-                                "operator": "is Empty",
+                                "operator": "==",
+                                "thresholdValue": "0",
                                 "representation": "2",
                                 "text": "{0}{1}"
                               },
                               {
                                 "operator": "Default",
                                 "thresholdValue": null,
-                                "representation": "warning",
+                                "representation": "success",
                                 "text": "{0}{1}"
                               }
                             ]
@@ -2357,6 +2421,22 @@
                   "linkTarget": "parameter",
                   "linkLabel": "Import IaaS Packs",
                   "subTarget": "importPack",
+                  "style": "link"
+                },
+                {
+                  "id": "2d44157f-bd79-4963-9133-518597498a1b",
+                  "cellValue": "packsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "IaaS Packs Details",
+                  "subTarget": "IaaSPacksDetails",
+                  "style": "link"
+                },
+                {
+                  "id": "2cc2c20b-8b44-49d5-ab3f-8917f4bfa9ab",
+                  "cellValue": "packsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Services Packs Details",
+                  "subTarget": "servicesPacksDetails",
                   "style": "link"
                 }
               ]
@@ -3228,6 +3308,141 @@
               }
             ],
             "name": "packAuthoringGroup"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getIaaSPacksDetails\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Name\",\"columnid\":\"Name\"},{\"path\":\"$.Tag\",\"columnid\":\"Tag\"},{\"path\":\"$.NumberOfRules\",\"columnid\":\"Rules\"},{\"path\":\"$.NumberOfAlerts\",\"columnid\":\"Alerts\"},{\"path\":\"$.AlertNames\",\"columnid\":\"AlertDetails\"}]}}]}",
+              "size": 0,
+              "title": "IaaS Packs Details",
+              "queryType": 10,
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "AlertDetails",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "linkColumn": "AlertDetails",
+                      "linkTarget": "CellDetails",
+                      "linkIsContextBlade": true,
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "is Empty",
+                          "representation": "more",
+                          "text": ""
+                        },
+                        {
+                          "operator": "!=",
+                          "representation": "1",
+                          "text": ""
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "packsTab",
+              "comparison": "isEqualTo",
+              "value": "IaaSPacksDetails"
+            },
+            "name": "query-IaaSPacksDetails"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getServicesPacksDetails\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.namespace\",\"columnid\":\"NameSpace\"},{\"path\":\"$.NumberOfMetrics\",\"columnid\":\"NumberOfMetrics\"},{\"path\":\"$.Details\",\"columnid\":\"Details\"}]}}]}",
+              "size": 0,
+              "title": "Services Packs Details",
+              "showExportToExcel": true,
+              "queryType": 10,
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Details",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "linkColumn": "Details",
+                      "linkTarget": "CellDetails",
+                      "linkIsContextBlade": true,
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "is Empty",
+                          "representation": "more",
+                          "text": ""
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": ""
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "columnMatch": "AlertDetails",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "linkColumn": "AlertDetails",
+                      "linkTarget": "CellDetails",
+                      "linkIsContextBlade": true,
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "is Empty",
+                          "representation": "more",
+                          "text": ""
+                        },
+                        {
+                          "operator": "!=",
+                          "representation": "1",
+                          "text": ""
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "success",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "NumberOfMetrics",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "NumberOfMetrics",
+                  "sortOrder": 2
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "packsTab",
+              "comparison": "isEqualTo",
+              "value": "servicesPacksDetails"
+            },
+            "name": "query-servicesPacksDetails"
           }
         ]
       },
@@ -4341,7 +4556,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 1209600000
+                    "durationMs": 300000
                   }
                 },
                 {
@@ -4361,7 +4576,7 @@
                   "timeContextFromParameter": "discoveryPeriod",
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/win1"
+                  "value": null
                 }
               ],
               "style": "above",
@@ -4414,15 +4629,75 @@
             "name": "query - discovery - all"
           },
           {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "18e396d2-d597-4f30-a863-c47a8d579c58",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "discoveryQueryPeriod",
+                  "label": "Discovery Period ",
+                  "type": 4,
+                  "typeSettings": {
+                    "selectableValues": [
+                      {
+                        "durationMs": 300000
+                      },
+                      {
+                        "durationMs": 900000
+                      },
+                      {
+                        "durationMs": 1800000
+                      },
+                      {
+                        "durationMs": 3600000
+                      },
+                      {
+                        "durationMs": 14400000
+                      },
+                      {
+                        "durationMs": 43200000
+                      },
+                      {
+                        "durationMs": 86400000
+                      },
+                      {
+                        "durationMs": 172800000
+                      },
+                      {
+                        "durationMs": 259200000
+                      },
+                      {
+                        "durationMs": 604800000
+                      },
+                      {
+                        "durationMs": 1209600000
+                      }
+                    ]
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": {
+                    "durationMs": 3600000
+                  }
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 7"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
               "query": "let maxts=DiscoveryResults_CL\r\n| summarize maxts=max(TimeGenerated);\r\nDiscoveryResults_CL\r\n| where TimeGenerated == toscalar(maxts)\r\n| project Resource=ResourceId, OS, Pack=Tag, Location, ['Discovery Time']=TimeGenerated",
               "size": 0,
               "title": "Discovery Results",
-              "timeContext": {
-                "durationMs": 259200000
-              },
+              "timeContextFromParameter": "discoveryQueryPeriod",
               "exportMultipleValues": true,
               "exportedParameters": [
                 {

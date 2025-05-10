@@ -14,7 +14,7 @@
 # }
 function get-AMBAJsonContent {
     $ambaJsonURL=$env:AMBAJsonURL
-    if ($ambaJsonURL -eq $null) {
+    if ($null -eq $ambaJsonURL) {
         Write-Host "Error fetching AMBA URL, stopping function"
         return $null
     }
@@ -434,7 +434,7 @@ ruleId =~ '$($DCR.id)'
     }
 }
 # Depends on Function Remove-DCRa
-function Remove-Tag {
+function Remove-Monitoring {
     param (
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
@@ -449,110 +449,59 @@ function Remove-Tag {
     )
     "Running $action for $($resourceId) resource. TagValue: $TagValue"
     #[System.Object]$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
-    [System.Object]$tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
-    if ($null -eq $tag) {
-        # initializes if no tag is there.
-        $tag = @{}
+    if ($TagValue -eq 'All') { #This only applies (should) to IaaS and Discovery packs.
+        # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings and vm applications.
+        #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
+        #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
+        "Removing all associations $($taglist.count) for $taglist."
+        foreach ($tagv in $taglist) {
+            Write-Host "Removing association for $tagv. on $resourceId."
+            Remove-DCRa -resourceId $resourceId -TagValue $tagv -instanceName $instanceName
+            "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
+            remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
+        }
+        remove-tag -resourceId $resourceId -TagName $TagName -TagValue $TagValue -instanceName $instanceName
     }
     else {
-        if ($tag.Keys -notcontains $tagName) {
-            # doesn´t have the monitoring tag
-            "No monitoring tag, can't delete the value. Something is wrong"
+           if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
+            "Removing DCR Association."
+            Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+            "Removing vm application(s) if any for $tagvalue tag and instance name $instanceName, if any."
+            remove-vmapp -ResourceId $resourceId -packtag $tagvalue -instanceName $instanceName
+            "Removing tag $TagName for $TagValue."
+            remove-tag -resourceId $resourceId -TagName $TagName -TagValue $TagValue -instanceName $instanceName
         }
         else {
-            #Monitoring Tag exists. Good.  
-            if ($TagValue -eq 'All') { #This only applies (should) to IaaS and Discovery packs.
-                # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings and vm applications.
-                #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
-                #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
-                $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
-                $taglist=$tag.$tagName.split(',')
-                "Removing all associations $($taglist.count) for $taglist."
-                foreach ($tagv in $taglist) {
-                    Write-Host "Removing association for $tagv. on $resourceId."
-                    Remove-DCRa -resourceId $resourceId -TagValue $tagv -instanceName $instanceName
-                    "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
-                    remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
-                }
-                #removes the monitoring tag from the resource.
-                $tag.Remove($tagName)
-                #removes the instance name tag from the resource.
-                $tag.Remove('instanceName')
-                if ($tag.count -ne 0) {
-                    #updating since resource has other tags.
-                    Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-                }
-                else {
-                    $tagToRemove = @{"$($TagName)" = "$($tag.$tagValue)" }
-                    Update-AzTag -ResourceId $resourceId -Tag $tagToRemove -Operation Delete
-                    # Also remove the instance name tag.
-                    $tagToRemove = @{"instanceName" = "$($instanceName)" }
-                    Update-AzTag -ResourceId $resourceId -Tag $tagToRemove -Operation Delete
-                }
+            "Paas Pack. No need to remove association."
+            "Will look for diagnostic settings to remove with specific name. Won't remove if that is not found since it could be for something else."
+            try {
+                $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMP-$TagValue" -ErrorAction SilentlyContinue
+            }
+            catch {
+                $diagnosticConfig = $null
+            }
+            if ($diagnosticConfig) {
+                "Found diagnostic setting. Removing..."
+                Remove-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
             }
             else {
-                if ($tag.$tagName.Split(',') -notcontains $TagValue) {
-                    "Tag exists, but not the value. Can't remove it. Something is wrong."
-                }
-                else {
-                    [System.Collections.ArrayList]$tagarray = $tag[$tagName].split(',')
-                    $tagarray.Remove($TagValue)
-                    if ($tagarray.Count -eq 0) {
-                        "Removing tag since it has no values."
-                        $tag.Remove($tagName)
-                        $tagToRemove = @{"$($TagName)" = "$($tag.$tagValue)" }
-                        Update-AzTag -ResourceId $resourceId -Tag $tagToRemove -Operation Delete
-                    }
-                    else {
-                        $tag[$tagName] = $tagarray -join ','
-                        Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-                    }
-                    # Remove association for the rule with the monitoring pack. PlaceHolder. Function will need to have monitoring contributor role.
-                    # Find the specific rule by the tag with ARG
-                    # Find association with the monitoring pack and that resource
-                    # Remove association
-                    # find rule
-                    if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {
-                        "Removing DCR Association."
-                        Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
-                        "Removing vm application(s) if any for $tagvalue tag and instance name $instanceName, if any."
-                        remove-vmapp -ResourceId $resourceId -packtag $tagvalue -instanceName $instanceName
-                    }
-                    else {
-                        "Paas Pack. No need to remove association."
-                        "Will look for diagnostic settings to remove with specific name. Won't remove if that is not found since it could be for something else."
-                        try {
-                            $diagnosticConfig = Get-AzDiagnosticSetting -ResourceId $resourceId -Name "AMP-$TagValue" -ErrorAction SilentlyContinue
-                        }
-                        catch {
-                            $diagnosticConfig = $null
-                        }
-                        if ($diagnosticConfig) {
-                            "Found diagnostic setting. Removing..."
-                            Remove-AzDiagnosticSetting -ResourceId $resourceId -Name "AMSP-$TagValue"
-                        }
-                        else {
-                            "No diagnostic setting found."
-                        }
-                        # Need to remove alert rules for the specific resource.
-                        # Find the alert rules for the resource using the resourceId and graph query.
-                        Write-host "Debug(Remove-Tag): removing alert rules for $resourceId"
-                        $graphQuery = @"
-                        resources
-    | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-    | where isnotempty(tags.MonitorStarterPacks)
-    | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
-    | where Resource =~ '$resourceId'
+                "No diagnostic setting found."
+            }
+            # Need to remove alert rules for the specific resource.
+            # Find the alert rules for the resource using the resourceId and graph query.
+            Write-host "Debug(Remove-Monitoring): removing alert rules for $resourceId"
+            $graphQuery = @"
+            resources
+| where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+| where isnotempty(tags.MonitorStarterPacks)
+| project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])
+| where Resource =~ '$resourceId'
 "@
-                        $alertRules = Search-AzGraph -Query $graphQuery -UseTenantScope
-                        Write-host "Found $($alertRules.count) alert rule(s) for $resourceId."
-                        foreach ($alertRule in $alertRules) {
-                            Write-host "Found alert rule $($alertRule.Name) for $resourceId. Removing..."
-                            Remove-AzResource -ResourceId $alertRule.id -Force -ErrorAction SilentlyContinue
-                        }
-                    }
-                }
-                #Update-AzTag -ResourceId $resource.Resource -Tag $tag
+            $alertRules = Search-AzGraph -Query $graphQuery -UseTenantScope
+            Write-host "Found $($alertRules.count) alert rule(s) for $resourceId."
+            foreach ($alertRule in $alertRules) {
+                Write-host "Found alert rule $($alertRule.Name) for $resourceId. Removing..."
+                Remove-AzResource -ResourceId $alertRule.id -Force -ErrorAction SilentlyContinue
             }
         }
     }
@@ -696,7 +645,7 @@ function Remove-Agent {
         }
     }
 }
-function Add-Tag {
+function Add-Monitoring { # This adds a single pack to a single resource.
     param (
         [Parameter(Mandatory = $true)]
         [string]$resourceId,
@@ -710,130 +659,228 @@ function Add-Tag {
         [string]$packType,
         [Parameter(Mandatory = $true)]
         [string]$resourceType,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [string]$actionGroupId,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [string]$workspaceResourceId,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [string]$location
     )
     $resourceName = $resourceId.split('/')[8]
     Write-Host "Resource: $resourceId"
     Write-Host "Running $action for $resourceName resource. TagValue: $TagValue"
     # Action Group IP:
-    Write-host "Add-tag: Action Group ID: $actionGroupId"
+    Write-host "Add-monitoring: Action Group ID: $actionGroupId"
     $resourceGroupName = $env:resourceGroup
     #$tag = (Get-AzResource -ResourceId $resource.Resource).Tags
-    $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+    # Checks current tags on the resource.
+    
+    #$tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
     #"Current tags: $($tag)"
+    # if ($null -eq $tag) {
+    #     # initializes if no tag is there.
+    #     $tag = @{}
+    # }
+    # Different approach for IaaS, Discovery and PaaS packs.
+    switch ($packType) {
+        'IaaS' { 
+            #Will check if the required DCRs and alerts already exist. If not, it will create them.
+            Write-host "Installing pack for $TagValue, if not installed yet."
+            $packDef=new-pack -location $location `
+                -instanceName $instanceName `
+                -resourceGroup $resourceGroupName `
+                -workspaceId $workspaceResourceId `
+                -packtag $TagValue `
+                -AGId $actionGroupId `
+                -urlDeployment `
+                -installBicep
+            # Once Pack is installed, need to know what else is required for the pack, like Agents, VM Applications, etc.
+            # Once the DCRs is in place, add association to the VM (this being IaaS).
+            try {
+                Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+            }
+            catch {
+                Write-host "Error adding association for $TagValue. Not adding tag or adding VM application."
+                return
+            }
+            if ($null -ne $packDef.Agents) {
+                # Need a VM application for the pack. This is only for IaaS packs and discovery.
+                Write-host "Addinng VM application for $TagValue."
+                try {
+                    New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue
+                    Write-host "VM application created for $TagValue, if any. Adding tag."
+                }
+                catch {
+                    Write-host "Error creating VM application for $TagValue. Not adding tag."
+                    # should eventually remove association if was created, since the pack is not functional with out the VM application.
+                    Write-host "Removing DCR association for $TagValue since VM application was not created."
+                    Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+                    return
+                }
+            }
+            # Finally, add the tag to the resource if nothing else failed before.
+            try {
+                New-Tag -ResourceId $resourceId -TagName $TagName -TagValue $TagValue -instanceName $instanceName
+            }
+            catch {
+                Write-host "Error adding tag to resource $resourceId. $($_.Exception.Message)"
+                # should remove VM App and association since pack tag is not there.
+                return
+            }
+        }
+        'Discovery' { 
+            try {
+                Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+            }
+            catch {
+                Write-host "Error adding association for $TagValue. Not adding tag or adding VM application."
+                return
+            }
+            if ($null -ne $packDef.Agents) {
+                # Need a VM application for the pack. This is only for IaaS packs and discovery.
+                Write-host "Addinng VM application for $TagValue."
+                try {
+                    New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue
+                    Write-host "VM application created for $TagValue, if any. Adding tag."
+                }
+                catch {
+                    Write-host "Error creating VM application for $TagValue. Not adding tag."
+                    # should eventually remove association if was created, since the pack is not functional with out the VM application.
+                    Write-host "Removing DCR association for $TagValue since VM application was not created."
+                    Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+                    return
+                }
+            }
+        }
+        'PaaS' { 
+            new-PaaSAlert -packTag $resourceType `
+                            -TagName $TagName `
+                            -resourceId $resourceId `
+                            -actionGroupId $actionGroupId `
+                            -resourceGroupName $resourceGroupName `
+                            -instanceName $instanceName `
+                            -resourceType $resourceType `
+                            -location "global"
+            Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+        }
+        default { Write-Host "Unknown pack type. Exiting." ; return }
+    }
+}
+
+
+function New-Tag {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$TagName,
+        [Parameter(Mandatory=$true)]
+        [string]$resourceId,
+        [Parameter(Mandatory=$true)]
+        [string]$TagValue,
+        [Parameter(Mandatory=$true)]
+        [string]$instanceName
+    )
+    $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+    $updateTag = $false
     if ($null -eq $tag) {
-        # initializes if no tag is there.
+        # initializes if no tag is there in the resource
         $tag = @{}
     }
     if ($tag.Keys -notcontains $TagName) {
         # doesn´t have the monitoring tag - Adding a new tag and value
-        $tag.Add($TagName, $TagValue)
+        $tag.Add($TagName, $TagValue) # this is the first time we add the tag
         # also add the instance name tag (instanceName)
         # check if the instance name tag already exists. If not, add it.
         if ($tag.Keys -notcontains 'instanceName') {
             $tag.Add('instanceName', $instanceName)
         }
-        if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
-            # If this is an IaaS Pack, I now need to first call the function to install the pack if not installed.
-            # Add pack if not installed. The funcion tests if DCR exists and if not creates it. Alerts are created only if the pack is not installed.
-            if ($packType -eq 'IaaS') {
-                #need to add check if creating the pack worked. If it didn't, don't do anything else.
-                Write-host "Installing pack for $TagValue, if not installed yet."
-                new-pack -location $location `
-                -instanceName $instanceName `
-                -resourceGroup $env:resourceGroup `
-                -workspaceId $workspaceResourceId `
-                -packtag $TagValue `
-                -AGId $actionGroupId `
-                -urlDeployment -installBicep
-            }
-            if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
-                Write-host "Addinng VM application for $TagValue."
-                if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
-                    Write-host "VM application created for $TagValue, if any. Adding tag."
-                    Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-                }
-            }
-            else {
-                "Error adding association for $TagValue. Not adding tag or adding VM application."
-            }
-            #Update-AzTag -ResourceId $resource.Resource -Tag $tag -Force
-        }
-        else { #PaaS
-            #try {
-                new-PaaSAlert -packTag $resourceType `
-                              -TagName $TagName `
-                              -resourceId $resourceId `
-                              -actionGroupId $actionGroupId `
-                              -resourceGroupName $resourceGroupName `
-                              -instanceName $instanceName `
-                              -resourceType $resourceType `
-                              -location "global"
-                Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-            # }
-            # catch {
-            #     "Failed to create tag and alerts."
-            #         throw
-            # }
-        }
+        $updateTag = $true
     }
     else {
-        #Monitoring Tag exists - Adding a new tag value
-        #If the tag already exists, the instanceName should be there already...
+        # if the tag already exists, check if the value is already there
         if ($tag.$tagName.Split(',') -notcontains $TagValue) {
             $tag[$TagName] += ",$TagValue"
-            #Set-AzResource -ResourceId $resource.Resource -Tag $tag -Force
-            if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
-                if ($packType -eq 'IaaS') {
-                    new-pack -location $location `
-                    -instanceName $instanceName `
-                    -resourceGroup $env:resourceGroup `
-                    -workspaceId $workspaceResourceId `
-                    -packtag $TagValue `
-                    -AGId $actionGroupId `
-                    -urlDeployment -installBicep
-                }
-                if (Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName) {
-                    Write-host "Addinng VM application for $TagValue."
-                    if (New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue) {
-                        Write-host "VM application created for $TagValue, if any. Adding tag."
-                        Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-                    }
-                }
-                else {
-                    "Error adding association for $TagValue. Not adding tag or adding VM application."
-                }
-            }
-            else {
-                try {
-                    new-PaaSAlert -packTag $resourceType `
-                                   -TagName $TagName `
-                                   -resourceId $resourceId `
-                                   -actionGroupId $actionGroupId 
-                                   -resourceGroupName `
-                                   -instanceName $instanceName `
-                                   -location "global"
-                Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
-                }
-                catch {
-                    "Failed to create tag and alerts."
-                        throw
-                }
-            }
+            $updateTag = $true   
         }
         else {
             "$TagName already has the $TagValue value."
-            # if the tag is already there we hope the instance name is there as well.
-            if ($packType -eq 'IaaS' -or $packType -eq 'Discovery') {
-                "Trying adding the DCRa anyway in case it is missing."
-                Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+        }
+    }
+    if ($updateTag) {
+        Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace 
+    }
+}
+function Remove-Tag {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$TagName,
+        [Parameter(Mandatory = $true)]
+        [string]$TagValue,
+        [Parameter(Mandatory = $true)]
+        [string]$resourceId,
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName
+    )
+    [System.Object]$tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+    if ($tag.count -eq 0) {
+        # initializes if no tag is there.
+        "No tags to remove."
+        return
+    }
+    else {
+        if ($tag.Keys -notcontains $tagName) {
+            # doesn´t have the monitoring tag
+            "No monitoring tag, can't delete the value. Something is wrong"
+        }
+        if ($TagValue -eq 'All') {
+            # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings and vm applications.
+            #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
+            #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
+            $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+            # if tag is not null, remove the tag.
+
+            #$taglist=$tag.$tagName.split(',')
+            # "Removing all associations $($taglist.count) for $taglist."
+            # foreach ($tagv in $taglist) {
+            #     Write-Host "Removing association for $tagv. on $resourceId."
+            #     Remove-DCRa -resourceId $resourceId -TagValue $tagv -instanceName $instanceName
+            #     "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
+            #     remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
+            # }
+            #removes the monitoring tag from the resource.
+            $tag.Remove($tagName)
+            #removes the instance name tag from the resource.
+            $tag.Remove('instanceName')
+            if ($tag.count -ne 0) {
+                #updating since resource has other tags.
+                Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
             }
-            # Add a test to see if the alerts actually exist
+            else {
+                $tagToRemove = @{"$($TagName)" = "$($tag.$tagValue)" }
+                Update-AzTag -ResourceId $resourceId -Tag $tagToRemove -Operation Delete
+                # Also remove the instance name tag.
+                $tagToRemove = @{"instanceName" = "$($instanceName)" }
+                Update-AzTag -ResourceId $resourceId -Tag $tagToRemove -Operation Delete
+            }
+        }
+        else {
+            if ($tag.$tagName.Split(',') -notcontains $TagValue) {
+                "Tag exists, but not the value. Can't remove it. Something is wrong."
+            }
+            else {
+                [System.Collections.ArrayList]$tagarray = $tag[$tagName].split(',')
+                $tagarray.Remove($TagValue)
+                if ($tagarray.Count -eq 0) {
+                    "Removing tag since it has no values."
+                    $tag.Remove($tagName)
+                    "Also removing instance name tag since it is empty."
+                    $tagToRemove = @{"$($TagName)" = "$($tag.$tagValue)"; "instanceName" = "$($instanceName)" }
+                    Update-AzTag -ResourceId $resourceId -Tag $tagToRemove -Operation Delete
+                }
+                else {
+                    $tag[$tagName] = $tagarray -join ','
+                    Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+                }
+            }
         }
     }
 }
@@ -1134,7 +1181,7 @@ function new-pack {
         [switch]$installBicep
     )
     $modulesRoot = "./modules"
-    $modulesURLroot="$($env:PacksModulesRootURL)/modules"
+    $modulesURLroot=$env:PacksModulesRootURL
     try {
         "Collecting pack content from URL: $packContentURL"
         $packlist = get-blobcontentfromurl -url $env:PacksURL | ConvertFrom-Json -Depth 15
@@ -1156,20 +1203,44 @@ function new-pack {
         Write-Host "No packs found for tag $($packtag)."
         return $false
     }
-    # install bicep
-    if ($installBicep) {
-        $installPath = "$env:USERPROFILE\.bicep"
-        $installDir = New-Item -ItemType Directory -Path $installPath -Force
-        $installDir.Attributes += 'Hidden'
-        # Fetch the latest Bicep CLI binary
-        (New-Object Net.WebClient).DownloadFile("https://github.com/Azure/bicep/releases/latest/download/bicep-win-x64.exe", "$installPath\bicep.exe")
-        # Add bicep to your PATH
-        $currentPath = (Get-Item -path "HKCU:\Environment" ).GetValue('Path', '', 'DoNotExpandEnvironmentNames') | Out-Null
-        if (-not $currentPath.Contains("%USERPROFILE%\.bicep")) { setx PATH ($currentPath + ";%USERPROFILE%\.bicep") }
-        if (-not $env:path.Contains($installPath)) { $env:path += ";$installPath" }
+    else {
+        #install bicep
+        if ($installBicep) {
+            # test if bicep is installed
+            $bicepInstalled = Get-Command bicep -ErrorAction SilentlyContinue
+            if ($bicepInstalled) {
+                Write-Host "Bicep is already installed. Version: $($bicepInstalled.Version)"
+            }
+            else {
+                # install bicep
+                $installPath = "$env:USERPROFILE\.bicep"
+                $installDir = New-Item -ItemType Directory -Path $installPath -Force
+                $installDir.Attributes += 'Hidden'
+                # Fetch the latest Bicep CLI binary
+                (New-Object Net.WebClient).DownloadFile("https://github.com/Azure/bicep/releases/latest/download/bicep-win-x64.exe", "$installPath\bicep.exe")
+                # Add bicep to your PATH
+                $currentPath = $env:PATH
+                if (-not $currentPath.Contains("%USERPROFILE%\.bicep")) { setx PATH ($currentPath + ";%USERPROFILE%\.bicep") }
+                if (-not $env:path.Contains($installPath)) { $env:path += ";$installPath" }
+            }
+        }
+    }
+    if ($packs.Count -gt 0) {
+        Write-Host "More than one pack found for tag $($packtag)."
+                # Download pack templates from modules URL
+        if ($urlDeployment) {
+            Write-Host "Downloading pack templates from URL: $modulesURLroot"
+            get-blobContainerContentFromUrl -url $modulesURLroot -DestinationPath $env:temp
+            # $alertfilestoDownload =@('alert.bicep','alerts.bicep','scheduledqueryruleAggregate.bicep','scheduledqueryruleRows.bicep')
+            # foreach ($file in $alertfilestoDownload) {
+            #     $templateUri = "$modulesURLroot/$file"
+            #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$file"
+            #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$file"
+            # }
+        }
     }
     # Verify you can now access the 'bicep' command.
-    $packs | foreach {
+    $packs | foreach { # should be only one pack, but just in case.
         $pack = $_
         $packName = $pack.Name
         $packTag = $pack.Tag
@@ -1183,6 +1254,7 @@ function new-pack {
         Write-Host "Pack OS: $($packOS)"
         Write-Host "Pack Location: $($location)"
         # Create the required DCRs based on configuration
+
         Write-host "Pack $($packName) has $($pack.Rules.Count) rules."
         $newPack = $false
         foreach ($rule in $pack.Rules) {
@@ -1194,31 +1266,33 @@ function new-pack {
             Write-Host "Rule OS: $($ruleOS)"
             # based on the rule type, create the required DCRs
             $dcrname=$rule.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
+            $createDCR = $true
+            $createAlerts=$true
+
             $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
             if ($dcr) {
                 Write-Host "DCR $($ruleName) already exists. Skipping creation."
+                $createDCR = $false
                 #check if any alerts exist for this DCR. If yes, then pack is really already installed.
                 $alerts = Search-AzGraph -Query "resources | where type =~ 'microsoft.insights/scheduledqueryrules' | where tags.instanceName =~ '$($instanceName)' and tags.MonitorStarterPacks =~ '$($packtag)'" -UseTenantScope
-                if ($alerts.count -eq 0) {
+                if ($alerts.count -ne 0) {
                     Write-Host "Alerts already exist for DCR $($ruleName). Pack is already installed."
-                    $newPack=$false
+                    $createAlerts=$false
                 }
             }
-            else {
-                $newPack=$true
-            }
-            if ($newPack) {
+             if ($createDCR -eq $true) {
                 switch ($rule.RuleType) {
                     'syslog' {
                         Write-Host "Creating Syslog DCR $($ruleName)..."
-                        if ($urlDeployment) {
-                            $templateUri = "$modulesURLroot/DCRs/$dcrname"
-                            Write-host "Template URI: $templateUri"
-                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
-                        }
-                        else {
-                            $templateFile = "$modulesRoot/DCRs/$dcrname"
-                        }
+                        # if ($urlDeployment) {
+                        #     $templateUri = "$modulesURLroot/$dcrname"
+                        #     Write-host "Template URI: $templateUri"
+                        #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$dcrname"
+                        #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
+                        # }
+                        # else {
+                        #     $templateFile = "$modulesRoot/DCRs/$dcrname"
+                        # }
                         New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
                                                         -TemplateFile "$($env:temp)/$dcrname" `
                                                         -ResourceGroupName $resourceGroup `
@@ -1243,27 +1317,28 @@ function new-pack {
                         # Since we have Powershell, this will likely be easier if we use it to create the VM application instead of bicep. No need to updload and do all that. It will be quicker...hopefully.
                         # Create the DCR using the bicep template
                         Write-Host "Creating Custom DCR $($ruleName)..."
-                        if ($urlDeployment) {
-                            $templateUri = "$modulesURLroot/DCRs/$dcrname"
-                            Write-host "Template URI: $templateUri"
-                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
-                        }
-                        else {
-                            $templateFile = "$modulesRoot/DCRs/$dcrname"
-                        }
+                        # if ($urlDeployment) {
+                        #     $templateUri = "$modulesURLroot/$dcrname"
+                        #     Write-host "Template URI: $templateUri"
+                        #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"                           
+                        #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$dcrname"
+                        # }
+                        # else {
+                        #     $templateFile = "$modulesRoot/DCRs/$dcrname"
+                        # }
                         New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                        -TemplateFile "$($env:temp)/$dcrname" `
-                        -ResourceGroupName $resourceGroup `
-                        -location $location `
-                        -solutionTag "MonitorStarterPacks" `
-                        -workspaceResourceId $WorkspaceId `
-                        -tableName $rule.tableName `
-                        -packtag $packtag `
-                        -filepatterns $rule.filepatterns `
-                        -dceId $dceId `
-                        -instanceName $instanceName `
-                        -rulename $ruleName `
-                        -tags $TagsToUse
+                            -TemplateFile "$($env:temp)/$dcrname" `
+                            -ResourceGroupName $resourceGroup `
+                            -location $location `
+                            -solutionTag "MonitorStarterPacks" `
+                            -workspaceResourceId $WorkspaceId `
+                            -tableName $rule.tableName `
+                            -packtag $packtag `
+                            -filepatterns $rule.filepatterns `
+                            -dceId $dceId `
+                            -instanceName $instanceName `
+                            -rulename $ruleName `
+                            -tags $TagsToUse
                                                     
                         Write-Host "DCR $($ruleName) created successfully."                                                    
                         # Create the VM Application using Powershell instead of bicep.
@@ -1280,7 +1355,9 @@ function new-pack {
                         $context = $storageAccount.Context
                         $container = Get-AzStorageContainer -Name "applications" -Context $context
                         # read the content from the repository from the URL and save it to a file in the temp folder
-                        (Invoke-WebRequest -Uri $rule.clientAppZIPURL -UseBasicParsing).Content | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
+                        Write-host "Downloading application package from $applicationsURL/$($rule.clientAppZIPURL)"
+                        get-blobContentFromUrl -url "$applicationsURL/$($rule.clientAppZIPURL)" | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
+                        #(Invoke-WebRequest -Uri $rule.clientAppZIPURL -UseBasicParsing).Content | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
                         # Upload the application package to the storage account
                         $blob = Set-AzStorageBlobContent -File "$($env:temp)/$($rule.clientAppName.tolower()).zip" `
                                                         -Container $container.Name `
@@ -1324,20 +1401,22 @@ function new-pack {
                         # test if DCR already exists
                         # Create the DCR using the bicep template
                         Write-Host "Creating DCR $($ruleName)..."
-                        if ($urlDeployment) {
-                            $templateUri = "$modulesURLroot/DCRs/$dcrname"
-                            (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
-                        }                        
-                        else {
-                            $templateFile = "$modulesRoot/DCRs/$dcrname"
-                        }
+                        # if ($urlDeployment) {
+                        #     $templateUri = "$modulesURLroot/$dcrname"
+                        #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
+                        #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$dcrname"
+                        # }                        
+                        # else {
+                        #     $templateFile = "$modulesRoot/DCRs/$dcrname"
+                        # }
                         New-AzResourceGroupDeployment -name "dcr-$packtag-$instanceName-$location" `
-                                                    -TemplateFile "$($env:temp)/$dcrname" `
+                                                    -TemplateFile "$($env:temp)\$dcrname" `
                                                     -ResourceGroupName $resourceGroup `
                                                     -Location $location `
                                                     -rulename $ruleName `
                                                     -workspaceResourceId $WorkspaceId `
                                                     -xPathQueries $rule.XPathQueries `
+                                                    -counterSpecifiers $rule.CounterSpecifiers `
                                                     -Tags $TagsToUse `
                                                     -dceId $dceId
                         Write-Host "DCR $($ruleName) created successfully."
@@ -1346,7 +1425,7 @@ function new-pack {
             }   
         }
         # Now deploy alerts based on the pack configuration
-        if ($pack.Alerts.Count -ne 0 -and $newPack -eq $true) {
+        if ($pack.Alerts.Count -ne 0 -and $createAlerts -eq $true) {
             Write-host "Creating $($pack.Alerts.Count) alerts for pack $($packtag)..."
             # Convert to json and remove square brackets from the start and end of the string
             $alertlistT = $pack.Alerts# | ConvertTo-Json -Depth 15 -Compress #| Out-String | ForEach-Object { $_ -replace '\"', '"' }
@@ -1354,11 +1433,12 @@ function new-pack {
             $alertlist=ConvertPSObjectToHashtable $alertlistT
             $modulePrefix="AMP-$instanceName-$packtag"
             if ($urlDeployment) {
-                $alertfilestoDownload =@('alert.bicep','alerts.bicep','scheduledqueryruleAggregate.bicep','scheduledqueryruleRows.bicep')
-                foreach ($file in $alertfilestoDownload) {
-                    $templateUri = "$modulesURLroot/alerts/$file"
-                    (Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$file"
-                }
+                # $alertfilestoDownload =@('alert.bicep','alerts.bicep','scheduledqueryruleAggregate.bicep','scheduledqueryruleRows.bicep')
+                # foreach ($file in $alertfilestoDownload) {
+                #     $templateUri = "$modulesURLroot/$file"
+                #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$file"
+                #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$file"
+                # }
                 New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
                 -TemplateFile "$($env:temp)/alerts.bicep" `
                 -ResourceGroupName $resourceGroup `
@@ -1391,15 +1471,15 @@ function new-pack {
             }
         }
         else {
-            if ($newPack -eq $false) {
+            if ($createAlerts -eq $false) {
                 Write-Host "Pack $($packtag). already installed. Skipping alert creation."
-                return $true
             }
             else {
                 Write-Host "No alerts found for pack $($packtag)."
             }
         }
     }
+    return $packs # which should be only one pack.
 }
 function ConvertPSObjectToHashtable
 {
@@ -1456,6 +1536,44 @@ function get-blobContentFromUrl {
     Get-AzStorageBlobContent -Container $containerName -Blob $blobName -Destination "$($env:temp)/$blobName" -Context $context -Force | Out-Null
     return Get-Content "$($env:temp)/$blobName"
 }
+function get-blobContainerContentFromUrl {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$url,
+        [Parameter(Mandatory = $true)]
+        [string]$DestinationPath
+    )
+    
+#having the URL need to infer container and blob name
+    $uri = [System.Uri]$url
+    $containerName = $uri.Segments[1].Trim('/')
+   
+    #$blobName = $uri.Segments[2..($uri.Segments.Count - 1)] -join '/'
+    #get the storage account name from the URL
+    $storageAccountName = $uri.Host.Split('.')[0]
+    # I am authorized already to access storage
+    $context = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
+    #get the blob content
+        # Get a list of all blobs in the container
+    $blobs = Get-AzStorageBlob -Container $containerName -Context $context
+    # Loop through each blob and download it
+    foreach ($blob in $blobs) {
+        $blobName = $blob.Name
+        # Create the destination path for the blob
+        $filename = Join-Path -Path $DestinationPath -ChildPath $blobName
+        # Create the directory if it doesn't exist
+        # $directory = Split-Path -Path $destinationPath -Parent
+        # if (-not (Test-Path -Path $directory)) {
+        #     New-Item -ItemType Directory -Path $directory -Force | Out-Null
+        # }
+        # Download the blob to the destination path
+        Get-AzStorageBlobContent -Container $containerName -Blob $blobName -Destination $filename -Context $context -Force | Out-Null
+    }
+    return $true
+}
+# function get-blobContentFromUrl2 {
+#     return Get-Content "$($env:temp)/$blobName"
+# }
 function update-blobcontentinURL {
     [CmdletBinding()]
     param (
@@ -1517,7 +1635,6 @@ function update-packsdefinition {
     $packsURL=$env:PacksURL
     update-blobcontentinURL -url $packsURL -content $packNewDefinition
 }
-
 
 function get-AmbaAlertsInfo {
     $ambaalerts=get-AMBAJsonContent | ConvertFrom-Json -Depth 10

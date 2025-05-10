@@ -12,11 +12,12 @@ param appInsightsLocation string
 param imageGalleryName string
 param packsURL string
 param ambaJsonURL string
+param packsModulesRootURL string
+param applicationsURL string
 
 var discoveryContainerName = 'discovery'
 var tempfilename = '${filename}.tmp'
 //var ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
-var packsModulesRootURL='https://raw.githubusercontent.com/FehseCorp/AzureMonitorStarterPacks/refs/heads/V3-SubDep'
 
 param apiManagementKey string= base64(newGuid())
 param solutionTag string
@@ -176,6 +177,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     AMBAJsonURL: ambaJsonURL
     PacksURL: packsURL
     PacksModulesRootURL: packsModulesRootURL
+    applicationsURL: applicationsURL
     storageAccountName: discoveryStorage.name
     ResourceGroup: resourceGroup().name
     SolutionTag: solutionTag
