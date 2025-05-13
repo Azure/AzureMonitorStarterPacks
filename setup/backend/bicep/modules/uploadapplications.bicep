@@ -20,7 +20,7 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: 'deployscript-Modules-${location}'
+  name: 'deployscript-applications-${location}'
   tags: tags
   location: location
   kind: 'AzureCLI'
