@@ -244,8 +244,7 @@ function Add-Agent {
                                           -vmName $resourceName `
                                           -location $location `
                                           -ExtensionName "DependencyAgentLinux" `
-                                          -ExtensionTypeHandlerVersion "9.0" `
-                                          -InstallDependencyAgent $InstallDependencyAgent
+                                          -ExtensionTypeHandlerVersion "9.0" 
                     }
                 }
                 else {
@@ -266,7 +265,6 @@ function Add-Agent {
                                           -location $location `
                                           -ExtensionName "DependencyAgentWindows" `
                                           -ExtensionTypeHandlerVersion "9.0" `
-                                          -InstallDependencyAgent $InstallDependencyAgent `
                                           -publisher "Microsoft.Azure.Monitoring.DependencyAgent"
                     }
                 }
@@ -453,14 +451,22 @@ function Remove-Monitoring {
         # Request to remove all monitoring. All associations need to be removed as well as diagnostics settings and vm applications.
         #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
         #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
-        "Removing all associations $($taglist.count) for $taglist."
-        foreach ($tagv in $taglist) {
-            Write-Host "Removing association for $tagv. on $resourceId."
-            Remove-DCRa -resourceId $resourceId -TagValue $tagv -instanceName $instanceName
-            "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
-            remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
+        $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
+        if ($tag -ne $null) {
+            $taglist=$tag.$tagName.split(',')
+            "Removing all associations $($taglist.count) for $taglist."
+            foreach ($tagv in $taglist) {
+                Write-Host "Removing association for $tagv. on $resourceId."
+                Remove-DCRa -resourceId $resourceId -TagValue $tagv -instanceName $instanceName
+                "Removing vm application(s) if any for $tagv tag and instance name $instanceName, if any."
+                remove-vmapp -ResourceId $resourceId -packtag $tagv -instanceName $instanceName
+                remove-tag -resourceId $resourceId -TagName $TagName -TagValue $tagv -instanceName $instanceName
+            }
         }
-        remove-tag -resourceId $resourceId -TagName $TagName -TagValue $TagValue -instanceName $instanceName
+        else {
+                Write-Host "No tags found. Nothing to remove."
+                return
+        }
     }
     else {
            if ($PackType -eq 'IaaS' -or $PackType -eq 'Discovery') {

@@ -269,7 +269,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-monstarpacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -1153,7 +1153,8 @@
                                   "tooltip": "{0}{1}"
                                 }
                               }
-                            ]
+                            ],
+                            "customColumnWidthSetting": "12.2857ch"
                           },
                           "tooltipFormat": {
                             "tooltip": "Click to see associations."
@@ -1248,7 +1249,8 @@
                           "additionalResourceOptions": [],
                           "showDefault": false
                         },
-                        "queryType": 10
+                        "queryType": 10,
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1312,7 +1314,7 @@
                       {
                         "id": "3b1af630-47ab-43e9-a5b2-d2f2e21880d0",
                         "linkTarget": "ArmAction",
-                        "linkLabel": "Remove All Monitoring for VM",
+                        "linkLabel": "Remove All Monitoring",
                         "style": "primary",
                         "linkIsContextBlade": true,
                         "armActionContext": {
@@ -1322,7 +1324,7 @@
                           "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"RemoveTag\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"All\",\n    \"PackType\": \"IaaS\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Remove All Monitoring",
-                          "description": "# Please confirm the change.\n\nRemove All Monitoring for {PackTagsLeft} Pack(s)",
+                          "description": "# Please confirm the change.\n\nRemove ALL Monitoring for Servers, including discovery configuration.",
                           "actionName": "RemoveAllMonitoring",
                           "runLabel": "Confirm"
                         }
@@ -1432,7 +1434,8 @@
                         },
                         "queryType": 10,
                         "value": [
-                          "VMI"
+                          "VMI",
+                          "SvcMap"
                         ]
                       }
                     ],
@@ -4680,7 +4683,7 @@
                     "durationMs": 86400000
                   },
                   "value": {
-                    "durationMs": 3600000
+                    "durationMs": 604800000
                   }
                 }
               ],
