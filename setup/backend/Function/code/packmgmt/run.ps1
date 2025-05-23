@@ -110,25 +110,33 @@ else {
                 }
                 Add-Agent -resourceId $resource.Resource -ResourceOS $resource.OS -location $resource.Location -InstallDependencyAgent $InstallDependencyAgent
                 Write-Host "PackType: $PackType. Adding tag for resource type: $ResourceType. TagValue: $TagValue. Resource: $($resource.Resource)"
-                Add-Monitoring-resourceId $resource.Resource `
-                  -TagName $TagName `
-                  -TagValue $TagValue `
-                  -instanceName $instanceName `
-                  -packType $PackType `
-                  -resourceType 'Compute'
+                Add-Monitoring -resourceId $resource.Resource `
+                    -TagName $TagName `
+                    -TagValue $TagValue `
+                    -instanceName $instanceName `
+                    -packType $PackType `
+                    -resourceType 'Compute' `
+                    -workspaceResourceId $workspaceResourceId `
+                    -actionGroupId $defaultAG `
+                    -location $resource.Location
               }
               'PaaS'  {
                 "PackType: $PackType"
                 $ResourceType = $resource.type
+                if ([string]::IsNullOrEmpty($ResourceType)) {
+                  Write-host "Error: No resource type found for $($resource.Resource)"
+                  break
+                }
                 "Adding tag for resource type: $ResourceType. Tagname: $TagName. Resource: $($resource.Resource)"
-                Add-Monitoring-resourceId $resource.Resource `
+                Add-Monitoring -resourceId $resource.Resource `
                         -TagName $TagName `
                         -TagValue $ResourceType `
                         -resourceType $ResourceType `
                         -actionGroupId $defaultAG `
                         -packtype $packType `
                         -instanceName $instanceName `
-                        -location $resource.location
+                        -location $resource.location `
+                        -workspaceResourceId $workspaceResourceId
               }
               default {
                 Write-host "Invalid PackType: $PackType"

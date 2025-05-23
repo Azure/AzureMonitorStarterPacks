@@ -767,7 +767,7 @@ function Add-Monitoring { # This adds a single pack to a single resource.
                             -instanceName $instanceName `
                             -resourceType $resourceType `
                             -location "global"
-            Update-AzTag -ResourceId $resourceId -Tag $tag -Operation Replace
+            #Update-AzTag -ResourceId $resourceId -Tag $resourceType -Operation Replace
         }
         default { Write-Host "Unknown pack type. Exiting." ; return }
     }
@@ -1096,6 +1096,8 @@ function new-PaaSAlert {
                                 -Location "global"                         
         }
     }
+    New-Tag -ResourceId $resourceId -TagName $tagName -TagValue $packTag -instanceName $instanceName
+
 }
 function get-AmbaCatalog {
     Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from storage account."
