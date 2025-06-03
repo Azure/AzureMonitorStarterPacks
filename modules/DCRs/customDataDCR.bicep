@@ -10,26 +10,16 @@ param instanceName string
 param retentionDays int = 31
 param rulename string
 param tags object = {}
-// param storageAccountname string
-// param tags object
-// param imageGalleryName string
-// param appName string
-// param appDescription string
-// param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
-// var sasConfig = {
-//   signedResourceTypes: 'sco'
-//   signedPermission: 'r'
-//   signedServices: 'b'
-//   signedExpiry: sasExpiry
-//   signedProtocol: 'https'
-//   keyToSign: 'key2'
-// }
+
 var tableNameToUse  = '${tableName}_CL'
 var streamName= 'Custom-${tableName}_CL'
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
 resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: rulename
+  dependsOn: [
+    featuresTable
+  ]
   location: location
   tags: {
     '${solutionTag}': packtag
@@ -92,11 +82,9 @@ resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
     }
   }
 }
-
 resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing =  {
   name: lawFriendlyName
 }
-
 resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = {
   name: tableNameToUse
   parent: law
@@ -119,6 +107,5 @@ resource featuresTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-
     retentionInDays: retentionDays
   }  
 }
-
 output ruleId string = fileCollectionRule.id
 output ruleName string = fileCollectionRule.name

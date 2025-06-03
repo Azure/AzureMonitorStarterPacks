@@ -39,6 +39,51 @@ module table '../../modules/LAW/table.bicep' = {
   }
 }
 
+module WindowsDiscovery './Windows/discovery.bicep' = {
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  name: 'WinDisc-${instanceName}-${location}'
+  dependsOn: [
+    table
+  ]
+  params: {
+    customerTags: customerTags
+    solutionVersion: solutionVersion
+    packtag: 'WinDisc'
+    location: location
+    solutionTag: solutionTag
+    subscriptionId: subscriptionId
+    resourceGroupName: resourceGroupName
+    storageAccountname: storageAccountname
+    imageGalleryName: imageGalleryName
+    lawResourceId: lawResourceId
+    tableNameToUse: tableNameToUse
+    dceId: dceId
+    instanceName: instanceName
+  }
+}
+module LinuxDiscovery 'Linux/discovery.bicep' = {
+  name: 'LxDisc-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  dependsOn: [
+    table
+  ]
+  params: {
+    location: location
+    solutionTag: solutionTag
+    solutionVersion: solutionVersion
+    subscriptionId: subscriptionId
+    resourceGroupName: resourceGroupName
+    storageAccountname: storageAccountname
+    imageGalleryName: imageGalleryName
+    lawResourceId: lawResourceId
+    tableNameToUse: tableNameToUse
+    dceId: dceId
+    packtag: 'LxDisc'
+    customerTags: customerTags
+    instanceName: instanceName
+  }
+}
+
 module resultstable '../../modules/LAW/resultstable.bicep' = {
   name: 'results${tableNameToUse}-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -48,7 +93,7 @@ module resultstable '../../modules/LAW/resultstable.bicep' = {
     retentionDays: 31
   }
 }
-
+// This is the DCR to collect the results of the discovery, not the discovery data
 module discoveryDCR '../../modules/DCRs/discoveryDCR.bicep' = {
   name: 'DiscoveryResults-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)

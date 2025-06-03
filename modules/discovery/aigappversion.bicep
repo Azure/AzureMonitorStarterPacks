@@ -9,17 +9,17 @@ param installCommands string
 param removeCommands string
 param tags object
 
-resource aig 'Microsoft.Compute/galleries@2022-03-03' existing = {
+resource aig 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: aigname
   scope: resourceGroup()
 }
 
-resource app1 'Microsoft.Compute/galleries/applications@2022-03-03' existing = {
+resource app1 'Microsoft.Compute/galleries/applications@2024-03-03' existing = {
   parent: aig
   name: appName
 }
 
-resource appVersion 'Microsoft.Compute/galleries/applications/versions@2022-03-03' = {
+resource appVersion 'Microsoft.Compute/galleries/applications/versions@2024-03-03' = {
   parent: app1
   name: appVersionName
   location: location

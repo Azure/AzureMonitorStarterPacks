@@ -269,7 +269,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-monstarpacks/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -1063,7 +1063,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| extend overrides=tags.CustomThresholds\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location, overrides\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| extend overrides=tags.CustomThresholds\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location, overrides)\n",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| where MP !in~ ('WinDisc', 'LxDisc')\n| extend overrides=tags.CustomThresholds\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location, overrides\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where MP !in~ ('WinDisc', 'LxDisc')\n| extend overrides=tags.CustomThresholds\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location, overrides)\n",
               "size": 0,
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
@@ -1250,7 +1250,7 @@
                           "showDefault": false
                         },
                         "queryType": 10,
-                        "value": []
+                        "value": null
                       }
                     ],
                     "style": "pills",
@@ -1359,7 +1359,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' | where isempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId, Location=location\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| union (resources | where type =~ 'microsoft.compute/virtualmachinescalesets' and properties.orchestrationMode == 'Uniform'\n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.virtualMachineProfile.storageProfile.osDisk.osType, subscriptionId, Location=location)\n| join kind= leftouter  (\n    resourcecontainers| where type =~ 'microsoft.resources/subscriptions'\n    | project Subscription=name,subscriptionId\n    ) \non subscriptionId| project-away subscriptionId, subscriptionId1",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' | where isempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId, Location=location, MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc'\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location,MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc')\n| union (resources | where type =~ 'microsoft.compute/virtualmachinescalesets' and properties.orchestrationMode == 'Uniform'\n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.virtualMachineProfile.storageProfile.osDisk.osType, subscriptionId, Location=location,MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc')\n| join kind= leftouter  (\n    resourcecontainers| where type =~ 'microsoft.resources/subscriptions'\n    | project Subscription=name,subscriptionId\n    ) \non subscriptionId| project-away subscriptionId, subscriptionId1, MP",
                     "size": 0,
                     "title": "Non-monitored Machines",
                     "noDataMessage": "No unmonitored servers. Good job!",
@@ -1434,8 +1434,7 @@
                         },
                         "queryType": 10,
                         "value": [
-                          "VMI",
-                          "SvcMap"
+                          "ADDS"
                         ]
                       }
                     ],
@@ -1584,7 +1583,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',\"microsoft.insights/scheduledqueryrules\",\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\",'microsoft.insights/datacollectionrules'))\r\n| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']\r\n| join kind=fullouter    (resources\r\n    | where tolower(type) in (\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\")\r\n    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource\r\n| where tolower(type) in ({SelectPaasType})\r\n| summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind ",
+                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.AlertCount\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
                     "size": 0,
                     "title": "Monitored Services",
                     "showRefreshButton": true,
@@ -1604,37 +1603,9 @@
                     ],
                     "showExportToExcel": true,
                     "exportToExcelOptions": "all",
-                    "queryType": 1,
-                    "resourceType": "microsoft.resourcegraph/resources",
+                    "queryType": 10,
                     "gridSettings": {
                       "formatters": [
-                        {
-                          "columnMatch": "AlertCount",
-                          "formatter": 18,
-                          "formatOptions": {
-                            "thresholdsOptions": "icons",
-                            "thresholdsGrid": [
-                              {
-                                "operator": ">",
-                                "thresholdValue": "0",
-                                "representation": "success",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "==",
-                                "thresholdValue": "0",
-                                "representation": "2",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "Default",
-                                "thresholdValue": null,
-                                "representation": "success",
-                                "text": "{0}{1}"
-                              }
-                            ]
-                          }
-                        },
                         {
                           "columnMatch": "AlertRules",
                           "formatter": 18,
@@ -1648,15 +1619,14 @@
                                 "text": "{0}{1}"
                               },
                               {
-                                "operator": "==",
-                                "thresholdValue": "0",
+                                "operator": "is Empty",
                                 "representation": "2",
                                 "text": "{0}{1}"
                               },
                               {
                                 "operator": "Default",
                                 "thresholdValue": null,
-                                "representation": "success",
+                                "representation": "warning",
                                 "text": "{0}{1}"
                               }
                             ]
@@ -1861,7 +1831,7 @@
                               "value": "addTag"
                             }
                           ],
-                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\",\n    \"Type\": \"{passtotagtype}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\",\n    \"Type\": \"{passtotagtype}\",\n    \"DefaultAG\": \"{DefaultAG}\",\n    \"WorkspaceId\": \"{Workspace}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
                           "description": "# This will enable the pack for the following services:\n***{paastotag:$.Resource}***\n\nby adding the specific Pack(s) to the resource(s).\n\n",
@@ -4390,7 +4360,7 @@
                                     "value": "addTag"
                                   }
                                 ],
-                                "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"PackType\": \"Discovery\"\n  }\n}",
+                                "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"PackType\": \"Discovery\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\" : \"{DefaultAG}\"\n  }\n}",
                                 "httpMethod": "POST",
                                 "title": "Enable Monitoring Packs",
                                 "description": "# This will enable the pack for the following servers:\n{vmstotagDiscovery}\n\nby adding the Pack(s) to the resource(s).\n",
@@ -4559,7 +4529,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 300000
+                    "durationMs": 86400000
                   }
                 },
                 {
@@ -4579,7 +4549,7 @@
                   "timeContextFromParameter": "discoveryPeriod",
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/lx1"
                 }
               ],
               "style": "above",
@@ -4683,7 +4653,7 @@
                     "durationMs": 86400000
                   },
                   "value": {
-                    "durationMs": 604800000
+                    "durationMs": 14400000
                   }
                 }
               ],
@@ -4744,14 +4714,14 @@
                 {
                   "id": "af7d39e4-d1a9-40c5-89e7-d6fcfb191dc5",
                   "linkTarget": "ArmAction",
-                  "linkLabel": "Enable Discovery",
+                  "linkLabel": "Enable Monitoring",
                   "style": "primary",
                   "linkIsContextBlade": true,
                   "armActionContext": {
                     "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
-                    "body": "{ \r\n  \"function\": \"packmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddPack\",\r\n    \"Resources\": [{vmsDiscoveryTag}],\r\n    \"PackType\": \"IaaS\"\r\n  }\r\n}",
+                    "body": "{ \r\n  \"function\": \"packmgmt\",\r\n  \"functionBody\" : {\r\n    \"Action\":\"AddPack\",\r\n    \"Resources\": [{vmsDiscoveryTag}],\r\n    \"PackType\": \"IaaS\",\r\n    \"WorkspaceId\" : \"{Workspace}\",\r\n    \"DefaultAG\" : \"{DefaultAG}\"\r\n  }\r\n}",
                     "httpMethod": "POST",
                     "title": "Enable Monitoring",
                     "description": "# Enable Discovery\n\nResources:\n\n{vmsDiscoveryTag}",
@@ -4997,7 +4967,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monster-law"
+    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks/providers/microsoft.operationalinsights/workspaces/monstar-law"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

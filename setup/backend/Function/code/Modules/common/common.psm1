@@ -300,11 +300,17 @@ function Add-Agent {
             }
             else {
                 # Arc machine -add extension
-                Set-AzContext -SubscriptionId $resourceSubcriptionId
-                $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
-                $agent = New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
+                                Set-AzContext -SubscriptionId $resourceSubcriptionId
+                $tagst = (Get-AzConnectedMachine -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags)
+                # convert tags (dictionary or JSON) to hashtable
+                $tags=@{}
+                # foreach key in $tags, added an entry to $t2 hashtable and with the same value
+                foreach ($key in $tagst.Keys) {
+                    $tags[$key] = $tagst[$key]
+                }
+                $agent = New-AzConnectedMachineExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName -MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
                 if ($InstallDependencyAgent) {
-                    $agent = New-AzConnectedMachineExtension -Name DependencyAgentLinux -ExtensionType DependencyAgentLinux -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
+                    $agent = New-AzConnectedMachineExtension -Name DependencyAgentLinux -ExtensionType DependencyAgentLinux -Publisher Microsoft.Azure.Monitor -ResourceGroupName $resourceGroupName -MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
                 }
             }
         }
@@ -321,10 +327,20 @@ function Add-Agent {
             else {
                 # Arc machine -add extension
                 Set-AzContext -SubscriptionId $resourceSubcriptionId
-                $tags = get-azvm -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags | ConvertTo-Json
+                $tagst = (Get-AzConnectedMachine -Name $resourceName -ResourceGroupName $resourceGroupName | Select-Object -ExpandProperty tags)
+                # convert tags (dictionary or JSON) to hashtable
+                $tags=@{}
+                # foreach key in $tags, added an entry to $t2 hashtable and with the same value
+                foreach ($key in $tagst.Keys) {
+                    $tags[$key] = $tagst[$key]
+                }
                 $agent = New-AzConnectedMachineExtension -Name AzureMonitorWindowsAgent -ExtensionType AzureMonitorWindowsAgent `
                                     -Publisher Microsoft.Azure.Monitor `
-                                    -ResourceGroupName $resourceGroupName-MachineName $resourceName -Location $location -EnableAutomaticUpgrade -Tag $tags
+                                    -ResourceGroupName $resourceGroupName `
+                                    -MachineName $resourceName `
+                                    -Location $location `
+                                    -EnableAutomaticUpgrade `
+                                    -Tag $tags
                 if ($InstallDependencyAgent) {
                     $agent=New-AzConnectedMachineExtension -Name DependencyAgentWindows `
                                                            -ExtensionType DependencyAgentWindows `
@@ -332,7 +348,8 @@ function Add-Agent {
                                                            -ResourceGroupName $resourceGroupName `
                                                            -MachineName $resourceName `
                                                            -Location $location `
-                                                           -EnableAutomaticUpgrade -Tag $tags
+                                                           -EnableAutomaticUpgrade `
+                                                           -Tag $tags
                 }
             }
         }
@@ -452,7 +469,7 @@ function Remove-Monitoring {
         #Tricky to remove only diagnostics settings that were created by this solution (name? tag?)
         #Remove all associations with all monitoring packs.PlaceHolder. Function will need to have monitoring contributor role.
         $tag = (get-aztag -ResourceId $resourceId).Properties.TagsProperty
-        if ($tag -ne $null) {
+        if ($null -ne $tag) {
             $taglist=$tag.$tagName.split(',')
             "Removing all associations $($taglist.count) for $taglist."
             foreach ($tagv in $taglist) {
@@ -709,8 +726,9 @@ function Add-Monitoring { # This adds a single pack to a single resource.
                 Write-host "Error adding association for $TagValue. Not adding tag or adding VM application."
                 return
             }
-            if ($null -ne $packDef.Agents) {
-                # Need a VM application for the pack. This is only for IaaS packs and discovery.
+            Write-host "Checking if the pack needs a VM application: $($packDef.Agents)"
+            if (!([string]::isnullorempty($packdef.Rules.ClientAppName))) {
+                # Need a VM application for the pack. This is only for IaaS packs.
                 Write-host "Addinng VM application for $TagValue."
                 try {
                     New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue
@@ -735,6 +753,7 @@ function Add-Monitoring { # This adds a single pack to a single resource.
             }
         }
         'Discovery' { 
+            # Add rule association to the DCR for the pack (discovery)
             try {
                 Add-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
             }
@@ -742,21 +761,42 @@ function Add-Monitoring { # This adds a single pack to a single resource.
                 Write-host "Error adding association for $TagValue. Not adding tag or adding VM application."
                 return
             }
-            if ($null -ne $packDef.Agents) {
-                # Need a VM application for the pack. This is only for IaaS packs and discovery.
-                Write-host "Addinng VM application for $TagValue."
-                try {
-                    New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue
-                    Write-host "VM application created for $TagValue, if any. Adding tag."
-                }
-                catch {
-                    Write-host "Error creating VM application for $TagValue. Not adding tag."
-                    # should eventually remove association if was created, since the pack is not functional with out the VM application.
-                    Write-host "Removing DCR association for $TagValue since VM application was not created."
-                    Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
-                    return
-                }
+            # Add VM application for the pack, if required. For discovery packs, this is always required.
+            Write-host "Addinng VM application for $TagValue."
+            try {
+                New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue
+                Write-host "VM application created for $TagValue, if any. Adding tag."
             }
+            catch {
+                Write-host "Error creating VM application for $TagValue. Not adding tag."
+                # should eventually remove association if was created, since the pack is not functional with out the VM application.
+                Write-host "Removing DCR association for $TagValue since VM application was not created."
+                Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+                return
+            }
+            try {
+                New-Tag -ResourceId $resourceId -TagName $TagName -TagValue $TagValue -instanceName $instanceName
+            }
+            catch {
+                Write-host "Error adding tag to resource $resourceId. $($_.Exception.Message)"
+                # should remove VM App and association since pack tag is not there.
+                return
+            }
+            # if ($null -ne $packDef.Agents) {
+            #     # Need a VM application for the pack. This is only for IaaS packs and discovery.
+            #     Write-host "Addinng VM application for $TagValue."
+            #     try {
+            #         New-VMApp -instanceName $instanceName -resourceId $resourceId -packtag $TagValue
+            #         Write-host "VM application created for $TagValue, if any. Adding tag."
+            #     }
+            #     catch {
+            #         Write-host "Error creating VM application for $TagValue. Not adding tag."
+            #         # should eventually remove association if was created, since the pack is not functional with out the VM application.
+            #         Write-host "Removing DCR association for $TagValue since VM application was not created."
+            #         Remove-DCRa -resourceId $resourceId -TagValue $TagValue -instanceName $instanceName
+            #         return
+            #     }
+            # }
         }
         'PaaS' { 
             new-PaaSAlert -packTag $resourceType `
@@ -1205,7 +1245,7 @@ function new-pack {
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     Write-host "Found $($packlist.Packs.Count) packs in the file. "
     Write-host "Available Tags: $($packlist.Packs | Select-Object -ExpandProperty Tag | Sort-Object -Unique)"
-    $packs=$packlist.Packs | Where-Object { $_.Tag -eq $packtag }
+    $packs=$packlist.Packs | Where-Object { $_.Tag -eq $packtag } # there should be only one pack with the tag.
     Write-host "Found $($packs.Count) packs for tag $($packtag)."
     if ($packs.Count -eq 0) {
         Write-Host "No packs found for tag $($packtag)."
@@ -1287,6 +1327,75 @@ function new-pack {
                     Write-Host "Alerts already exist for DCR $($ruleName). Pack is already installed."
                     $createAlerts=$false
                 }
+                if ([string]::IsNullOrEmpty($rule.clientAppName)) {
+                    Write-Host "No client app name found. Skipping application creation."
+                    continue
+                }
+                else{
+                    # test if application already exists
+                    if (Get-AzGalleryApplication -ResourceGroupName $resourceGroup -GalleryName $env:galleryName -Name $rule.clientAppName -ErrorAction SilentlyContinue) {
+                        Write-Host "Application $($rule.clientAppName) already exists. Skipping creation."
+                        continue
+                    }
+                    else {
+                        $applicationsURL = $env:applicationsURL
+                        Write-host "Creating VM application $($rule.clientAppName) for $($rule.RuleName)."
+                        $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
+                            -GalleryName $env:galleryName `
+                            -Name $rule.clientAppName `
+                            -Location $location `
+                            -Description $rule.description `
+                            -SupportedOSType $pack.OS `
+                            -Tag $TagsToUse
+
+                        # Upload the application package to the storage account first
+                        $storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroup -Name $env:storageAccountName   
+                        $context = $storageAccount.Context
+                        $container = Get-AzStorageContainer -Name "applications" -Context $context
+                        # read the content from the repository from the URL and save it to a file in the temp folder
+                        Write-host "Downloading application package from $applicationsURL/$($rule.clientAppZIPFile)"
+                        get-blobContentFromUrl -url "$applicationsURL/$($rule.clientAppZIPFile)" | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
+                        #(Invoke-WebRequest -Uri $rule.clientAppZIPURL -UseBasicParsing).Content | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
+                        # Upload the application package to the storage account
+                        $blob = Set-AzStorageBlobContent -File "$($env:temp)/$($rule.clientAppName.tolower()).zip" `
+                                                        -Container $container.Name `
+                                                        -Blob "$($rule.clientAppName.tolower()).zip" `
+                                                        -Context $context `
+                                                        -Force
+# get a SAS token for an hour for the bob
+                        $sasToken = New-AzStorageBlobSASToken -Blob $blob.Name `
+                                                            -Container $container.Name `
+                                                            -Context $context `
+                                                            -Permission r `
+                                                            -ExpiryTime (Get-Date).AddHours(1) `
+                                                            -FullUri
+                        $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+                            -GalleryName $env:galleryName `
+                            -GalleryApplicationName $application.Name `
+                            -Name $rule.clientAppVersion `
+                            -Location $location `
+                            -Install $rule.clientAppInstallCommand `
+                            -Remove $rule.clientAppUninstallCommand `
+                            -PackageFileLink "$sasToken" `
+                            -Tag $TagsToUse
+                        # wait for the application version to be created
+                        $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+                            -GalleryName $env:galleryName `
+                            -GalleryApplicationName $application.Name `
+                            -Name $rule.clientAppVersion `
+                            -ErrorAction SilentlyContinue
+                        while ($appversion.ProvisioningState -eq "Creating") { 
+                            Write-Host "Waiting for application version $($rule.clientAppVersion) to be created. Current state: $($appversion.ProvisioningState)"
+                            Start-Sleep -Seconds 15
+                            $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+                                -GalleryName $env:galleryName `
+                                -GalleryApplicationName $application.Name `
+                                -Name $rule.clientAppVersion `
+                                -ErrorAction SilentlyContinue
+                        }
+                    }
+                }
+
             }
              if ($createDCR -eq $true) {
                 switch ($rule.RuleType) {
@@ -1350,44 +1459,7 @@ function new-pack {
                                                     
                         Write-Host "DCR $($ruleName) created successfully."                                                    
                         # Create the VM Application using Powershell instead of bicep.
-                        $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
-                            -GalleryName $env:galleryName `
-                            -Name $rule.clientAppName `
-                            -Location $location `
-                            -Description $rule.description `
-                            -SupportedOSType $pack.OS `
-                            -Tag $TagsToUse
 
-                        # Upload the application package to the storage account first
-                        $storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroup -Name $env:storageAccountName   
-                        $context = $storageAccount.Context
-                        $container = Get-AzStorageContainer -Name "applications" -Context $context
-                        # read the content from the repository from the URL and save it to a file in the temp folder
-                        Write-host "Downloading application package from $applicationsURL/$($rule.clientAppZIPURL)"
-                        get-blobContentFromUrl -url "$applicationsURL/$($rule.clientAppZIPURL)" | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
-                        #(Invoke-WebRequest -Uri $rule.clientAppZIPURL -UseBasicParsing).Content | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
-                        # Upload the application package to the storage account
-                        $blob = Set-AzStorageBlobContent -File "$($env:temp)/$($rule.clientAppName.tolower()).zip" `
-                                                        -Container $container.Name `
-                                                        -Blob "$($rule.clientAppName.tolower()).zip" `
-                                                        -Context $context `
-                                                        -Force
-# get a SAS token for an hour for the bob
-                        $sasToken = New-AzStorageBlobSASToken -Blob $blob.Name `
-                                                            -Container $container.Name `
-                                                            -Context $context `
-                                                            -Permission r `
-                                                            -ExpiryTime (Get-Date).AddHours(1) `
-                                                            -FullUri
-                        $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
-                            -GalleryName $env:galleryName `
-                            -GalleryApplicationName $application.Name `
-                            -Name $rule.clientAppVersion `
-                            -Location $location `
-                            -Install $rule.clientAppInstallCommand `
-                            -Remove $rule.clientAppUninstallCommand `
-                            -PackageFileLink "$sasToken" `
-                            -Tag $TagsToUse 
                             # -Debug
                         # }
                         
@@ -1505,18 +1577,15 @@ function ConvertPSObjectToHashtable
             $collection = @(
                 foreach ($object in $InputObject) { ConvertPSObjectToHashtable $object }
             )
-
             Write-Output -NoEnumerate $collection
         }
         elseif ($InputObject -is [psobject])
         {
             $hash = @{}
-
             foreach ($property in $InputObject.PSObject.Properties)
             {
                 $hash[$property.Name] = (ConvertPSObjectToHashtable $property.Value).PSObject.BaseObject
             }
-
             $hash
         }
         else

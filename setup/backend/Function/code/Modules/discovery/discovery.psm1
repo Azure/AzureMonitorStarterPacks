@@ -59,6 +59,8 @@ Resources
         return $null
     }
     Write-host "Running Discovery"
+    $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    Write-host "Current timestamp: $timestamp"
     $wsresourceGroupname=$ws.ResourceId.split('/')[4]    
     # Write-host "Getting WS"
     $subscriptionId = $ws.ResourceId.split('/')[2]
@@ -94,6 +96,7 @@ Resources
                     $result['ResourceId'] = $_.Computer
                     $result['OS'] = $pack.OS
                     $result['Location'] = $location
+                    $result['TimeGenerated'] = $timestamp
                     $results += $result
                 }
             }
@@ -105,7 +108,11 @@ Resources
     }
     Write-host "Found $($results.count) results for discovery."
     $results
-
+    if ($results.Count -eq 0) {
+        Write-Host "No discovery data found."
+        return $null
+    }
+    
    # try {
         # Send the results to the DCR
         Write-host "Sending discovery data to DCR..."
@@ -138,7 +145,6 @@ function new-discoveryData {
         [string]$appId,
         [Parameter(Mandatory = $false)]
         [string]$appSecret
-
     )
     #$dceId="https://amp-mcp1-dce-canadacentral-6f18.canadacentral-1.ingest.monitor.azure.com"
     # get DCE URL from the DCE Id, using a tag.
@@ -168,8 +174,14 @@ function new-discoveryData {
     }
     # When using a managed identity, use the following line to get the token:
     # $scope = [System.Web.HttpUtility]::UrlEncode("https://monitor.azure.com//.default")   
-
-    $body = $data | ConvertTo-Json 
+    # if data is a hashtable, convert it to an array of objects
+    if ($data.count -eq 1) {
+        $body = "[$($data | ConvertTo-Json -Depth 10)]"
+    }
+    else {
+        $body = $data | ConvertTo-Json 
+    }
+    
     $body
     if ([string]::IsNullOrEmpty($streamname)) {
         $streamname=("Custom-$tableName") #.Replace("_CL","")

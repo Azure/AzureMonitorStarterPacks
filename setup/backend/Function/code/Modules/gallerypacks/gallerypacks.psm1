@@ -3,7 +3,7 @@
 # When adding the tag an creating associated mappings, we need to check if there is an application in the gallery with the same tag.
 # If so, also install the application in the VM.
 
-function New-vmApp {
+function New-vmApp { 
     param (
         [Parameter(Mandatory = $true)]
         [string]$instanceName,

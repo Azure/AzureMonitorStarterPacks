@@ -1,5 +1,4 @@
 ////targetScope = 'managementGroup'
-targetScope = 'subscription'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 var sasConfig = {
   signedResourceTypes: 'sco'
@@ -19,7 +18,7 @@ param lawResourceId string
 //param userManagedIdentityResourceId string
 param dceId string
 param instanceName string
-param packtag string = 'WinDisc'
+param packtag string
 param tableNameToUse string
 //var workspaceFriendlyName = split(workspaceId, '/')[8]
 //var ruleshortname = 'amp${instanceName}windisc'
@@ -87,7 +86,6 @@ module windiscovery '../../../modules/discovery/aigappversion.bicep' = {
 // DCR to collect the data
 module windiscoveryDCR '../../../modules/discovery/discoveryrule.bicep' = {
   name: 'amp-${instanceName}-DCR-${OS}Discovery'
-
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     endpointResourceId: dceId
@@ -100,7 +98,7 @@ module windiscoveryDCR '../../../modules/discovery/discoveryrule.bicep' = {
     OS: 'Windows'
     solutionTag: solutionTag
     tableName: tableNameToUse
-    packtag: 'WinDisc'
+    packtag: packtag
     packtype: 'Discovery'
     instanceName: instanceName
   }

@@ -1,6 +1,6 @@
 ////targetScope = 'managementGroup'
-targetScope = 'subscription'
-param packtag string = 'LxDisc'
+
+param packtag string
 param location string 
 param solutionTag string
 //param solutionVersion string
@@ -88,7 +88,7 @@ module linuxDiscovery '../../../modules/discovery/aigappversion.bicep' = {
 }
 // DCR to collect the data
 module LinuxDiscoveryDCR '../../../modules/discovery/discoveryrule.bicep' = {
-  name: 'LinuxDiscoveryDCR'
+  name: 'LinuxDiscoveryDCR-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     endpointResourceId: dceId
@@ -101,7 +101,7 @@ module LinuxDiscoveryDCR '../../../modules/discovery/discoveryrule.bicep' = {
     OS: 'Linux'
     solutionTag: solutionTag
     tableName: tableNameToUse
-    packtag: 'LxDisc'
+    packtag: packtag
     packtype: 'Discovery'
     instanceName: instanceName
   }
