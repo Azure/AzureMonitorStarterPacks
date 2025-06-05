@@ -21,7 +21,6 @@ function get-AMBAJsonContent {
     Write-Host "Fetching AMBA Catalog from $ambaJsonURL"
     get-blobContentFromUrl -url $ambaJsonURL 
 }
-
 # function get-AMBAJsonContent2 {
 #     $StorageAccountName=$env:StorageAccountName
 #     $ResourceGroupName=$env:ResourceGroup
@@ -376,6 +375,10 @@ function Add-DCRa {
     $DCRs=Get-AzDataCollectionRule | Where-Object {$_.Tag["MonitorStarterPacks"] -eq $TagValue -and $_.Tag["instanceName"] -eq $instanceName}
     Write-host "Found $($DCRs.count) rule(s)."
     Write-host "DCR id (s): $($DCRs.id)"
+    if ($DCRs.count -eq 0) {
+        Write-Host "No DCR found for $TagValue tag. Please check the tag value."
+        return $false
+    }
     foreach ($DCR in $DCRs) {
     #Check if the DCR is associated with the VM
         Write-host "Checking if DCR $($DCR.Name) is associated with $resourceId"
@@ -386,7 +389,6 @@ function Add-DCRa {
             try {
                 New-AzDataCollectionRuleAssociation -ResourceUri $resourceId -DataCollectionRuleId $DCR.Id -AssociationName "Association for $resourceName and $($DCR.Name)"
                 Write-Output "Association created successfully."
-                return $true
             }
             catch {
                 Write-Output "Error creating association: $($_.Exception.Message)"
@@ -395,12 +397,10 @@ function Add-DCRa {
         } 
         else {
             Write-Output "VM: $resourceName Pack: $Pack DCR: $($DCR.Name) already associated. All good."
-            return $true
         }
         Write-Output "VM: $resourceName Pack: $TagValue DCR: $($DCR.Name)"
     }
-    Write-host "No DCR found for $TagValue tag. Please check the tag value."
-    return $false
+    return $true
 }
 function Remove-DCRa {
     param (
@@ -432,7 +432,7 @@ insightsresources
 | where resourceId =~ '$resourceId' and
 ruleId =~ '$($DCR.id)'
 "@
-        $associationQuery
+        #$associationQuery
         $association = Search-AzGraph -Query $associationQuery -UseTenantScope
         if ($association.count -gt 0) {
             "Found association $($association.name). Removing..."
@@ -812,8 +812,6 @@ function Add-Monitoring { # This adds a single pack to a single resource.
         default { Write-Host "Unknown pack type. Exiting." ; return }
     }
 }
-
-
 function New-Tag {
     param (
         [Parameter(Mandatory=$true)]
@@ -1024,7 +1022,6 @@ function new-staticCriterionAlert {
         return $false
     }
 }
-
 function new-PaaSAlert {
     param (
     [Parameter(Mandatory=$true)]
@@ -1274,7 +1271,7 @@ function new-pack {
         }
     }
     if ($packs.Count -gt 0) {
-        Write-Host "More than one pack found for tag $($packtag)."
+        Write-Host "At least one pack found for tag $($packtag). It should be the only one!"
                 # Download pack templates from modules URL
         if ($urlDeployment) {
             Write-Host "Downloading pack templates from URL: $modulesURLroot"
@@ -1319,85 +1316,10 @@ function new-pack {
 
             $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
             if ($dcr) {
-                Write-Host "DCR $($ruleName) already exists. Skipping creation."
-                $createDCR = $false
-                #check if any alerts exist for this DCR. If yes, then pack is really already installed.
-                $alerts = Search-AzGraph -Query "resources | where type =~ 'microsoft.insights/scheduledqueryrules' | where tags.instanceName =~ '$($instanceName)' and tags.MonitorStarterPacks =~ '$($packtag)'" -UseTenantScope
-                if ($alerts.count -ne 0) {
-                    Write-Host "Alerts already exist for DCR $($ruleName). Pack is already installed."
-                    $createAlerts=$false
-                }
-                if ([string]::IsNullOrEmpty($rule.clientAppName)) {
-                    Write-Host "No client app name found. Skipping application creation."
-                    continue
-                }
-                else{
-                    # test if application already exists
-                    if (Get-AzGalleryApplication -ResourceGroupName $resourceGroup -GalleryName $env:galleryName -Name $rule.clientAppName -ErrorAction SilentlyContinue) {
-                        Write-Host "Application $($rule.clientAppName) already exists. Skipping creation."
-                        continue
-                    }
-                    else {
-                        $applicationsURL = $env:applicationsURL
-                        Write-host "Creating VM application $($rule.clientAppName) for $($rule.RuleName)."
-                        $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
-                            -GalleryName $env:galleryName `
-                            -Name $rule.clientAppName `
-                            -Location $location `
-                            -Description $rule.description `
-                            -SupportedOSType $pack.OS `
-                            -Tag $TagsToUse
-
-                        # Upload the application package to the storage account first
-                        $storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroup -Name $env:storageAccountName   
-                        $context = $storageAccount.Context
-                        $container = Get-AzStorageContainer -Name "applications" -Context $context
-                        # read the content from the repository from the URL and save it to a file in the temp folder
-                        Write-host "Downloading application package from $applicationsURL/$($rule.clientAppZIPFile)"
-                        get-blobContentFromUrl -url "$applicationsURL/$($rule.clientAppZIPFile)" | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
-                        #(Invoke-WebRequest -Uri $rule.clientAppZIPURL -UseBasicParsing).Content | out-file "$($env:temp)/$($rule.clientAppName.tolower()).zip"
-                        # Upload the application package to the storage account
-                        $blob = Set-AzStorageBlobContent -File "$($env:temp)/$($rule.clientAppName.tolower()).zip" `
-                                                        -Container $container.Name `
-                                                        -Blob "$($rule.clientAppName.tolower()).zip" `
-                                                        -Context $context `
-                                                        -Force
-# get a SAS token for an hour for the bob
-                        $sasToken = New-AzStorageBlobSASToken -Blob $blob.Name `
-                                                            -Container $container.Name `
-                                                            -Context $context `
-                                                            -Permission r `
-                                                            -ExpiryTime (Get-Date).AddHours(1) `
-                                                            -FullUri
-                        $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
-                            -GalleryName $env:galleryName `
-                            -GalleryApplicationName $application.Name `
-                            -Name $rule.clientAppVersion `
-                            -Location $location `
-                            -Install $rule.clientAppInstallCommand `
-                            -Remove $rule.clientAppUninstallCommand `
-                            -PackageFileLink "$sasToken" `
-                            -Tag $TagsToUse
-                        # wait for the application version to be created
-                        $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
-                            -GalleryName $env:galleryName `
-                            -GalleryApplicationName $application.Name `
-                            -Name $rule.clientAppVersion `
-                            -ErrorAction SilentlyContinue
-                        while ($appversion.ProvisioningState -eq "Creating") { 
-                            Write-Host "Waiting for application version $($rule.clientAppVersion) to be created. Current state: $($appversion.ProvisioningState)"
-                            Start-Sleep -Seconds 15
-                            $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
-                                -GalleryName $env:galleryName `
-                                -GalleryApplicationName $application.Name `
-                                -Name $rule.clientAppVersion `
-                                -ErrorAction SilentlyContinue
-                        }
-                    }
-                }
+                Write-Host "DCR $($ruleName) already exists. Skipping creation of DCR(s)"
 
             }
-             if ($createDCR -eq $true) {
+            else {
                 switch ($rule.RuleType) {
                     'syslog' {
                         Write-Host "Creating Syslog DCR $($ruleName)..."
@@ -1502,64 +1424,157 @@ function new-pack {
                         Write-Host "DCR $($ruleName) created successfully."
                     }                                     
                 }
-            }   
+            }
         }
-        # Now deploy alerts based on the pack configuration
-        if ($pack.Alerts.Count -ne 0 -and $createAlerts -eq $true) {
-            Write-host "Creating $($pack.Alerts.Count) alerts for pack $($packtag)..."
-            # Convert to json and remove square brackets from the start and end of the string
-            $alertlistT = $pack.Alerts# | ConvertTo-Json -Depth 15 -Compress #| Out-String | ForEach-Object { $_ -replace '\"', '"' }
-            # $alertlist = $alertlist.TrimStart('["').TrimEnd('"]')
-            $alertlist=ConvertPSObjectToHashtable $alertlistT
-            $modulePrefix="AMP-$instanceName-$packtag"
-            if ($urlDeployment) {
-                # $alertfilestoDownload =@('alert.bicep','alerts.bicep','scheduledqueryruleAggregate.bicep','scheduledqueryruleRows.bicep')
-                # foreach ($file in $alertfilestoDownload) {
-                #     $templateUri = "$modulesURLroot/$file"
-                #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$file"
-                #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$file"
-                # }
-                New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
-                -TemplateFile "$($env:temp)/alerts.bicep" `
-                -ResourceGroupName $resourceGroup `
-                -Location $location `
-                -TemplateParameterObject @{
-                    alertlist = $alertlist
-                    AGId = $AGId
-                    moduleprefix = $modulePrefix
-                    packtag = $packtag
-                    Tags = $TagsToUse # Add any tags you want to pass here
-                    workspaceId = $workspaceId
-                    location = $location
-                }
-            }
-            else {
-                $alertTemplateFile = "$modulesRoot/alerts/alerts.bicep"    <# Action when all if and elseif conditions are false #>
-                New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
-                -TemplateFile $alertTemplateFile `
-                -ResourceGroupName $resourceGroup `
-                -Location $location `
-                -TemplateParameterObject @{
-                    alertlist = $alertlist
-                    AGId = $AGId
-                    moduleprefix = $modulePrefix
-                    packtag = $packtag
-                    Tags = $TagsToUse # Add any tags you want to pass here
-                    workspaceId = $workspaceId
-                    location = $location
-                }
-            }
+        # Alerts
+        $alerts = Search-AzGraph -Query "resources | where type =~ 'microsoft.insights/scheduledqueryrules' | where tags.instanceName =~ '$($instanceName)' and tags.MonitorStarterPacks =~ '$($packtag)'" -UseTenantScope
+        if ($alerts.count -ne 0) {
+            Write-Host "Alerts already exist for DCR $($ruleName). Pack is already installed. Maybe they need updates...who knows?"
+            $createAlerts=$false
         }
         else {
-            if ($createAlerts -eq $false) {
-                Write-Host "Pack $($packtag). already installed. Skipping alert creation."
+            if ($pack.Alerts.Count -ne 0 -and $createAlerts -eq $true) {
+                Write-host "Creating $($pack.Alerts.Count) alerts for pack $($packtag)..."
+                # Convert to json and remove square brackets from the start and end of the string
+                $alertlistT = $pack.Alerts# | ConvertTo-Json -Depth 15 -Compress #| Out-String | ForEach-Object { $_ -replace '\"', '"' }
+                # $alertlist = $alertlist.TrimStart('["').TrimEnd('"]')
+                $alertlist=ConvertPSObjectToHashtable $alertlistT
+                $modulePrefix="AMP-$instanceName-$packtag"
+                if ($urlDeployment) {
+                    # $alertfilestoDownload =@('alert.bicep','alerts.bicep','scheduledqueryruleAggregate.bicep','scheduledqueryruleRows.bicep')
+                    # foreach ($file in $alertfilestoDownload) {
+                    #     $templateUri = "$modulesURLroot/$file"
+                    #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$file"
+                    #     get-blobContentFromUrl -url $templateUri | out-file "$($env:temp)/$file"
+                    # }
+                    New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
+                    -TemplateFile "$($env:temp)/alerts.bicep" `
+                    -ResourceGroupName $resourceGroup `
+                    -Location $location `
+                    -TemplateParameterObject @{
+                        alertlist = $alertlist
+                        AGId = $AGId
+                        moduleprefix = $modulePrefix
+                        packtag = $packtag
+                        Tags = $TagsToUse # Add any tags you want to pass here
+                        workspaceId = $workspaceId
+                        location = $location
+                    }
+                }
+                else {
+                    $alertTemplateFile = "$modulesRoot/alerts/alerts.bicep"    <# Action when all if and elseif conditions are false #>
+                    New-AzResourceGroupDeployment -name "alerts-$packtag-$instanceName-$location" `
+                    -TemplateFile $alertTemplateFile `
+                    -ResourceGroupName $resourceGroup `
+                    -Location $location `
+                    -TemplateParameterObject @{
+                        alertlist = $alertlist
+                        AGId = $AGId
+                        moduleprefix = $modulePrefix
+                        packtag = $packtag
+                        Tags = $TagsToUse # Add any tags you want to pass here
+                        workspaceId = $workspaceId
+                        location = $location
+                    }
+                }
             }
-            else {
-                Write-Host "No alerts found for pack $($packtag)."
-            }
+        }
+        # Create the VM application if it is a custom data rule       
+        if ([string]::IsNullOrEmpty($rule.clientAppName)) {
+            Write-Host "No client app name found. Skipping application creation."
+        }
+        else{
+            # Create the VM application using the rule information if needed. It may exist already and have versions.
+            create-vmapplication -rule $rule `
+                                    -resourceGroup $resourceGroup `
+                                    -location $location `
+                                    -pack $pack `
+                                    -TagsToUse $TagsToUse
+            
         }
     }
     return $packs # which should be only one pack.
+}
+function create-vmapplication {
+    param (
+        [Parameter(Mandatory=$true)]
+        [object]$rule,
+        [Parameter(Mandatory=$true)]
+        [string]$resourceGroup,
+        [Parameter(Mandatory=$true)]
+        [string]$location,
+        [Parameter(Mandatory=$true)]
+        [object]$pack,
+        [Parameter(Mandatory=$true)]
+        [hashtable]$TagsToUse
+    )
+    $applicationsURL = $env:applicationsURL
+    $application=Get-AzGalleryApplication -ResourceGroupName $resourceGroup -GalleryName $env:galleryName -Name $rule.clientAppName -ErrorAction SilentlyContinue
+    if ($application.count -gt 0) {
+        Write-Host "Application $($rule.clientAppName) already exists. Skipping creation."
+    }
+    else {
+        Write-host "Creating VM application $($rule.clientAppName) for $($rule.RuleName)."
+        $application=New-AzGalleryApplication -ResourceGroupName $resourceGroup `
+                                                -GalleryName $env:galleryName `
+                                                -Name $rule.clientAppName `
+                                                -Location $location `
+                                                -Description $rule.description `
+                                                -SupportedOSType $pack.OS `
+                                                -Tag $TagsToUse
+    }
+    $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+        -GalleryName $env:galleryName `
+        -GalleryApplicationName $rule.clientAppName  `
+        -Name $rule.clientAppVersion `
+        -ErrorAction SilentlyContinue
+    if ($appversion) {
+        Write-Host "Application version $($rule.clientAppVersion) already exists for application $($rule.clientAppName). Skipping creation."
+        return $true
+    }
+    else {
+        # Upload the application package to the storage account first
+        $storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroup -Name $env:storageAccountName   
+        $context = $storageAccount.Context
+        $container = Get-AzStorageContainer -Name "applications" -Context $context
+        # read the content from the repository from the URL and save it to a file in the temp folder
+        Write-host "Downloading application package from $applicationsURL/$($rule.clientAppZIPFile)"
+        # get a SAS token for an hour for the bob
+        $sasToken = New-AzStorageBlobSASToken -Blob $rule.clientAppZIPFile `
+                                            -Container $container.Name `
+                                            -Context $context `
+                                            -Permission r `
+                                            -ExpiryTime (Get-Date).AddHours(1) `
+                                            -FullUri
+        if ($sasToken -eq $null) {
+            Write-Error "Failed to get SAS token for the application package."
+            return $false
+        }
+        $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+            -GalleryName $env:galleryName `
+            -GalleryApplicationName $application.Name `
+            -Name $rule.clientAppVersion `
+            -Location $location `
+            -Install $rule.clientAppInstallCommand `
+            -Remove $rule.clientAppUninstallCommand `
+            -PackageFileLink $sasToken `
+            -Tag $TagsToUse
+        # wait for the application version to be created
+        $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+            -GalleryName $env:galleryName `
+            -GalleryApplicationName $application.Name `
+            -Name $rule.clientAppVersion `
+            -ErrorAction SilentlyContinue
+        while ($appversion.ProvisioningState -eq "Creating") { 
+            Write-Host "Waiting for application version $($rule.clientAppVersion) to be created. Current state: $($appversion.ProvisioningState)"
+            Start-Sleep -Seconds 15
+            $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
+                -GalleryName $env:galleryName `
+                -GalleryApplicationName $application.Name `
+                -Name $rule.clientAppVersion `
+                -ErrorAction SilentlyContinue
+        }
+    }
 }
 function ConvertPSObjectToHashtable
 {
@@ -1712,7 +1727,6 @@ function update-packsdefinition {
     $packsURL=$env:PacksURL
     update-blobcontentinURL -url $packsURL -content $packNewDefinition
 }
-
 function get-AmbaAlertsInfo {
     $ambaalerts=get-AMBAJsonContent | ConvertFrom-Json -Depth 10
 
