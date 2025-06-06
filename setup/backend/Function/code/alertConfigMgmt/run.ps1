@@ -7,7 +7,7 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 # Interact with query parameters or the body of the request.
-$alerts = $Request.Body.Alerts
+$alerts = $Request.Body.alerts
 $action = $Request.Body.Action
 
 #$TagValue = $Request.Body.Pack
@@ -19,7 +19,7 @@ if ($alerts) {
         $TagName='MonitorStarterPacks'
         "Missing TagName. Please set the TagName environment variable. Setting to Default"
     }
-    "Working on $($alerts.count) server(s). Action: $action. "
+    "Working on $($alerts.count) alert(s). Action: $action. "
     switch ($action) {
         'Enable' {
             $bodyAction=@"

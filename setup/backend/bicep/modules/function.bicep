@@ -5,7 +5,7 @@ param userManagedIdentity string
 param userManagedIdentityClientId string
 param packsUserManagedId string
 param storageAccountName string
-param filename string = 'discovery.zip'
+param filename string = 'backend.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param lawresourceid string
 param appInsightsLocation string
@@ -15,9 +15,8 @@ param ambaJsonURL string
 param packsModulesRootURL string
 param applicationsURL string
 
-var discoveryContainerName = 'discovery'
+var deploymentContainerName = 'deploy'
 var tempfilename = '${filename}.tmp'
-//var ambaJsonURL='https://azure.github.io/azure-monitor-baseline-alerts/amba-alerts.json'
 
 param apiManagementKey string= base64(newGuid())
 param solutionTag string
@@ -37,7 +36,7 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existin
 }
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-Function-${instanceName}'
+  name: 'deployscript-Function-${instanceName}-${location}'
   dependsOn: [
     azfunctionsiteconfig
   ]
@@ -62,7 +61,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: loadFileAsBase64('../../backend.zip')
       }
     ]
-    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${discoveryContainerName} -n ${filename} --overwrite true'
+    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${deploymentContainerName} -n ${filename} --overwrite true'
   }
 }
 
@@ -201,7 +200,7 @@ resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
   
   name: 'MSDeploy'
   properties: {
-    packageUri: '${discoveryStorage.properties.primaryEndpoints.blob}${discoveryContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
+    packageUri: '${discoveryStorage.properties.primaryEndpoints.blob}${deploymentContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
   }
 }
 
@@ -218,7 +217,6 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
     WorkspaceResourceId: lawresourceid
-    
   }
 }
 

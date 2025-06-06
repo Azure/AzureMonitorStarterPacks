@@ -365,18 +365,33 @@
                   "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id",
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources"
+                },
+                {
+                  "id": "28744950-d02c-4216-90eb-c4cda7d3fe2c",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AvailIaaSPacksParam",
+                  "type": 1,
+                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":null}",
+                  "queryType": 10
+                },
+                {
+                  "id": "1bcfe6fb-a77a-4f2d-8f3d-6a44fe5aae05",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AvailSupportedServices",
+                  "type": 1,
+                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":null}",
+                  "queryType": 10
                 }
               ],
               "style": "above",
-              "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources"
+              "queryType": 10
             },
             "conditionalVisibility": {
               "parameterName": "showHidden",
               "comparison": "isEqualTo",
               "value": "yes"
             },
-            "name": "parameters - 5"
+            "name": "parameters - AvailableIaaSPacks"
           },
           {
             "type": 11,
@@ -782,7 +797,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
+                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)\n//ruleId=properties.dataCollectionRuleId\n| join (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
                     "size": 1,
                     "title": "Servers/Pack (Association)",
                     "queryType": 1,
@@ -836,7 +851,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Tagged=count() by Pack\n| sort by Pack asc\n\n\n",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| project name, MPs=tags.MonitorStarterPacks\n| where isnotnull(MPs)\n| mv-expand (split(MPs,','))\n| summarize Total=count() by tostring(MPs)\n| sort by MPs asc\n\n\n",
                     "size": 1,
                     "title": "Tagged Resources per Tag",
                     "queryType": 1,
@@ -846,13 +861,12 @@
                     ],
                     "visualization": "tiles",
                     "tileSettings": {
-                      "showBorder": false,
                       "titleContent": {
-                        "columnMatch": "Pack",
+                        "columnMatch": "MPs",
                         "formatter": 1
                       },
                       "leftContent": {
-                        "columnMatch": "Tagged",
+                        "columnMatch": "Total",
                         "formatter": 12,
                         "formatOptions": {
                           "palette": "auto"
@@ -860,11 +874,13 @@
                         "numberFormat": {
                           "unit": 17,
                           "options": {
-                            "maximumSignificantDigits": 3,
-                            "maximumFractionDigits": 2
+                            "style": "decimal",
+                            "maximumFractionDigits": 2,
+                            "maximumSignificantDigits": 3
                           }
                         }
-                      }
+                      },
+                      "showBorder": false
                     }
                   },
                   "customWidth": "33",
@@ -877,7 +893,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId//ruleId=properties.dataCollectionRuleId\n| join (resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
+                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ 'mcp1'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join  (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
                     "size": 1,
                     "title": "Associated Servers per Pack",
                     "queryType": 1,
@@ -1250,7 +1266,9 @@
                           "showDefault": false
                         },
                         "queryType": 10,
-                        "value": null
+                        "value": [
+                          "nginx"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -1424,7 +1442,7 @@
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
+                        "query": "{\"version\":\"1.0.0\",\"content\":\"{AvailIaaSPacksParam}\",\"transformers\":null}",
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
@@ -1432,14 +1450,15 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10,
+                        "queryType": 8,
                         "value": [
-                          "ADDS"
+                          "nginx",
+                          "VMI"
                         ]
                       }
                     ],
                     "style": "pills",
-                    "queryType": 10
+                    "queryType": 8
                   },
                   "customWidth": "50",
                   "conditionalVisibility": {
@@ -1710,7 +1729,7 @@
                         "multiSelect": true,
                         "quote": "'",
                         "delimiter": ",",
-                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
+                        "query": "{\"version\":\"1.0.0\",\"content\":\"{AvailSupportedServices}\",\"transformers\":null}",
                         "typeSettings": {
                           "additionalResourceOptions": [
                             "value::all"
@@ -1720,14 +1739,14 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 10,
+                        "queryType": 8,
                         "value": [
                           "value::all"
                         ]
                       }
                     ],
                     "style": "above",
-                    "queryType": 10
+                    "queryType": 8
                   },
                   "name": "parameters - service type not tagged"
                 },
@@ -1938,7 +1957,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "VMI"
+                  "value": "nginx"
                 }
               ],
               "style": "pills",
@@ -1986,8 +2005,20 @@
                     "formatter": 7
                   }
                 ],
-                "filter": true
-              }
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "$gen_link_Enabled_2",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "$gen_link_Enabled_2",
+                  "sortOrder": 1
+                }
+              ]
             },
             "customWidth": "70",
             "conditionalVisibility": {
@@ -3535,7 +3566,8 @@
                           "representation": "unknown",
                           "text": "{0}{1}"
                         }
-                      ]
+                      ],
+                      "customColumnWidthSetting": "9.8555ch"
                     },
                     "tooltipFormat": {
                       "tooltip": "{0}{1}"
@@ -3607,7 +3639,8 @@
                           "representation": "unknown",
                           "text": ""
                         }
-                      ]
+                      ],
+                      "customColumnWidthSetting": "17.5ch"
                     }
                   },
                   {
@@ -3805,7 +3838,6 @@
               "comparison": "isEqualTo",
               "value": "agents"
             },
-            "showPin": false,
             "name": "query - agent install status",
             "styleSettings": {
               "showBorder": true
@@ -3906,7 +3938,7 @@
             "content": {
               "version": "KqlItem/1.0",
               "query": "Heartbeat | where Category == \"Azure Monitor Agent\"\n| summarize arg_max(TimeGenerated, *) by Computer\n| project  Computer,LastHeartbeat=TimeGenerated, ['SecondsAgo']=datetime_diff('second',now(),TimeGenerated)\n| sort by SecondsAgo asc",
-              "size": 4,
+              "size": 0,
               "title": "Last Heartbeat (24 hours)",
               "timeContext": {
                 "durationMs": 86400000
@@ -3948,8 +3980,20 @@
                     }
                   }
                 ],
-                "filter": true
-              }
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "$gen_thresholds_SecondsAgo_2",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "$gen_thresholds_SecondsAgo_2",
+                  "sortOrder": 1
+                }
+              ]
             },
             "customWidth": "50",
             "conditionalVisibility": {
@@ -4549,7 +4593,7 @@
                   "timeContextFromParameter": "discoveryPeriod",
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/lx1"
+                  "value": null
                 }
               ],
               "style": "above",
@@ -4653,7 +4697,7 @@
                     "durationMs": 86400000
                   },
                   "value": {
-                    "durationMs": 14400000
+                    "durationMs": 86400000
                   }
                 }
               ],

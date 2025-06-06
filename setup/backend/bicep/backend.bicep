@@ -104,7 +104,7 @@ module logicapp './modules/logicapp.bicep' = {
   }
 }
 module extendedWorkbook './modules/extendedworkbook.bicep' = {
-  name: 'workbook2deployment'
+  name: 'workbook2deployment-${instanceName}-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     lawresourceid: lawresourceid
