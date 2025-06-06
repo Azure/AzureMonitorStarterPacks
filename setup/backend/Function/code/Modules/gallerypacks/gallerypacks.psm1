@@ -95,7 +95,7 @@ function remove-vmapp {
         #
         $VM=Get-AzVM -ResourceId $resourceId
         if ($VM) {
-            $installedApp=$VM.ApplicationProfile.GalleryApplications | Where-Object { $_.PackageReferenceId.Contains($ga.id)}
+            $installedApp = $VM.ApplicationProfile.GalleryApplications | Where-Object { $_.PackageReferenceId.ToLower().Contains($ga.id.ToLower()) }
             Write-host "Removing $($ga.Name) from $($resourceId)"
             try {
                 Remove-AzVmGalleryApplication -VM $VM -GalleryApplicationsReferenceId $installedApp.PackageReferenceId
