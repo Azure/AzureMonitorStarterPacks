@@ -400,22 +400,6 @@
               "style": "tabs",
               "links": [
                 {
-                  "id": "25ceea14-e7c7-43e2-aae9-798cfde1aa4e",
-                  "cellValue": "configTab",
-                  "linkTarget": "parameter",
-                  "linkLabel": "IaaS Packs Details",
-                  "subTarget": "IaaSPacksDetails",
-                  "style": "link"
-                },
-                {
-                  "id": "2c842b37-f490-4b77-8b37-f4afe87f8608",
-                  "cellValue": "configTab",
-                  "linkTarget": "parameter",
-                  "linkLabel": "Services Packs Details",
-                  "subTarget": "servicesPacksDetails",
-                  "style": "link"
-                },
-                {
                   "id": "f5b4b4b6-c5d7-4941-b807-8a61df48a0f4",
                   "cellValue": "configTab",
                   "linkTarget": "parameter",
@@ -1079,7 +1063,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| where MP !in~ ('WinDisc', 'LxDisc')\n| extend overrides=tags.CustomThresholds\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location, overrides\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName)\n| where MP !in~ ('WinDisc', 'LxDisc')\n| extend overrides=tags.CustomThresholds\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location, overrides)\n",
+              "query": "resources | where type =~ 'microsoft.hybridcompute/machines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName),state=iff(properties.status =='Connected','On','Off')\n| where isnotempty(MP) and instanceName == '{instanceName}'\n| where MP !in~ ('WinDisc', 'LxDisc')\n//| extend overrides=tags.CustomThresholds\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.osType, subscriptionId, Location=location, state\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MP=tolower(tags.MonitorStarterPacks), instanceName=tolower(tags.instanceName),state=iff(properties.extended.instanceView.powerState.code =='PowerState/running','On','Off')\n| where MP !in~ ('WinDisc', 'LxDisc')\n//| extend overrides=tags.CustomThresholds\n| where isnotempty(MP) and instanceName == '{instanceName}' and (tolower(tags.Vendor) != 'databricks')\n| project Resource=id,['Resource Group']=resourceGroup,Packs=tags.MonitorStarterPacks, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location, state)\n",
               "size": 0,
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
@@ -1125,7 +1109,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].instanceName\",\"mergedName\":\"instanceName\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].MP\",\"mergedName\":\"MP\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].overrides\",\"mergedName\":\"overrides\",\"fromId\":\"unknown\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\",\"mergeType\":\"leftouter\",\"leftTable\":\"query - taggedVMs\",\"rightTable\":\"query - associatedVMs\",\"leftColumn\":\"Resource\",\"rightColumn\":\"resourceId\"}],\"projectRename\":[{\"originalName\":\"[query - associatedVMs].Packs2\",\"mergedName\":\"Associations\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].state\",\"mergedName\":\"state\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - associatedVMs].MPs\",\"mergedName\":\"MPs\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].Resource\",\"mergedName\":\"Resource\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Resource Group\",\"mergedName\":\"Resource Group\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Packs\",\"mergedName\":\"Packs\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].OS\",\"mergedName\":\"OS\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Location\",\"mergedName\":\"Location\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - associatedVMs].resourceId\",\"mergedName\":\"resourceId\",\"fromId\":\"964f21b6-ee11-43c6-a6e2-4119d566812c\"},{\"originalName\":\"[query - taggedVMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].instanceName\",\"mergedName\":\"instanceName\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].MP\",\"mergedName\":\"MP\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - taggedVMs].overrides\",\"mergedName\":\"overrides\",\"fromId\":\"unknown\"}]}",
                     "size": 0,
                     "title": "Monitored Machines",
                     "showRefreshButton": true,
@@ -1174,6 +1158,33 @@
                           },
                           "tooltipFormat": {
                             "tooltip": "Click to see associations."
+                          }
+                        },
+                        {
+                          "columnMatch": "state",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "==",
+                                "thresholdValue": "On",
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "Off",
+                                "representation": "stopped",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "unknown",
+                                "text": "{0}{1}"
+                              }
+                            ]
                           }
                         },
                         {
@@ -1267,7 +1278,7 @@
                         },
                         "queryType": 10,
                         "value": [
-                          "nginx"
+                          "VMI"
                         ]
                       }
                     ],
@@ -1451,10 +1462,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 8,
-                        "value": [
-                          "nginx",
-                          "VMI"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1957,7 +1965,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "nginx"
+                  "value": "microsoft.network/publicipaddresses"
                 }
               ],
               "style": "pills",
@@ -4406,9 +4414,9 @@
                                 ],
                                 "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmstotagDiscovery}],\n    \"PackType\": \"Discovery\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\" : \"{DefaultAG}\"\n  }\n}",
                                 "httpMethod": "POST",
-                                "title": "Enable Monitoring Packs",
+                                "title": "Enable Discovery Packs",
                                 "description": "# This will enable the pack for the following servers:\n{vmstotagDiscovery}\n\nby adding the Pack(s) to the resource(s).\n",
-                                "actionName": "EnableMonitoring",
+                                "actionName": "EnableDiscovery",
                                 "runLabel": "Confirm"
                               }
                             }
@@ -4593,7 +4601,7 @@
                   "timeContextFromParameter": "discoveryPeriod",
                   "queryType": 0,
                   "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": null
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-mgmt/providers/microsoft.compute/virtualmachines/lx2"
                 }
               ],
               "style": "above",
@@ -4697,7 +4705,7 @@
                     "durationMs": 86400000
                   },
                   "value": {
-                    "durationMs": 86400000
+                    "durationMs": 1800000
                   }
                 }
               ],
