@@ -4,7 +4,7 @@ Monitoring Starter Packs (MonStar Packs)
 
 ## Update!!!
 
-<span style="color: yellow">This version of the Monitoring packs is being deprecated soon. Please stay tuned during May 2025 for a new version.<span>
+<span style="color: yellow">This version of the Monitoring packs is being deprecated soon. Please stay tuned during July 2025 for a new version.<span>
 
 ## Objectives
 
