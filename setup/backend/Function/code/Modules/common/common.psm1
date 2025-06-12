@@ -1418,7 +1418,7 @@ function new-pack {
                                                     -rulename $ruleName `
                                                     -workspaceResourceId $WorkspaceId `
                                                     -xPathQueries $rule.XPathQueries `
-                                                    -counterSpecifiers $rule.CounterSpecifiers `
+                                                    -counterSpecifiers $rule.performanceCounters `
                                                     -Tags $TagsToUse `
                                                     -dceId $dceId
                         Write-Host "DCR $($ruleName) created successfully."
