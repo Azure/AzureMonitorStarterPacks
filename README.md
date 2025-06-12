@@ -19,6 +19,8 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 - No dependency on policies
 - Flexible Discovery
 - Quicker deployment
+- No management group requirement
+- Easy Pack authoring
 
 ## Pre-requisites and recommendations
 
