@@ -70,6 +70,7 @@ module backendFunction './modules/function.bicep' = {
   //   functionUserManagedIdentity
   // ]
   params: {
+    amgdStorageURL: amgdupload.outputs.amgdstorageURL
     packsURL: packsDefStorage.outputs.fileURL
     ambaJsonURL: ambaStorage.outputs.fileURL
     appInsightsLocation: appInsightsLocation
@@ -225,6 +226,18 @@ module applicationsupload './modules/uploadapplications.bicep' = {
     //sasExpiry: 'PT1H'
   }
 }
+module amgdupload './modules/uploadamgd.bicep' = {
+  name: 'amgdupload-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'dashboards'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+output amgdStorageURL string = amgdupload.outputs.amgdstorageURL
 output packsDefStorageURL string = packsDefStorage.outputs.fileURL
 output ambaStorageURL string = ambaStorage.outputs.fileURL
 output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId

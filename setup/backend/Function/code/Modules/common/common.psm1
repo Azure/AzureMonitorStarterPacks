@@ -1211,7 +1211,7 @@ function new-pack {
         [string]$instanceName = $env:InstanceName,
         #resource group
         [Parameter(Mandatory=$false, HelpMessage="Enter the name of the resource group.")]
-        [string]$resourceGroup = $env:ResourceGroupName,
+        [string]$resourceGroup = $env:ResourceGroup,
         #workspaceId
         [Parameter(Mandatory=$true, HelpMessage="Enter the name of the workspaceId.")]
         [string]$workspaceId,
@@ -1311,7 +1311,6 @@ function new-pack {
             Write-Host "Rule OS: $($ruleOS)"
             # based on the rule type, create the required DCRs
             $dcrname=$rule.RuleNamePath #$ruleOS -eq "Windows" ? "dcr-basicWinVM.bicep" : "dcr-basicLinuxVM.bicep"
-            $createDCR = $true
             $createAlerts=$true
 
             $dcr = Get-AzDataCollectionRule -ResourceGroupName $resourceGroup -Name $ruleName -ErrorAction SilentlyContinue
@@ -1401,8 +1400,11 @@ function new-pack {
                     default {
                         # use bicep file to create the DCR. It will need to be available in the SA or repository
                         # test if DCR already exists
-                        # Create the DCR using the bicep template
-                        Write-Host "Creating DCR $($ruleName)..."
+                        # Create the DCR using the bicep template                        Write-Host "Creating DCR $($ruleName)..."
+                        Write-Host "DCR name: dcr-$packtag-$instanceName-$location)"
+                        Write-host "Rule Type: $($rule.RuleType)"
+                        Write-host "XPath Queries count: $($rule.XPathQueries.Count)"
+                        Write-host "Performance Counters count: $($rule.performanceCounters.Count)"
                         # if ($urlDeployment) {
                         #     $templateUri = "$modulesURLroot/$dcrname"
                         #     #(Invoke-WebRequest -Uri $templateUri).Content | out-file "$($env:temp)/$dcrname"
@@ -1491,6 +1493,23 @@ function new-pack {
                                     -pack $pack `
                                     -TagsToUse $TagsToUse
             
+        }
+        # Create the dashboard(s) if needed.
+        if ($pack.Dashboards.Count -ne 0) {
+            Write-host "Creating $($pack.Dashboards.Count) dashboards for pack $($packtag)..."
+            foreach ($dashboard in $pack.Dashboards) {
+                $dashboardName = $dashboard.Name
+                $dashboardFilePath = $dashboard.DashboardPath
+                $tempfilename= "$($env:temp)\temp-$($dashboardFilePath)"
+                get-blobContentFromUrl -url "$($env:amgdURL)/$($dashboardFilePath)" | out-file $tempfilename
+                new-grafanaDashboard -dashboardName $dashboardName `
+                                     -subscriptionId $env:subscriptionId `
+                                     -resourceGroupName $resourceGroupName `
+                                     -location "centralus" `
+                                     -dashboardTitle $dashboard.Title `
+                                     -dashboardFilePath $tempfilename `
+                                     -packtag $packTag
+            }
         }
     }
     return $packs # which should be only one pack.

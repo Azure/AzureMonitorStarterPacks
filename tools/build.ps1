@@ -18,16 +18,25 @@ foreach ($file in $packsFiles) {
 }
 Set-Location $currentFolder
 
-# Grafana Dashaboards
-Set-Location "./Packs"
+# Grafana Dashaboards - Managed Grafana
+Set-Location "./Packs/dashboards"
 $DestinationPath='./Grafana.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue
 $grafanaFiles = Get-ChildItem -Path './' -Recurse -Include 'grafana*.json'
 foreach ($file in $grafanaFiles) {
     Compress-Archive -Path $file.FullName -DestinationPath $DestinationPath -Update
 }
-# Function App code.
 Set-Location $currentFolder
+# Grafana Dashaboards - Azure Monitor Grafana Dashboards
+Set-Location "./Packs/AMGD"
+$DestinationPath='./amgd.zip'
+Remove-Item $DestinationPath -ErrorAction SilentlyContinue
+$grafanaFiles = Get-ChildItem -Path './' -Recurse -Include 'grafana*.json'
+foreach ($file in $grafanaFiles) {
+    Compress-Archive -Path $file.FullName -DestinationPath $DestinationPath -Update
+}
+Set-Location $currentFolder
+# Function App code.
 Set-Location 'setup/backend/Function/code'
 $DestinationPath='../../backend.zip'
 Remove-Item $DestinationPath -ErrorAction SilentlyContinue

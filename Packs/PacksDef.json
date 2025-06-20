@@ -241,6 +241,18 @@
                     "threshold": 10,
                     "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Memory\" and Name == \"AvailableMB\"\n| extend TotalMemory = toreal(todynamic(Tags)[\"vm.azm.ms/memorySizeMB\"])\n| extend AvailableMemoryPercentage = (toreal(Val) / TotalMemory) * 100.0\n| summarize AggregatedValue = avg(AvailableMemoryPercentage) by bin(TimeGenerated, 15m), Computer, _ResourceId"
                 }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "WinOS",
+                    "Description": "Windows OS Dashboard",
+                    "DashboardPath": "grafana-winos.json"
+                },
+                {
+                    "Name": "Linux-VMInsights",
+                    "Description": "Windows OS Dashboard with VM Insights",
+                    "DashboardPath": "grafana-lxos.json"
+                }
             ]
         },
         {
@@ -345,38 +357,7 @@
                     "RuleType": "IISLogs",
                     "RuleNamePath": "filecollectionWinIIS.bicep",
                     "xPathQueries": [],
-                    "performanceCounters" :[
-                        "\\Web Service(_Total)\\Bytes Received/sec",
-                        "\\Web Service(_Total)\\Bytes Sent/sec",
-                        "\\Web Service(_Total)\\Bytes Total/sec",
-                        "\\Web Service(_Total)\\Connection Attempts/sec",
-                        "\\Web Service(_Total)\\Current Connections",
-                        "\\Web Service(_Total)\\Total Method Requests/sec",
-                        "\\Microsoft FTP Service(_Total)\\Bytes Total/sec",
-                        "\\Microsoft FTP Service(_Total)\\Current Connections",
-                        "\\SMTP Server(_Total)\\Bytes Received/sec",
-                        "\\SMTP Server(_Total)\\Bytes Sent/sec",
-                        "\\SMTP Server(_Total)\\Bytes Total/sec",
-                        "\\SMTP Server(_Total)\\Inbound Connections Current",
-                        "\\SMTP Server(_Total)\\Message Bytes Received/sec",
-                        "\\SMTP Server(_Total)\\Message Bytes Sent/sec",
-                        "\\SMTP Server(_Total)\\Messages Delivered/sec",
-                        "\\SMTP Server(_Total)\\Messages Received/sec",
-                        "\\SMTP Server(_Total)\\Messages Sent/sec",
-                        "\\SMTP Server(_Total)\\Outbound Connections Current",
-                        "\\SMTP Server(_Total)\\Total Messages Submitted",
-                        "\\SMTP Server(SMTP 1)\\Bytes Received/sec",
-                        "\\SMTP Server(SMTP 1)\\Bytes Sent/sec",
-                        "\\SMTP Server(SMTP 1)\\Bytes Total/sec",
-                        "\\SMTP Server(SMTP 1)\\Inbound Connections Current",
-                        "\\SMTP Server(SMTP 1)\\Message Bytes Received/sec",
-                        "\\SMTP Server(SMTP 1)\\Message Bytes Sent/sec",
-                        "\\SMTP Server(SMTP 1)\\Messages Delivered/sec",
-                        "\\SMTP Server(SMTP 1)\\Messages Received/sec",
-                        "\\SMTP Server(SMTP 1)\\Messages Sent/sec",
-                        "\\SMTP Server(SMTP 1)\\Outbound Connections Current",
-                        "\\SMTP Server(SMTP 1)\\Total Messages Submitted"
-                    ],
+                    "performanceCounters" :[],
                     "fileCollection": [
                         {
                             "filePath": "C:\\inetpub\\logs\\LogFiles\\W3SVC*",
@@ -687,6 +668,13 @@
                 }
                 
 
+            ],
+            "Dashboards":[
+                {
+                    "Name": "IIS",
+                    "Description": "IIS Dashboard",
+                    "DashboardPath": "grafana-iis.json"
+                }
             ]
         },
         {
@@ -1104,7 +1092,14 @@
                         "alertType": "rows",
                         "query": "Event | where  EventID in (1540) and EventLog == 'DNS Server'"
                     }
-                ]
+            ],
+            "Dashboards":[
+                {
+                    "Name": "DNS",
+                    "Description": "DNS Dashboard",
+                    "DashboardPath": "grafana-dns.json"
+                }
+            ]
         },
         {
             "Name": "Nginx",
@@ -1153,6 +1148,13 @@
                     "windowSize": "PT15M",
                     "alertType": "rows",
                     "query": "Syslog | where SyslogMessage == \"Stopped A high performance web server and a reverse proxy server.\""
+                }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "Nginx",
+                    "Description": "Nginx Dashboard",
+                    "DashboardPath": "grafana-nginx.json"
                 }
             ]
         },

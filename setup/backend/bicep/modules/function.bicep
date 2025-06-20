@@ -14,6 +14,7 @@ param packsURL string
 param ambaJsonURL string
 param packsModulesRootURL string
 param applicationsURL string
+param amgdStorageURL string
 
 var deploymentContainerName = 'deploy'
 var tempfilename = '${filename}.tmp'
@@ -177,6 +178,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     PacksURL: packsURL
     PacksModulesRootURL: packsModulesRootURL
     applicationsURL: applicationsURL
+    amgdStorageURL: amgdStorageURL
     storageAccountName: discoveryStorage.name
     ResourceGroup: resourceGroup().name
     SolutionTag: solutionTag

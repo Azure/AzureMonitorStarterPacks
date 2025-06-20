@@ -81,6 +81,17 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
         publicAccess: 'None'
       }
     }
+        resource container6 'containers'={
+      name: 'dashboards'
+      properties: {
+        immutableStorageWithVersioning: {
+            enabled: false
+        }
+        denyEncryptionScopeOverride: false
+        defaultEncryptionScope: '$account-encryption-key'
+        publicAccess: 'None'
+      }
+    }
   }
 }
 output storageAccountName string = storageAccount.name
