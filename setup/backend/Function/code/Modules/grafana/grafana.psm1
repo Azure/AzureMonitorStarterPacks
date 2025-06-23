@@ -82,7 +82,7 @@ function new-grafanaDashboard {
                 "location": "$location",
                 "tags": {
                     "GrafanaDashboardResourceType": "Azure Monitor",
-                    "MonitorStarterPack": "$packtag",
+                    "MonitorStarterPacks": "$packtag",
                     "InstanceName": "$env:InstanceName"
                 },
             "apiVersion": "2024-11-01-preview"

@@ -40,6 +40,7 @@ var backendFunctionRoleDefinitionIds = [
   'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Data Contributor role is needed to allow the function to write to the blob storage account 
   '3913510d-42f4-4e42-8a64-420c390055eb' // Monitoring metrics publisher role is needed to allow the function to write to the log analytics workspace, for discovery results.
   '641177b8-a67a-45b9-a033-47bc880bb21e' // Application Contributor (VM Applications)
+  '0618ae3d-2930-4bb7-aa00-718db34ee9f9' // Azure Monitor dashboard with grafana
 ]
 var logicappRequiredRoleassignments = [
   '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role

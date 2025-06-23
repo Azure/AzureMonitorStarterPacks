@@ -1238,6 +1238,11 @@ function new-pack {
     $DceId=(Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}).Id
     if (!$DceId) {
         Write-Error "No DCE Id found!"
+        return $false
+    }
+    if ($DceId.count -gt 1) {
+        Write-Error "More than one DCE found for instance name $instanceName. Please check your configuration."
+        return $false
     }
     #$packlist=get-content ./packs/packsdef.json | ConvertFrom-Json -Depth 15
     Write-host "Found $($packlist.Packs.Count) packs in the file. "
@@ -1501,7 +1506,7 @@ function new-pack {
                 $dashboardName = $dashboard.Name
                 $dashboardFilePath = $dashboard.DashboardPath
                 $tempfilename= "$($env:temp)\temp-$($dashboardFilePath)"
-                get-blobContentFromUrl -url "$($env:amgdURL)/$($dashboardFilePath)" | out-file $tempfilename
+                get-blobContentFromUrl -url "$($env:amgdStorageURL)/$($dashboardFilePath)" | out-file $tempfilename
                 new-grafanaDashboard -dashboardName $dashboardName `
                                      -subscriptionId $env:subscriptionId `
                                      -resourceGroupName $resourceGroupName `

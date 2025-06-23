@@ -42,7 +42,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         value: loadFileAsBase64('../../../../Packs/AMGD/amgd.zip') 
       }
     ]
-    scriptContent: 'echo "$CONTENT" > ${tempfilename}.tmp && cat ${tempfilename}.tmp | base64 -d > ${tempfilename}.zip && unzip ${tempfilename}.zip  && for file in *.zip; do az storage blob upload -f "$file" -c ${containerName} -n "$file" --overwrite true; done'
+    scriptContent: 'echo "$CONTENT" > ${tempfilename}.tmp && cat ${tempfilename}.tmp | base64 -d > ${tempfilename}.zip && unzip ${tempfilename}.zip  && for file in *.json; do az storage blob upload -f "$file" -c ${containerName} -n "$file" --overwrite true; done'
   }
 }
 
