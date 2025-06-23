@@ -87,6 +87,7 @@ module backendFunction './modules/function.bicep' = {
     imageGalleryName: gallery.name
     packsModulesRootURL: modulesupload.outputs.modulesURL
     applicationsURL: applicationsupload.outputs.applicationsURL
+    subscriptionId: subscriptionId
   }
 }
 module logicapp './modules/logicapp.bicep' = {
