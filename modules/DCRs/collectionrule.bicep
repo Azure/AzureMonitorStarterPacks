@@ -6,7 +6,7 @@ param wsfriendlyname string = 'TBD'
 param xPathQueries array
 param windowsEventLogs array = []
 param performanceCounters array = []
-resource dcr 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   location: location
   name: rulename
   kind: kind

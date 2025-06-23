@@ -10,7 +10,7 @@ var wsfriendlyname=split(workspaceResourceId, '/')[8]
 // previously used this, but it's complicated when using VMInsights for Linux and Windows
 //var ruleName = 'MSVMI-${wsfriendlyname}'
 
-resource SMapRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
+resource SMapRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   location: location
   name: ruleName
   tags: Tags

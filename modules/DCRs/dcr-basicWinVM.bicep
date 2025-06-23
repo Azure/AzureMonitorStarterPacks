@@ -14,7 +14,7 @@ var kind = 'Windows'
               "System!*[System[(Level = 1 or Level = 2 or Level = 3)]]",
               "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
 */
-resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   location: location
   tags: Tags
   name: rulename

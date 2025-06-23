@@ -12,7 +12,7 @@ param Tags object
 
 var kind  = 'Linux'
 
-resource dcr 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   location: location
   tags: Tags
   name: rulename
