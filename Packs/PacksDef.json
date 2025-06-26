@@ -368,6 +368,9 @@
                     ]
                 }
             ],
+            "Discovery":{
+                "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'Web-Server'"
+            },
             "Alerts": [
                 {
                     "alertRuleDescription": "A server side include file has included itself or the maximum depth of server side includes has been exceeded",
@@ -981,6 +984,9 @@
                     ]
                 }
             ],
+            "Discovery":{
+                "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'DNS'"
+            },
             "Alerts": [
                     {
                         "alertRuleDescription": "Service.DependencyFailed",
@@ -1229,6 +1235,7 @@
                     "clientAppZIPFile" : "ADDS.zip"
                 }
             ],
+
             "Discovery":{
                 "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'AD-Domain-Services'"
             },
@@ -1243,6 +1250,13 @@
                     "windowSize": "PT15M",
                     "alertType": "rows",
                     "query": "Event | where  EventID in (5174,5179,5180) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "ADDS",
+                    "Description": "ADDS Dashboard",
+                    "DashboardPath": "grafana-adds.json"
                 }
             ]
         },

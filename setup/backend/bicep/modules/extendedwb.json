@@ -29,7 +29,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "value": "no"
+            "value": "yes"
           },
           {
             "version": "KqlParameterItem/1.0",
@@ -465,7 +465,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Getting Started\n\n## Instance: <span style=\"color: #0000FF\"> {instanceName} </span>\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations. For services, right now, the alerts won´t be deleted by themselves.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Check policy status and start remediation if required. By clicking in a policy, you can also assign that policy to another scope.\n- Check Monitor pack associations.\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## Link to your managed [Grafana]({GrafanaInstance:label}) instance, if you enabled it. Make sure to property set permissions before attemping to access it.\n\n## <span style=\"color: #FF0000\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n\n\n\n"
+        "json": "# Getting Started\n\n## Instance: <span style=\"color: #0000FF\"> {instanceName} </span>\n\nWelcome to the Azure Monitoring Packs. This workbook was designed to help you configuring the solution. Here you can:\n- Enable/Disable monitoring packs for one or more VMs or services. You may also disable all the monitoring for a specific server or service. This will remove the tags and the rule associations or alerts.\n- Enable/Disable Alerts in bulk. You can also assign a different Action group to one or more alerts or delete the rules**\n- Review discovered applications (VMs only)\n- Manage agent configuration (install/remove)\n\n## <span style=\"color: #FF0000\">If this is the first time using this solution, please configure the parameters in the ***Configuration*** tab and save the workbook for proper functionality.</span>\n\n\n## Please check the Monitoring Packs repository for updates. [Azure MONitor STARter Packs](http://github.com/Azure/AzureMonitorStarterPacks)\n## Also check the Azure Monitor Baseline Alerts ([AMBA](http://aka.ms/amba)) website for the details on the alerts.\n\n\n"
       },
       "conditionalVisibility": {
         "parameterName": "tabSelection",
@@ -1036,7 +1036,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Server Monitoring Setup\n\nSelect servers on the right to assign a pack. Once the backend is done with the assigning, the server will show on the left side grid.\n\nOn the left side grid, the monitoring can be updated to add more packs, as well as to remove a specific pack or remove any monitoring altogether from the server.",
+        "json": "## Server Monitoring Setup\n\nSelect servers on the right to assign a pack. Once the backend is done with the assigning, the server will show on the left side grid.\n\nOn the left side grid, the monitoring can be updated to add more packs, as well as to remove a specific pack or remove any monitoring altogether from the server.\n\nOnce a pack is added for the first time, the required alerts, dashboards and DCRs will be created. The selected servers will be associated with the proper DCRs and will have the VM Application(s) installed, if any.\n\nWhen the monitoring is removed, the associations are removed as well as the VM Applications, if any.",
         "style": "info"
       },
       "conditionalVisibilities": [
@@ -1063,7 +1063,7 @@
           {
             "type": 1,
             "content": {
-              "json": "When Monitoring is first enabled, the Azure Monitoring Agent will also be installed to the selected servers.",
+              "json": "When Monitoring is first enabled, the Azure Monitoring Agent will also be installed to the selected servers. See the help for details.",
               "style": "info"
             },
             "name": "text - 3"
@@ -1315,7 +1315,7 @@
                         },
                         "queryType": 10,
                         "value": [
-                          "VMI"
+                          "ADDS"
                         ]
                       }
                     ],
@@ -1333,8 +1333,26 @@
                   "type": 11,
                   "content": {
                     "version": "LinkItem/1.0",
-                    "style": "paragraph",
+                    "style": "nav",
                     "links": [
+                      {
+                        "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Add Monitoring for {PackTagsLeft} Pack(s)",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
+                          "httpMethod": "POST",
+                          "title": "Add Monitoring",
+                          "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeft} Pack(s)",
+                          "actionName": "AddMonitoringPack",
+                          "runLabel": "Confirm"
+                        }
+                      },
                       {
                         "id": "36b65f94-1c3d-4e7a-b771-677a2081d288",
                         "cellValue": "",
@@ -1356,24 +1374,6 @@
                           "httpMethod": "POST",
                           "title": "Remove Monitoring",
                           "description": "# Please confirm the change.\n\nRemove Monitoring for {PackTagsLeft} Pack(s) \n\nServers:\n\n{taggedVMs}",
-                          "runLabel": "Confirm"
-                        }
-                      },
-                      {
-                        "id": "550df977-06a8-4c40-9cd3-aba6286ebcdf",
-                        "linkTarget": "ArmAction",
-                        "linkLabel": "Add Monitoring for {PackTagsLeft} Pack(s)",
-                        "style": "primary",
-                        "linkIsContextBlade": true,
-                        "armActionContext": {
-                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                          "headers": [],
-                          "params": [],
-                          "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{taggedVMs}],\n    \"Pack\": \"{PackTagsLeft}\",\n    \"PackType\": \"IaaS\",\n    \"WorkspaceId\": \"{Workspace}\",\n    \"DefaultAG\": \"{DefaultAG}\"\n  }\n}",
-                          "httpMethod": "POST",
-                          "title": "Add Monitoring",
-                          "description": "# Please confirm the change.\n\nAdd Monitoring for {PackTagsLeft} Pack(s)",
-                          "actionName": "AddMonitoringPack",
                           "runLabel": "Confirm"
                         }
                       },
@@ -1425,7 +1425,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' | where isempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId, Location=location, MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc'\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location,MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc')\n| union (resources | where type =~ 'microsoft.compute/virtualmachinescalesets' and properties.orchestrationMode == 'Uniform'\n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.virtualMachineProfile.storageProfile.osDisk.osType, subscriptionId, Location=location,MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc')\n| join kind= leftouter  (\n    resourcecontainers| where type =~ 'microsoft.resources/subscriptions'\n    | project Subscription=name,subscriptionId\n    ) \non subscriptionId| project-away subscriptionId, subscriptionId1, MP",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' | where isempty(tolower(tags.MonitorStarterPacks))\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.osType, subscriptionId, Location=location, MP=tolower(tags.MonitorStarterPacks),state=iff(properties.status =='Connected','On','Off')\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc'\n| union (resources | where type =~ 'microsoft.compute/virtualmachines' \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, subscriptionId, Location=location,MP=tolower(tags.MonitorStarterPacks),state=iff(properties.extended.instanceView.powerState.code =='PowerState/running','On','Off')\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc')\n| union (resources | where type =~ 'microsoft.compute/virtualmachinescalesets' and properties.orchestrationMode == 'Uniform'\n| where isempty(tolower(tags.MonitorStarterPacks)) \n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.virtualMachineProfile.storageProfile.osDisk.osType, subscriptionId, Location=location,MP=tolower(tags.MonitorStarterPacks)\n| where isempty(MP) or MP =~ 'LxDisc' or MP =~ 'WinDisc')\n| project-away MP",
                     "size": 0,
                     "title": "Non-monitored Machines",
                     "noDataMessage": "No unmonitored servers. Good job!",
@@ -1451,6 +1451,33 @@
                         {
                           "columnMatch": "OS",
                           "formatter": 1
+                        },
+                        {
+                          "columnMatch": "state",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "==",
+                                "thresholdValue": "On",
+                                "representation": "success",
+                                "text": ""
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "Off",
+                                "representation": "stopped",
+                                "text": ""
+                              },
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "unknown",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          }
                         }
                       ],
                       "filter": true,
@@ -1500,7 +1527,7 @@
                         },
                         "queryType": 8,
                         "value": [
-                          "VMI"
+                          "nginx"
                         ]
                       }
                     ],
@@ -1586,7 +1613,7 @@
           {
             "type": 1,
             "content": {
-              "json": "## Services Monitoring Setup\n\nSelect service on the right to assign a pack. Once the backend is done with the assigning, the service will show on the left side grid.\n\nOn the left side grid, the monitoring can be updated to remove a specific pack from the service.",
+              "json": "## Services Monitoring Setup\n\nSelect service on the right to assign a pack. Once the backend is done with the assigning, the alerts for the specific service will be created and it show on the left side grid, with the number of alerts that were created.\n\nOn the left side grid, the monitoring can be updated to remove the from the service. The alerts for that specific service instance will be removed.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -4376,7 +4403,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, Subscription=subscriptionId, Location=location\n| extend Pack=iff(OS=~'Windows',\"WinDisc\", \"LxDisc\")\n\n",
+                          "query": "resources | where type =~ 'microsoft.compute/virtualmachines' \n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isempty(MPs) or (MPs notcontains 'WinDisc' and MPs notcontains 'LxDisc')//and subscriptionId in split('{Subscriptions:subscriptionId}',',')\n| project Resource=id,['Resource Group']=resourceGroup, OS=properties.storageProfile.osDisk.osType, Subscription=subscriptionId, Location=location,state=iff(properties.extended.instanceView.powerState.code =='PowerState/running','On','Off')\n| extend Pack=iff(OS=~'Windows',\"WinDisc\", \"LxDisc\")\n\n",
                           "size": 0,
                           "title": "Non-discoverable Machines",
                           "showRefreshButton": true,
@@ -4398,11 +4425,53 @@
                           "gridSettings": {
                             "formatters": [
                               {
+                                "columnMatch": "Resource",
+                                "formatter": 0,
+                                "formatOptions": {
+                                  "customColumnWidthSetting": "24.4281ch"
+                                }
+                              },
+                              {
                                 "columnMatch": "Resource Group",
                                 "formatter": 14,
                                 "formatOptions": {
                                   "linkTarget": null,
+                                  "showIcon": true,
+                                  "customColumnWidthSetting": "21.571ch"
+                                }
+                              },
+                              {
+                                "columnMatch": "Subscription",
+                                "formatter": 15,
+                                "formatOptions": {
+                                  "linkTarget": null,
                                   "showIcon": true
+                                }
+                              },
+                              {
+                                "columnMatch": "state",
+                                "formatter": 18,
+                                "formatOptions": {
+                                  "thresholdsOptions": "icons",
+                                  "thresholdsGrid": [
+                                    {
+                                      "operator": "==",
+                                      "thresholdValue": "On",
+                                      "representation": "success",
+                                      "text": ""
+                                    },
+                                    {
+                                      "thresholdValue": "Off",
+                                      "representation": "stopped",
+                                      "text": ""
+                                    },
+                                    {
+                                      "operator": "Default",
+                                      "thresholdValue": null,
+                                      "representation": "unknown",
+                                      "text": "{0}{1}"
+                                    }
+                                  ]
                                 }
                               },
                               {
@@ -4620,7 +4689,7 @@
                     ]
                   },
                   "value": {
-                    "durationMs": 86400000
+                    "durationMs": 3600000
                   }
                 },
                 {
@@ -4744,7 +4813,7 @@
                     "durationMs": 86400000
                   },
                   "value": {
-                    "durationMs": 1800000
+                    "durationMs": 3600000
                   }
                 }
               ],
