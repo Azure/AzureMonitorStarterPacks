@@ -26,7 +26,7 @@ param counterSpecifiers array = []
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
 var tableNameToUse = '${tableName}_CL'
 var streamName= 'Custom-${tableNameToUse}'
-resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: rulename
   dependsOn: [
     featuresTable

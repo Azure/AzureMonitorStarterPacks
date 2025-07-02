@@ -14,7 +14,7 @@ param instanceName string
 var streamName= 'Custom-${tableName}'
 var lawFriendlyName = split(lawResourceId,'/')[8]
 
-resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'AMP-${instanceName}-FileColl-${packtag}-${OS}'
   location: location
   tags: {

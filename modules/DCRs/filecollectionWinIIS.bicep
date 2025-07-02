@@ -16,7 +16,7 @@ param counterSpecifiers array = []
 
 var lawFriendlyName = split(workspaceResourceId,'/')[8]
 
-resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource fileCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: ruleName
   location: location
   tags: Tags

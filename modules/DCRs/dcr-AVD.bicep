@@ -20,7 +20,7 @@ param dceId string
 // =========== //
 // Deployments //
 // =========== //
-resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: rulename
   location: location
   tags: {
