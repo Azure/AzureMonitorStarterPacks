@@ -2,9 +2,10 @@
 
 Monitoring Starter Packs (MonStar Packs)
 
-## Update!!!
+## Updates !!!
+<span style="color: yellow">There was a breaking change in the way workbooks work and what endpoints are allowed. At this moment, the workbook has limited functionality and I will be working on a fix during August/September.<span>
 
-<span style="color: yellow">This version of the Monitoring packs is being deprecated soon. Please stay tuned during July 2025 for a new version.<span>
+<span style="color: yellow">This version of the Monitoring packs is being deprecated soon. Please stay tuned during August 2025 for a new version.<span>
 
 ## Objectives
 
