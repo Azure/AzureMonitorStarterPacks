@@ -238,20 +238,6 @@
                   "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
                 },
                 {
-                  "id": "c9fbafc9-2806-4c24-8d34-18f7cae66299",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "configKey",
-                  "label": "Config Function Key",
-                  "type": 1,
-                  "description": "The function key is fetched automatically from the function selected on the left.",
-                  "isRequired": true,
-                  "isGlobal": true,
-                  "typeSettings": {
-                    "isPassword": true
-                  },
-                  "value": ""
-                },
-                {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
                   "version": "KqlParameterItem/1.0",
                   "name": "Workspace",
