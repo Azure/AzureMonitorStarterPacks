@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16346304993828270408"
+      "templateHash": "9589272326662675929"
     }
   },
   "parameters": {
@@ -2662,7 +2662,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5336139417471598599"
+              "templateHash": "11606571610325188739"
             }
           },
           "parameters": {
@@ -3992,7 +3992,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12322856223666089335"
+                      "templateHash": "10437312231622276309"
                     }
                   },
                   "parameters": {
@@ -4372,23 +4372,6 @@
                                       "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id",
                                       "queryType": 1,
                                       "resourceType": "microsoft.resourcegraph/resources"
-                                    },
-                                    {
-                                      "id": "28744950-d02c-4216-90eb-c4cda7d3fe2c",
-                                      "version": "KqlParameterItem/1.0",
-                                      "name": "AvailIaaSPacksParam",
-                                      "type": 1,
-                                      "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"\",\"value\":\"\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":null}",
-                                      "queryType": 10,
-                                      "value": null
-                                    },
-                                    {
-                                      "id": "1bcfe6fb-a77a-4f2d-8f3d-6a44fe5aae05",
-                                      "version": "KqlParameterItem/1.0",
-                                      "name": "AvailSupportedServices",
-                                      "type": 1,
-                                      "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":null}",
-                                      "queryType": 10
                                     }
                                   ],
                                   "style": "above",
@@ -4428,6 +4411,9 @@
                                   "title": "Monitoring Packs resources and Components",
                                   "queryType": 1,
                                   "resourceType": "microsoft.resources/tenants",
+                                  "crossComponentResources": [
+                                    "value::tenant"
+                                  ],
                                   "gridSettings": {
                                     "filter": true
                                   }
@@ -4456,9 +4442,13 @@
                           "type": 3,
                           "content": {
                             "version": "KqlItem/1.0",
-                            "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+                            "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by nameSpace\r\n| project nameSpace",
                             "size": 0,
-                            "queryType": 10
+                            "queryType": 0,
+                            "resourceType": "microsoft.operationalinsights/workspaces",
+                            "crossComponentResources": [
+                              "{Workspace}"
+                            ]
                           },
                           "conditionalVisibility": {
                             "parameterName": "showHidden",
@@ -5316,7 +5306,7 @@
                                             "multiSelect": true,
                                             "quote": "",
                                             "delimiter": ",",
-                                            "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by packlist\r\n| parse packlist with '[' packs ']'\r\n| extend packs=replace_string(packs,\"\\\"\",\"\")\r\n| mv-expand todynamic(split(packs,','))\r\n| project packs",
+                                            "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by Tag\r\n| project Tag\r\n| where isnotempty(Tag)",
                                             "crossComponentResources": [
                                               "{Workspace}"
                                             ],
@@ -5530,7 +5520,7 @@
                                             "multiSelect": true,
                                             "quote": "",
                                             "delimiter": ",",
-                                            "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by packlist\r\n| parse packlist with '[' packs ']'\r\n| extend packs=replace_string(packs,\"\\\"\",\"\")\r\n| mv-expand todynamic(split(packs,','))\r\n| project packs",
+                                            "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by Tag\r\n| project Tag\r\n| where isnotempty(Tag)",
                                             "crossComponentResources": [
                                               "{Workspace}"
                                             ],
@@ -5695,7 +5685,7 @@
                                             "queryType": 1,
                                             "resourceType": "microsoft.resources/tenants",
                                             "value": [
-                                              "microsoft.storage/storageaccounts"
+                                              "value::all"
                                             ]
                                           }
                                         ],
@@ -5843,7 +5833,7 @@
                                             "multiSelect": true,
                                             "quote": "'",
                                             "delimiter": ",",
-                                            "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by nameSpace\r\n| project nameSpace",
+                                            "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by namespace\r\n| project namespace",
                                             "crossComponentResources": [
                                               "{Workspace}"
                                             ],
@@ -6069,7 +6059,7 @@
                                       },
                                       "queryType": 1,
                                       "resourceType": "microsoft.resources/tenants",
-                                      "value": "microsoft.network/publicipaddresses"
+                                      "value": null
                                     }
                                   ],
                                   "style": "pills",
@@ -7429,10 +7419,14 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getIaaSPacksDetails\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Name\",\"columnid\":\"Name\"},{\"path\":\"$.Tag\",\"columnid\":\"Tag\"},{\"path\":\"$.NumberOfRules\",\"columnid\":\"Rules\"},{\"path\":\"$.NumberOfAlerts\",\"columnid\":\"Alerts\"},{\"path\":\"$.AlertNames\",\"columnid\":\"AlertDetails\"}]}}]}",
+                                  "query": "AvailableIaaSPacks_CL\r\n| where isnotempty(Name)\r\n| summarize arg_max(TimeGenerated,*) by Name, Tag, NumberofRules,NumberofAlerts,AlertNames\r\n| project Name,Tag, NumberofRules, NumberofAlerts, AlertNames\r\n",
                                   "size": 0,
                                   "title": "IaaS Packs Details",
-                                  "queryType": 10,
+                                  "queryType": 0,
+                                  "resourceType": "microsoft.operationalinsights/workspaces",
+                                  "crossComponentResources": [
+                                    "{Workspace}"
+                                  ],
                                   "visualization": "table",
                                   "gridSettings": {
                                     "formatters": [
@@ -7478,11 +7472,15 @@
                                 "type": 3,
                                 "content": {
                                   "version": "KqlItem/1.0",
-                                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getServicesPacksDetails\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.namespace\",\"columnid\":\"NameSpace\"},{\"path\":\"$.NumberOfMetrics\",\"columnid\":\"NumberOfMetrics\"},{\"path\":\"$.Details\",\"columnid\":\"Details\"}]}}]}",
+                                  "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by category, namespace, service,metricnamespace,tag,NumberOfMetrics,Details\r\n| project category, namespace, service,metricnamespace,tag,NumberOfMetrics,Details",
                                   "size": 0,
                                   "title": "Services Packs Details",
                                   "showExportToExcel": true,
-                                  "queryType": 10,
+                                  "queryType": 0,
+                                  "resourceType": "microsoft.operationalinsights/workspaces",
+                                  "crossComponentResources": [
+                                    "{Workspace}"
+                                  ],
                                   "visualization": "table",
                                   "gridSettings": {
                                     "formatters": [
@@ -9034,7 +9032,7 @@
                                       },
                                       "queryType": 0,
                                       "resourceType": "microsoft.insights/components",
-                                      "value": "config"
+                                      "value": "opstasks"
                                     }
                                   ],
                                   "style": "pills",
@@ -10488,7 +10486,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8560027461270778218"
+                      "templateHash": "11662936142592217481"
                     }
                   },
                   "parameters": {
@@ -10506,7 +10504,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "UEsDBBQAAAAIADx0/lqti4JwuwoAACsLAAAIAAAAQUREUy56aXB1lldQk4sWRn+kKE1BCEWKIEWaURGkgyBNQhPphN4lhBZKKIomQqgBFBAIohSxEJBQJAlNweBRigQ0EJrU0JFyRCXAnXPnzpzRmfs97tl7v3wza5YthJVNEACAY4BjvIGr/rsy2BQbAHgeBwBeAAC8/XzDYDB/XwQ4POpin5N32Nhlvn3wlcPpzlMvm1wttB93fjW84qAMT6fX81eJpZMURDZVovLN7+gSI+gHu3fy1mSt0pvG0ufvP5/dnJydkEHeAqBzJJWL1c+asUkbLDh8JXuJmIsArFpFNrjY8J6fH/yOMsvpTNnGK8o1yWrhzh9OkudHsg2bG24Ks7LjwnDseR8pUpZNeZW8346AmqTxYjntWhsJ4EWcmIf0kzugAvVjqz+u4RPrAk9Fyytnclfahhsd66Hb45KDFxJO/NJJ4Mtt9qtU+gVrGIW9XVITPJKNTXVQbyxgP/7SKbrFDgRx51K7+DE1w6Dy5C9UaNE5KBj6Ve+bE//TG9LZWHcvIvrWijyncgv7kenci3RZ4thJP4KxyXxAJejaZy++TrNvegDQzHpPunfSbBaufp43sp6lNadABWXzWIxrTKmSuhCfFVCegQEfe1tZe51zao+nPbXK5EecztZ7qbPPuUYI5L7XeKeoyaRRzBsNb23ccltOrMlO20A7DUINViakgaHPHsr5hGEiyTHIVIY5vlkqLDOi3OWU8Sv1Af7Gm4Hoxg1DEaLpY9BZ5yU7REieoIU7bJ5esuijAtF9NyMHl+KIYUaqSoAJtNHRQcTF5Rmytoh7gHkGT5/rQpDw2cDg5pGPVPDDjb9XcUM3yzNaDsUVEw2d+7JqBz9xGGmwe3beO9tq5KV49lb/uXWkyzMtvDNfUvSH3fgQd4umYfwyjQRTQl+IFnskRUQRArcXvuEh9OAKc0fNZHDZ8XigYzsSCGx91U6T8Rj5objdhoW5mzAJ6UoJtkumg9xvUmpoU4amoR4fheRFCG/Ud5vAl5BpGhOlci3TjjHB4WylK9mKe6sJq8831qo0zamhFHppFbV9AJrP0GojKHC0HZSkDy2vhQchKrqt3t+oabG3Ax3V6DUw0NcVZ55kQ8V0rdf0nuKS4Hjl9gKaqGjeLHAJbaZEeyuRl1LQEUMb7gA9HclPiC0izBaa1U1ZBVT4bcGLM7M9ceL7rKFPXY4kyBFLCXvlTLdu3MKGz17SzY5qV+sGWauypkaGVhbvzL7Tq/zCY/GjdEFOMc5ru8tbzABOLSo4aSJqDai1FzAWsGfHH5yuSsKiZbNe74msxu50oS/8DOap9Y4YQOl/LpZK0YA6/yywovrp62pecL3/KvTWuaIdWUjTEGycaHaksFVxCe1kB7LmjDNsp5WItRWsD2LvyD23ahhdZdr0/nVvsMICN30P5SNK6uenW2Czar9OC8UgTto0Vhmn1etcRol9PeEy9n4p15GLnK2UIsDki5HiWyBRJ3LkllSShNyRMTzfywazg1sZzHtdNaafA2sj3MiUHi9rOsyLsRZvwPB0qPX95XYKP1ZwVWdyFGo6kwSv1UF8csrE0Q66duOrH4bImFrnRhzeHB1kX+D1NjhWHiIZOrP+AJFnTXGPd0vzgOxOaEz46eocNmRptVhPH70GsviIv0dfFJ84X1y1x/14nEw2ZbXp9KnNDzfqX5HX32mruvxp4xrmxG3UI/Qr2bgZU6wkO7lghKifHubxaW1NbWoG8Wza3Cn6apBrqek3Tu2JFLLRafdhaNp+9OXiDq67x6Vl4Aq9Ft2n3tZUHMOSHR+qbVJzo9WOP4I2JLaZnnvSCm/Hm+J3gw5uvsIyPQsZ521/I6EI16I8lRUAMo8DgNB/SegX9T8WBofBEd5RIeC4UFhpoXsY3YIvpWzFgmHgPI76aW5tw5+a/qDZ0CKh3ChfDD7+lU/ZSwZmRD09Jdm36sM0kSYarfb3t26v61xameqIb2WkyXGLS266CAjw8W+dV3dVC7LrenN2rgAjyiIdNbHfj7YZDt7UUJ8cYpyf/OR716y3yxAb+ndQeUo36ZaN0dt0MBh88fX4bIO9DW8B2zhB/oz8TDY6pdxlhuBgfOlMc3dLYzB1jqdQPhSqV/I1z9lePWPozZMejcQFtm7Zmk1zlS/80rHGom6+BvZiZe2U4KFBptvw31NoIStSo2YFJDVWTZNWKi/RvzgdoDund2IkJ9ymu7jddcFp68vUTwpG/wYHT4SIKmWalZ9b6Mf40yLNpSTMwARRj3WdWzOH7C5wIRAe1owJMeo82eFV+Jp+qeMtLYiM8dfxVTZHN6hj41QWo/rQUe0KB1vwpsKLnPzKHLI8o3OR+89OLUdVS/ok/p34IS0yYD2NKGosGXISjBl5ZvbzELe8Ypnvv/P5elJbxcvi5Rf9sQonkIo9guOSBvZydz3XE323z63Pb3zRiydTFnKM4qErjxB5yfn+JJEq2CzfhSFwLh4DkwhcMVqH95lvYpu0V3ArGwbNRwhCDiRBjrpvTQlpxWD100tmdtKsDi6dZ/w/jMdt2ueSIz2Qkwe9WUEmOw9GDtwW1rjFhEgddvZ2oLu0G2V3913JKITddQpG64nq0jaoDF8e97zQJ/YB+MyIMB27+0E8ouc2GhrEXnSTd9jT407ddo5Z/UtXrc2i96oxFjuFpSrfNyQWICa6vuVfVG+/bWQEVpTGlONKpmdNQaKOi/UvMiQM7mN9d1SKzsc56hvLcLo59HZxXveclcYaKtl/OaxhMkshrRNE99Ra0rQSeVkUVL3qP/CgQQ/msspWPZ/vMKzJQAZ5ms6vWuvkYrd+IaWSIiiWIIc5mY5YS7dUFz1Y0S4S1YOyfvr+kdKvFwQF1c3K89VW2g2x2+sWt/0LSgp73OhQ1xRrrRvq05Vcfk6kxbFetve1gYwu7yaM3feNtpF21r6SxbS5xbnxQA8H1pmQousDR0mWxL/aSNWZSMf9jH7tRoiQqnozfYJCRxlX35BcE6Y8cCCdrt7jfRcGr8OUZ0Z1FmuJzXtECqcsJ8rZecy/NIzPwvo61WEeClQd9iXQEHEDW4oN0O8fX+NK7x4X1l3pzc7f1y6jOjdZtHMwh2mVYVMbVymWmw+XnPoO2Ke8TCwzivHrkSn+knDYbXXtXKRSRHdJTcYLaxO/FwsPX/vEKof85TWghNitUqgz2Q6lMm7/TgH+E7gnsiwAUMICANwAAATDoxDeMNg/NmSSU2/ddYEvZdccmXp/6crRo/WOPpjiGKNk81wRgvN3db139TJ7VPlzuqKs2G7lxwXA9u2p6sOOOuzAKN0NNW29aBItFciUXujR98oXNlGkopvDk9xlID4wbxIHketNKvQS8qicCwLWUxVrWdvzU9w6Rx4AfITiXz8R8mbBWl0e/MBhH8AmrhAp+I2jPZAol2FrO3wLOz1JEz3Bo7qhjZC3mhxiCzXW3MeMUWx/4KOu1TlercblIj/p0GX88ougo7kktcF2MUPRNbxJn4tw2OFmYI2iKofLskTxZPnos5HkxNBzUErIhojE1ZiKzLT7qFZfUAksaE1NOlLKacDw0ebRz2cwrcnl6PnTLAzzZOjeY/45SDcwLzIw0GZrkx4rpbTJawthOSII/H+9/D2/yeafp3/y+N9wsf8/Ov/54882/w0f52/d2kLYOf4ZswKsQAsAAO5c/2z9B1BLAQIUABQAAAAIADx0/lqti4JwuwoAACsLAAAIAAAAAAAAAAAAAAAAAAAAAABBRERTLnppcFBLBQYAAAAAAQABADYAAADhCgAAAAA=",
+                    "$fxv#0": "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",
                     "tempfilename": "download"
                   },
                   "resources": [

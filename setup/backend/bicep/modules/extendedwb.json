@@ -363,23 +363,6 @@
                   "query": "resources\n| where type == \"microsoft.insights/components\"\n| where name == \"{FunctionApps:name}\"\n| project id",
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources"
-                },
-                {
-                  "id": "28744950-d02c-4216-90eb-c4cda7d3fe2c",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AvailIaaSPacksParam",
-                  "type": 1,
-                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"\",\"value\":\"\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":null}",
-                  "queryType": 10,
-                  "value": null
-                },
-                {
-                  "id": "1bcfe6fb-a77a-4f2d-8f3d-6a44fe5aae05",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AvailSupportedServices",
-                  "type": 1,
-                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":null}",
-                  "queryType": 10
                 }
               ],
               "style": "above",
@@ -419,6 +402,9 @@
               "title": "Monitoring Packs resources and Components",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
+              "crossComponentResources": [
+                "value::tenant"
+              ],
               "gridSettings": {
                 "filter": true
               }
@@ -447,9 +433,13 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
+        "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by nameSpace\r\n| project nameSpace",
         "size": 0,
-        "queryType": 10
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workspace}"
+        ]
       },
       "conditionalVisibility": {
         "parameterName": "showHidden",
@@ -1307,7 +1297,7 @@
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by packlist\r\n| parse packlist with '[' packs ']'\r\n| extend packs=replace_string(packs,\"\\\"\",\"\")\r\n| mv-expand todynamic(split(packs,','))\r\n| project packs",
+                        "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by Tag\r\n| project Tag\r\n| where isnotempty(Tag)",
                         "crossComponentResources": [
                           "{Workspace}"
                         ],
@@ -1521,7 +1511,7 @@
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by packlist\r\n| parse packlist with '[' packs ']'\r\n| extend packs=replace_string(packs,\"\\\"\",\"\")\r\n| mv-expand todynamic(split(packs,','))\r\n| project packs",
+                        "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by Tag\r\n| project Tag\r\n| where isnotempty(Tag)",
                         "crossComponentResources": [
                           "{Workspace}"
                         ],
@@ -1686,7 +1676,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "microsoft.storage/storageaccounts"
+                          "value::all"
                         ]
                       }
                     ],
@@ -1834,7 +1824,7 @@
                         "multiSelect": true,
                         "quote": "'",
                         "delimiter": ",",
-                        "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by nameSpace\r\n| project nameSpace",
+                        "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by namespace\r\n| project namespace",
                         "crossComponentResources": [
                           "{Workspace}"
                         ],
@@ -2060,7 +2050,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "microsoft.network/publicipaddresses"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -3420,10 +3410,14 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getIaaSPacksDetails\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Name\",\"columnid\":\"Name\"},{\"path\":\"$.Tag\",\"columnid\":\"Tag\"},{\"path\":\"$.NumberOfRules\",\"columnid\":\"Rules\"},{\"path\":\"$.NumberOfAlerts\",\"columnid\":\"Alerts\"},{\"path\":\"$.AlertNames\",\"columnid\":\"AlertDetails\"}]}}]}",
+              "query": "AvailableIaaSPacks_CL\r\n| where isnotempty(Name)\r\n| summarize arg_max(TimeGenerated,*) by Name, Tag, NumberofRules,NumberofAlerts,AlertNames\r\n| project Name,Tag, NumberofRules, NumberofAlerts, AlertNames\r\n",
               "size": 0,
               "title": "IaaS Packs Details",
-              "queryType": 10,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
               "visualization": "table",
               "gridSettings": {
                 "formatters": [
@@ -3469,11 +3463,15 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getServicesPacksDetails\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.namespace\",\"columnid\":\"NameSpace\"},{\"path\":\"$.NumberOfMetrics\",\"columnid\":\"NumberOfMetrics\"},{\"path\":\"$.Details\",\"columnid\":\"Details\"}]}}]}",
+              "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by category, namespace, service,metricnamespace,tag,NumberOfMetrics,Details\r\n| project category, namespace, service,metricnamespace,tag,NumberOfMetrics,Details",
               "size": 0,
               "title": "Services Packs Details",
               "showExportToExcel": true,
-              "queryType": 10,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
               "visualization": "table",
               "gridSettings": {
                 "formatters": [
@@ -5025,7 +5023,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.insights/components",
-                  "value": "config"
+                  "value": "opstasks"
                 }
               ],
               "style": "pills",
