@@ -433,7 +433,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by nameSpace\r\n| project nameSpace",
+        "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by namespace\r\n| project namespace",
         "size": 0,
         "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces",
@@ -916,50 +916,6 @@
               "value": "iaas"
             },
             "name": "groupDashboardIaaS"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices&Type=PaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
-              "size": 0,
-              "queryType": 10
-            },
-            "conditionalVisibilities": [
-              {
-                "parameterName": "dashTab",
-                "comparison": "isEqualTo",
-                "value": "paas"
-              },
-              {
-                "parameterName": "showHidden",
-                "comparison": "isEqualTo",
-                "value": "yes"
-              }
-            ],
-            "name": "queryServiceTags"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getSupportedServices&Type=Platform\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"\",\"value\":\"\"}],\"transformers\":null}",
-              "size": 0,
-              "queryType": 10
-            },
-            "conditionalVisibilities": [
-              {
-                "parameterName": "dashTab",
-                "comparison": "isEqualTo",
-                "value": "paas"
-              },
-              {
-                "parameterName": "showHidden",
-                "comparison": "isEqualTo",
-                "value": "yes"
-              }
-            ],
-            "name": "queryServiceTags - Platform"
           },
           {
             "type": 3,
@@ -5097,54 +5053,6 @@
         "value": "logs"
       },
       "name": "groupLogs"
-    },
-    {
-      "type": 3,
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
-        "size": 0,
-        "exportedParameters": [
-          {
-            "parameterName": "vmsDiscoveryTag",
-            "parameterType": 1
-          },
-          {
-            "fieldName": "tag",
-            "parameterName": "vmsDiscoveryTagValue",
-            "parameterType": 1
-          }
-        ],
-        "queryType": 10,
-        "gridSettings": {
-          "formatters": [
-            {
-              "columnMatch": "tag",
-              "formatter": 1,
-              "formatOptions": {
-                "linkTarget": "ArmAction",
-                "linkIsContextBlade": true,
-                "armActionContext": {
-                  "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                  "headers": [],
-                  "params": [],
-                  "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
-                  "httpMethod": "POST",
-                  "title": "Enable Monitoring",
-                  "description": "# Adding Tag(s) To VMs\n\n\"Resources\": {vmsDiscoveryTag:$.Computer}\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
-                  "runLabel": "Enable"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "conditionalVisibility": {
-        "parameterName": "discTab",
-        "comparison": "isEqualTo",
-        "value": "discResults"
-      },
-      "name": "query - discovery Results"
     }
   ],
   "fallbackResourceIds": [
