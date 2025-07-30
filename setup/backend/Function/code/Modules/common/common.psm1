@@ -1136,6 +1136,202 @@ function new-PaaSAlert {
     New-Tag -ResourceId $resourceId -TagName $tagName -TagValue $packTag -instanceName $instanceName
 
 }
+function get-nonMonitoredPaaSServices {
+#     if ($Request.Query.resourceFilter) {
+#         $resourceFilter = @"
+#         | where tolower(type) in ($($Request.Query.resourceFilter))
+# "@        
+#     }
+    $ambaURL=$env:AMBAJsonURL
+    Write-host "Fetching AMBA Catalog from $ambaURL"
+    if ($null -eq $ambaURL) {
+    $body = "Error fetching AMBA URL, stopping function"
+    Write-Host "Error fetching AMBA URL, stopping function"
+    return $body
+    # Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    #     StatusCode = [HttpStatusCode]::BadRequest
+    #     Body       = $body
+    #     })
+    }
+    Write-host "About to try and call get-AmbaCatalog..."
+    $ambaCatalog=get-AmbaCatalog -ambaJsonURL $ambaURL | ConvertFrom-Json -Depth 10
+    Write-host "After AmbaCatalog"
+    if ($ambaCatalog) {
+        $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | Where-Object {$_ -ne 'N/A'}
+        #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+        $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
+        # use a kql azure resource graph query to find all the namespaces with alerts
+        $PassQuery="resources | where isempty(tags.MonitorStarterPacks)
+        | where type in~ ($nameSpacesWithAlerts)
+        | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+        | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']"
+        $resourcesThatHavealertsAvailable= (Search-AzGraph $PassQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+        if ($resourcesThatHavealertsAvailable.Count -gt 0) {
+            $body="{""Non-Monitored Resources"" : $resourcesThatHavealertsAvailable }"
+        }
+        else { 
+            $body = '{}'
+        }
+    }
+    else {
+        $body="{}"
+    }
+    return $body
+}
+function get-monitoredPaaSServices {
+#     if ($Request.Query.resourceFilter) {
+#       $resourceFilter = @"
+#       | where tolower(type) in ($($Request.Query.resourceFilter))
+# "@        
+#     }
+    $ambaURL=$env:AMBAJsonURL
+    $instanceName=$env:InstanceName
+    Write-Host "Fetching AMBA Catalog from $ambaURL"
+    if ($null -eq $ambaURL) {
+      Write-Host "Error fetching AMBA URL, stopping function"
+      $body = "Error fetching AMBA URL, stopping function"
+    #   Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    #       StatusCode = [HttpStatusCode]::BadRequest
+    #       Body       = $body
+    #       })
+    }
+    $ambaCatalog=get-AmbaCatalog | ConvertFrom-Json -Depth 10
+    if ($ambaCatalog) {
+      Write-host "Found $($ambaCatalog.categories.count) categories in AMBA catalog."
+      $nameSpacesWithAlerts=($ambaCatalog.Categories).namespace | Where-Object {$_ -ne 'N/A'}
+      Write-host "Found $(($nameSpacesWithAlerts).count) namespaces with alerts."
+      #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
+      $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
+      # use a kql azure resource graph query to find all the namespaces with alerts
+#       $PaaSQuery=@"
+# resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
+# | where type in~ ($nameSpacesWithAlerts)
+# | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
+# | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+# | join (resources
+#     | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+#     | where isnotempty(tags.MonitorStarterPacks)
+#     | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
+# $resourceFilter
+# | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind  
+# "@
+$PaaSQuery=@"
+resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
+| where type in~ ($nameSpacesWithAlerts) 
+| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',"microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts",'microsoft.insights/datacollectionrules'))
+| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
+| join kind=fullouter    (resources
+    | where tolower(type) in ("microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
+    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
+    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource
+| summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind, location
+"@
+      Write-host "PaasQuery to be used: $PaaSQuery"
+      $resourcesThatHavealertsAvailable= (Search-AzGraph $PaaSQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
+      if ($resourcesThatHavealertsAvailable.Count -gt 0) {
+          $body="{""Monitored Resources"" : $resourcesThatHavealertsAvailable }" 
+      }
+      else {
+        Write-host :"Found no resources..."
+        $body = '{}'
+      }
+    }
+    else {
+        Write-host "Error fetching catalog, stopping function."
+        $body = "{}"
+    }
+    return $body
+}
+function write-lawdata {
+     param (
+        [Parameter(Mandatory = $true)]
+        [string]$instanceName,
+        [Parameter(Mandatory = $true)]
+        [object]$data,
+        [Parameter(Mandatory = $true)]
+        [string]$DcrImmutableId,
+        [Parameter(Mandatory = $true)]
+        [string]$tableName,
+        [Parameter(Mandatory = $false)]
+        [switch]$localtest,
+        [Parameter(Mandatory = $false)]
+        [string]$appId,
+        [Parameter(Mandatory = $false)]
+        [string]$appSecret
+    )
+    #$dceId="https://amp-mcp1-dce-canadacentral-6f18.canadacentral-1.ingest.monitor.azure.com"
+    # get DCE URL from the DCE Id, using a tag.
+    $streamname='Custom-' + $tableName
+    $DCE=Get-AzDataCollectionEndpoint | Where-Object {$_.Tag['instanceName'] -eq $instanceName}
+    $tenantId=(Get-AzContext).Tenant.Id
+    #$timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    if ($null -eq $DCE) {
+        Write-Error "No DCE found for instance name $instanceName"
+        return $null
+    }
+    else {
+        Write-host "Found DCE $($DCE.Name) with id $($DCE.Id)"
+        $dceurl=$DCE.LogIngestionEndpoint
+        Write-host "DCE URL: $dceurl"
+    }
+    if ($localtest) {
+        Write-host "Running in local test mode. Using appId and appSecret to get bearer token."
+        Add-Type -AssemblyName System.Web
+        $scope = [System.Web.HttpUtility]::UrlEncode("https://monitor.azure.com//.default")   
+        $body = "client_id=$appId&scope=$scope&client_secret=$appSecret&grant_type=client_credentials";
+        $headers = @{"Content-Type" = "application/x-www-form-urlencoded" };
+        $uri = "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token"
+        $bearerToken = (Invoke-RestMethod -Uri $uri -Method "Post" -Body $body -Headers $headers).access_token
+    }
+    else {
+        $scope="https://monitor.azure.com"
+        $bearerToken = (Get-AzAccessToken -ResourceUrl $scope -TenantId $tenantId ).Token
+        #$bearerToken
+    }
+    $bearerToken
+    # When using a managed identity, use the following line to get the token:
+    # $scope = [System.Web.HttpUtility]::UrlEncode("https://monitor.azure.com//.default")   
+    # if data is a hashtable, convert it to an array of objects
+    if ($data.count -eq 1) {
+        $body = "[$($data | ConvertTo-Json -Depth 10)]"
+    }
+    else {
+        $body = $data | ConvertTo-Json 
+    }
+    
+    $body
+    if ([string]::IsNullOrEmpty($streamname)) {
+        $streamname=("Custom-$tableName") #.Replace("_CL","")
+        Write-host "No stream name provided, using default stream name. $streamname"
+    }
+    else {
+        Write-host "Using stream name $streamname"
+    }
+    #$headers = @{"Authorization" = "Bearer $bearerToken"; "Content-Type" = "application/json" };
+    # The stream name is what counts here and needs to match the stream name in the DCR.
+    $uri = "$dceurl/dataCollectionRules/$DcrImmutableId/streams/$streamname"+"?api-version=2023-01-01";
+    Write-host "Sending data to DCR at $uri"
+    try {
+        #$uploadResponse = Invoke-RestMethod -Uri $uri -Method "Post" -Body $body -Headers $headers;
+        $uploadResponse=Invoke-RestMethod -Method Post -Uri $uri -Headers @{"Authorization"="Bearer $bearerToken"} -Body $body -ContentType "application/json"   
+        Write-host "Data sent to DCR successfully."
+        Write-host "Response: $($uploadResponse | ConvertTo-Json -Depth 10)"
+    }
+    catch {
+        Write-Error "Error sending data to DCR: $_"
+        return $null
+    }
+}
+
+function new-availableiaaspacksdata {
+    $results=@()
+    $result = @{} # Initialize as a hashtable
+    $result['TimeGenerated'] = $timestamp                    
+    $result['packlist']=get-availableIaaSPacks -packContentURL $env:packsUrl
+    $results += $result
+    write-lawdata -instanceName $env:instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName AvailableIaaSPacks_CL #-localtest -appId $appid -appSecret $secretId
+}
+
 function get-AmbaCatalog {
     Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from storage account."
     $ambaJSONContent=get-AMBAJsonContent #-ambaJsonURL $ambaJsonURL
@@ -1290,7 +1486,7 @@ function new-pack {
         }
     }
     # Verify you can now access the 'bicep' command.
-    $packs | foreach { # should be only one pack, but just in case.
+    $packs | ForEach-Object { # should be only one pack, but just in case.
         $pack = $_
         $packName = $pack.Name
         $packTag = $pack.Tag
@@ -1306,7 +1502,7 @@ function new-pack {
         # Create the required DCRs based on configuration
 
         Write-host "Pack $($packName) has $($pack.Rules.Count) rules."
-        $newPack = $false
+        #$newPack = $false
         foreach ($rule in $pack.Rules) {
             $ruleName = "AMP-$instanceName-$packtag-$($rule.RuleName)"
             $ruleTag = $packTag
@@ -1570,7 +1766,7 @@ function create-vmapplication {
                                             -Permission r `
                                             -ExpiryTime (Get-Date).AddHours(1) `
                                             -FullUri
-        if ($sasToken -eq $null) {
+        if ($null -eq $sasToken) {
             Write-Error "Failed to get SAS token for the application package."
             return $false
         }
@@ -1707,7 +1903,7 @@ function update-blobcontentinURL {
     # I am authorized already to access storage
     Write-host "Storage Account Name: $storageAccountName"
     $context = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
-    if ($context -eq $null) {
+    if ($null -eq $context) {
         Write-host "Context is null. Exiting."
         return $false
     }
@@ -1716,6 +1912,88 @@ function update-blobcontentinURL {
     #get the blob content
     Write-host "Updating blob content in $url. Container: $containerName, Blob: $blobName"
     Set-AzStorageBlobContent -Container $containerName -Blob $blobName -Context $context -File "$($env:temp)/$blobName" -Force 
+}
+function start-opstasks {
+    $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $instanceName=$env:InstanceName
+    if ($instanceName) {
+    # Check for new packs available
+        $results=@()
+        $packdetails=get-IaaSPacksContent -packContentURL $env:packsUrl | convertfrom-json
+        foreach ($pack in $packdetails) {
+            Write-Host "Writing pack $($pack.Name) to LAW with tag $($pack.Tag)"
+            $result = @{} # Initialize as a hashtableq
+            $result['TimeGenerated'] = $timestamp
+            $result['Name'] = $pack.Name
+            $result['Tag'] = $pack.Tag
+            $result['NumberofRules'] = $pack.NumberofRules
+            $result['NumberofAlerts'] = $pack.NumberofAlerts
+            $result['AlertNames'] = $pack.AlertNames
+            $results += $result
+        }
+        Write-host "Writing available IaaS Packs to LAW. Number of packs: $($results.Count)"
+        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName AvailableIaaSPacks_CL #-localtest -appId $appid -appSecret $secretId
+
+        # Check for supported Services
+        $results=@()
+        $result = @{} # Initialize as a hashtable
+        $services=(get-AmbaCatalog -ambaJsonURL $ambaURL| ConvertFrom-Json).Categories # | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }}
+        foreach ($svc in $services) {
+            Write-host Adding service $($svc.nameSpace)
+            $result = @{} # Initialize as a hashtable
+            $result['TimeGenerated'] = $timestamp
+            $result['category'] = $svc.category
+            $result['namespace'] = $svc.namespace
+            $result['service'] = $svc.service
+            $result['metricnamespace'] = $svc.metricnamespace
+            $result['tag'] = $svc.tag
+            $result['NumberOfMetrics'] = $svc.NumberOfMetrics
+            $result['Details'] = $svc.Details
+            $results += $result
+        }
+        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName SupportedServices_CL #-localtest -appId $appid -appSecret $secretId
+        # check for monitored services
+        $results=@()
+        $monitoredServices=(get-monitoredPaaSServices | convertfrom-json -depth 10).'Monitored Resources'
+        foreach ($svc in $monitoredServices) {
+            #Write-host Adding monitored service $($svc.Resource)
+            $result = @{} # Initialize as a hashtable
+            $result['TimeGenerated'] = $timestamp
+            $result['Resource'] = $svc.Resource
+            $result['resourcetype'] = $svc.Type
+            $result['resourceGroup'] = $svc.resourceGroup
+            $result['resourcekind'] = $svc.kind
+            $result['location']= $svc.location
+            if ($null -ne $svc.AlertCount) {
+                $result['AlertCount'] = [int]$svc.AlertCount
+            } else {
+                $result['AlertCount'] = 0
+            }
+            $results += $result
+        }
+        #write data to LAW
+        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName MonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
+        # check for unmonitored services
+        $results=@()
+        $nonMonitoredServices=(get-nonMonitoredPaaSServices | convertfrom-json).'Non-Monitored Resources'
+        foreach ($svc in $nonMonitoredServices) {  
+            # Write-host Adding non-monitored service $($svc.Resource)
+            $result = @{} # Initialize as a hashtable
+            $result['TimeGenerated'] = $timestamp
+            $result['Resource'] = $svc.Resource
+            $result['resourcetype'] = $svc.Type
+            $result['resourceGroup'] = $svc.resourceGroup
+            $result['resourcekind'] = $svc.kind
+            $result['location']= $svc.location
+            $results += $result
+        }
+        #write data to LAW
+        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName NonMonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
+    }
+    else {
+        Write-Host "No instance name provided."
+    }
+
 }
 function get-availableIaaSPacks {
     param (

@@ -62,7 +62,14 @@ module gallery './modules/aig.bicep' ={
     tags: Tags
   }
 }
-
+module opstablesandDCR './modules/opstables.bicep' = {
+  name: 'opstables-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    dceId: dataCollectionEndpoint.outputs.dceId
+    workspaceResourceId: lawresourceid
+  }
+}
 // Module below implements function, storage account, and app insights
 module backendFunction './modules/function.bicep' = {
   name: functionname

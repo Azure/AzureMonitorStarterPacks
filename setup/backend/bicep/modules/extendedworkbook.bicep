@@ -4,7 +4,7 @@ param lawresourceid string
 
 var wbConfig=string(loadJsonContent('./extendedwb.json'))
 
-resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
+resource workbook 'Microsoft.Insights/workbooks@2023-06-01' = {
   location: location
   tags: Tags
   kind: 'shared'

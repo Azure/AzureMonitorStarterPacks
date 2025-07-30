@@ -100,6 +100,7 @@ else {
                     -workspaceResourceId $workspaceResourceId `
                     -location $resource.Location
                 }
+                start-opstasks
               }
               'Discovery' {
                 $TagValue = $resource.Pack
@@ -137,6 +138,7 @@ else {
                         -instanceName $instanceName `
                         -location $resource.location `
                         -workspaceResourceId $workspaceResourceId
+                start-opstasks
               }
               default {
                 Write-host "Invalid PackType: $PackType"
@@ -180,6 +182,7 @@ else {
               }
             }
           }  # End of resource loop           
+          start-opstasks
         }  # End of Remove Tag
         default {
             Write-Host "Invalid Action"

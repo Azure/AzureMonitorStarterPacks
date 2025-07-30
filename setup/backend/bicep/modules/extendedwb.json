@@ -29,7 +29,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "value": "yes"
+            "value": "no"
           },
           {
             "version": "KqlParameterItem/1.0",
@@ -246,11 +246,10 @@
                   "description": "The function key is fetched automatically from the function selected on the left.",
                   "isRequired": true,
                   "isGlobal": true,
-                  "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"POST\",\"path\":\"{FunctionApps}/functions/config/listkeys?api-version=2022-03-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.default\",\"columns\":[]}}]}",
                   "typeSettings": {
                     "isPassword": true
                   },
-                  "queryType": 12
+                  "value": ""
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -339,8 +338,7 @@
                 }
               ],
               "style": "above",
-              "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources"
+              "queryType": 12
             },
             "customWidth": "100",
             "conditionalVisibility": {
@@ -371,8 +369,9 @@
                   "version": "KqlParameterItem/1.0",
                   "name": "AvailIaaSPacksParam",
                   "type": 1,
-                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":null}",
-                  "queryType": 10
+                  "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"\",\"value\":\"\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":null}",
+                  "queryType": 10,
+                  "value": null
                 },
                 {
                   "id": "1bcfe6fb-a77a-4f2d-8f3d-6a44fe5aae05",
@@ -420,9 +419,6 @@
               "title": "Monitoring Packs resources and Components",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
               "gridSettings": {
                 "filter": true
               }
@@ -1297,6 +1293,9 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
                     "parameters": [
                       {
                         "id": "2415a274-9657-4eb6-9179-92c0cdb31728",
@@ -1308,19 +1307,21 @@
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"Action\",\"value\":\"getavailableIaaSPacks\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[]}}]}",
+                        "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by packlist\r\n| parse packlist with '[' packs ']'\r\n| extend packs=replace_string(packs,\"\\\"\",\"\")\r\n| mv-expand todynamic(split(packs,','))\r\n| project packs",
+                        "crossComponentResources": [
+                          "{Workspace}"
+                        ],
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
                         },
-                        "queryType": 10,
-                        "value": [
-                          "ADDS"
-                        ]
+                        "queryType": 0,
+                        "resourceType": "microsoft.operationalinsights/workspaces"
                       }
                     ],
                     "style": "pills",
-                    "queryType": 10
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
                   },
                   "customWidth": "25",
                   "conditionalVisibility": {
@@ -1506,6 +1507,9 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
                     "parameters": [
                       {
                         "id": "8a177eab-edac-41cc-84f9-a5b7de931bea",
@@ -1517,7 +1521,10 @@
                         "multiSelect": true,
                         "quote": "",
                         "delimiter": ",",
-                        "query": "{\"version\":\"1.0.0\",\"content\":\"{AvailIaaSPacksParam}\",\"transformers\":null}",
+                        "query": "AvailableIaaSPacks_CL\r\n| summarize arg_max(TimeGenerated,*) by packlist\r\n| parse packlist with '[' packs ']'\r\n| extend packs=replace_string(packs,\"\\\"\",\"\")\r\n| mv-expand todynamic(split(packs,','))\r\n| project packs",
+                        "crossComponentResources": [
+                          "{Workspace}"
+                        ],
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
@@ -1525,14 +1532,13 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 8,
-                        "value": [
-                          "nginx"
-                        ]
+                        "queryType": 0,
+                        "resourceType": "microsoft.operationalinsights/workspaces"
                       }
                     ],
                     "style": "pills",
-                    "queryType": 8
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
                   },
                   "customWidth": "50",
                   "conditionalVisibility": {
@@ -1590,6 +1596,24 @@
               "value": "discovery"
             },
             "name": "NonTaggedGroup"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"ChangeAnalysis/1.0\",\"changeLevels\":[\"Important\",\"Normal\"]}",
+              "size": 0,
+              "showAnalytics": true,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 13,
+              "resourceType": "microsoft.web/sites",
+              "crossComponentResources": [
+                "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
+              ]
+            },
+            "name": "query - 5"
           }
         ]
       },
@@ -1646,7 +1670,7 @@
                         "multiSelect": true,
                         "quote": "'",
                         "delimiter": ",",
-                        "query": "resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',\"microsoft.insights/scheduledqueryrules\",\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\",'microsoft.insights/datacollectionrules'))\r\n| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']\r\n| join kind=fullouter    (resources\r\n    | where tolower(type) in (\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\")\r\n    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource\r\n| summarize by Type=['type']",
+                        "query": "resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',\"microsoft.insights/scheduledqueryrules\",\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\",'microsoft.insights/datacollectionrules','Microsoft.Compute/galleries/applications/versions','Microsoft.Compute/galleries/applications'))\r\n| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']\r\n| join kind=fullouter    (resources\r\n    | where tolower(type) in (\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\")\r\n    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource\r\n| summarize by Type=['type']",
                         "crossComponentResources": [
                           "value::tenant"
                         ],
@@ -1662,7 +1686,7 @@
                         "queryType": 1,
                         "resourceType": "microsoft.resources/tenants",
                         "value": [
-                          "value::all"
+                          "microsoft.storage/storageaccounts"
                         ]
                       }
                     ],
@@ -1676,7 +1700,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"Type\"},{\"path\":\"$.tag\",\"columnid\":\"tag\"},{\"path\":\"$.AlertCount\",\"columnid\":\"AlertRules\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
+                    "query": "MonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource,resourceGroup, resourcetype, location, resourcekind\r\n| where resourcetype in ({SelectPaasType})\r\n| where isnotempty(location)",
                     "size": 0,
                     "title": "Monitored Services",
                     "showRefreshButton": true,
@@ -1696,7 +1720,11 @@
                     ],
                     "showExportToExcel": true,
                     "exportToExcelOptions": "all",
-                    "queryType": 10,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
                     "gridSettings": {
                       "formatters": [
                         {
@@ -1793,6 +1821,9 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
                     "parameters": [
                       {
                         "id": "f6a88467-77d9-4e0e-912a-3d7b94aab938",
@@ -1803,7 +1834,10 @@
                         "multiSelect": true,
                         "quote": "'",
                         "delimiter": ",",
-                        "query": "{\"version\":\"1.0.0\",\"content\":\"{AvailSupportedServices}\",\"transformers\":null}",
+                        "query": "SupportedServices_CL\r\n| summarize arg_max(TimeGenerated,*) by nameSpace\r\n| project nameSpace",
+                        "crossComponentResources": [
+                          "{Workspace}"
+                        ],
                         "typeSettings": {
                           "additionalResourceOptions": [
                             "value::all"
@@ -1813,14 +1847,16 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "queryType": 8,
+                        "queryType": 0,
+                        "resourceType": "microsoft.operationalinsights/workspaces",
                         "value": [
                           "value::all"
                         ]
                       }
                     ],
                     "style": "above",
-                    "queryType": 8
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
                   },
                   "name": "parameters - service type not tagged"
                 },
@@ -1828,7 +1864,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getNonMonitoredPaaS\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"resourceFilter\",\"value\":\"{SelectPaaStypeToTag}\"}],\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.*\",\"columns\":[{\"path\":\"$.Resource\",\"columnid\":\"Resource\"},{\"path\":\"$.type\",\"columnid\":\"type\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.resourceGroup\",\"columnid\":\"resourceGroup\"},{\"path\":\"$.kind\",\"columnid\":\"kind\"}]}}]}",
+                    "query": "NonMonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource, resourceGroup,resourcekind\r\n| where resourcetype in ({SelectPaaStypeToTag})\r\n| where isnotempty(location)",
                     "size": 0,
                     "title": "Non-Monitored Services",
                     "showRefreshButton": true,
@@ -1848,7 +1884,11 @@
                     ],
                     "showExportToExcel": true,
                     "exportToExcelOptions": "all",
-                    "queryType": 10,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
                     "gridSettings": {
                       "formatters": [
                         {
@@ -1882,20 +1922,9 @@
                           }
                         }
                       ],
-                      "filter": true,
-                      "sortBy": [
-                        {
-                          "itemKey": "type",
-                          "sortOrder": 1
-                        }
-                      ]
+                      "filter": true
                     },
-                    "sortBy": [
-                      {
-                        "itemKey": "type",
-                        "sortOrder": 1
-                      }
-                    ]
+                    "sortBy": []
                   },
                   "name": "query - nonMonitored Paas - Copy",
                   "styleSettings": {
@@ -4734,9 +4763,6 @@
               "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspace}"
-              ],
               "gridSettings": {
                 "rowLimit": 1000,
                 "filter": true,
@@ -4842,9 +4868,6 @@
               ],
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspace}"
-              ],
               "gridSettings": {
                 "formatters": [
                   {

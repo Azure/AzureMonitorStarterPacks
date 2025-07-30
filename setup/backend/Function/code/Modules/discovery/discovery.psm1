@@ -3,7 +3,7 @@ function get-discoveryData {
     $packsUrl=$env:PacksUrl
     Write-host "Reading current packs from $packsUrl"
     $PacksDef=get-blobcontentfromurl -url $packsUrl | convertfrom-json -Depth 20
-    $currentPacks=$PacksDef.Packs | ?{ $_.Discovery -ne $null }
+    $currentPacks=$PacksDef.Packs | Where-Object{ $null -ne $_.Discovery }
     # Create a json output with Name, Tag, Description, OS and Query
     $discoveryData=@{Packs=$currentPacks}
 #     $discoveryData=@"
