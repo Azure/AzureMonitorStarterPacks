@@ -16,6 +16,7 @@ param packsModulesRootURL string
 param applicationsURL string
 param amgdStorageURL string
 param subscriptionId string
+param opsdcrimmutableId string
 
 var deploymentContainerName = 'deploy'
 var tempfilename = '${filename}.tmp'
@@ -193,6 +194,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     subscriptionId: subscriptionId
+    opsdcrimmutableId: opsdcrimmutableId
   }
 }
 

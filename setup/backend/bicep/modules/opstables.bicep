@@ -401,6 +401,6 @@ resource opsDCR 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   }
 }
 output RuleId string = opsDCR.id
-output dcrImmutableId string = opsDCR.properties.immutableId
+output opsdcrimmutableId string = opsDCR.properties.immutableId
 output streamNames array = streamnames
 

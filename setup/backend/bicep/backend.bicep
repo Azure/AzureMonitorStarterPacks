@@ -96,6 +96,7 @@ module backendFunction './modules/function.bicep' = {
     packsModulesRootURL: modulesupload.outputs.modulesURL
     applicationsURL: applicationsupload.outputs.applicationsURL
     subscriptionId: subscriptionId
+    opsdcrimmutableId: opstablesandDCR.outputs.opsdcrimmutableId
   }
 }
 module logicapp './modules/logicapp.bicep' = {
