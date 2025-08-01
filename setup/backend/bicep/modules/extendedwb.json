@@ -335,6 +335,36 @@
             "name": "generalParams"
           },
           {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "nav",
+              "links": [
+                {
+                  "id": "c3a418ba-e352-456c-a134-c6434e96633b",
+                  "cellValue": "",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Update Backed Info",
+                  "preText": "",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {\r\n  }\r\n}",
+                    "httpMethod": "POST",
+                    "title": "Update Backend info",
+                    "description": "# Update Backend Info\n\n- Update current available services packs\n- Update current available IaaS Packs\n- Update currently monitored and unmonitored services\n\nNote: Once data is updated, please allow 5 to 10 minutes for it to be updated in the workbook.",
+                    "actionName": "UpdateBackend",
+                    "runLabel": "Update"
+                  }
+                }
+              ]
+            },
+            "name": "links - 5"
+          },
+          {
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
@@ -651,7 +681,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName in ({alertsInstance})\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| summarize count() by AlertType=type\n\n",
+                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName == '{instanceName}'\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| summarize count() by AlertType=type\n\n",
                     "size": 0,
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
@@ -815,7 +845,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| project name, MPs=tags.MonitorStarterPacks\n| where isnotnull(MPs)\n| mv-expand (split(MPs,','))\n| summarize Total=count() by tostring(MPs)\n| sort by MPs asc\n\n\n",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| where isnotnull(tags.MonitorStarterPacks) and tags.instanceName == '{instanceName}'\n| project name, MPs=tags.MonitorStarterPacks\n| mv-expand (split(MPs,','))\n| summarize Total=count() by tostring(MPs)\n| sort by MPs asc\n\n\n",
                     "size": 1,
                     "title": "Tagged Resources per Tag",
                     "queryType": 1,
@@ -857,7 +887,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ 'mcp1'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join  (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
+                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(['tags'].MonitorStarterPacks)\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join  (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
                     "size": 1,
                     "title": "Associated Servers per Pack",
                     "queryType": 1,
@@ -927,7 +957,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\r\n| where ['type'] =~ 'microsoft.insights/workbooks' or ['type'] =~ 'microsoft.dashboard/dashboards'\r\n| extend realName=iff(['type']=~'microsoft.insights/workbooks',properties.displayName,name)\r\n| project id, Name=realName,type,MP=tags.MonitorStarterPacks\r\n| where isnotnull(MP)\r\n| union (\r\nresources\r\n| where ['type']  =~ 'microsoft.dashboard/grafana'\r\n| project id,Name=name, type,MP=tags.MonitorStarterPacksComponents\r\n| where isnotnull(MP))\r\n| project Link=id,Name, type=iff(['type']=~'microsoft.insights/workbooks',\"Workbook\",iff(['type']=~'microsoft.dashboard/grafana', \"Azure Managed Grafana\", \"Azure Monitor Dashboard with Grafana\"))\r\n",
+              "query": "resources\r\n| where ['type'] =~ 'microsoft.insights/workbooks' or ['type'] =~ 'microsoft.dashboard/dashboards'\r\n| where tags.InstanceName == '{instanceName}'\r\n| extend realName=iff(['type']=~'microsoft.insights/workbooks',properties.displayName,name)\r\n| project id, Name=realName,type,MP=tags.MonitorStarterPacks\r\n| where isnotnull(MP)\r\n| union (\r\nresources\r\n| where ['type']  =~ 'microsoft.dashboard/grafana'\r\n| where tags.InstanceName == '{instanceName}'\r\n| project id,Name=name, type,MP=tags.MonitorStarterPacksComponents\r\n| where isnotnull(MP))\r\n| project Link=id,Name, type=iff(['type']=~'microsoft.insights/workbooks',\"Workbook\",iff(['type']=~'microsoft.dashboard/grafana', \"Azure Managed Grafana\", \"Azure Monitor Dashboard with Grafana\"))\r\n",
               "size": 0,
               "title": "Dashboards",
               "queryType": 1,
@@ -1465,7 +1495,10 @@
                           "durationMs": 86400000
                         },
                         "queryType": 0,
-                        "resourceType": "microsoft.operationalinsights/workspaces"
+                        "resourceType": "microsoft.operationalinsights/workspaces",
+                        "value": [
+                          "VMI"
+                        ]
                       }
                     ],
                     "style": "pills",
@@ -4958,7 +4991,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.insights/components",
-                  "value": "opstasks"
+                  "value": "opstasksondemand"
                 }
               ],
               "style": "pills",

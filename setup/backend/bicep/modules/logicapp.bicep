@@ -122,6 +122,24 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
                   }
                 }
               }
+              Case_3: {
+                case: 'opstasksondemand'
+                actions: {
+                  alertConfigMgmt: {
+                    runAfter: {}
+                    type: 'Function'
+                    inputs: {
+                      body: '@body(\'Parse_JSON\')?[\'functionBody\']'
+                      function: {
+                        id: '${azfunctionsite.id}/functions/opstasksondemand'
+                      }
+                      headers: {
+                        'x-functions-key': '@body(\'Get_secret\')?[\'value\']'
+                      }
+                    }
+                  }
+                }
+              }
               Case_4: {
                 case: 'agentMgmt'
                 actions: {
