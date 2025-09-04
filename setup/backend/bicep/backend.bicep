@@ -258,6 +258,6 @@ output packsDefStorageURL string = packsDefStorage.outputs.fileURL
 output ambaStorageURL string = ambaStorage.outputs.fileURL
 // output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
 // output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
-output functionUserManagedIdentityId string = functionUserManagedIdentity.outputs.userManagedIdentityPrincipalId
+output functionUserManagedIdentityId string = functionUserManagedIdentity.outputs.userManagedIdentityResourceId
 output dceId string = dataCollectionEndpoint.outputs.dceId
 
