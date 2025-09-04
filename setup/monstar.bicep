@@ -104,6 +104,7 @@ module discovery './discovery/discovery.bicep' = if (deployDiscovery) {
     instanceName: instanceName
     solutionVersion: solutionVersion
     functionName: functionName
+    UserManagedIdentityId: backend.outputs.functionUserManagedIdentityId
   }
 }
 

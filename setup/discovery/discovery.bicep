@@ -16,6 +16,7 @@ param customerTags object
 param instanceName string
 param solutionVersion string
 param functionName string
+param UserManagedIdentityId string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
 
@@ -59,6 +60,7 @@ module WindowsDiscovery './Windows/discovery.bicep' = {
     tableNameToUse: tableNameToUse
     dceId: dceId
     instanceName: instanceName
+    UserManagedIdentityId: UserManagedIdentityId
   }
 }
 module LinuxDiscovery 'Linux/discovery.bicep' = {
@@ -81,6 +83,7 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
     packtag: 'LxDisc'
     customerTags: customerTags
     instanceName: instanceName
+    UserManagedIdentityId: UserManagedIdentityId
   }
 }
 

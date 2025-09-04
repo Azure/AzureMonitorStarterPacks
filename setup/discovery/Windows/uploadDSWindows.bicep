@@ -5,6 +5,7 @@ param filename string
 param containerName string
 //param resourceName string
 param tags object
+param UserManagedIdentityId string
 var discoveryContainerName = 'discovery'
 
 
@@ -48,11 +49,17 @@ resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
 //   }
 // }
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'deployscript-windiscover'
   tags: tags
   location: location
   kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${UserManagedIdentityId}': {}
+    }
+  }
   properties: {
     azCliVersion: '2.42.0'
     timeout: 'PT5M'
@@ -62,10 +69,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         name: 'AZURE_STORAGE_ACCOUNT'
         value: packStorage.name
       }
-      {
-        name: 'AZURE_STORAGE_KEY'
-        secureValue: packStorage.listKeys().keys[0].value
-      }
+      // {
+      //   name: 'AZURE_STORAGE_KEY'
+      //   secureValue: packStorage.listKeys().keys[0].value
+      // }
       {
         name: 'CONTENT'
         value: loadFileAsBase64('../Windows/discover.zip')
