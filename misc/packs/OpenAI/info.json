@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "OpenAI",
-        "Type": "PaaS",
-        "Description": "OpenAI Monitoring Pack"
-    }
-}
