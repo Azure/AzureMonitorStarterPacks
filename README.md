@@ -1,6 +1,6 @@
 # Monitoring Starter Packs (MonStar Packs)
 
-# V3 (Preview)
+# V3 (Public Preview)
 
 ## Objectives
 
