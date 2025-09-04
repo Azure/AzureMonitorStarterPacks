@@ -125,7 +125,7 @@ resource logicapp 'Microsoft.Logic/workflows@2019-05-01' = {
               Case_3: {
                 case: 'opstasksondemand'
                 actions: {
-                  alertConfigMgmt: {
+                  opstasksondemand: {
                     runAfter: {}
                     type: 'Function'
                     inputs: {
