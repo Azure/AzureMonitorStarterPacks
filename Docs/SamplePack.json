@@ -1,0 +1,23 @@
+{
+    "Name": "MyApplicationMonitoringPack",
+    "Tag": "App1",
+    "Description": "My Application Pack.",
+    "OS": "Windows",
+    "Rules": [
+        {
+            "Rulename": "MyAppRule1",
+            "RuleType": "EventPerformance",
+            "RuleNamePath": "dcr-basicWinVM.bicep",
+            "xPathQueries": [
+                "Directory Service!*[System[(Eventlevel=1)]]",
+                "DNS Server!*[System[(Eventlevel=1)]]",
+                "Active Directory Web Services!*[System[(Eventlevel=1)]]",
+                "DFS Replication!*[System[(Eventlevel=1)]]"
+            ],
+            "performanceCounters": [
+                "\\Memory()\\Available Bytes",
+                "\\Memory()\\Committed Bytes"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1285 @@
+{
+    "Packs": [
+        {
+            "Name": "Windows Failover Cluster 2016",
+            "Tag": "WSFC2016",
+            "Description": "Windows Failover Cluster 2016",
+            "OS": "Windows",
+            "Rules": [
+                {
+                    "Rulename": "WSFC2016",
+                    "RuleType": "EventPerformance",
+                    "RuleNamePath": "dcr-basicWinVM.bicep",
+                    "xPathQueries": [
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-FailoverClustering\\'] and (EventID=1583)]]"
+                    ],
+                    "performanceCounters" :[
+                    ]
+                }
+            ],
+            "Alerts": [
+                {
+                    "alertRuleDescription": "An attempt to disable connection security failed",
+                    "alertRuleDisplayName": "An attempt to disable connection security failed",
+                    "alertRuleName": "AlertRule-Windows-Cluster-2016-1",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where EventID in (1583) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                },
+                {
+                    "alertRuleDescription": "Cluster network name resource failed to register dynamic updates",
+                    "alertRuleDisplayName": "Cluster network name resource failed to register dynamic updates",
+                    "alertRuleName": "AlertRule-Windows-Cluster-2016-2",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1578) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                },
+                {
+                    "alertRuleDescription": "Cluster network name resource failed to register in secure DNS zone because record was already registered and owned",
+                    "alertRuleDisplayName": "Cluster network name resource failed to register in secure DNS zone because record was already registered and owned",
+                    "alertRuleName": "AlertRule-Windows-Cluster-2016-3",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1576) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                },
+                {
+                    "alertRuleDescription": "Cluster network name resource failed to register in secure DNS zone because registration was refused",
+                    "alertRuleDisplayName": "Cluster network name resource failed to register in secure DNS zone because registration was refused",
+                    "alertRuleName": "AlertRule-Windows-Cluster-2016-4",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1580) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                },
+                {
+                    "alertRuleDescription": "Cluster network name resource failed to update DNS A record",
+                    "alertRuleDisplayName": "Cluster network name resource failed to update DNS A record",
+                    "alertRuleName": "AlertRule-Windows-Cluster-2016-5",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1579) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                },
+                {
+                    "alertRuleDescription": "Cluster service has determined that this node does not have the latest copy of cluster configuration data",
+                    "alertRuleDisplayName": "Cluster service has determined that this node does not have the latest copy of cluster configuration data",
+                    "alertRuleName": "AlertRule-Windows-Cluster-2016-6",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1561) and EventLog == 'System' and Source == 'Microsoft-Windows-FailoverClustering'"
+                }
+            ]
+        },
+        {
+            "Name": "Azure Monitor VM Insights",
+            "Tag": "VMI",
+            "Description": "Azure Monitor VM Insights",
+            "OS": "All",
+            "Rules": [
+                {
+                    "Rulename": "VMI",
+                    "RuleType": "VMInsights",
+                    "RuleNamePath": "DefaultVMI-rule.bicep",
+                    "xPathQueries": [],
+                    "performanceCounters" :[]
+                }
+            ],
+            "Alerts": [
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data Disk Read Latency (ms)",
+                    "alertRuleDisplayName": "Data Disk Read Latency (ms)",
+                    "alertRuleName": "DataDiskReadLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 30,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"ReadLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| where Disk !in ('C:','/')\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data Disk Free Space Percentage",
+                    "alertRuleDisplayName": "Data Disk Free Space Percentage",
+                    "alertRuleName": "DataDiskFreeSpacePercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "LessThan",
+                    "threshold": 10,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"FreeSpacePercentage\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| where Disk !in ('C:','/')\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data Disk Write Latency (ms)",
+                    "alertRuleDisplayName": "Data Disk Write Latency (ms)",
+                    "alertRuleName": "DataDiskWriteLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 30,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"WriteLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| where Disk !in ('C:','/')\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated,15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Network Read (bytes-sec)",
+                    "alertRuleDisplayName": "Network Read (bytes-sec)",
+                    "alertRuleName": "NetworkRead(bytes-sec)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 10000000,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Network\" and Name == \"ReadBytesPerSecond\"\n| extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Network Write (bytes-sec)",
+                    "alertRuleDisplayName": "Network Write (bytes-sec)",
+                    "alertRuleName": "NetworkWrite(bytes-sec)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 10000000,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Network\" and Name == \"WriteBytesPerSecond\"\n| extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Data OS Read Latency (ms)",
+                    "alertRuleDisplayName": "OS Disk Read Latency (ms)",
+                    "alertRuleName": "OSDiskReadLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 30,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"ReadLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine OS Disk Free Space Percentage",
+                    "alertRuleDisplayName": "OS Disk Free Space Percentage",
+                    "alertRuleName": "OSDiskFreeSpacePercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "LessThan",
+                    "threshold": 10,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"FreeSpacePercentage\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine OS Disk Write Latency (ms)",
+                    "alertRuleDisplayName": "OS Disk Write Latency (ms)",
+                    "alertRuleName": "OSDiskWriteLatency(ms)",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 50,
+                    "query": "InsightsMetrics| where Origin == \"vm.azm.ms\"\n| where Namespace == \"LogicalDisk\" and Name == \"WriteLatencyMs\"\n| extend Disk=tostring(todynamic(Tags)[\"vm.azm.ms/mountId\"])\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, Disk"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Processor Utilization Percentage",
+                    "alertRuleDisplayName": "Processor Utilization Percentage",
+                    "alertRuleName": "ProcessorUtilizationPercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "GreaterThan",
+                    "threshold": 85,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Processor\" and Name == \"UtilizationPercentage\"\n| summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId"
+                },
+                {
+                    "alertRuleDescription": "Log Alert for Virtual Machine Available Memory Percentage",
+                    "alertRuleDisplayName": "Available Memory Percentage",
+                    "alertRuleName": "AvailableMemoryPercentage",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT5M",
+                    "windowSize": "PT15M",
+                    "alertType": "Aggregated",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "operator": "LessThan",
+                    "threshold": 10,
+                    "query": "InsightsMetrics\n| where Origin == \"vm.azm.ms\"\n| where Namespace == \"Memory\" and Name == \"AvailableMB\"\n| extend TotalMemory = toreal(todynamic(Tags)[\"vm.azm.ms/memorySizeMB\"])\n| extend AvailableMemoryPercentage = (toreal(Val) / TotalMemory) * 100.0\n| summarize AggregatedValue = avg(AvailableMemoryPercentage) by bin(TimeGenerated, 15m), Computer, _ResourceId"
+                }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "WinOS",
+                    "Description": "Windows OS Dashboard",
+                    "DashboardPath": "grafana-winos.json"
+                },
+                {
+                    "Name": "Linux-VMInsights",
+                    "Description": "Windows OS Dashboard with VM Insights",
+                    "DashboardPath": "grafana-lxos.json"
+                }
+            ]
+        },
+        {
+            "Name": "IIS 2012 ",
+            "Tag": "IIS",
+            "Description": "IIS 2012 Mangement Pack",
+            "OS": "Windows",
+            "Rules": [
+                {
+                    "Rulename": "IIS",
+                    "RuleType": "EventPerformance",
+                    "RuleNamePath": "dcr-basicWinVM.bicep",
+                    "xPathQueries": [
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1071 or EventID=1073)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1135 or EventID=1134)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2226 or EventID=2230 or EventID=2231 or EventID=2232)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2274 or EventID=2268 or EventID=2220 or EventID=2219 or EventID=2214)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5172 or EventID=5173)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5174 or EventID=5179 or EventID=5180)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5152)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1037)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1062)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1126)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1133)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1173)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC\\'] and (EventID=1175)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2201)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2203)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2204)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2206)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2208)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2218)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2227)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2233)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2258)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2261)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2264)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2281)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2293)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2295)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2296)]]",
+                        "Application!*[System[Provider[@Name=\\'Microsoft-Windows-IIS-W3SVC-WP\\'] and (EventID=2298)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5005)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5030)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5036)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5053)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5063)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5066)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5067)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-WAS\\'] and (EventID=5153)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6001)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6002)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6003)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6004)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6005)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6006)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6007)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6008)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6009)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6010)]]",
+                        "System!*[System[Provider[@Name=\\'Microsoft-Windows-W3LOGSVC\\'] and (EventID=6011)]]",
+                        "System!*[System[Provider[@Name=\\'Service Control Manager\\'] and (EventID=7023 or EventID=7024)]]",
+                        "System!*[System[Provider[@Name=\\'Service Control Manager\\'] and (EventID=7031)]]",
+                        "System!*[System[Provider[@Name=\\'Service Control Manager\\'] and (EventID=7034)]]",
+                        "System!*[System[Provider[@Name=\\'Service Control Manager\\'] and (EventID=7043)]]"
+                    ],
+                    "performanceCounters" :[
+                        "\\Web Service(_Total)\\Bytes Received/sec",
+                        "\\Web Service(_Total)\\Bytes Sent/sec",
+                        "\\Web Service(_Total)\\Bytes Total/sec",
+                        "\\Web Service(_Total)\\Connection Attempts/sec",
+                        "\\Web Service(_Total)\\Current Connections",
+                        "\\Web Service(_Total)\\Total Method Requests/sec",
+                        "\\Microsoft FTP Service(_Total)\\Bytes Total/sec",
+                        "\\Microsoft FTP Service(_Total)\\Current Connections",
+                        "\\SMTP Server(_Total)\\Bytes Received/sec",
+                        "\\SMTP Server(_Total)\\Bytes Sent/sec",
+                        "\\SMTP Server(_Total)\\Bytes Total/sec",
+                        "\\SMTP Server(_Total)\\Inbound Connections Current",
+                        "\\SMTP Server(_Total)\\Message Bytes Received/sec",
+                        "\\SMTP Server(_Total)\\Message Bytes Sent/sec",
+                        "\\SMTP Server(_Total)\\Messages Delivered/sec",
+                        "\\SMTP Server(_Total)\\Messages Received/sec",
+                        "\\SMTP Server(_Total)\\Messages Sent/sec",
+                        "\\SMTP Server(_Total)\\Outbound Connections Current",
+                        "\\SMTP Server(_Total)\\Total Messages Submitted",
+                        "\\SMTP Server(SMTP 1)\\Bytes Received/sec",
+                        "\\SMTP Server(SMTP 1)\\Bytes Sent/sec",
+                        "\\SMTP Server(SMTP 1)\\Bytes Total/sec",
+                        "\\SMTP Server(SMTP 1)\\Inbound Connections Current",
+                        "\\SMTP Server(SMTP 1)\\Message Bytes Received/sec",
+                        "\\SMTP Server(SMTP 1)\\Message Bytes Sent/sec",
+                        "\\SMTP Server(SMTP 1)\\Messages Delivered/sec",
+                        "\\SMTP Server(SMTP 1)\\Messages Received/sec",
+                        "\\SMTP Server(SMTP 1)\\Messages Sent/sec",
+                        "\\SMTP Server(SMTP 1)\\Outbound Connections Current",
+                        "\\SMTP Server(SMTP 1)\\Total Messages Submitted"
+                    ]
+                },
+                {
+                    "Rulename": "IISLogs",
+                    "RuleType": "IISLogs",
+                    "RuleNamePath": "filecollectionWinIIS.bicep",
+                    "xPathQueries": [],
+                    "performanceCounters" :[],
+                    "fileCollection": [
+                        {
+                            "filePath": "C:\\inetpub\\logs\\LogFiles\\W3SVC*",
+                            "fileNamePattern": "*.log",
+                            "fileType": "IISLogs",
+                            "fileTypeName": "IISLogs"
+                        }
+                    ]
+                }
+            ],
+            "Discovery":{
+                "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'Web-Server'"
+            },
+            "Alerts": [
+                {
+                    "alertRuleDescription": "A server side include file has included itself or the maximum depth of server side includes has been exceeded",
+                    "alertRuleDisplayName": "A server side include file has included itself or the maximum depth of server side includes has been exceeded",
+                    "alertRuleName": "AlertRule-IIS-2012-1",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2221) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "Application Pool has an IdleTimeout equal to or greater than the PeriodicRestart time",
+                    "alertRuleDisplayName": "Application Pool has an IdleTimeout equal to or greater than the PeriodicRestart time",
+                    "alertRuleName": "AlertRule-IIS-2012-2",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5152) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                },
+                {
+                    "alertRuleDescription": "Application Pool worker process is unresponsive",
+                    "alertRuleDisplayName": "Application Pool worker process is unresponsive",
+                    "alertRuleName": "AlertRule-IIS-2012-3",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5010,5011,5012,5013) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                },
+                {
+                    "alertRuleDescription": "Application Pool worker process terminated unexpectedly",
+                    "alertRuleDisplayName": "Application Pool worker process terminated unexpectedly",
+                    "alertRuleName": "AlertRule-IIS-2012-4",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5009) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                },
+                {
+                    "alertRuleDescription": "ASP application error occurred",
+                    "alertRuleDisplayName": "ASP application error occurred",
+                    "alertRuleName": "AlertRule-IIS-2012-5",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (500,499,23,22,21,20,19,18,17,16,9,8,7,6,5) and EventLog == 'Application' and Source == 'Active Server Pages'"
+                },
+                {
+                    "alertRuleDescription": "HTTP control channel for the WWW Service did not open",
+                    "alertRuleDisplayName": "HTTP control channel for the WWW Service did not open",
+                    "alertRuleName": "AlertRule-IIS-2012-6",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1037) and EventLog == 'System' and Source == 'Microsoft-Windows-IIS-W3SVC'"
+                },
+                {
+                    "alertRuleDescription": "HTTP Server could not create a client connection object for user",
+                    "alertRuleDisplayName": "HTTP Server could not create a client connection object for user",
+                    "alertRuleName": "AlertRule-IIS-2012-7",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2208) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "HTTP Server could not create the main connection socket",
+                    "alertRuleDisplayName": "HTTP Server could not create the main connection socket",
+                    "alertRuleName": "AlertRule-IIS-2012-8",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2206) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "HTTP Server could not initialize its security",
+                    "alertRuleDisplayName": "HTTP Server could not initialize its security",
+                    "alertRuleName": "AlertRule-IIS-2012-9",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2201) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "HTTP Server could not initialize the socket library",
+                    "alertRuleDisplayName": "HTTP Server could not initialize the socket library",
+                    "alertRuleName": "AlertRule-IIS-2012-10",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2203) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "HTTP Server was unable to initialize due to a shortage of available memory",
+                    "alertRuleDisplayName": "HTTP Server was unable to initialize due to a shortage of available memory",
+                    "alertRuleName": "AlertRule-IIS-2012-11",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2204) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "ISAPI application error detected",
+                    "alertRuleDisplayName": "ISAPI application error detected",
+                    "alertRuleName": "AlertRule-IIS-2012-12",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2274,2268,2220,2219,2214) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "Job object associated with the application pool encountered an error",
+                    "alertRuleDisplayName": "Job object associated with the application pool encountered an error",
+                    "alertRuleName": "AlertRule-IIS-2012-13",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5088,5061,5060) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                },
+                {
+                    "alertRuleDescription": "Module has an invalid precondition",
+                    "alertRuleDisplayName": "Module has an invalid precondition",
+                    "alertRuleName": "AlertRule-IIS-2012-14",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2296) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "Module registration error detected (failed to find RegisterModule entrypoint)",
+                    "alertRuleDisplayName": "Module registration error detected (failed to find RegisterModule entrypoint)",
+                    "alertRuleName": "AlertRule-IIS-2012-15",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2295) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "Module registration error detected (module returned an error during registration)",
+                    "alertRuleDisplayName": "Module registration error detected (module returned an error during registration)",
+                    "alertRuleName": "AlertRule-IIS-2012-16",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2293) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "Only one type of logging can be enabled at a time",
+                    "alertRuleDisplayName": "Only one type of logging can be enabled at a time",
+                    "alertRuleName": "AlertRule-IIS-2012-17",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (1133) and EventLog == 'System' and Source == 'Microsoft-Windows-IIS-W3SVC'"
+                },
+                {
+                    "alertRuleDescription": "SF_NOTIFY_READ_RAW_DATA filter notification is not supported in IIS 8",
+                    "alertRuleDisplayName": "SF_NOTIFY_READ_RAW_DATA filter notification is not supported in IIS 8",
+                    "alertRuleName": "AlertRule-IIS-2012-18",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2261) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The configuration manager for WAS did not initialize",
+                    "alertRuleDisplayName": "The configuration manager for WAS did not initialize",
+                    "alertRuleName": "AlertRule-IIS-2012-19",
+                    "alertRuleSeverity": 2,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5036) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                },
+                {
+                    "alertRuleDescription": "The directory specified for caching compressed content is invalid",
+                    "alertRuleDisplayName": "The directory specified for caching compressed content is invalid",
+                    "alertRuleName": "AlertRule-IIS-2012-20",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2264) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The Global Modules list is empty",
+                    "alertRuleDisplayName": "The Global Modules list is empty",
+                    "alertRuleName": "AlertRule-IIS-2012-21",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2298) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The HTTP server encountered an error processing the server side include file",
+                    "alertRuleDisplayName": "The HTTP server encountered an error processing the server side include file",
+                    "alertRuleName": "AlertRule-IIS-2012-22",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2218) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The server failed to close client connections to URLs during shutdown",
+                    "alertRuleDisplayName": "The server failed to close client connections to URLs during shutdown",
+                    "alertRuleName": "AlertRule-IIS-2012-23",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2258) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The server was unable to acquire a license for a SSL connection",
+                    "alertRuleDisplayName": "The server was unable to acquire a license for a SSL connection",
+                    "alertRuleName": "AlertRule-IIS-2012-24",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2227) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The server was unable to allocate a buffer to read a file",
+                    "alertRuleDisplayName": "The server was unable to allocate a buffer to read a file",
+                    "alertRuleName": "AlertRule-IIS-2012-25",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2233) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "The server was unable to read a file",
+                    "alertRuleDisplayName": "The server was unable to read a file",
+                    "alertRuleName": "AlertRule-IIS-2012-26",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (2226,2230,2231,2232) and EventLog == 'Application' and Source == 'Microsoft-Windows-IIS-W3SVC-WP'"
+                },
+                {
+                    "alertRuleDescription": "WAS detected invalid configuration data",
+                    "alertRuleDisplayName": "WAS detected invalid configuration data",
+                    "alertRuleName": "AlertRule-IIS-2012-27",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5174,5179,5180) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                }
+                
+
+            ],
+            "Dashboards":[
+                {
+                    "Name": "IIS",
+                    "Description": "IIS Dashboard",
+                    "DashboardPath": "grafana-iis.json"
+                }
+            ]
+        },
+        {
+            "Name": "Print Server 2016",
+            "Tag": "PS2016",
+            "Description": "Print server 2016 monitoring pack.",
+            "OS": "Windows",
+            "Rules": [
+                {
+                    "Rulename": "PS2016",
+                    "RuleType": "EventPerformance",
+                    "RuleNamePath": "dcr-basicWinVM.bicep",
+                    "xPathQueries": [
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=83) and (Provider[@Name='Microsoft-Windows-PrintBRM' or @Name='PrintBrm'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=360) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Operational!*[System[(EventID=701 or EventID=702 or EventID=703 or EventID=704) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=364 or EventID=365 or EventID=367) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=315) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=371) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=356) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=513 or EventID=514) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=600 or EventID=601) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=515 or EventID=516 or EventID=517 or EventID=518 or EventID=519 or EventID=520) and (Provider[@Name='Microsoft-Windows-PrintService'])]]",
+                        "Microsoft-Windows-PrintService/Admin!*[System[(EventID=502 or EventID=503 or EventID=504 or EventID=505 or EventID=506 or EventID=507 or EventID=508 or EventID=509 or EventID=510 or EventID=511 or EventID=512) and (Provider[@Name='Microsoft-Windows-PrintService'])]]"
+                    ],
+                    "performanceCounters" :[
+                        "\\Print Queue(_Total)\\Jobs",
+                        "\\Print Queue(_Total)\\Jobs Spooling",
+                        "\\Print Queue(_Total)\\Total Jobs Printed",
+                        "\\Print Queue(_Total)\\Total Pages Printed"
+                    ]
+
+                }
+            ],
+            "Alerts": [
+                    {
+                        "alertRuleDescription": "Ensure the server is accessible.",
+                        "alertRuleDisplayName": "Ensure the server is accessible.",
+                        "alertRuleName": "AlertRule-PS-2016-1",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (83) and EventLog == 'Microsoft-Windows-PrintService/Admin' and (Source == 'Microsoft-Windows-PrintBRM' or Source == 'PrintBrm')"
+                    },
+                    {
+                        "alertRuleDescription": "Manually install the color profile.",
+                        "alertRuleDisplayName": "Manually install the color profile.",
+                        "alertRuleName": "AlertRule-PS-2016-2",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (360) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Retry printing or restart the print server.",
+                        "alertRuleDisplayName": "Retry printing or restart the print server.",
+                        "alertRuleName": "AlertRule-PS-2016-3",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (701,702,703,704) and EventLog == 'Microsoft-Windows-PrintService/Operational!*' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Install the Printer Driver.",
+                        "alertRuleDisplayName": "Install the Printer Driver.",
+                        "alertRuleName": "AlertRule-PS-2016-4",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (364,365,367) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Restart the print spooler fix sharing problems and check Group Policy.",
+                        "alertRuleDisplayName": "Restart the print spooler fix sharing problems and check Group Policy.",
+                        "alertRuleName": "AlertRule-PS-2016-5",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (315) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Restart the print spooler and unshare the printer.",
+                        "alertRuleDisplayName": "Restart the print spooler and unshare the printer.",
+                        "alertRuleName": "AlertRule-PS-2016-6",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (371) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Update the printer driver.",
+                        "alertRuleDisplayName": "Update the printer driver.",
+                        "alertRuleName": "AlertRule-PS-2016-7",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (356) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Check Group Policy and network connectivity.",
+                        "alertRuleDisplayName": "Check Group Policy and network connectivity.",
+                        "alertRuleName": "AlertRule-PS-2016-8",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (513,514) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Try again or install an updated printer driver.",
+                        "alertRuleDisplayName": "Try again or install an updated printer driver.",
+                        "alertRuleName": "AlertRule-PS-2016-9",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (600,601) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Check network connectivity and Group Policy.",
+                        "alertRuleDisplayName": "Check network connectivity and Group Policy.",
+                        "alertRuleName": "AlertRule-PS-2016-10",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (515,516,517,518,519,520) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    },
+                    {
+                        "alertRuleDescription": "Check resource availability.",
+                        "alertRuleDisplayName": "Check resource availability.",
+                        "alertRuleName": "AlertRule-PS-2016-11",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (502,503,504,505,506,507,508,509,510,511,512) and EventLog == 'Microsoft-Windows-PrintService/Admin' and Source == 'Microsoft-Windows-PrintService'"
+                    }
+                ]
+        },
+        {
+            "Name": "DNS Server 2016",
+            "Tag": "DNS2016",
+            "Description": "DNS Server 2016 monitoring pack.",
+            "OS": "Windows",
+            "Rules": [
+                {
+                    "Rulename": "DNS2016",
+                    "RuleType": "EventPerformance",
+                    "RuleNamePath": "dcr-basicWinVM.bicep",
+                    "xPathQueries": [  
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=10)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1000)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1004)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1200)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1201)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1203)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=131)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=140)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=150)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1540)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4000)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4006)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4007)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4010)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4011)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4012)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4014)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4015)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4016)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4017)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=408)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=409)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=410)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=414)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4510)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4511)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4512)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=501)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=502)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=503)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=504)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=5051)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=6527)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=6702)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=706)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7060)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7616)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7636)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7642)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7644)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=777)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=111 or EventID=6533)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4018 or EventID=4019)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4513 or EventID=4514)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=4520 or EventID=4521)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=707 or EventID=1003)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7692 or EventID=790)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=796 or EventID=799)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=2200 or EventID=2202 or EventID=2203)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=7502 or EventID=7503 or EventID=7504)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=792 or EventID=795 or EventID=797)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=1001 or EventID=1008 or EventID=3151 or EventID=3152 or EventID=3153)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=403 or EventID=404 or EventID=405 or EventID=406 or EventID=407)]]",
+                        "DNS Server!*[System[Provider[@Name='Microsoft-Windows-DNS-Server-Service'] and (EventID=500 or EventID=505 or EventID=506 or EventID=507 or EventID=2204)]]"
+                    ],
+                    "performanceCounters" :[
+                        "\\DNS\\AXFR Request Received",
+                        "\\DNS\\AXFR Request Sent",
+                        "\\DNS\\AXFR Response Received",
+                        "\\DNS\\AXFR Success Received",
+                        "\\DNS\\AXFR Success Sent",
+                        "\\DNS\\Caching Memory",
+                        "\\DNS\\Data Flush Pages/sec",
+                        "\\DNS\\Data Flushes/sec",
+                        "\\DNS\\Database Node Memory",
+                        "\\DNS\\Dynamic Update NoOperation",
+                        "\\DNS\\Dynamic Update NoOperation/sec",
+                        "\\DNS\\Dynamic Update Queued",
+                        "\\DNS\\Dynamic Update Received",
+                        "\\DNS\\Dynamic Update Received/sec",
+                        "\\DNS\\Dynamic Update Rejected",
+                        "\\DNS\\Dynamic Update TimeOuts",
+                        "\\DNS\\Dynamic Update Written to Database",
+                        "\\DNS\\Dynamic Update Written to Database/sec",
+                        "\\DNS\\IXFR Request Received",
+                        "\\DNS\\IXFR Request Sent",
+                        "\\DNS\\IXFR Response Received",
+                        "\\DNS\\IXFR Success Received",
+                        "\\DNS\\IXFR Success Sent",
+                        "\\DNS\\IXFR TCP Success Received",
+                        "\\DNS\\IXFR UDP Success Received",
+                        "\\DNS\\Nbstat Memory",
+                        "\\DNS\\Notify Received",
+                        "\\DNS\\Notify Sent",
+                        "\\DNS\\Query Dropped Bad Socket",
+                        "\\DNS\\Query Dropped Bad Socket/sec",
+                        "\\DNS\\Query Dropped By Policy",
+                        "\\DNS\\Query Dropped By Policy/sec",
+                        "\\DNS\\Query Dropped By Response Rate Limiting",
+                        "\\DNS\\Query Dropped By Response Rate Limiting/sec",
+                        "\\DNS\\Query Dropped Send",
+                        "\\DNS\\Query Dropped Send/sec",
+                        "\\DNS\\Query Dropped Total",
+                        "\\DNS\\Query Dropped Total/sec",
+                        "\\DNS\\Record Flow Memory",
+                        "\\DNS\\Recursive Queries",
+                        "\\DNS\\Recursive Queries/sec",
+                        "\\DNS\\Recursive Query Failure",
+                        "\\DNS\\Recursive Query Failure/sec",
+                        "\\DNS\\Recursive Send TimeOuts",
+                        "\\DNS\\Recursive TimeOut/sec",
+                        "\\DNS\\Responses Suppressed",
+                        "\\DNS\\Responses Suppressed/sec",
+                        "\\DNS\\Secure Update Failure",
+                        "\\DNS\\Secure Update Received",
+                        "\\DNS\\Secure Update Received/sec",
+                        "\\DNS\\TCP Message Memory",
+                        "\\DNS\\TCP Query Received",
+                        "\\DNS\\TCP Query Received/sec",
+                        "\\DNS\\TCP Response Sent",
+                        "\\DNS\\TCP Response Sent/sec",
+                        "\\DNS\\Total Query Received",
+                        "\\DNS\\Total Query Received/sec",
+                        "\\DNS\\Total Remote Inflight Queries",
+                        "\\DNS\\Total Response Sent",
+                        "\\DNS\\Total Response Sent/sec",
+                        "\\DNS\\UDP Message Memory",
+                        "\\DNS\\UDP Query Received",
+                        "\\DNS\\UDP Query Received/sec",
+                        "\\DNS\\UDP Response Sent",
+                        "\\DNS\\UDP Response Sent/sec",
+                        "\\DNS\\Unmatched Responses Received",
+                        "\\DNS\\WINS Lookup Received",
+                        "\\DNS\\WINS Lookup Received/sec",
+                        "\\DNS\\WINS Response Sent",
+                        "\\DNS\\WINS Response Sent/sec",
+                        "\\DNS\\WINS Reverse Lookup Received",
+                        "\\DNS\\WINS Reverse Lookup Received/sec",
+                        "\\DNS\\WINS Reverse Response Sent",
+                        "\\DNS\\WINS Reverse Response Sent/sec",
+                        "\\DNS\\Zone Transfer Failure",
+                        "\\DNS\\Zone Transfer Request Received",
+                        "\\DNS\\Zone Transfer SOA Request Sent",
+                        "\\DNS\\Zone Transfer Success"
+                    ]
+                }
+            ],
+            "Discovery":{
+                "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'DNS'"
+            },
+            "Alerts": [
+                    {
+                        "alertRuleDescription": "Service.DependencyFailed",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Service.DependencyFailed",
+                        "alertRuleName": "AlertRule-Dns-2016-10",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (10) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.FileOpenError",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.FileOpenError",
+                        "alertRuleName": "AlertRule-Dns-2016-1000",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (1000) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.CouldNotOpenDatabase",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.CouldNotOpenDatabase",
+                        "alertRuleName": "AlertRule-Dns-2016-1004",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (1004) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.BootFileNotFound",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.BootFileNotFound",
+                        "alertRuleName": "AlertRule-Dns-2016-1200",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (1200) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.ZoneCreationFailed",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.ZoneCreationFailed",
+                        "alertRuleName": "AlertRule-Dns-2016-1201",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (1201) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.NoForwardingAddresses",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.NoForwardingAddresses",
+                        "alertRuleName": "AlertRule-Dns-2016-1203",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (1203) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "WINSConnector.Initialize.Failed",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.WINSConnector.Initialize.Failed",
+                        "alertRuleName": "AlertRule-Dns-2016-131",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (131) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "RPC.Initialize.Failed",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.RPC.Initialize.Failed",
+                        "alertRuleName": "AlertRule-Dns-2016-140",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (140) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.PluginInitFailed",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.PluginInitFailed",
+                        "alertRuleName": "AlertRule-Dns-2016-150",
+                        "alertRuleSeverity": 1,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (150) and EventLog == 'DNS Server'"
+                    },
+                    {
+                        "alertRuleDescription": "Configuration.DomainNodeCreationError",
+                        "alertRuleDisplayName": "Microsoft.Windows.DNSServer.2016.Configuration.DomainNodeCreationError",
+                        "alertRuleName": "AlertRule-Dns-2016-1540",
+                        "alertRuleSeverity": 2,
+                        "autoMitigate": true,
+                        "evaluationFrequency": "PT15M",
+                        "windowSize": "PT15M",
+                        "alertType": "rows",
+                        "query": "Event | where  EventID in (1540) and EventLog == 'DNS Server'"
+                    }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "DNS",
+                    "Description": "DNS Dashboard",
+                    "DashboardPath": "grafana-dns.json"
+                }
+            ]
+        },
+        {
+            "Name": "Nginx",
+            "Tag": "nginx",
+            "Description": "Nginx monitoring pack.",
+            "OS": "Linux",
+            "Rules": [
+                {
+                    "Rulename": "nginx",
+                    "RuleType": "syslog",
+                    "RuleNamePath": "filecollectionSyslogLinux.bicep",
+                    "syslogDataSourceName": "sysLogsDataSource-1688419672",
+                    "filepatterns": [
+                        "/var/log/nginx/access.log",
+                        "/var/log/nginx/error.log"
+                    ],
+                    "facilitynames": [
+                        "daemon"
+                    ],
+                    "logLevels": [
+                        "Debug",
+                        "Info",
+                        "Notice",
+                        "Warning",
+                        "Error",
+                        "Critical",
+                        "Alert",
+                        "Emergency"
+                    ],
+                    "kqlTransformation": "source | where SyslogMessage == \"Stopped A high performance web server and a reverse proxy server.\" or SyslogMessage == \"Started A high performance web server and a reverse proxy server.\"",
+                    "createTable": true,
+                    "tableName": "NginxLogs"
+                }
+            ],
+            "Discovery":{
+                "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'linux'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,\",\")\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'linux', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'linux', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'linux', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where platform =~ 'linux'\n| where name == \"nginx\""
+            },
+            "Alerts": [
+                {
+                    "alertRuleDescription": "Nginx stopped.",
+                    "alertRuleDisplayName": "Nginx service stopped.",
+                    "alertRuleName": "AlertRule-Nginx-1",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Syslog | where SyslogMessage == \"Stopped A high performance web server and a reverse proxy server.\""
+                }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "Nginx",
+                    "Description": "Nginx Dashboard",
+                    "DashboardPath": "grafana-nginx.json"
+                }
+            ]
+        },
+        {
+            "Name": "ADDS",
+            "Tag": "ADDS",
+            "Description": "Active Directory monitoring pack.",
+            "OS": "Windows",
+            "Rules": [
+                {
+                    "Rulename": "ADDS1",
+                    "RuleType": "EventPerformance",
+                    "RuleNamePath": "dcr-basicWinVM.bicep",
+                    "xPathQueries": [
+                        "Directory Service!*[System[(Eventlevel=1)]]",
+                        "DNS Server!*[System[(Eventlevel=1)]]",
+                        "Active Directory Web Services!*[System[(Eventlevel=1)]]",
+                        "DFS Replication!*[System[(Eventlevel=1)]]"
+                    ],                    
+                    "performanceCounters" :[
+                        "\\Memory()\\Available Bytes",
+                        "\\Memory()\\Committed Bytes",
+                        "\\DirectoryServices(NTDS)\\DS Search sub-operations/sec",
+                        "\\Security System-Wide Statistics()\\KDC AS Requests",
+                        "\\Security System-Wide Statistics()\\KDC TGS Requests",
+                        "\\Security System-Wide Statistics()\\Kerberos Authentications",
+                        "\\DirectoryServices(NTDS)\\LDAP Client Sessions",
+                        "\\DirectoryServices(NTDS)\\LDAP Searches/sec",
+                        "\\DirectoryServices(NTDS)\\LDAP UDP operations/sec",
+                        "\\DirectoryServices(NTDS)\\LDAP Writes/sec",
+                        "\\Process(LSASS)\\Handle Count",
+                        "\\Process(LSASS)\\Private Bytes",
+                        "\\Process(LSASS)\\% Processor Time",
+                        "\\Security System-Wide Statistics()\\NTLM Authentications",
+                        "\\Memory()\\Pages/sec",
+                        "\\Processor(_Total)\\% Processor Time",
+                        "\\Server()\\Server Sessions",
+                        "\\System()\\System Up Time",
+                        "\\TCPv4()\\Connections Established",
+                        "\\TCPv6()\\Connections Established",
+                        "\\DirectoryServices(NTDS)\\DRA Inbound Bytes Compressed (Between Sites, Before Compression)/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Inbound Bytes Compressed (Between Sites, After Compression)/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Inbound Bytes Not Compressed (Within Site)/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Inbound Bytes Total/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Outbound Bytes Compressed (Between Sites, After Compression)/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Outbound Bytes Compressed (Between Sites, Before Compression)/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Outbound Bytes Not Compressed (Within Site)/sec",
+                        "\\DirectoryServices(NTDS)\\DRA Outbound Bytes Total/sec",
+                        "\\Process(dns)\\% Processor Time",
+                        "\\DNS()\\Total Query Received/sec",
+                        "\\Process(dns)\\Private Bytes",
+                        "\\DirectoryServices(NTDS)\\ATQ Outstanding Queued Requests",
+                        "\\DirectoryServices(NTDS)\\ATQ Request Latency",
+                        "\\DirectoryServices(NTDS)\\ATQ Threads Other",
+                        "\\DirectoryServices(NTDS)\\ATQ Threads LDAP",
+                        "\\DirectoryServices(NTDS)\\ATQ Threads Total"
+                    ]
+                },
+                {
+                    "Rulename": "ADDS2",
+                    "RuleType": "CustomData",
+                    "RuleNamePath": "customDataDCR.bicep",
+                    "filepatterns": [
+                        "C:\\WindowsAzure\\ADDS\\*.csv"
+                    ],
+                    "tableName": "addsmonitoring",
+                    "clientAppName" : "ADDSCollection",
+                    "clientAppDescription": "Custom VM application to collect AD DS related data.",
+                    "clientAppVersion": "1.0.0",
+                    "clientAppInstallCommand" : "powershell -command \"ren addscollection addscollection.zip; expand-archive ./addscollection.zip . ; ./install.ps1\"",
+                    "clientAppUninstallCommand" : "powershell -command \"Unregister-ScheduledTask -TaskName 'AD DS Collection Task'\"",
+                    "clientAppZIPFile" : "ADDS.zip"
+                }
+            ],
+
+            "Discovery":{
+                "Query": "let maxts=Discovery_CL\n| extend platform=split(RawData,',')[2]\n| where platform =~ 'windows'\n| project timestamp=todatetime(tostring(split(RawData,',')[0]))\n| where isnotempty(timestamp)\n| summarize maxts=max(timestamp);\nDiscovery_CL\n| extend Computer=_ResourceId\n| extend fields=split(RawData,',')\n| extend timestamp=todatetime(fields[0])\n| extend type=tostring(fields[1])\n| extend platform=tostring(fields[2])\n| extend package=iff (platform =~ 'windows', tostring(fields[4]),'')\n| extend name=iff (platform =~ 'windows', tostring(fields[3]), tostring(fields[3]))\n| extend othertype=tostring(fields[5])\n| extend vendor=tostring(fields[6])\n| extend OSVersion=iff(platform =~ 'windows', '',tostring(fields[3]))\n| where timestamp == toscalar(maxts)\n| project timestamp,Computer,type,name,platform,OSVersion,othertype,vendor\n| where name =~ 'AD-Domain-Services'"
+            },
+            "Alerts": [
+                {
+                    "alertRuleDescription": "WAS detected invalid configuration data.",
+                    "alertRuleDisplayName": "WAS detected invalid configuration data.",
+                    "alertRuleName": "AlertRule-IIS-2012-27",
+                    "alertRuleSeverity": 1,
+                    "autoMitigate": true,
+                    "evaluationFrequency": "PT15M",
+                    "windowSize": "PT15M",
+                    "alertType": "rows",
+                    "query": "Event | where  EventID in (5174,5179,5180) and EventLog == 'System' and Source == 'Microsoft-Windows-WAS'"
+                }
+            ],
+            "Dashboards":[
+                {
+                    "Name": "ADDS",
+                    "Description": "ADDS Dashboard",
+                    "DashboardPath": "grafana-adds.json"
+                }
+            ]
+        },
+        {
+            "Name": "SvcMap",
+            "Tag": "SvcMap",
+            "Description": "Service Map monitoring pack. DCR only",
+            "OS": "Windows",
+            "Agents": [
+                {
+                    "AgentName": "SvcMap"
+                }
+            ],
+            "Rules": [
+                {
+                    "Rulename": "SvcMap",
+                    "RuleType": "ServiceMap",
+                    "RuleNamePath": "ServiceMap.bicep",
+                    "xPathQueries": [],
+                    "performanceCounters" :[]
+                }
+            ],
+            "Alerts": []
+        }
+    ]
+}

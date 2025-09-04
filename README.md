@@ -1,11 +1,6 @@
-# Azure Monitoring Packs
+# Monitoring Starter Packs (MonStar Packs)
 
-Monitoring Starter Packs (MonStar Packs)
-
-## Updates !!!
-<span style="color: yellow">There was a breaking change in the way workbooks work and what endpoints are allowed. At this moment, the workbook has limited functionality and I will be working on a fix during August/September.<span>
-
-<span style="color: yellow">This version of the Monitoring packs is being deprecated soon. Please stay tuned during August 2025 for a new version.<span>
+# V3 (Public Preview)
 
 ## Objectives
 
@@ -13,29 +8,30 @@ Monitoring Starter Packs (MonStar Packs)
 
 - Minimize the need for the Customer to determine the minimal monitoring items for a certain type of workload 
 
-- Provide best practices out of the box on items that need monitoring for different workloads. The Monitoring Packs work closely with the Azure Monitor Baseline Alerts [AMBA](http://aka.ms/amba) and the Azure Monitor teams to provide an comprehensive and aligned monitoring solution.
+- Provide best practices out of the box on items that need monitoring for different workloads. The Monitoring Packs work closely wit the Azure Monitor Baseline Alerts [AMBA](http://aka.ms/amba) and the Azure Monitor teams to provide an comprehensive and aligned monitoring solution.
 
 - Create a framework for collaboration that will make it easy to add new monitored technologies. 
 
 For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solution-anatomy.md)
 
+## What is new in V3 (Preview)
+
+- No dependency on policies
+- Flexible Discovery
+- Quicker deployment
+- No management group requirement
+- Easy Pack authoring
+
 ## Pre-requisites and recommendations
 
 - Azure Subscription - an Azure subscription to deploy the components
-- A Management group structure with at least one management group. Most of the elements like policies and permissions need to be deployed at a management group level.
+- An Azure subscription with Owner permissions.
 
 ## Setup
 
 The Main solution can be deployed by clicking the link below to the respective cloud.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Fmain%2Fsetup%2FCustomSetup%2Fsetup.json)
-
-## Monitoring Packs
-
-Packs can also be deployed separately. However, the main solution needs to be deployed first. The packs can be deployed by clicking the link in the page below.
-
-## Discovery Feature and ADDS Pack (Prototypes)
-<span style="color: red">The Discovery feature is a feature that allows the solution to discover the VMs in the subscription and apply the monitoring packs to the VMs. The ADDS pack is a pack that monitors Active Directory Domain Services. Both packs use VM Applications as the base to augment data collection. The VM Application is a lightweight agent that collects data from the VM and sends it to the solution. The VM Application is deployed as part of the pack deployment. These are experimental features and are not recommended for production environments at this moment. If you chose to deploy these packs in a limited scope.</span>
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Frefs%2Fheads%2FV3-SubDep%2Fsetup%2FCustomSetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FFehseCorp%2FAzureMonitorStarterPacks%2Frefs%2Fheads%2FV3-SubDep%2Fsetup%2FCustomSetup%2Fsetup.json)
 
 ## Initial Configuration
 
@@ -51,18 +47,21 @@ The first time certain areas are accessed, the following configuration will need
 
 ![alt text](./Docs/media/image-1.png)
 
+## Monitoring Packs
+
+The IaaS packs are deployed along with the main solution. The Services packs are deployed when needed, directly from the AMBA website API.
+
 Review Packs documentation [here](./Packs/README.md).
 
 ## Multi-region Considerations
 
 If you are deploying the solution in multiple regions, a few additional steps are required. The following steps need to be completed:
-
 - For discovery and VM Application dependent components (ADDS), the VM Application versions need to have a replica in each region where VMs will be monitored.
 - For the Data Collection rules, a data collection endpoint needs to be created in each region. The data collection endpoint allows for the agent to receive configuration in the specific region. The data collection endpoint is assigned after the data collection rule association has been created.
 
 ## Grafana Dashboards
 
-Each pack may have its own Grafana dashboard. The Grafana dashboards are deplyed as a package during the packs deployment. Using Grafana is optional but will limit the visuazliation capabilities of the solution.
+Each pack may have its own Grafana dashboard. The Grafana dashboards are deployed as a package during the packs deployment. Using Grafana is optional but will limit the visuazliation capabilities of the solution.
 In order for the current user to have access to the Grafana environment, the user needs to be added to the Grafana Admins group. This can be done by running the following these instructions.
 
 1. Navigate the recently deployed Grafana environment and click on Access Control (IAM) and click on Add role assignment.
@@ -79,7 +78,28 @@ Review Network Isolation guidance [here](./Docs/networkisolation.md).
 
 ## Removing the solution
 
-Review removal documentation [here](./Docs/removal.md).
+The solution can be removed by simply removing the components in the resource group. However, it is recommended to remove the monitoring in the solution to remove tags and VM applications from the resources (if any).
+
+Removing the components won't remove VM applications, tags and extentions from VMs and Arc Servers. It is recommended to disable the monitoring on the interface if a complete remove is desired.
+
+Note: The Azure Managed Grafana environment requires about 10 minutes to be removed. Once finished, the resource group can be removed.
+
+Note 2: To completeley remove the Log Analytics workspace, use the -ForceDelete parameter. This will remove the workspace and all the data in it (ignoring the retention period).
+
+Example:
+
+```powershell
+remove-AzOperationalInsightsWorkspace -ResourceGroupName <Resource Group> -Name <Workspace name> -ForceDelete -force
+```
+
+## Telemetry
+
+Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.
+
+If you don't wish to send usage data to Microsoft, you can disable telemetry during setup. 
+
+Project Bicep collects telemetry in some scenarios as part of improving the product.
+
 
 ## Authoring Guide
 

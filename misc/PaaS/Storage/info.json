@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Storage",
+        "Type": "PaaS",
+        "Description": "Azure Storage Monitoring Pack"
+    }
+}

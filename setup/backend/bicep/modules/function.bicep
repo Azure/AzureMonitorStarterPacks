@@ -1,0 +1,242 @@
+param functionname string
+param location string
+param Tags object
+param userManagedIdentity string
+param userManagedIdentityClientId string
+param packsUserManagedId string
+param storageAccountName string
+param filename string = 'backend.zip'
+param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+param lawresourceid string
+param appInsightsLocation string
+param imageGalleryName string
+param packsURL string
+param ambaJsonURL string
+param packsModulesRootURL string
+param applicationsURL string
+param amgdStorageURL string
+param subscriptionId string
+param opsdcrimmutableId string
+
+var deploymentContainerName = 'deploy'
+var tempfilename = '${filename}.tmp'
+
+param apiManagementKey string= base64(newGuid())
+param solutionTag string
+param instanceName string
+
+var sasConfig = {
+  signedResourceTypes: 'sco'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: sasExpiry
+  signedProtocol: 'https'
+  keyToSign: 'key2'
+}
+
+resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  name: storageAccountName
+}
+
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: 'deployscript-Function-${instanceName}-${location}'
+  dependsOn: [
+    azfunctionsiteconfig
+  ]
+  tags: Tags
+  location: location
+  kind: 'AzureCLI'
+  properties: {
+    azCliVersion: '2.42.0'
+    timeout: 'PT5M'
+    retentionInterval: 'PT1H'
+    environmentVariables: [
+      {
+        name: 'AZURE_STORAGE_ACCOUNT'
+        value: discoveryStorage.name
+      }
+      {
+        name: 'AZURE_STORAGE_KEY'
+        secureValue: discoveryStorage.listKeys().keys[0].value
+      }
+      {
+        name: 'CONTENT'
+        value: loadFileAsBase64('../../backend.zip')
+      }
+    ]
+    scriptContent: 'echo "$CONTENT" > ${tempfilename} && cat ${tempfilename} | base64 -d > ${filename} && az storage blob upload -f ${filename} -c ${deploymentContainerName} -n ${filename} --overwrite true'
+  }
+}
+
+resource serverfarm 'Microsoft.Web/serverfarms@2021-03-01' = {
+  name: '${functionname}-farm'
+  location: location
+  tags: Tags
+  sku: {
+    name: 'Y1'
+    tier: 'Dynamic'
+    size: 'Y1'
+    family: 'Y'
+    capacity: 0
+  }
+  kind: 'functioapp'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+resource azfunctionsite 'Microsoft.Web/sites@2024-04-01' = {
+  name: functionname
+  location: location
+  kind: 'functionapp'
+  tags: Tags
+  identity: {
+      type: 'UserAssigned'
+      userAssignedIdentities: {
+          '${userManagedIdentity}': {}
+      }
+  }  
+  properties: {
+      enabled: true      
+      hostNameSslStates: [
+          {
+              name: '${functionname}.azurewebsites.net'
+              sslState: 'Disabled'
+              hostType: 'Standard'
+          }
+          {
+              name: '${functionname}.azurewebsites.net'
+              sslState: 'Disabled'
+              hostType: 'Repository'
+          }
+      ]
+      serverFarmId: serverfarm.id
+      reserved: false
+      isXenon: false
+      hyperV: false
+      siteConfig: {
+          numberOfWorkers: 1
+          acrUseManagedIdentityCreds: false
+          alwaysOn: false
+          ipSecurityRestrictions: [
+              {
+                  ipAddress: 'Any'
+                  action: 'Allow'
+                  priority: 1
+                  name: 'Allow all'
+                  description: 'Allow all access'
+              }
+          ]
+          scmIpSecurityRestrictions: [
+              {
+                  ipAddress: 'Any'
+                  action: 'Allow'
+                  priority: 1
+                  name: 'Allow all'
+                  description: 'Allow all access'
+              }
+          ]
+          http20Enabled: false
+          functionAppScaleLimit: 200
+          minimumElasticInstanceCount: 0
+          minTlsVersion: '1.2'
+          cors: {
+              allowedOrigins: [
+                  'https://portal.azure.com'
+              ]
+              supportCredentials: true
+          }  
+      }
+      scmSiteAlsoStopped: false
+      clientAffinityEnabled: false
+      clientCertEnabled: false
+      clientCertMode: 'Required'
+      hostNamesDisabled: false
+      containerSize: 1536
+      dailyMemoryTimeQuota: 0
+      httpsOnly: true
+      redundancyMode: 'None'
+      storageAccountRequired: false
+      keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
+  name: 'appsettings'
+  parent: azfunctionsite
+  properties: {
+    MSI_CLIENT_ID: userManagedIdentityClientId
+    PacksUserManagedId: packsUserManagedId
+    InstanceName: instanceName
+    AMBAJsonURL: ambaJsonURL
+    PacksURL: packsURL
+    PacksModulesRootURL: packsModulesRootURL
+    applicationsURL: applicationsURL
+    amgdStorageURL: amgdStorageURL
+    storageAccountName: discoveryStorage.name
+    ResourceGroup: resourceGroup().name
+    SolutionTag: solutionTag
+    galleryName: imageGalleryName
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+    AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${discoveryStorage.name};AccountKey=${listKeys(discoveryStorage.id, discoveryStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+    WEBSITE_CONTENTSHARE : discoveryStorage.name
+    FUNCTIONS_WORKER_RUNTIME:'powershell'
+    FUNCTIONS_EXTENSION_VERSION:'~4'
+    APPINSIGHTS_INSTRUMENTATIONKEY: reference(appinsights.id, '2020-02-02-preview').InstrumentationKey
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(appinsights.id, '2020-02-02-preview').InstrumentationKey}'
+    ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+    subscriptionId: subscriptionId
+    opsdcrimmutableId: opsdcrimmutableId
+  }
+}
+
+resource deployfunctions 'Microsoft.Web/sites/extensions@2021-02-01' = {
+  parent: azfunctionsite
+  dependsOn: [
+    deploymentScript
+  ]
+  
+  name: 'MSDeploy'
+  properties: {
+    packageUri: '${discoveryStorage.properties.primaryEndpoints.blob}${deploymentContainerName}/${filename}?${(discoveryStorage.listAccountSAS(discoveryStorage.apiVersion, sasConfig).accountSasToken)}'
+  }
+}
+
+resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: functionname
+  tags: Tags
+  location: appInsightsLocation
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    //ApplicationId: guid(functionname)
+    //Flow_Type: 'Redfield'
+    //Request_Source: 'IbizaAIExtension'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+    WorkspaceResourceId: lawresourceid
+  }
+}
+
+var keyName = 'monitoringKey'
+
+resource monitoringkey 'Microsoft.Web/sites/host/functionKeys@2022-03-01' = { 
+  dependsOn: [ 
+    azfunctionsiteconfig 
+  ]
+  tags: Tags
+  name: '${functionname}/default/${keyName}'  
+  properties: {  
+    name: keyName  
+    value: apiManagementKey
+  }  
+} 
+

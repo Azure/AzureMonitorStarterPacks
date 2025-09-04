@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Web Apps",
+        "Type": "PaaS",
+        "Description": "Web Apps Monitoring Pack"
+    }
+}
