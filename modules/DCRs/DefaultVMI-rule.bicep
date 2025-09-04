@@ -1,0 +1,56 @@
+param location string
+param workspaceResourceId string
+param Tags object
+param ruleName string
+param dceId string
+// Not used in this module, but required for the DCR resource
+param xPathQueries array = []
+param counterSpecifiers array = []
+
+var wsfriendlyname=split(workspaceResourceId, '/')[8]
+// previously used this, but it's complicated when using VMInsights for Linux and Windows
+//var ruleName = 'MSVMI-${wsfriendlyname}'
+
+resource VMIRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+  location: location
+  name: ruleName
+  tags: Tags
+  properties: {
+    description: 'Data collection rule for VM Insights.'
+    dataCollectionEndpointId: dceId
+    dataSources: {
+        performanceCounters: [
+            {
+                name: 'VMInsightsPerfCounters'
+                streams: [
+                    'Microsoft-InsightsMetrics'
+                ]
+                //scheduledTransferPeriod: 'PT1M'
+                samplingFrequencyInSeconds: 60
+                counterSpecifiers: [
+                    '\\VmInsights\\DetailedMetrics'
+                ]
+            }
+        ]
+    }
+    destinations: {
+        logAnalytics: [
+            {
+                workspaceResourceId: workspaceResourceId
+                name: wsfriendlyname
+            }
+        ]
+    }
+    dataFlows: [
+        {
+            streams: [
+                'Microsoft-InsightsMetrics'
+            ]
+            destinations: [
+                wsfriendlyname
+            ]
+        }
+    ]
+  }
+}
+output VMIRuleId string = VMIRule.id

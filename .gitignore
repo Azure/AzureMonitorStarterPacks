@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# secret files
+setup/backend/Function/code/local.settings.json
+
 # User-specific files
 *.rsuser
 *.suo
@@ -396,3 +399,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+setup/backend/Function/code/local.settings.json

@@ -1,0 +1,256 @@
+targetScope = 'subscription'
+
+@description('The name for the function app that you wish to create')
+param functionname string
+param logicappname string
+param instanceName string
+//param currentUserIdObject string
+param location string
+param storageAccountName string
+param solutionTag string
+//param kvname string
+param lawresourceid string
+param appInsightsLocation string
+@description('UTC timestamp used to create distinct deployment scripts for each deployment')
+param Tags object
+param subscriptionId string
+param resourceGroupName string
+param imageGalleryName string
+param collectTelemetry bool
+
+var packPolicyRoleDefinitionIds=[
+  // '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
+  // '92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor Role Definition Id for Log Analytics Contributor
+  // //Above role should be able to add diagnostics to everything according to docs.
+  // '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // VM Contributor, in order to update VMs with vm Applications
+  //Contributor may be needed if we want to create alerts anywhere
+  'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+  // '/providers/Microsoft.Authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
+]
+
+var backendFunctionRoleDefinitionIds = [
+  '4a9ae827-6dc8-4573-8ac7-8239d42aa03f' // Tag Contributor
+  '9980e02c-c2be-4d73-94e8-173b1dc7cf3c' // VM Contributor
+  '48b40c6e-82e0-4eb3-90d5-19e40f49b624' // Arc Contributor
+  'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
+  '92aaf0da-9dab-42b6-94a3-d43ce8d16293' // Log Analytics Contributor
+  '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor
+  '36243c78-bf99-498c-9df9-86d9f8d28608' // policy contributor
+  'f1a07417-d97a-45cb-824c-7a7467783830' // Managed identity Operator
+  'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Data Contributor role is needed to allow the function to write to the blob storage account 
+  '3913510d-42f4-4e42-8a64-420c390055eb' // Monitoring metrics publisher role is needed to allow the function to write to the log analytics workspace, for discovery results.
+  '641177b8-a67a-45b9-a033-47bc880bb21e' // Application Contributor (VM Applications)
+  '0618ae3d-2930-4bb7-aa00-718db34ee9f9' // Azure Monitor dashboard with grafana
+]
+var logicappRequiredRoleassignments = [
+  '4633458b-17de-408a-b874-0445c86b69e6'   //keyvault reader role
+]
+var telemetryInfo = json(loadTextContent('./telemetry.json'))
+
+module telemetry './nested_telemetry.bicep' =  if (collectTelemetry) {
+  name: telemetryInfo.customerUsageAttribution.SolutionIdentifier
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {}
+}
+
+module gallery './modules/aig.bicep' ={
+  name: imageGalleryName
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    galleryname: imageGalleryName
+    location: location
+    tags: Tags
+  }
+}
+module opstablesandDCR './modules/opstables.bicep' = {
+  name: 'opstables-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    dceId: dataCollectionEndpoint.outputs.dceId
+    workspaceResourceId: lawresourceid
+  }
+}
+// Module below implements function, storage account, and app insights
+module backendFunction './modules/function.bicep' = {
+  name: functionname
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  // dependsOn: [
+  //   functionUserManagedIdentity
+  // ]
+  params: {
+    amgdStorageURL: amgdupload.outputs.amgdstorageURL
+    packsURL: packsDefStorage.outputs.fileURL
+    ambaJsonURL: ambaStorage.outputs.fileURL
+    appInsightsLocation: appInsightsLocation
+    functionname: functionname
+    lawresourceid: lawresourceid
+    location: location
+    Tags: Tags
+    storageAccountName: storageAccountName
+    userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
+    userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
+    packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+    solutionTag: solutionTag
+    instanceName: instanceName
+    imageGalleryName: gallery.name
+    packsModulesRootURL: modulesupload.outputs.modulesURL
+    applicationsURL: applicationsupload.outputs.applicationsURL
+    subscriptionId: subscriptionId
+    opsdcrimmutableId: opstablesandDCR.outputs.opsdcrimmutableId
+  }
+}
+module logicapp './modules/logicapp.bicep' = {
+  name: logicappname
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  dependsOn: [
+    backendFunction
+  ]
+  params: {
+    functioname: functionname
+    logicAppName: logicappname
+    location: location
+    Tags: Tags
+    keyvaultid: keyvault.outputs.kvResourceId
+    subscriptionId: subscriptionId
+  }
+}
+module extendedWorkbook './modules/extendedworkbook.bicep' = {
+  name: 'workbook2deployment-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    lawresourceid: lawresourceid
+    location: location
+    Tags: Tags
+  }
+}
+// A DCE in the main region to be used by all rules.
+module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bicep' = {
+  name: 'AMP-${instanceName}-DCE-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    location: location
+    Tags: Tags
+    dceName: 'AMP-${instanceName}-DCE-${location}'
+  }
+}
+
+// This module creates a user managed identity for the packs to use.
+module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
+  name: 'AMP-${instanceName}-UMI-Packs-${location}'
+  params: {
+    location: location
+    Tags: Tags
+    roleDefinitionIds: packPolicyRoleDefinitionIds
+    userIdentityName: 'AMP-${instanceName}-UMI-Packs'
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
+    addRGRoleAssignments: true
+    solutionTag: solutionTag
+    instanceName: instanceName
+  }
+}
+module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
+  name: 'AMP-${instanceName}-UMI-AzFun-${location}'
+  params: {
+    location: location
+    Tags: Tags
+    roleDefinitionIds: backendFunctionRoleDefinitionIds//,array('${customRemdiationRole.outputs.roleDefId}'))
+    userIdentityName: 'AMP-${instanceName}-UMI-Function'
+    resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
+    solutionTag: solutionTag
+    instanceName: instanceName
+  }
+}
+//Add keyvault
+module keyvault 'modules/keyvault.bicep' = {
+  name: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
+  dependsOn: [
+    backendFunction
+  ]
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    kvName: 'amp-${instanceName}-kv-${substring(uniqueString(subscriptionId, resourceGroupName, 'keyvault'), 0, 6)}'
+    location: location
+    Tags: Tags
+    functionName: functionname
+  }
+}
+//Add permissions for loginapp as a user to keyvault
+module userIdentityRoleAssignments '../../../modules/rbac/subscription/roleassignment.bicep' =  [for (roledefinitionId, i) in logicappRequiredRoleassignments:  {
+  name: 'logiapprbac-${i}'
+  //scope: managementGroup(mgname)
+  params: {
+    resourcename: keyvault.outputs.kvResourceId
+    principalId: logicapp.outputs.logicAppPrincipalId
+    solutionTag: solutionTag
+    roleDefinitionId: roledefinitionId
+    roleShortName: roledefinitionId
+    instanceName: instanceName
+  }
+}]
+// Module to upload the packsdef.json to the storage account.
+module packsDefStorage './modules/uploadPackDef.bicep' = {
+  name: 'PacksDefStorage-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'amba'
+    filename: 'PacksDef.json'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+module ambaStorage './modules/uploadAmbaAlerts.bicep' = {
+  name: 'ambaAlertsUpload-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'amba'
+    filename: 'amba-alerts.json'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+module modulesupload './modules/uploadmodules.bicep' = {
+  name: 'modulesstorage-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'modules'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+module applicationsupload './modules/uploadapplications.bicep' = {
+  name: 'applicationstostorage-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'applications'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+module amgdupload './modules/uploadamgd.bicep' = {
+  name: 'amgdupload-${instanceName}-${location}'
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+    location: location
+    containerName: 'dashboards'
+    tags: Tags
+    //sasExpiry: 'PT1H'
+  }
+}
+output amgdStorageURL string = amgdupload.outputs.amgdstorageURL
+output packsDefStorageURL string = packsDefStorage.outputs.fileURL
+output ambaStorageURL string = ambaStorage.outputs.fileURL
+output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
+output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+output dceId string = dataCollectionEndpoint.outputs.dceId
+

@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "SQL Managed Instance",
+        "Type": "PaaS",
+        "Description": "SQL Managed Instance Monitoring Pack"
+    }
+}

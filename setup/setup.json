@@ -1,0 +1,392 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Install Azure Monitor Starter Packs",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "instanceDetailsLabel": "MonStar Packs Deployment Details"
+                        },
+						{
+                            "name": "subscriptionsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2022-12-01"
+                            }
+                        },
+						{
+							"name": "AppInsightsLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/microsoft.insights?api-version=2014-04-01-preview')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'components/operations'].locations[].{label: @, value: @}"
+								}
+							}
+						},
+						{
+							"name": "grafanaLocationsAPI",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Dashboard?api-version=2021-04-01')]",
+								"transforms": {
+									"list": "resourceTypes[?resourceType == 'grafana'].locations[].{label: @, value: @}"
+								}
+							}
+						}
+                    ]
+                },
+                {
+                    "name": "Configuration",
+                    "label": "Configuration",
+                    "elements": [
+                        {
+                            "name": "AzureManagedGrafanaApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Dashboard/grafana?api-version=2022-08-01')]"
+                            }
+                        },
+                        {
+                            "name": "LogAnalyticsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
+                            }
+                        },
+                        {
+                            "name": "ActionGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Insights/actionGroups?api-version=2021-09-01')]"
+                            }
+                        },
+                        {
+                            "name": "ResourceGroupStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Resource Group",
+                            "toolTip": "This will be the Resource Group in which the MonStar Packs` resources will be deployed in.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "resourceGroupNameNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Resource Group Name for MonStar Packs",
+                            "subLabel": "",
+                            "defaultValue": "rg-MonstarPacks",
+                            "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",
+                                "regex": "",
+                                "validationMessage": ""
+                            },
+                            "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]"
+                        },
+                        {
+                            "name": "ResGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id,'/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
+                            "name": "resourceGroupNameExisting",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing Resource Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "MonStar Packs Resource Group where resources will be deployed.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('Configuration').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": "[equals(steps('Configuration').ResourceGroupStatus, 'Existing')]"
+                        },
+                        {
+                            "name": "instanceName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Instance Name for the Monitoring Packs Implementation",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Name of the Monitoring Pack instance.",
+                            "constraints": {
+								"required": true,
+                    			"regex": "^[a-z0-9]{1,4}$",
+                    			"validationMessage": "Only alphanumeric lowercase characters are allowed, and the value must be 1-4 characters long."
+                            },
+                            "visible": true
+                        },
+						
+						{
+							"name": "storageAccountSelector",
+							"type": "Microsoft.Storage.StorageAccountSelector",
+							"label": "Storage account",
+							"toolTip": "",
+							"defaultValue": {
+								"name": "storageaccount01",
+								"type": "Standard_LRS"
+							},
+							"scope": {
+								"location": "[steps('basics').resourceScope.location.name]",
+								"resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+								"subscriptionId": "[last(split(steps('basics').resourceScope.subscription.id,'/'))]"
+							},
+							"constraints": {
+								"allowedTypes": []
+							},
+							"options": {
+								"hideExisting": false
+							},
+							"visible": true
+						},
+                        {
+                            "name": "LAWStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Log Analytics Workspace",
+                            "toolTip": "This will be the log analytics workspace from which data will be read and stored.",
+                            "defaultValue": "Existing",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "LogAnalyticsWorkspaceResourceNew",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Log Analytics Workspace Name for MonStar Packs",
+                            "subLabel": "",
+                            "defaultValue": "Monster-LA",
+                            "toolTip": "Log Analytics Workspace Name for MonStar Packs.",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').LAWStatus, 'New')]",
+                                "regex": "^[a-zA-Z0-9][a-zA-Z0-9-]{0,21}[a-zA-Z0-9]$",
+                                "validationMessage": ""
+                            },
+                            "visible": "[equals(steps('Configuration').LAWStatus, 'New')]"
+                        },
+                        {
+                            "name": "LogAnalyticsWorkspaceResource",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Log Analytics Workspace",
+                            "toolTip": "Log Analytics Workspace from/in which data will be read and stored.",
+                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
+                            },
+                            "infoMessages": [],
+                            "visible": "[equals(steps('Configuration').LAWStatus, 'Existing')]"
+                        },
+                        {
+                            "name": "deployDiscovery",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy Discovery features.(Preview)",
+                            "toolTip": "Preview: The Discovery features will discovery applications and roles on OS targetted machines.",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the Discovery featues to the selected Management Group or Subscription."
+                            }
+                        },
+                        {
+                            "name": "infoBoxDiscovery",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('Configuration').deployDiscovery, true)]",
+                            "options": {
+                                "text": "When discovery is enabled in the configuration page, workloads will be discovered in those Azure VMs.",
+                                "uri": "https://www.microsoft.com"
+                            }
+                        },
+						{
+							"name": "AppInsightsLocation",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Location for App Insights",
+							"multiselect": false,
+							"defaultValue": "",
+							"toolTip": "Subscription to deploy resources to.",
+							"filter": true,
+							"filterPlaceholder": "Filter Locations...",
+							"defaultDescription": "A value for selection",
+							"constraints": {
+								"allowedValues": "[steps('basics').AppInsightsLocationsAPI.transformed.list]",
+								"required": true
+							},
+							"visible": true
+						},
+                        {
+                            "name": "deployGrafana",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy Azure Managed Grafana",
+                            "toolTip": "Select to deploy Azure Managed Grafana.",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Select to deploy the Azure Managed Grafana."
+                            }
+                        },
+                        {
+                            "name": "infoBoxGrafana",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('Configuration').deployGrafana, true)]",
+                            "options": {
+                                "text": "When Enabled, a new Azure Managed Grafana will be deployed to the selected subscription. The Grafana will be used to visualize the data from the MonStar Packs. If not enabled, some visuals for certain Packs won't be available.",
+                                "uri": "https://www.microsoft.com",
+								"style": "Info"
+                            }
+                        },
+                        {
+                            "name": "GrafanaStatus",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Use New or Existing Grafana",
+                            "toolTip": "This will be the Grafana Instance used for the MonStar Packs.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": "New"
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": "Existing"
+                                    }
+                                ],
+                                "required": "[equals(steps('Configuration').deployGrafana, true)]"
+                            },
+                            "visible": "[equals(steps('Configuration').deployGrafana, true)]"
+                        },
+                        {
+                            "name": "NewGrafanaName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Name for the new Grafana environment.",
+                            "subLabel": "",
+                            "defaultValue": "[concat('AMSP',first(split(last(split(steps('basics').resourceScope.subscription.id,'/')),'-')))]",
+                            "toolTip": "TBD",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'New')]",
+                                "regex": "^[a-zA-Z][a-zA-Z0-9-]{0,21}[a-zA-Z0-9]$",
+                                "validationMessage": "Workspace names must contain only dashes or alphanumeric characters. Should be between 2 to 23 characters long. They must begin with a letter and end with a letter or digit."
+                            },
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
+                        },
+                        {
+                            "name": "ExistingGrafanaInstance",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Azure Managed Grafana",
+                            "toolTip": "Existing Azure Managed Grafana",
+                            "resourceType": "Microsoft.Dashboard/grafana",
+                            "constraints": {
+                                "required": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
+                            },
+                            "infoMessages": [],
+                            "visible": "[equals(steps('Configuration').GrafanaStatus, 'Existing')]"
+                        },
+						{
+							"name": "grafanaLocation",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Grafana Location",
+							"multiselect": false,
+							"defaultValue": "",
+							"toolTip": "Subscription to deploy resources to.",
+							"filter": true,
+							"filterPlaceholder": "Filter Grafana Locations...",
+							"defaultDescription": "A value for selection",
+							"constraints": {
+								"allowedValues": "[steps('basics').grafanaLocationsAPI.transformed.list]",
+								"required": true
+							},
+							"visible": "[equals(steps('Configuration').GrafanaStatus, 'New')]"
+						},
+												
+						{
+							"name": "collectTelemetry",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Collect deployment telemetry.",
+							"toolTip": "Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by Microsoft's privacy policies, located at https://www.microsoft.com/trustcenter.",
+							"constraints": {
+								"required": false,
+								"validationMessage": "Please acknowledge the legal conditions."
+							},
+							"defaultValue": true
+							
+						}
+                    ]
+                },
+                {
+                    "name": "tags",
+                    "label": "Tags",
+                    "elements": [
+                        {
+                            "name": "tagsByResource",
+                            "type": "Microsoft.Common.TagsByResource",
+                            "resources": [
+                                "All"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+                "resourceGroupName": "[if(equals(steps('Configuration').ResourceGroupStatus, 'New'), steps('Configuration').resourceGroupNameNew, last(split(steps('Configuration').resourceGroupNameExisting, '/')))]",
+                "createNewResourceGroup": "[equals(steps('Configuration').ResourceGroupStatus, 'New')]",                
+                "location": "[steps('basics').resourceScope.location.name]",
+                "newLogAnalyticsWSName": "[steps('Configuration').LogAnalyticsWorkspaceResourceNew]",
+                "createNewLogAnalyticsWS": "[equals(steps('Configuration').LAWStatus, 'New')]",
+                "existingLogAnalyticsWSId" : "[steps('Configuration').LogAnalyticsWorkspaceResource.id]",
+                "grafanaLocation": "[steps('Configuration').grafanaLocation]",
+                "grafanaName": "[steps('Configuration').NewGrafanaName]",
+                "newGrafana" : "[equals(steps('Configuration').GrafanaStatus,'New')]",                
+                "storageAccountName": "[steps('Configuration').storageAccountSelector.name]",
+                "createNewStorageAccount": "[equals(steps('Configuration').storageAccountSelector.newOrExisting,'new')]",
+				"instanceName":  "[steps('Configuration').instanceName]",
+                "deployGrafana": "[steps('Configuration').deployGrafana]",
+                "customerTags": "[steps('tags').tagsByResource]",
+                "deployDiscovery": "[steps('Configuration').deployDiscovery]",
+		        "collectTelemetry": "[steps('Configuration').collectTelemetry]",
+                "appInsightsLocation": "[steps('Configuration').AppInsightsLocation]"
+            },
+            "kind": "Subscription",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
+        }
+    }
+}

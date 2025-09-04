@@ -1,0 +1,7 @@
+{
+    "Pack": {
+        "Name": "Network Security Groups",
+        "Type": "Platform",
+        "Description": "Network Security Groups Monitoring Pack"
+    }
+}
