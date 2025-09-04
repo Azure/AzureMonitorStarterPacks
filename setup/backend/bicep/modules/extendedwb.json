@@ -193,7 +193,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "mcp3"
+                  "value": "mcp2"
                 },
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -235,7 +235,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Web/sites/AMP-mcp3-e315fe54-Function"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-mcp2-e315fe54-Function"
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -254,7 +254,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.OperationalInsights/workspaces/Monstar-LAW3"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LAW2"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -279,7 +279,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks3/providers/Microsoft.Logic/workflows/AMP-mcp3-LogicApp"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-mcp2-LogicApp"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -333,36 +333,6 @@
               "value": "backend"
             },
             "name": "generalParams"
-          },
-          {
-            "type": 11,
-            "content": {
-              "version": "LinkItem/1.0",
-              "style": "nav",
-              "links": [
-                {
-                  "id": "c3a418ba-e352-456c-a134-c6434e96633b",
-                  "cellValue": "",
-                  "linkTarget": "ArmAction",
-                  "linkLabel": "Update Backed Info",
-                  "preText": "",
-                  "style": "primary",
-                  "linkIsContextBlade": true,
-                  "armActionContext": {
-                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
-                    "headers": [],
-                    "params": [],
-                    "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {\r\n  }\r\n}",
-                    "httpMethod": "POST",
-                    "title": "Update Backend info",
-                    "description": "# Update Backend Info\n\n- Update current available services packs\n- Update current available IaaS Packs\n- Update currently monitored and unmonitored services\n\nNote: Once data is updated, please allow 5 to 10 minutes for it to be updated in the workbook.",
-                    "actionName": "UpdateBackend",
-                    "runLabel": "Update"
-                  }
-                }
-              ]
-            },
-            "name": "links - 5"
           },
           {
             "type": 9,
@@ -681,7 +651,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName == '{instanceName}'\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| summarize count() by AlertType=type\n\n",
+                    "query": "alertsmanagementresources\n| where ['type'] == 'microsoft.alertsmanagement/alerts'\n| project ['Alert Id']=id,resourceId=properties.context.context.resourceId, alertRule=tolower(tostring(properties.essentials.alertRule)), status=properties.context.status\n| where isnotempty(alertRule)\n| join (resources\n| where type == \"microsoft.insights/scheduledqueryrules\" or type ==\"microsoft.insights/metricalerts\" or type == 'microsoft.insights/activitylogalerts'\n| where isnotempty(tags.MonitorStarterPacks) and tags.instanceName in ({alertsInstance})\n| extend alertRule=tolower(tostring(['id']))) on alertRule\n| summarize count() by AlertType=type\n\n",
                     "size": 0,
                     "queryType": 1,
                     "resourceType": "microsoft.resources/tenants",
@@ -845,7 +815,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| where isnotnull(tags.MonitorStarterPacks) and tags.instanceName == '{instanceName}'\n| project name, MPs=tags.MonitorStarterPacks\n| mv-expand (split(MPs,','))\n| summarize Total=count() by tostring(MPs)\n| sort by MPs asc\n\n\n",
+                    "query": "resources | where type =~ 'microsoft.hybridcompute/machines' or type =~ 'microsoft.compute/virtualmachines'\n| project name, MPs=tags.MonitorStarterPacks\n| where isnotnull(MPs)\n| mv-expand (split(MPs,','))\n| summarize Total=count() by tostring(MPs)\n| sort by MPs asc\n\n\n",
                     "size": 1,
                     "title": "Tagged Resources per Tag",
                     "queryType": 1,
@@ -887,7 +857,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| where isnotempty(['tags'].MonitorStarterPacks)\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ '{instanceName}'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join  (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
+                    "query": "resources\n| where type == \"microsoft.insights/datacollectionrules\"\n| extend MPs=tostring(['tags'].MonitorStarterPacks)\n| where isnotempty(MPs) //or properties.dataSources.performanceCounters[0].name == 'VMInsightsPerfCounters'\n| where tags.instanceName =~ 'mcp1'\n| summarize by Pack=MPs,rulename=tostring(name)\n| join  (insightsresources\n| where type == \"microsoft.insights/datacollectionruleassociations\"\n| extend resourceId=split(id,'/providers/Microsoft.Insights/')[0]\n| where isnotnull(properties.dataCollectionRuleId)\n| project rulename=tostring(split(properties.dataCollectionRuleId,\"/\")[8]),resourceName=tostring(split(resourceId,\"/\")[8]),resourceId) on rulename\n| project-away rulename,rulename1,resourceId\n| summarize Associated=count() by Pack\n| sort by Pack asc",
                     "size": 1,
                     "title": "Associated Servers per Pack",
                     "queryType": 1,
@@ -957,7 +927,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\r\n| where ['type'] =~ 'microsoft.insights/workbooks' or ['type'] =~ 'microsoft.dashboard/dashboards'\r\n| where tags.InstanceName == '{instanceName}'\r\n| extend realName=iff(['type']=~'microsoft.insights/workbooks',properties.displayName,name)\r\n| project id, Name=realName,type,MP=tags.MonitorStarterPacks\r\n| where isnotnull(MP)\r\n| union (\r\nresources\r\n| where ['type']  =~ 'microsoft.dashboard/grafana'\r\n| where tags.InstanceName == '{instanceName}'\r\n| project id,Name=name, type,MP=tags.MonitorStarterPacksComponents\r\n| where isnotnull(MP))\r\n| project Link=id,Name, type=iff(['type']=~'microsoft.insights/workbooks',\"Workbook\",iff(['type']=~'microsoft.dashboard/grafana', \"Azure Managed Grafana\", \"Azure Monitor Dashboard with Grafana\"))\r\n",
+              "query": "resources\r\n| where ['type'] =~ 'microsoft.insights/workbooks' or ['type'] =~ 'microsoft.dashboard/dashboards'\r\n| extend realName=iff(['type']=~'microsoft.insights/workbooks',properties.displayName,name)\r\n| project id, Name=realName,type,MP=tags.MonitorStarterPacks\r\n| where isnotnull(MP)\r\n| union (\r\nresources\r\n| where ['type']  =~ 'microsoft.dashboard/grafana'\r\n| project id,Name=name, type,MP=tags.MonitorStarterPacksComponents\r\n| where isnotnull(MP))\r\n| project Link=id,Name, type=iff(['type']=~'microsoft.insights/workbooks',\"Workbook\",iff(['type']=~'microsoft.dashboard/grafana', \"Azure Managed Grafana\", \"Azure Monitor Dashboard with Grafana\"))\r\n",
               "size": 0,
               "title": "Dashboards",
               "queryType": 1,
@@ -1495,10 +1465,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 0,
-                        "resourceType": "microsoft.operationalinsights/workspaces",
-                        "value": [
-                          "VMI"
-                        ]
+                        "resourceType": "microsoft.operationalinsights/workspaces"
                       }
                     ],
                     "style": "pills",
@@ -1615,7 +1582,7 @@
                         "label": "Select Service Type(s)",
                         "type": 7,
                         "multiSelect": true,
-                        "quote": "",
+                        "quote": "'",
                         "delimiter": ",",
                         "query": "resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n| where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines',\"microsoft.insights/scheduledqueryrules\",\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\",'microsoft.insights/datacollectionrules','Microsoft.Compute/galleries/applications/versions','Microsoft.Compute/galleries/applications'))\r\n| project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']\r\n| join kind=fullouter    (resources\r\n    | where tolower(type) in (\"microsoft.insights/metricalerts\",\"microsoft.insights/activitylogalerts\")\r\n    | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '{instanceName}'\r\n    | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource\r\n| summarize by Type=['type']",
                         "crossComponentResources": [
@@ -1647,7 +1614,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let filter=\"{SelectPaasType}\";\r\nlet maxTimegenerated=toscalar(MonitoredPaaSTable_CL | summarize max (TimeGenerated));\r\nMonitoredPaaSTable_CL\r\n| where isnotempty(resourceGroup)\r\n| where TimeGenerated==maxTimegenerated\r\n| where (isempty(filter) or resourcetype in~ (split(tostring(filter), \",\")))\r\n| project Resource,resourceGroup, resourcetype,location, resourcekind\r\n",
+                    "query": "MonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource,resourceGroup, resourcetype, location, resourcekind\r\n| where resourcetype in ({SelectPaasType})\r\n| where isnotempty(location)",
                     "size": 0,
                     "title": "Monitored Services",
                     "showRefreshButton": true,
@@ -1792,7 +1759,7 @@
                           "showDefault": false
                         },
                         "timeContext": {
-                          "durationMs": 86400000
+                          "durationMs": 172800000
                         },
                         "queryType": 0,
                         "resourceType": "microsoft.operationalinsights/workspaces",
@@ -1811,7 +1778,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let maxTimegenerated=toscalar(NonMonitoredPaaSTable_CL | summarize max (TimeGenerated));\r\nNonMonitoredPaaSTable_CL\r\n| where TimeGenerated==maxTimegenerated\r\n| where resourcetype in~ ({SelectPaaStypeToTag})\r\n| where isnotempty(location)\r\n| project Resource,type=resourcetype,resourcekind, location",
+                    "query": "NonMonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource, resourceGroup,resourcekind\r\n| where resourcetype in ({SelectPaaStypeToTag})\r\n| where isnotempty(location)",
                     "size": 0,
                     "title": "Non-Monitored Services",
                     "showRefreshButton": true,
@@ -1869,20 +1836,9 @@
                           }
                         }
                       ],
-                      "filter": true,
-                      "sortBy": [
-                        {
-                          "itemKey": "type",
-                          "sortOrder": 1
-                        }
-                      ]
+                      "filter": true
                     },
-                    "sortBy": [
-                      {
-                        "itemKey": "type",
-                        "sortOrder": 1
-                      }
-                    ]
+                    "sortBy": []
                   },
                   "name": "query - nonMonitored Paas - Copy",
                   "styleSettings": {
@@ -1914,7 +1870,7 @@
                           "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{paastotag}],\n    \"Pack\": \"{PackTagsPaaS}\",\n    \"PackType\": \"PaaS\",\n    \"Type\": \"{passtotagtype}\",\n    \"DefaultAG\": \"{DefaultAG}\",\n    \"WorkspaceId\": \"{Workspace}\"\n  }\n}",
                           "httpMethod": "POST",
                           "title": "Enable Monitoring Packs",
-                          "description": "# This will enable the pack for the following services:\n\n***{paastotag:$.Resource}***\n\nby adding the specific Pack(s) to the resource(s).\n\n",
+                          "description": "# This will enable the pack for the following services:\n***{paastotag:$.Resource}***\n\nby adding the specific Pack(s) to the resource(s).\n\n",
                           "actionName": "EnableMonitoring",
                           "runLabel": "Confirm"
                         }
@@ -4079,7 +4035,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\" and tags.instanceName == '{instanceName}'\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| extend splitFields = split(apps.packageReferenceId, '/')\n| extend Gallery = strcat('/',strcat_array(array_slice(splitFields, 1, 8), '/'))\n| project Computer=id, ['Application Version']=tostring(apps.packageReferenceId), Gallery\n| summarize by Gallery,['Application Version'], Computer\n| sort by Gallery asc",
+              "query": "resources\n| where type =~ \"microsoft.compute/virtualmachines\"\n| mvexpand with_itemindex=i apps=properties.applicationProfile.galleryApplications\n| where apps != ''\n| extend splitFields = split(apps.packageReferenceId, '/')\n| extend Gallery = strcat('/',strcat_array(array_slice(splitFields, 1, 8), '/'))\n| project Computer=id, ['Application Version']=tostring(apps.packageReferenceId), Gallery\n| summarize by Gallery,['Application Version'], Computer\n| sort by Gallery asc",
               "size": 0,
               "title": "Client Status (VM Applications)",
               "showExportToExcel": true,
@@ -4991,7 +4947,7 @@
                   },
                   "queryType": 0,
                   "resourceType": "microsoft.insights/components",
-                  "value": "opstasksondemand"
+                  "value": "opstasks"
                 }
               ],
               "style": "pills",
@@ -5065,10 +5021,58 @@
         "value": "logs"
       },
       "name": "groupLogs"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "{\"version\":\"CustomEndpoint/1.0\",\"data\":null,\"headers\":[{\"key\":\"x-functions-key\",\"value\":\"{configKey}\"}],\"method\":\"GET\",\"url\":\"https://{FunctionApps:name}.azurewebsites.net/api/config?Action=getdiscoveryresults\",\"contentType\":\"text/plain\",\"urlParams\":[{\"key\":\"WSId\",\"value\":\"{Workspace}\"}],\"transformers\":null}",
+        "size": 0,
+        "exportedParameters": [
+          {
+            "parameterName": "vmsDiscoveryTag",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "tag",
+            "parameterName": "vmsDiscoveryTagValue",
+            "parameterType": 1
+          }
+        ],
+        "queryType": 10,
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "tag",
+              "formatter": 1,
+              "formatOptions": {
+                "linkTarget": "ArmAction",
+                "linkIsContextBlade": true,
+                "armActionContext": {
+                  "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                  "headers": [],
+                  "params": [],
+                  "body": "{ \n  \"function\": \"packmgmt\",\n  \"functionBody\" : {\n    \"Action\":\"AddPack\",\n    \"Resources\": [{vmsDiscoveryTag}],\n    \"Pack\": \"{vmsDiscoveryTagValue}\"\n  }\n}",
+                  "httpMethod": "POST",
+                  "title": "Enable Monitoring",
+                  "description": "# Adding Tag(s) To VMs\n\n\"Resources\": {vmsDiscoveryTag:$.Computer}\n\n\"Pack\": \"{vmsDiscoveryTagValue}\"",
+                  "runLabel": "Enable"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "conditionalVisibility": {
+        "parameterName": "discTab",
+        "comparison": "isEqualTo",
+        "value": "discResults"
+      },
+      "name": "query - discovery Results"
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks3/providers/microsoft.operationalinsights/workspaces/monstar-law3"
+    "Azure Monitor"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
