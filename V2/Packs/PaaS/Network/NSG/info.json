@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "Network Security Groups",
-        "Type": "PaaS",
-        "Description": "Network Security Groups Monitoring Pack"
-    }
-}

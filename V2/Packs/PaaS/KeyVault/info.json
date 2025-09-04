@@ -1,7 +1,0 @@
-{
-    "Pack": {
-        "Name": "Key Vault",
-        "Type": "PaaS",
-        "Description": "Key Vault Monitoring Pack"
-    }
-}
