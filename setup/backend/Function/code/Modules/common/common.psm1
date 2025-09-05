@@ -709,7 +709,7 @@ function Add-Monitoring { # This adds a single pack to a single resource.
         'IaaS' { 
             #Will check if the required DCRs and alerts already exist. If not, it will create them.
             Write-host "Installing pack for $TagValue, if not installed yet."
-            $packDef=new-pack -location $location `
+            $packDef=new-pack -location $env:solutionlocation `
                 -instanceName $instanceName `
                 -resourceGroup $resourceGroupName `
                 -workspaceId $workspaceResourceId `

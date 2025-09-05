@@ -38,13 +38,19 @@ resource discoveryStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existin
   name: storageAccountName
 }
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'deployscript-Function-${instanceName}-${location}'
   dependsOn: [
     azfunctionsiteconfig
   ]
   tags: Tags
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${userManagedIdentity}': {}
+    }
+  }
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.42.0'
@@ -55,10 +61,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         name: 'AZURE_STORAGE_ACCOUNT'
         value: discoveryStorage.name
       }
-      {
-        name: 'AZURE_STORAGE_KEY'
-        secureValue: discoveryStorage.listKeys().keys[0].value
-      }
+      // {
+      //   name: 'AZURE_STORAGE_KEY'
+      //   secureValue: discoveryStorage.listKeys().keys[0].value
+      // }
       {
         name: 'CONTENT'
         value: loadFileAsBase64('../../backend.zip')
@@ -195,6 +201,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
     subscriptionId: subscriptionId
     opsdcrimmutableId: opsdcrimmutableId
+    solutionlocation: location
   }
 }
 
