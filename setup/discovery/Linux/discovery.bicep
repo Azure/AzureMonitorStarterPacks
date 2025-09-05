@@ -1,5 +1,5 @@
 ////targetScope = 'managementGroup'
-
+param UserManagedIdentityId string
 param packtag string
 param location string 
 param solutionTag string
@@ -29,15 +29,15 @@ var appName = '${instanceName}-LxDiscovery'
 var appDescription = 'Linux Workload discovery'
 var OS = 'Linux'
 var appVersionName = '1.0.0'
-param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
-var sasConfig = {
-  signedResourceTypes: 'sco'
-  signedPermission: 'r'
-  signedServices: 'b'
-  signedExpiry: sasExpiry
-  signedProtocol: 'https'
-  keyToSign: 'key2'
-}
+// param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+// var sasConfig = {
+//   signedResourceTypes: 'sco'
+//   signedPermission: 'r'
+//   signedServices: 'b'
+//   signedExpiry: sasExpiry
+//   signedProtocol: 'https'
+//   keyToSign: 'key2'
+// }
 // VM Application to collect the data - this would be ideally an extension
 module linuxdiscoveryapp '../../../modules/discovery/aigapp.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -61,6 +61,7 @@ module uploadLinux './uploadDSLinux.bicep' = {
     storageAccountName: storageAccountname
     location: location
     tags: tags
+    UserManagedIdentityId: UserManagedIdentityId
   }
 }
 resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
@@ -79,7 +80,8 @@ module linuxDiscovery '../../../modules/discovery/aigappversion.bicep' = {
     appVersionName: appVersionName
     location: location
     targetRegion: location
-    mediaLink: '${uploadLinux.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
+    //mediaLink: '${uploadLinux.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
+    mediaLink: uploadLinux.outputs.fileURL
     installCommands: 'tar -xvf ${filename} && chmod +x ./install.sh && ./install.sh'
     removeCommands: '/opt/microsoft/discovery/uninstall.sh'
     tags: tags

@@ -1,13 +1,13 @@
 ////targetScope = 'managementGroup'
-param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
-var sasConfig = {
-  signedResourceTypes: 'sco'
-  signedPermission: 'r'
-  signedServices: 'b'
-  signedExpiry: sasExpiry
-  signedProtocol: 'https'
-  keyToSign: 'key2'
-}
+// param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
+// var sasConfig = {
+//   signedResourceTypes: 'sco'
+//   signedPermission: 'r'
+//   signedServices: 'b'
+//   signedExpiry: sasExpiry
+//   signedProtocol: 'https'
+//   keyToSign: 'key2'
+// }
 param location string 
 param solutionTag string
 param subscriptionId string
@@ -24,6 +24,8 @@ param tableNameToUse string
 //var ruleshortname = 'amp${instanceName}windisc'
 param customerTags object
 param solutionVersion string
+param UserManagedIdentityId string
+
 var tempTags ={
   '${solutionTag}': packtag
   instanceName: instanceName
@@ -58,6 +60,7 @@ module upload 'uploadDSWindows.bicep' = {
     storageAccountName: storageAccountname
     location: location
     tags: tags
+    UserManagedIdentityId: UserManagedIdentityId
   }
 }
 resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
@@ -76,7 +79,8 @@ module windiscovery '../../../modules/discovery/aigappversion.bicep' = {
     appVersionName: appVersionName
     location: location
     targetRegion: location
-    mediaLink: '${upload.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
+    mediaLink: upload.outputs.fileURL
+    //mediaLink: '${upload.outputs.fileURL}?${(packStorage.listAccountSAS(packStorage.apiVersion, sasConfig).accountSasToken)}'
     installCommands: 'powershell -command "ren windiscovery discover.zip; expand-archive ./discover.zip . ; ./install.ps1"'
     removeCommands: 'powershell -command "Unregister-ScheduledTask -TaskName \'Monstar Packs Discovery\' \'\\\'"'
     tags: tags

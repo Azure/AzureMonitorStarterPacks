@@ -709,7 +709,7 @@ function Add-Monitoring { # This adds a single pack to a single resource.
         'IaaS' { 
             #Will check if the required DCRs and alerts already exist. If not, it will create them.
             Write-host "Installing pack for $TagValue, if not installed yet."
-            $packDef=new-pack -location $location `
+            $packDef=new-pack -location $env:solutionlocation `
                 -instanceName $instanceName `
                 -resourceGroup $resourceGroupName `
                 -workspaceId $workspaceResourceId `
@@ -1759,15 +1759,10 @@ function create-vmapplication {
         $container = Get-AzStorageContainer -Name "applications" -Context $context
         # read the content from the repository from the URL and save it to a file in the temp folder
         Write-host "Downloading application package from $applicationsURL/$($rule.clientAppZIPFile)"
-        # get a SAS token for an hour for the bob
-        $sasToken = New-AzStorageBlobSASToken -Blob $rule.clientAppZIPFile `
-                                            -Container $container.Name `
-                                            -Context $context `
-                                            -Permission r `
-                                            -ExpiryTime (Get-Date).AddHours(1) `
-                                            -FullUri
-        if ($null -eq $sasToken) {
-            Write-Error "Failed to get SAS token for the application package."
+        # get a the URL for the bob
+        $blobUrl = "$($storageAccount.PrimaryEndpoints.Blob)$($container.Name)/$($rule.clientAppZIPFile)"
+        if ($null -eq $blobUrl) {
+            Write-Error "Failed to get blob URL for the application package."
             return $false
         }
         $appversion=New-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `
@@ -1777,7 +1772,7 @@ function create-vmapplication {
             -Location $location `
             -Install $rule.clientAppInstallCommand `
             -Remove $rule.clientAppUninstallCommand `
-            -PackageFileLink $sasToken `
+            -PackageFileLink $blobUrl `
             -Tag $TagsToUse
         # wait for the application version to be created
         $appversion = Get-AzGalleryApplicationVersion -ResourceGroupName $resourceGroup `

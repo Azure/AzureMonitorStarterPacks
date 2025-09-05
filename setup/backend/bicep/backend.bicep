@@ -60,6 +60,7 @@ module gallery './modules/aig.bicep' ={
     galleryname: imageGalleryName
     location: location
     tags: Tags
+    userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
   }
 }
 module opstablesandDCR './modules/opstables.bicep' = {
@@ -198,6 +199,7 @@ module packsDefStorage './modules/uploadPackDef.bicep' = {
     location: location
     containerName: 'amba'
     filename: 'PacksDef.json'
+    UserManagedIdentityId: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     tags: Tags
     //sasExpiry: 'PT1H'
   }
@@ -211,6 +213,7 @@ module ambaStorage './modules/uploadAmbaAlerts.bicep' = {
     containerName: 'amba'
     filename: 'amba-alerts.json'
     tags: Tags
+    UserManagedIdentityId: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     //sasExpiry: 'PT1H'
   }
 }
@@ -221,6 +224,7 @@ module modulesupload './modules/uploadmodules.bicep' = {
     storageAccountName: storageAccountName
     location: location
     containerName: 'modules'
+    UserManagedIdentityId: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     tags: Tags
     //sasExpiry: 'PT1H'
   }
@@ -232,6 +236,7 @@ module applicationsupload './modules/uploadapplications.bicep' = {
     storageAccountName: storageAccountName
     location: location
     containerName: 'applications'
+    UserManagedIdentityId: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     tags: Tags
     //sasExpiry: 'PT1H'
   }
@@ -243,6 +248,7 @@ module amgdupload './modules/uploadamgd.bicep' = {
     storageAccountName: storageAccountName
     location: location
     containerName: 'dashboards'
+    UserManagedIdentityId: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     tags: Tags
     //sasExpiry: 'PT1H'
   }
@@ -250,7 +256,8 @@ module amgdupload './modules/uploadamgd.bicep' = {
 output amgdStorageURL string = amgdupload.outputs.amgdstorageURL
 output packsDefStorageURL string = packsDefStorage.outputs.fileURL
 output ambaStorageURL string = ambaStorage.outputs.fileURL
-output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
-output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+// output packsUserManagedIdentityId string = packsUserManagedIdentity.outputs.userManagedIdentityPrincipalId
+// output packsUserManagedResourceId string = packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+output functionUserManagedIdentityId string = functionUserManagedIdentity.outputs.userManagedIdentityResourceId
 output dceId string = dataCollectionEndpoint.outputs.dceId
 

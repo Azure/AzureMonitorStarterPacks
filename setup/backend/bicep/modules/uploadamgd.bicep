@@ -2,6 +2,7 @@ param location string
 param storageAccountName string
 //param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
 param containerName string
+param UserManagedIdentityId string
 //param resourceName string
 param tags object
 
@@ -23,6 +24,12 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'deployscript-amgd-${location}'
   tags: tags
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${UserManagedIdentityId}': {}
+    }
+  }
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.42.0'
@@ -33,10 +40,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         name: 'AZURE_STORAGE_ACCOUNT'
         value: packStorage.name
       }
-      {
-        name: 'AZURE_STORAGE_KEY'
-        secureValue: packStorage.listKeys().keys[0].value
-      }
+      // {
+      //   name: 'AZURE_STORAGE_KEY'
+      //   secureValue: packStorage.listKeys().keys[0].value
+      // }
       {
         name: 'CONTENT'
         value: loadFileAsBase64('../../../../Packs/AMGD/amgd.zip') 

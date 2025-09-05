@@ -21,6 +21,7 @@ For a detailed solution anatomy, please refer to [Solution Anatomy](./Docs/solut
 - Quicker deployment
 - No management group requirement
 - Easy Pack authoring
+- Azure Dashboards with grafana are deployed along with packs that have them.
 
 ## Pre-requisites and recommendations
 
@@ -39,7 +40,7 @@ Once the deployment is completed, the following steps need to be completed:
 
 - Navigate to the recently deployed resource group and find the workbook name "Azure Monitor Starter Packs Extended". Open the workbook and click on the "Configuration" tab. This will open a new tab with the configuration page.
 
-![alt text](./Docs/media/image.png)
+![alt text](image.png)
 
 Once the parameters are configured, make sure to save the workbook.
 
