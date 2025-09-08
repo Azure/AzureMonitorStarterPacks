@@ -1617,7 +1617,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "MonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource,resourceGroup, resourcetype, location, resourcekind\r\n| where resourcetype in ({SelectPaasType})\r\n| where isnotempty(location)",
+                    "query": "MonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource,resourceGroup, resourcetype, location, resourcekind\r\n| where resourcetype in ({SelectPaasType})\r\n| project Resource, resourceGroup, type=resourcetype, location, resourcekind,subscriptionId\r\n| where isnotempty(location)",
                     "size": 0,
                     "title": "Monitored Services",
                     "showRefreshButton": true,
@@ -1644,6 +1644,14 @@
                     ],
                     "gridSettings": {
                       "formatters": [
+                        {
+                          "columnMatch": "subscriptionId",
+                          "formatter": 15,
+                          "formatOptions": {
+                            "linkTarget": null,
+                            "showIcon": true
+                          }
+                        },
                         {
                           "columnMatch": "AlertRules",
                           "formatter": 18,
@@ -1781,7 +1789,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "NonMonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource, resourceGroup,resourcekind\r\n| where resourcetype in ({SelectPaaStypeToTag})\r\n| where isnotempty(location)\r\n| project Resource, resourceGroup,type=resourcetype, location,resourcekind",
+                    "query": "NonMonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource, resourceGroup,resourcekind\r\n| where resourcetype in ({SelectPaaStypeToTag})\r\n| where isnotempty(location)\r\n| project Resource, resourceGroup,type=resourcetype, location,resourcekind,subscriptionId",
                     "size": 0,
                     "title": "Non-Monitored Services",
                     "showRefreshButton": true,
@@ -1808,6 +1816,14 @@
                     ],
                     "gridSettings": {
                       "formatters": [
+                        {
+                          "columnMatch": "subscriptionId",
+                          "formatter": 15,
+                          "formatOptions": {
+                            "linkTarget": null,
+                            "showIcon": true
+                          }
+                        },
                         {
                           "columnMatch": "Total",
                           "formatter": 18,
@@ -1892,6 +1908,33 @@
             },
             "customWidth": "50",
             "name": "NonTaggedGroup"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "nav",
+              "links": [
+                {
+                  "id": "13968710-d590-4706-90ba-6891bd629893",
+                  "linkTarget": "ArmAction",
+                  "linkLabel": "Update",
+                  "preText": "",
+                  "style": "primary",
+                  "armActionContext": {
+                    "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                    "headers": [],
+                    "params": [],
+                    "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {}\r\n}",
+                    "httpMethod": "POST",
+                    "title": "Update Data",
+                    "description": "# Updates all backend data, including\n- Currently monitored paas services\n- Currently supported services\n- Currently non-monitored paas services\n- Current IaaS packs available",
+                    "runLabel": "Update"
+                  }
+                }
+              ]
+            },
+            "name": "links - 3"
           }
         ]
       },
@@ -5075,7 +5118,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-la3"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

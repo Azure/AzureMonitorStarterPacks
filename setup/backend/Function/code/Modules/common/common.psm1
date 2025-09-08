@@ -1179,11 +1179,6 @@ function get-nonMonitoredPaaSServices {
     return $body
 }
 function get-monitoredPaaSServices {
-#     if ($Request.Query.resourceFilter) {
-#       $resourceFilter = @"
-#       | where tolower(type) in ($($Request.Query.resourceFilter))
-# "@        
-#     }
     $ambaURL=$env:AMBAJsonURL
     $instanceName=$env:InstanceName
     Write-Host "Fetching AMBA Catalog from $ambaURL"
@@ -1202,19 +1197,7 @@ function get-monitoredPaaSServices {
       Write-host "Found $(($nameSpacesWithAlerts).count) namespaces with alerts."
       #create an array of namespaceSpacesWithAlerts to use in the query (between single quotes, separated by commas and surrounded by parentheses)
       $nameSpacesWithAlerts=($nameSpacesWithAlerts | ForEach-Object { "'$_'" }) -join ','
-      # use a kql azure resource graph query to find all the namespaces with alerts
-#       $PaaSQuery=@"
-# resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
-# | where type in~ ($nameSpacesWithAlerts)
-# | where not(type in~ ('microsoft.compute/virtualmachines','microsoft.hybridcompute/machines'))
-# | project Resource=id, type,tag=tostring(tags.MonitorStarterPacks),resourceGroup, location, subscriptionId, ['kind']
-# | join (resources
-#     | where tolower(type) in ("microsoft.insights/scheduledqueryrules","microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
-#     | where isnotempty(tags.MonitorStarterPacks)
-#     | project id,MP=tags.MonitorStarterPacks, Enabled=properties.enabled, Description=properties.description, Resource=tostring(properties.scopes[0])) on Resource
-# $resourceFilter
-# | summarize AlertRules=count() by Resource, Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind  
-# "@
+
 $PaaSQuery=@"
 resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
 | where type in~ ($nameSpacesWithAlerts) 
@@ -1224,7 +1207,7 @@ resources | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ 
     | where tolower(type) in ("microsoft.insights/metricalerts","microsoft.insights/activitylogalerts")
     | where isnotempty(tags.MonitorStarterPacks) and tags.instanceName =~ '$instanceName'
     | summarize AlertCount=count() by Resource=tostring(properties.scopes[0]), MP=tostring(tags.MonitorStarterPacks)) on Resource
-| summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind, location
+| summarize by AlertCount=iff(isnull(AlertCount),0,AlertCount),Resource=iff(isnotempty(Resource),Resource,Resource1), Type=['type'], tag=['type'],resourceGroup=resourceGroup, kind, location, subscriptionId
 "@
       Write-host "PaasQuery to be used: $PaaSQuery"
       $resourcesThatHavealertsAvailable= (Search-AzGraph $PaaSQuery) | convertto-json #| Where-Object {$_.type -in $nameSpacesWithAlerts}
@@ -1322,7 +1305,6 @@ function write-lawdata {
         return $null
     }
 }
-
 function new-availableiaaspacksdata {
     $results=@()
     $result = @{} # Initialize as a hashtable
@@ -1331,7 +1313,6 @@ function new-availableiaaspacksdata {
     $results += $result
     write-lawdata -instanceName $env:instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName AvailableIaaSPacks_CL #-localtest -appId $appid -appSecret $secretId
 }
-
 function get-AmbaCatalog {
     Write-Host "Get-AmbaCatalog: Fetching AMBA Catalog from storage account."
     $ambaJSONContent=get-AMBAJsonContent #-ambaJsonURL $ambaJsonURL
@@ -1909,81 +1890,101 @@ function update-blobcontentinURL {
     Set-AzStorageBlobContent -Container $containerName -Blob $blobName -Context $context -File "$($env:temp)/$blobName" -Force 
 }
 function start-opstasks {
+    # Right now there are 4 tasks
+    # 1. Check for new packs available and write to LAW
+    # 2. Check for supported services and write to LAW
+    # 3. Check for monitored services and write to LAW
+    # 4. Check for unmonitored services and write to LAW
+    # I want to add a parameter to run only one task at a time.
+    Write-Host "Starting Ops tasks..."
+    param (
+        [string]$TaskName = "All" # All, AvailablePacks, SupportedServices, MonitoredServices, UnmonitoredServices
+    )
+
     $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $instanceName=$env:InstanceName
     if ($instanceName) {
-    # Check for new packs available
-        $results=@()
-        $packdetails=get-IaaSPacksContent -packContentURL $env:packsUrl | convertfrom-json
-        foreach ($pack in $packdetails) {
-            Write-Host "Writing pack $($pack.Name) to LAW with tag $($pack.Tag)"
-            $result = @{} # Initialize as a hashtableq
-            $result['TimeGenerated'] = $timestamp
-            $result['Name'] = $pack.Name
-            $result['Tag'] = $pack.Tag
-            $result['NumberofRules'] = $pack.NumberofRules
-            $result['NumberofAlerts'] = $pack.NumberofAlerts
-            $result['AlertNames'] = $pack.AlertNames
-            $results += $result
-        }
-        Write-host "Writing available IaaS Packs to LAW. Number of packs: $($results.Count)"
-        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName AvailableIaaSPacks_CL #-localtest -appId $appid -appSecret $secretId
-
-        # Check for supported Services
-        $results=@()
-        $result = @{} # Initialize as a hashtable
-        $services=(get-AmbaCatalog -ambaJsonURL $ambaURL| ConvertFrom-Json).Categories # | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }}
-        foreach ($svc in $services) {
-            Write-host Adding service $($svc.nameSpace)
-            $result = @{} # Initialize as a hashtable
-            $result['TimeGenerated'] = $timestamp
-            $result['category'] = $svc.category
-            $result['namespace'] = $svc.namespace
-            $result['service'] = $svc.service
-            $result['metricnamespace'] = $svc.metricnamespace
-            $result['tag'] = $svc.tag
-            $result['NumberOfMetrics'] = $svc.NumberOfMetrics
-            $result['Details'] = $svc.Details
-            $results += $result
-        }
-        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName SupportedServices_CL #-localtest -appId $appid -appSecret $secretId
-        # check for monitored services
-        $results=@()
-        $monitoredServices=(get-monitoredPaaSServices | convertfrom-json -depth 10).'Monitored Resources'
-        foreach ($svc in $monitoredServices) {
-            #Write-host Adding monitored service $($svc.Resource)
-            $result = @{} # Initialize as a hashtable
-            $result['TimeGenerated'] = $timestamp
-            $result['Resource'] = $svc.Resource
-            $result['resourcetype'] = $svc.Type
-            $result['resourceGroup'] = $svc.resourceGroup
-            $result['resourcekind'] = $svc.kind
-            $result['location']= $svc.location
-            if ($null -ne $svc.AlertCount) {
-                $result['AlertCount'] = [int]$svc.AlertCount
-            } else {
-                $result['AlertCount'] = 0
+        # Check for new packs available
+        if ($TaskName -eq "All" -or $TaskName -eq "AvailablePacks") {
+            $results=@()
+            $packdetails=get-IaaSPacksContent -packContentURL $env:packsUrl | convertfrom-json
+            foreach ($pack in $packdetails) {
+                Write-Host "Writing pack $($pack.Name) to LAW with tag $($pack.Tag)"
+                $result = @{} # Initialize as a hashtableq
+                $result['TimeGenerated'] = $timestamp
+                $result['Name'] = $pack.Name
+                $result['Tag'] = $pack.Tag
+                $result['NumberofRules'] = $pack.NumberofRules
+                $result['NumberofAlerts'] = $pack.NumberofAlerts
+                $result['AlertNames'] = $pack.AlertNames
+                $results += $result
             }
-            $results += $result
+            Write-host "Writing available IaaS Packs to LAW. Number of packs: $($results.Count)"
+            write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName AvailableIaaSPacks_CL #-localtest -appId $appid -appSecret $secretId
         }
-        #write data to LAW
-        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName MonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
-        # check for unmonitored services
-        $results=@()
-        $nonMonitoredServices=(get-nonMonitoredPaaSServices | convertfrom-json).'Non-Monitored Resources'
-        foreach ($svc in $nonMonitoredServices) {  
-            # Write-host Adding non-monitored service $($svc.Resource)
+        if ($TaskName -eq "All" -or $TaskName -eq "SupportedServices") {
+            # Check for supported Services
+            $results=@()
             $result = @{} # Initialize as a hashtable
-            $result['TimeGenerated'] = $timestamp
-            $result['Resource'] = $svc.Resource
-            $result['resourcetype'] = $svc.Type
-            $result['resourceGroup'] = $svc.resourceGroup
-            $result['resourcekind'] = $svc.kind
-            $result['location']= $svc.location
-            $results += $result
+            $services=(get-AmbaCatalog -ambaJsonURL $ambaURL| ConvertFrom-Json).Categories # | convertfrom-json).Categories.namespace| Select-Object @{Label = "nameSpace"; Expression = { $_.ToLower() }}
+            foreach ($svc in $services) {
+                Write-host Adding service $($svc.nameSpace)
+                $result = @{} # Initialize as a hashtable
+                $result['TimeGenerated'] = $timestamp
+                $result['category'] = $svc.category
+                $result['namespace'] = $svc.namespace
+                $result['service'] = $svc.service
+                $result['metricnamespace'] = $svc.metricnamespace
+                $result['tag'] = $svc.tag
+                $result['NumberOfMetrics'] = $svc.NumberOfMetrics
+                $result['Details'] = $svc.Details
+                $results += $result
+            }
+            write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName SupportedServices_CL #-localtest -appId $appid -appSecret $secretId
         }
-        #write data to LAW
-        write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName NonMonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
+        # check for monitored services
+        if ($TaskName -eq "All" -or $TaskName -eq "MonitoredServices") {
+            $results=@()
+            $monitoredServices=(get-monitoredPaaSServices | convertfrom-json -depth 10).'Monitored Resources'
+            foreach ($svc in $monitoredServices) {
+                #Write-host Adding monitored service $($svc.Resource)
+                $result = @{} # Initialize as a hashtable
+                $result['TimeGenerated'] = $timestamp
+                $result['Resource'] = $svc.Resource
+                $result['resourcetype'] = $svc.Type
+                $result['resourceGroup'] = $svc.resourceGroup
+                $result['resourcekind'] = $svc.kind
+                $result['location']= $svc.location
+                $result['subscriptionId'] = $svc.subscriptionId
+                if ($null -ne $svc.AlertCount) {
+                    $result['AlertCount'] = [int]$svc.AlertCount
+                } else {
+                    $result['AlertCount'] = 0
+                }
+                $results += $result
+            }
+            #write data to LAW
+            write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName MonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
+        }
+        # check for unmonitored services
+        if ($TaskName -eq "All" -or $TaskName -eq "UnmonitoredServices") {
+            $results=@()
+            $nonMonitoredServices=(get-nonMonitoredPaaSServices | convertfrom-json).'Non-Monitored Resources'
+            foreach ($svc in $nonMonitoredServices) {  
+                # Write-host Adding non-monitored service $($svc.Resource)
+                $result = @{} # Initialize as a hashtable
+                $result['TimeGenerated'] = $timestamp
+                $result['Resource'] = $svc.Resource
+                $result['resourcetype'] = $svc.Type
+                $result['resourceGroup'] = $svc.resourceGroup
+                $result['resourcekind'] = $svc.kind
+                $result['location']= $svc.location
+                $result['subscriptionId'] = $svc.subscriptionId
+                $results += $result
+            }
+            #write data to LAW
+            write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName NonMonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
+        }    
     }
     else {
         Write-Host "No instance name provided."
