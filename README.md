@@ -40,7 +40,7 @@ Once the deployment is completed, the following steps need to be completed:
 
 - Navigate to the recently deployed resource group and find the workbook name "Azure Monitor Starter Packs Extended". Open the workbook and click on the "Configuration" tab. This will open a new tab with the configuration page.
 
-![alt text](image.png)
+![alt text](./Docs/media/imageconfig.png)
 
 Once the parameters are configured, make sure to save the workbook.
 
