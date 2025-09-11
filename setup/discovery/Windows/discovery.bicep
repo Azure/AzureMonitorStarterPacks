@@ -63,10 +63,10 @@ module upload 'uploadDSWindows.bicep' = {
     UserManagedIdentityId: UserManagedIdentityId
   }
 }
-resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  name: storageAccountname
-}
+// resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   name: storageAccountname
+// }
 module windiscovery '../../../modules/discovery/aigappversion.bicep' = {
   name: 'amp-${instanceName}-Discovery-${OS}-App'
   scope: resourceGroup(subscriptionId, resourceGroupName)

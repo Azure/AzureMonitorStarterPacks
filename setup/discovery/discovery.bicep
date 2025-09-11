@@ -122,7 +122,7 @@ module updateSiteConfig '../backend/bicep/modules/appsettings.bicep' = {
   name: 'updateSiteConfig-${instanceName}-${location}'
   dependsOn: [
     webApp
-    discoveryDCR
+    //discoveryDCR
   ]
   scope: resourceGroup(resourceGroupName)
   params: {
