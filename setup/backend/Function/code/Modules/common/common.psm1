@@ -1889,7 +1889,57 @@ function update-blobcontentinURL {
     Write-host "Updating blob content in $url. Container: $containerName, Blob: $blobName"
     Set-AzStorageBlobContent -Container $containerName -Blob $blobName -Context $context -File "$($env:temp)/$blobName" -Force 
 }
+function import-pack {
+    param (
+        [Parameter(Mandatory=$true, HelpMessage="Enter the name of the package to be imported.")]
+        [string]$packNewDefinition
+    )
+    Write-host "New Packs: $packNewDefinition"
+    try {
+        $newPacksList=$packNewDefinition | convertfrom-json -Depth 20
+    }
+    catch {
+        Write-host "Error converting JSON to object. $_"
+        $body = "Error converting JSON to object. $_"
+        return $body
+    }
+    Write-host "Found $($newPacksList.count) packs to import."
+    
+    $packsUrl=$env:PacksUrl
+    Write-host "Reading current packs from $packsUrl"
+    $PacksDef=get-blobcontentfromurl -url $packsUrl | convertfrom-json -Depth 20
+    $currentPacks=$PacksDef.Packs
+    # Check if any of the new packs already exists in the blob
+    foreach ($newPack in $newPacksList) {
+        $existingPack = $currentPacks | Where-Object { $_.Tag -eq $newPack.Tag }
+        if ($existingPack) {
+            Write-host "Pack with tag $($newPack.Tag) already exists. Skipping import."
+            $newPacksList = $newPacksList | Where-Object { $_.Tag -ne $newPack.Tag }
+        }
+    }
+    if ($newPacksList.count -eq 0) {
+        Write-host "No new packs to import. Exiting."
+        return $true
+    }
+    $finalPackslist=$currentPacks + $newPacksList
+    Write-host "Final Packs list count: $($finalPackslist.count)"
+    $NewPacksDef=@{Packs=$finalPackslist} 
+    try {
+        Write-host "Updating blob content in $packsUrl"
+        update-blobcontentinURL -url $packsUrl -content $($NewPacksDef | ConvertTo-Json -Depth 20)
+    }
+    catch {
+        Write-host "Error updating blob content in $PacksUrl. $_"
+        $body = "Error updating blob content in $PacksUrl. $_"
+        return $body
+    }
+    Write-host "Pack import completed. Updating packs available in LAW."
+    start-opstasks -TaskNames @("AvailablePacks")
+}
 function start-opstasks {
+    param (
+        [array]$TaskNames = @("All") # All, AvailablePacks, SupportedServices, MonitoredServices, UnmonitoredServices
+    )
     # Right now there are 4 tasks
     # 1. Check for new packs available and write to LAW
     # 2. Check for supported services and write to LAW
@@ -1897,15 +1947,12 @@ function start-opstasks {
     # 4. Check for unmonitored services and write to LAW
     # I want to add a parameter to run only one task at a time.
     Write-Host "Starting Ops tasks..."
-    param (
-        [string]$TaskName = "All" # All, AvailablePacks, SupportedServices, MonitoredServices, UnmonitoredServices
-    )
-
+    Write-host "Tasks to run: $($TaskNames -join ', ')"
     $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $instanceName=$env:InstanceName
     if ($instanceName) {
         # Check for new packs available
-        if ($TaskName -eq "All" -or $TaskName -eq "AvailablePacks") {
+        if ($TaskNames -contains "All" -or $TaskNames -contains "AvailablePacks") {
             $results=@()
             $packdetails=get-IaaSPacksContent -packContentURL $env:packsUrl | convertfrom-json
             foreach ($pack in $packdetails) {
@@ -1922,7 +1969,7 @@ function start-opstasks {
             Write-host "Writing available IaaS Packs to LAW. Number of packs: $($results.Count)"
             write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName AvailableIaaSPacks_CL #-localtest -appId $appid -appSecret $secretId
         }
-        if ($TaskName -eq "All" -or $TaskName -eq "SupportedServices") {
+        if ($TaskNames -contains "All" -or $TaskNames -contains "SupportedServices") {
             # Check for supported Services
             $results=@()
             $result = @{} # Initialize as a hashtable
@@ -1943,7 +1990,7 @@ function start-opstasks {
             write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName SupportedServices_CL #-localtest -appId $appid -appSecret $secretId
         }
         # check for monitored services
-        if ($TaskName -eq "All" -or $TaskName -eq "MonitoredServices") {
+        if ($TaskNames -contains "All" -or $TaskNames -contains "MonitoredServices") {
             $results=@()
             $monitoredServices=(get-monitoredPaaSServices | convertfrom-json -depth 10).'Monitored Resources'
             foreach ($svc in $monitoredServices) {
@@ -1967,7 +2014,7 @@ function start-opstasks {
             write-lawdata -instanceName $instanceName -data $results -DcrImmutableId $env:opsdcrimmutableId -tableName MonitoredPaaSTable_CL #-localtest -appId $appid -appSecret $secretId
         }
         # check for unmonitored services
-        if ($TaskName -eq "All" -or $TaskName -eq "UnmonitoredServices") {
+        if ($TaskNames -contains "All" -or $TaskNames -contains "UnmonitoredServices") {
             $results=@()
             $nonMonitoredServices=(get-nonMonitoredPaaSServices | convertfrom-json).'Non-Monitored Resources'
             foreach ($svc in $nonMonitoredServices) {  

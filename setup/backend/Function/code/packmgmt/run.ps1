@@ -21,29 +21,13 @@ if ($action -eq 'importPack') {
     break
   }
   try {
-    $newPacksList=$newPacks | convertfrom-json -Depth 20
+    import-pack -packNewDefinition $newPacks
+    #$newPacksList=$newPacks | convertfrom-json -Depth 20
   }
   catch {
-    Write-host "Error converting JSON to object. $_"
-    $body = "Error converting JSON to object. $_"
+    Write-host "Error importing pack. $_"
+    $body = "Error importing pack. $_"
     break
-  }
-  Write-host "Found $($newPacksList.count) packs to import."
-  # Check if the pack already exists in the blob
-  $packsUrl=$env:PacksUrl
-  Write-host "Reading current packs from $packsUrl"
-  $PacksDef=get-blobcontentfromurl -url $packsUrl | convertfrom-json -Depth 20
-  $currentPacks=$PacksDef.Packs
-  $finalPackslist=$currentPacks + $newPacksList
-  Write-host "New Packs list count: $($finalPackslist.count)"
-  $NewPacksDef=@{Packs=$finalPackslist} 
-  try {
-    Write-host "Updating blob content in $packsUrl"
-    update-blobcontentinURL -url $packsUrl -content $($NewPacksDef | ConvertTo-Json -Depth 20)
-  }
-  catch {
-    Write-host "Error updating blob content in $PacksUrl. $_"
-    $body = "Error updating blob content in $PacksUrl. $_"
   }
 }
 else {
@@ -100,7 +84,7 @@ else {
                     -workspaceResourceId $workspaceResourceId `
                     -location $resource.Location
                 }
-                start-opstasks
+                #start-opstasks
               }
               'Discovery' {
                 $TagValue = $resource.Pack
@@ -138,7 +122,7 @@ else {
                         -instanceName $instanceName `
                         -location $resource.location `
                         -workspaceResourceId $workspaceResourceId
-                start-opstasks
+                start-opstasks -TaskNames @("MonitoredServices","UnmonitoredServices")
               }
               default {
                 Write-host "Invalid PackType: $PackType"

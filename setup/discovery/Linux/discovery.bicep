@@ -64,10 +64,10 @@ module uploadLinux './uploadDSLinux.bicep' = {
     UserManagedIdentityId: UserManagedIdentityId
   }
 }
-resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  name: storageAccountname
-}
+// resource packStorage 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+//   scope: resourceGroup(subscriptionId, resourceGroupName)
+//   name: storageAccountname
+// }
 module linuxDiscovery '../../../modules/discovery/aigappversion.bicep' = {
   name: 'amp-${instanceName}-Discovery-${OS}-App-${location}'
   scope: resourceGroup(subscriptionId, resourceGroupName)

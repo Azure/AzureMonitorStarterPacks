@@ -388,9 +388,6 @@
               "title": "Monitoring Packs resources and Components",
               "queryType": 1,
               "resourceType": "microsoft.resources/tenants",
-              "crossComponentResources": [
-                "value::tenant"
-              ],
               "gridSettings": {
                 "filter": true
               }
@@ -1327,6 +1324,24 @@
                           "actionName": "RemoveAllMonitoring",
                           "runLabel": "Confirm"
                         }
+                      },
+                      {
+                        "id": "15d4ea73-8457-42c6-9edc-4fc24ee223b8",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Update Supported Packs",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {\r\n    \"TaskNames\" : [\"AvailablePacks\"]\r\n  }\r\n}",
+                          "httpMethod": "POST",
+                          "title": "Update Supported Packs",
+                          "description": "# This action will update the backend info if any new packs were imported or updated.",
+                          "actionName": "UpdatePacks",
+                          "runLabel": "Update"
+                        }
                       }
                     ]
                   },
@@ -1510,6 +1525,24 @@
                           "description": "# This will enable the pack for the following servers:\n{vmstotag}\n\nby adding the {PackTags} Pack(s) to the resource(s).\n\nWorkspace: {Workspace}\n\nAction Group: {DefaultAG}",
                           "actionName": "EnableMonitoring",
                           "runLabel": "Confirm"
+                        }
+                      },
+                      {
+                        "id": "182bd7f6-9a30-42ee-a73b-de192d510dde",
+                        "linkTarget": "ArmAction",
+                        "linkLabel": "Update Supported Packs",
+                        "style": "primary",
+                        "linkIsContextBlade": true,
+                        "armActionContext": {
+                          "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
+                          "headers": [],
+                          "params": [],
+                          "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {\r\n    \"TaskNames\": [\"All\"]\r\n  }\r\n}",
+                          "httpMethod": "POST",
+                          "title": "Update Supproted Packs",
+                          "description": "# This action will update the backend info if any new packs were imported or updated.",
+                          "actionName": "UpdatePacks",
+                          "runLabel": "Update Packs"
                         }
                       }
                     ]
@@ -1920,16 +1953,19 @@
                   "linkTarget": "ArmAction",
                   "linkLabel": "Update",
                   "preText": "",
+                  "postText": "backend data.",
                   "style": "primary",
+                  "linkIsContextBlade": true,
                   "armActionContext": {
                     "path": "{logicAppResource}/triggers/manual/run?api-version=2016-06-01",
                     "headers": [],
                     "params": [],
-                    "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {}\r\n}",
+                    "body": "{ \r\n  \"function\": \"opstasksondemand\",\r\n  \"functionBody\" : {\r\n    \"TaskNames\": [\"All\"]\r\n  }\r\n}",
                     "httpMethod": "POST",
                     "title": "Update Data",
                     "description": "# Updates all backend data, including\n- Currently monitored paas services\n- Currently supported services\n- Currently non-monitored paas services\n- Current IaaS packs available",
-                    "runLabel": "Update"
+                    "actionName": "Update Data",
+                    "runLabel": "Update backend data"
                   }
                 }
               ]
@@ -3318,7 +3354,8 @@
                         },
                         "timeContext": {
                           "durationMs": 86400000
-                        }
+                        },
+                        "value": "    {\r\n      \"Name\": \"Windows System Events 9000-9002\",\r\n      \"Tag\": \"WinSys9000_9002\",\r\n      \"Description\": \"Collects System event IDs 9000, 9001 and 9002 from the System event log and alerts on occurrences.\",\r\n      \"OS\": \"Windows\",\r\n      \"Rules\": [\r\n        {\r\n          \"Rulename\": \"SystemEvents9000-9002\",\r\n          \"RuleType\": \"EventPerformance\",\r\n          \"RuleNamePath\": \"dcr-basicWinVM.bicep\",\r\n          \"xPathQueries\": [\r\n            \"System!*[System[(EventID=9000 or EventID=9001 or EventID=9002)]]\"\r\n          ]\r\n        }\r\n      ],\r\n      \"Alerts\": [\r\n        {\r\n          \"alertRuleDescription\": \"Fires when a System event with ID 9000, 9001, or 9002 is logged.\",\r\n          \"alertRuleDisplayName\": \"System Events 9000-9002 Occurrence\",\r\n          \"alertRuleName\": \"AlertRule-Win-System-9000-9002\",\r\n          \"alertRuleSeverity\": 2,\r\n          \"autoMitigate\": true,\r\n          \"evaluationFrequency\": \"PT5M\",\r\n          \"windowSize\": \"PT15M\",\r\n          \"alertType\": \"rows\",\r\n          \"query\": \"Event | where Channel == \\\"System\\\" | where EventID in (9000, 9001, 9002)\"\r\n        }\r\n      ]\r\n    }"
                       }
                     ],
                     "style": "above",

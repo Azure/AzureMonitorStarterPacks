@@ -218,6 +218,7 @@ resource logicappConnection 'Microsoft.Web/connections@2018-07-01-preview' = {
       brandColor: '#0079d6'
       category: 'Standard'
       id: '/subscriptions/${subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/keyvault'
+      //id: resourceId(subscriptionId,'Microsoft.Web/locations/managedApis', 'keyvault')
       //id: resourceId('Microsoft.Web/locations/managedApis', 'keyvault')
       type: 'Microsoft.Web/locations/managedApis'
     }
