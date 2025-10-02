@@ -193,7 +193,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "fc1"
+                  "value": "fc2"
                 },
                 {
                   "id": "7a778b2c-619d-4f82-bd1c-810f853af6fd",
@@ -216,7 +216,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b"
+                    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8"
                   ]
                 },
                 {
@@ -235,7 +235,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-fc1-b1e924f9-Function"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Web/sites/AMP-fc2-e315fe54-Function"
                 },
                 {
                   "id": "4552c35d-c26c-4cbf-a4cf-b2e57ff7ee78",
@@ -254,7 +254,7 @@
                     "showDefault": false
                   },
                   "queryType": 1,
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks2/providers/Microsoft.OperationalInsights/workspaces/Monster-LA3"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
                 },
                 {
                   "id": "1efb8bbe-532a-491b-b3c4-55f1402ee280",
@@ -279,7 +279,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-fc1-LogicApp"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-MonstarPacks2/providers/Microsoft.Logic/workflows/AMP-fc2-LogicApp"
                 },
                 {
                   "id": "ea93902e-9856-4bd4-998d-ea88378907a7",
@@ -320,7 +320,7 @@
                   },
                   "queryType": 1,
                   "resourceType": "microsoft.resources/tenants",
-                  "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/NetworkWatcherRG/providers/microsoft.insights/actiongroups/Jose"
+                  "value": "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourceGroups/rg-Hub/providers/microsoft.insights/actiongroups/Jose"
                 }
               ],
               "style": "above",
@@ -1481,9 +1481,7 @@
                         },
                         "queryType": 0,
                         "resourceType": "microsoft.operationalinsights/workspaces",
-                        "value": [
-                          "VMI"
-                        ]
+                        "value": []
                       }
                     ],
                     "style": "pills",
@@ -1628,6 +1626,7 @@
                           "additionalResourceOptions": [
                             "value::all"
                           ],
+                          "selectAllValue": "All",
                           "showDefault": false
                         },
                         "timeContext": {
@@ -1650,7 +1649,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "MonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated,*) by Resource,resourceGroup, resourcetype, location, resourcekind\r\n| where resourcetype in ({SelectPaasType})\r\n| project Resource, resourceGroup, type=resourcetype, location, resourcekind,subscriptionId\r\n| where isnotempty(location)",
+                    "query": "// Treat the workbook parameter as a JSON array (dynamic)\r\nlet p = dynamic({SelectPaasType});\r\nlet use_all = array_length(p) == 0 or 'All' in (p) or 'all' in (p);\r\n\r\nMonitoredPaaSTable_CL\r\n| summarize arg_max(TimeGenerated, *) by Resource, resourceGroup, resourcetype, location, resourcekind, subscriptionId\r\n| where use_all or resourcetype in~ (p)         // `in~` works with dynamic arrays too\r\n| project Resource, resourceGroup, type=resourcetype, location, resourcekind, subscriptionId\r\n| where isnotempty(location)\r\n",
                     "size": 0,
                     "title": "Monitored Services",
                     "showRefreshButton": true,
@@ -5155,7 +5154,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-la3"
+    "/subscriptions/e315fe54-eae5-464d-8266-0f41a0908da8/resourcegroups/rg-monstarpacks2/providers/microsoft.operationalinsights/workspaces/monster-law2"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

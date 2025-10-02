@@ -9,6 +9,8 @@ param resourceGroupName string
 param addRGRoleAssignments bool = false
 param solutionTag string
 param instanceName string
+param createNewStorageAccount bool
+
 var RGroleDefinitionIds=[
 
   //contributor roles
@@ -33,6 +35,18 @@ module userManagedIdentity './umidentityresource.bicep' = {
     location: location
     Tags: Tags
     userIdentityName: userIdentityName
+  }
+}
+// Assign storage blob data contributor role to the user managed identity for the storage account that already exists
+module storageAccountRoleAssignment '../../../../modules/rbac/subscription/roleassignment.bicep' = if (createNewStorageAccount == false) {
+  name: 'STO-${userIdentityName}-${location}'
+  params: {
+    instanceName: instanceName
+    resourcename: userIdentityName
+    principalId: userManagedIdentity.outputs.userManagedIdentityPrincipalId
+    solutionTag: solutionTag
+    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor Role Definition Id
+    roleShortName: 'StorageBlobDataContributor'
   }
 }
 
