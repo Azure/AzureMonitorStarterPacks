@@ -17,6 +17,7 @@ param subscriptionId string
 param resourceGroupName string
 param imageGalleryName string
 param collectTelemetry bool
+param createNewStorageAccount bool
 
 var packPolicyRoleDefinitionIds=[
   // '749f88d5-cbae-40b8-bcfc-e573ddc772fa' // Monitoring Contributor Role Definition Id for Monitoring Contributor
@@ -90,7 +91,7 @@ module backendFunction './modules/function.bicep' = {
     storageAccountName: storageAccountName
     userManagedIdentity: functionUserManagedIdentity.outputs.userManagedIdentityResourceId
     userManagedIdentityClientId: functionUserManagedIdentity.outputs.userManagedIdentityClientId
-    packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
+    //packsUserManagedId: packsUserManagedIdentity.outputs.userManagedIdentityResourceId
     solutionTag: solutionTag
     instanceName: instanceName
     imageGalleryName: gallery.name
@@ -136,20 +137,20 @@ module dataCollectionEndpoint '../../../modules/DCRs/dataCollectionEndpoint.bice
 }
 
 // This module creates a user managed identity for the packs to use.
-module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
-  name: 'AMP-${instanceName}-UMI-Packs-${location}'
-  params: {
-    location: location
-    Tags: Tags
-    roleDefinitionIds: packPolicyRoleDefinitionIds
-    userIdentityName: 'AMP-${instanceName}-UMI-Packs'
-    resourceGroupName: resourceGroupName
-    subscriptionId: subscriptionId
-    addRGRoleAssignments: true
-    solutionTag: solutionTag
-    instanceName: instanceName
-  }
-}
+// module packsUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
+//   name: 'AMP-${instanceName}-UMI-Packs-${location}'
+//   params: {
+//     location: location
+//     Tags: Tags
+//     roleDefinitionIds: packPolicyRoleDefinitionIds
+//     userIdentityName: 'AMP-${instanceName}-UMI-Packs'
+//     resourceGroupName: resourceGroupName
+//     subscriptionId: subscriptionId
+//     addRGRoleAssignments: true
+//     solutionTag: solutionTag
+//     instanceName: instanceName
+//   }
+// }
 module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
   name: 'AMP-${instanceName}-UMI-AzFun-${location}'
   params: {
@@ -161,6 +162,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     subscriptionId: subscriptionId
     solutionTag: solutionTag
     instanceName: instanceName
+    createNewStorageAccount: createNewStorageAccount
   }
 }
 //Add keyvault

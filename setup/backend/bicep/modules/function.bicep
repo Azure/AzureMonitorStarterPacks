@@ -3,7 +3,7 @@ param location string
 param Tags object
 param userManagedIdentity string
 param userManagedIdentityClientId string
-param packsUserManagedId string
+//param packsUserManagedId string
 param storageAccountName string
 param filename string = 'backend.zip'
 param sasExpiry string = dateTimeAdd(utcNow(), 'PT2H')
@@ -180,7 +180,7 @@ resource azfunctionsiteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   parent: azfunctionsite
   properties: {
     MSI_CLIENT_ID: userManagedIdentityClientId
-    PacksUserManagedId: packsUserManagedId
+    //PacksUserManagedId: packsUserManagedId
     InstanceName: instanceName
     AMBAJsonURL: ambaJsonURL
     PacksURL: packsURL
