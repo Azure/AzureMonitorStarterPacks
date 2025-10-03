@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11011327144423423669"
+      "templateHash": "4699732650515707564"
     }
   },
   "parameters": {
@@ -2723,7 +2723,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12750519681276047030"
+              "templateHash": "1462119636186058198"
             }
           },
           "parameters": {
@@ -10057,7 +10057,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13690361879345816616"
+                      "templateHash": "17748803498684093176"
                     }
                   },
                   "parameters": {
@@ -10102,6 +10102,9 @@
                         "azCliVersion": "2.42.0",
                         "timeout": "PT5M",
                         "retentionInterval": "PT1H",
+                        "storageAccountSettings": {
+                          "storageAccountName": "[parameters('storageAccountName')]"
+                        },
                         "environmentVariables": [
                           {
                             "name": "AZURE_STORAGE_ACCOUNT",
@@ -10166,7 +10169,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15864650490007147318"
+                      "templateHash": "6415516612526264154"
                     }
                   },
                   "parameters": {
@@ -10211,6 +10214,9 @@
                         "azCliVersion": "2.42.0",
                         "timeout": "PT5M",
                         "retentionInterval": "PT1H",
+                        "storageAccountSettings": {
+                          "storageAccountName": "[parameters('storageAccountName')]"
+                        },
                         "environmentVariables": [
                           {
                             "name": "AZURE_STORAGE_ACCOUNT",
@@ -10272,7 +10278,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13834925672493921839"
+                      "templateHash": "11885379298054492451"
                     }
                   },
                   "parameters": {
@@ -10314,6 +10320,9 @@
                         "azCliVersion": "2.42.0",
                         "timeout": "PT5M",
                         "retentionInterval": "PT1H",
+                        "storageAccountSettings": {
+                          "storageAccountName": "[parameters('storageAccountName')]"
+                        },
                         "environmentVariables": [
                           {
                             "name": "AZURE_STORAGE_ACCOUNT",
@@ -10375,7 +10384,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18032604487296377947"
+                      "templateHash": "13626571808264263619"
                     }
                   },
                   "parameters": {
@@ -10396,7 +10405,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "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",
+                    "$fxv#0": "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",
                     "tempfilename": "download"
                   },
                   "resources": [
@@ -10415,6 +10424,9 @@
                       "kind": "AzureCLI",
                       "properties": {
                         "azCliVersion": "2.42.0",
+                        "storageAccountSettings": {
+                          "storageAccountName": "[parameters('storageAccountName')]"
+                        },
                         "timeout": "PT5M",
                         "retentionInterval": "PT1H",
                         "environmentVariables": [
@@ -10478,7 +10490,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2858460425487258756"
+                      "templateHash": "10778772281371104704"
                     }
                   },
                   "parameters": {
@@ -10520,6 +10532,9 @@
                         "azCliVersion": "2.42.0",
                         "timeout": "PT5M",
                         "retentionInterval": "PT1H",
+                        "storageAccountSettings": {
+                          "storageAccountName": "[parameters('storageAccountName')]"
+                        },
                         "environmentVariables": [
                           {
                             "name": "AZURE_STORAGE_ACCOUNT",
