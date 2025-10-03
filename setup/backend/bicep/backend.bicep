@@ -166,6 +166,7 @@ module functionUserManagedIdentity 'modules/userManagedIdentity.bicep' = {
     solutionTag: solutionTag
     instanceName: instanceName
     createNewStorageAccount: createNewStorageAccount
+    storageAccountName: storageAccountName
   }
 }
 //Add keyvault
