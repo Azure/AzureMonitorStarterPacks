@@ -79,6 +79,9 @@ module backendFunction './modules/function.bicep' = {
   // dependsOn: [
   //   functionUserManagedIdentity
   // ]
+  dependsOn: [
+    functionUserManagedIdentity
+  ]
   params: {
     amgdStorageURL: amgdupload.outputs.amgdstorageURL
     packsURL: packsDefStorage.outputs.fileURL
