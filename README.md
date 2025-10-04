@@ -34,6 +34,10 @@ The Main solution can be deployed by clicking the link below to the respective c
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Frefs%2Fheads%2Fmain%2Fsetup%2Fmonstar.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FAzureMonitorStarterPacks%2Frefs%2Fheads%2Fmain%2Fsetup%2Fsetup.json)
 
+### Using existing Storage accounts
+
+If an existing storage account is selected, make sure the storage is on the same resource group where the solution will be installed.
+
 ## Initial Configuration
 
 Once the deployment is completed, the following steps need to be completed:

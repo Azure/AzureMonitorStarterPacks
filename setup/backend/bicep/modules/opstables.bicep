@@ -3,12 +3,11 @@ param availableIaaSPackstablename string = 'AvailableIaaSPacks_CL'
 param supportedServicesTableName string = 'SupportedServices_CL'
 param monitoredPaaSTableName string = 'MonitoredPaaSTable_CL'
 param nonMonitoredPaaSTableName string = 'NonMonitoredPaaSTable_CL'
-param Tags object = {}
-param dceId string
-param location string = resourceGroup().location
-param ruleName string = 'AMP-backendDCR'
+// param Tags object = {}
+// param dceId string
+// param location string = resourceGroup().location
+// param ruleName string = 'AMP-backendDCR'
 param workspaceResourceId string
-
 param wsfriendlyname string = split(workspaceResourceId, '/')[8]
 
 var streamnames = [
@@ -200,207 +199,207 @@ resource nonMonitoredPaaSTable 'Microsoft.OperationalInsights/workspaces/tables@
   }  
 }
 
-resource opsDCR 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
-  location: location
-  dependsOn: [
-    availableiaaspackstable
-    supportedServicesTable
-    monitoredPaaSTable
-    nonMonitoredPaaSTable
-  ]
-  name: '${ruleName}-ops'
-  tags: Tags
-  properties: {
-    description: 'Data collection rule for workload backend management.'
-    dataCollectionEndpointId: dceId
-    streamDeclarations: {
-      '${streamnames[0]}' : {
-        columns: [
-            {
-                name: 'TimeGenerated'
-                type: 'datetime'
-            }
-            {
-                name: 'Name'
-                type: 'string'
-            }
-            {
-                name: 'Tag'
-                type: 'string'
-            }
-            {
-                name: 'NumberofRules'
-                type: 'int'
-            }
-            {
-                name: 'NumberofAlerts'
-                type: 'int'
-            }
-            {
-                name: 'AlertNames'
-                type: 'string'
-            }
-        ]
-      }
-        '${streamnames[1]}' : {
-            columns: [
-                {
-                    name: 'TimeGenerated'
-                    type: 'datetime'
-                }
-                {
-                    name: 'namespace'
-                    type: 'string'
-                }
-                {
-                    name: 'category'
-                    type: 'string'
-                }
-                {
-                    name: 'service'
-                    type: 'string'
-                }
-                {
-                    name: 'metricnamespace'
-                    type: 'string'
-                }
-                {
-                    name: 'tag'
-                    type: 'string'
-                }
-                {
-                    name: 'NumberOfMetrics'
-                    type: 'int'
-                }
-                {
-                    name: 'Details'
-                    type: 'string'
-                }
-            ]
-        }
-        '${streamnames[2]}' : {
-            columns: [
-                {
-                    name: 'TimeGenerated'
-                    type: 'datetime'
-                }
-                {
-                    name: 'Resource'
-                    type: 'string'
-                }
-                {
-                    name: 'resourcetype'
-                    type: 'string'
-                }
-                {
-                    name: 'resourceGroup'
-                    type: 'string'
-                }
-                {
-                    name: 'location'
-                    type: 'string'
-                }
-                {
-                    name: 'subscriptionId'
-                    type: 'string'
-                }
-                {
-                    name: 'resourcekind'
-                    type: 'string'
-                }
-                {
-                    name: 'AlertCount'
-                    type: 'int'
-                }
-            ]
-        }
-        '${streamnames[3]}' : {
-            columns: [
-                {
-                    name: 'TimeGenerated'
-                    type: 'datetime'
-                }
-                {
-                    name: 'Resource'
-                    type: 'string'
-                }
-                {
-                    name: 'resourcetype'
-                    type: 'string'
-                }
-                {
-                    name: 'resourceGroup'
-                    type: 'string'
-                }
-                {
-                    name: 'location'
-                    type: 'string'
-                }
-                {
-                    name: 'subscriptionId'
-                    type: 'string'
-                }
-                {
-                    name: 'resourcekind'
-                    type: 'string'
-                }
-            ]
-        }
-    }
-    destinations: {
-        logAnalytics: [
-            {
-                workspaceResourceId: workspaceResourceId
-                name: wsfriendlyname
-            }
-        ]
-    }
-    dataFlows: [
-        {
-            streams: [
-                '${streamnames[0]}'
-            ]
-            destinations: [
-                wsfriendlyname
-            ]
-            transformKql: 'source'
-            outputStream: streamnames[0]
-        }
-        {
-            streams: [
-                '${streamnames[1]}'
-            ]
-            destinations: [
-                wsfriendlyname
-            ]
-            transformKql: 'source'
-            outputStream: streamnames[1]
-        }
-        {
-            streams: [
-                '${streamnames[2]}'
-            ]
-            destinations: [
-                wsfriendlyname
-            ]
-            transformKql: 'source | project TimeGenerated, Resource, resourcetype, resourceGroup, location, subscriptionId, resourcekind'
-            outputStream: streamnames[2]
-        }
-        {
-            streams: [
-                '${streamnames[3]}'
-            ]
-            destinations: [
-                wsfriendlyname
-            ]
-            transformKql: 'source | project TimeGenerated, Resource, resourcetype, resourceGroup, location, subscriptionId, resourcekind'
-            outputStream: streamnames[3]
-        }
+// resource opsDCR 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+//   location: location
+//   dependsOn: [
+//     availableiaaspackstable
+//     supportedServicesTable
+//     monitoredPaaSTable
+//     nonMonitoredPaaSTable
+//   ]
+//   name: '${ruleName}-ops'
+//   tags: Tags
+//   properties: {
+//     description: 'Data collection rule for workload backend management.'
+//     dataCollectionEndpointId: dceId
+//     streamDeclarations: {
+//       '${streamnames[0]}' : {
+//         columns: [
+//             {
+//                 name: 'TimeGenerated'
+//                 type: 'datetime'
+//             }
+//             {
+//                 name: 'Name'
+//                 type: 'string'
+//             }
+//             {
+//                 name: 'Tag'
+//                 type: 'string'
+//             }
+//             {
+//                 name: 'NumberofRules'
+//                 type: 'int'
+//             }
+//             {
+//                 name: 'NumberofAlerts'
+//                 type: 'int'
+//             }
+//             {
+//                 name: 'AlertNames'
+//                 type: 'string'
+//             }
+//         ]
+//       }
+//         '${streamnames[1]}' : {
+//             columns: [
+//                 {
+//                     name: 'TimeGenerated'
+//                     type: 'datetime'
+//                 }
+//                 {
+//                     name: 'namespace'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'category'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'service'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'metricnamespace'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'tag'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'NumberOfMetrics'
+//                     type: 'int'
+//                 }
+//                 {
+//                     name: 'Details'
+//                     type: 'string'
+//                 }
+//             ]
+//         }
+//         '${streamnames[2]}' : {
+//             columns: [
+//                 {
+//                     name: 'TimeGenerated'
+//                     type: 'datetime'
+//                 }
+//                 {
+//                     name: 'Resource'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'resourcetype'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'resourceGroup'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'location'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'subscriptionId'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'resourcekind'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'AlertCount'
+//                     type: 'int'
+//                 }
+//             ]
+//         }
+//         '${streamnames[3]}' : {
+//             columns: [
+//                 {
+//                     name: 'TimeGenerated'
+//                     type: 'datetime'
+//                 }
+//                 {
+//                     name: 'Resource'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'resourcetype'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'resourceGroup'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'location'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'subscriptionId'
+//                     type: 'string'
+//                 }
+//                 {
+//                     name: 'resourcekind'
+//                     type: 'string'
+//                 }
+//             ]
+//         }
+//     }
+//     destinations: {
+//         logAnalytics: [
+//             {
+//                 workspaceResourceId: workspaceResourceId
+//                 name: wsfriendlyname
+//             }
+//         ]
+//     }
+//     dataFlows: [
+//         {
+//             streams: [
+//                 '${streamnames[0]}'
+//             ]
+//             destinations: [
+//                 wsfriendlyname
+//             ]
+//             transformKql: 'source'
+//             outputStream: streamnames[0]
+//         }
+//         {
+//             streams: [
+//                 '${streamnames[1]}'
+//             ]
+//             destinations: [
+//                 wsfriendlyname
+//             ]
+//             transformKql: 'source'
+//             outputStream: streamnames[1]
+//         }
+//         {
+//             streams: [
+//                 '${streamnames[2]}'
+//             ]
+//             destinations: [
+//                 wsfriendlyname
+//             ]
+//             transformKql: 'source | project TimeGenerated, Resource, resourcetype, resourceGroup, location, subscriptionId, resourcekind'
+//             outputStream: streamnames[2]
+//         }
+//         {
+//             streams: [
+//                 '${streamnames[3]}'
+//             ]
+//             destinations: [
+//                 wsfriendlyname
+//             ]
+//             transformKql: 'source | project TimeGenerated, Resource, resourcetype, resourceGroup, location, subscriptionId, resourcekind'
+//             outputStream: streamnames[3]
+//         }
 
-    ]
-  }
-}
-output RuleId string = opsDCR.id
-output opsdcrimmutableId string = opsDCR.properties.immutableId
+//     ]
+//   }
+// }
+// output RuleId string = opsDCR.id
+// output opsdcrimmutableId string = opsDCR.properties.immutableId
 output streamNames array = streamnames
 
