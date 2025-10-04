@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17521308310377986907"
+      "templateHash": "3458321077243176777"
     }
   },
   "parameters": {
@@ -633,7 +633,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1799007499643204546"
+              "templateHash": "2839418742089016816"
             }
           },
           "parameters": {
@@ -685,6 +685,7 @@
           },
           "variables": {
             "solutionTagComponents": "MonitorStarterPacksComponents",
+            "lawresourceGroup": "[split(parameters('lawResourceId'), '/')[4]]",
             "tempTags": {
               "[format('{0}', variables('solutionTagComponents'))]": "BackendComponent",
               "solutionVersion": "[parameters('solutionVersion')]",
@@ -701,7 +702,7 @@
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location'))]",
               "subscriptionId": "[parameters('subscriptionId')]",
-              "resourceGroup": "[parameters('resourceGroupName')]",
+              "resourceGroup": "[variables('lawresourceGroup')]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1392,7 +1393,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('lawresourceGroup')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
               ]
             },
             {
@@ -2020,7 +2021,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('lawresourceGroup')), 'Microsoft.Resources/deployments', format('{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
               ]
             },
             {
@@ -2028,7 +2029,7 @@
               "apiVersion": "2022-09-01",
               "name": "[format('results{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location'))]",
               "subscriptionId": "[parameters('subscriptionId')]",
-              "resourceGroup": "[parameters('resourceGroupName')]",
+              "resourceGroup": "[variables('lawresourceGroup')]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2252,7 +2253,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('results{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('lawresourceGroup')), 'Microsoft.Resources/deployments', format('results{0}-{1}-{2}', variables('tableNameToUse'), parameters('instanceName'), parameters('location')))]"
               ]
             },
             {
@@ -2739,7 +2740,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14470582176684220480"
+              "templateHash": "3489668901120760201"
             }
           },
           "parameters": {
@@ -10453,7 +10454,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "3980642697772811613"
+                      "templateHash": "11644436162534325086"
                     }
                   },
                   "parameters": {
@@ -10474,7 +10475,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "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",
+                    "$fxv#0": "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",
                     "tempfilename": "download"
                   },
                   "resources": [

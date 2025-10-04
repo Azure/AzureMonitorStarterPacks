@@ -19,7 +19,7 @@ param functionName string
 param UserManagedIdentityId string
 
 var solutionTagComponents='MonitorStarterPacksComponents'
-
+var lawresourceGroup = split(lawResourceId,'/')[4]
 var tempTags={'${solutionTagComponents}': 'BackendComponent'
 solutionVersion: solutionVersion
 instanceName: instanceName}
@@ -32,7 +32,7 @@ var lawFriendlyName = split(lawResourceId,'/')[8]
 
 module table '../../modules/LAW/table.bicep' = {
   name: '${tableNameToUse}-${instanceName}-${location}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: resourceGroup(subscriptionId, lawresourceGroup)
   params: {
     parentname: lawFriendlyName
     tableName: tableNameToUse
@@ -89,7 +89,7 @@ module LinuxDiscovery 'Linux/discovery.bicep' = {
 
 module resultstable '../../modules/LAW/resultstable.bicep' = {
   name: 'results${tableNameToUse}-${instanceName}-${location}'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: resourceGroup(subscriptionId, lawresourceGroup)
   params: {
     parentname: lawFriendlyName
     tableName: resultstableNameToUse
