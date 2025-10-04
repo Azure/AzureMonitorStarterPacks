@@ -36,10 +36,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     azCliVersion: '2.42.0'
     timeout: 'PT5M'
     retentionInterval: 'PT1H'
-    storageAccountSettings: {
-      storageAccountName: packStorage.name
-      //sasToken: packStorage.listServiceSas(sasConfig).serviceSasToken
-    }
+    // storageAccountSettings: {
+    //   storageAccountName: packStorage.name
+    //   //sasToken: packStorage.listServiceSas(sasConfig).serviceSasToken
+    // }
     environmentVariables: [
       {
         name: 'AZURE_STORAGE_ACCOUNT'

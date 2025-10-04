@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "canadacentral"
+    },
+    "storageAccountName": {
+      "value": "msdnstofc2"
+    },
+    "filename": {
+      "value": "amba-alerts.json"
+    },
+    "UserManagedIdentityId": {
+      "value": "/subscriptions/b1e924f9-d16f-4260-a3c8-ff1ee462956b/resourceGroups/rg-MonstarPacks2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AMP-mp2-UMI-Function"
+    },
+    "containerName": {
+      "value": "amba"
+    },
+    "tags": {
+      "value": {}
+    }
+  }
+}
