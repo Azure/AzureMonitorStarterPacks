@@ -38,6 +38,10 @@ The Main solution can be deployed by clicking the link below to the respective c
 
 If an existing storage account is selected, make sure the storage is on the same resource group where the solution will be installed.
 
+### Using existing Log Analytics Workspaces
+
+You can use an existing Log Analytics workspace, as long as it is hosted in the same location the packs are being installed. You will need to add the instancename Tag to allow for it to show properly in the workbook. Also, two instances of the packs can't share the same log analytics workspace as of right now.
+
 ## Initial Configuration
 
 Once the deployment is completed, the following steps need to be completed:
